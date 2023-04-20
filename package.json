@@ -20,6 +20,7 @@
     ]
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "vscode:prepublish": "pnpm run package",
     "compile": "webpack",
     "watch": "webpack --watch",
