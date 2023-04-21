@@ -25,6 +25,9 @@ dependencies:
   tree-sitter-kotlin:
     specifier: ^0.2.11
     version: 0.2.11
+  tree-sitter-lua:
+    specifier: ^2.1.3
+    version: 2.1.3
   tree-sitter-python:
     specifier: ^0.20.1
     version: 0.20.1
@@ -2201,6 +2204,13 @@ packages:
 
   /tree-sitter-kotlin@0.2.11:
     resolution: {integrity: sha512-xrLaWDZws7kYakkVGclw9lC8X78lOi+pbYt1MoTmtzkhUFcmJSIaOpM7sPaiWlXaVcAk1jRY/0ZbcRMMn0P6Mw==}
+    requiresBuild: true
+    dependencies:
+      nan: 2.17.0
+    dev: false
+
+  /tree-sitter-lua@2.1.3:
+    resolution: {integrity: sha512-BmRSRI0Y4J47cE2cODyXsPiueDSAnIrFLJqOP/gKIJhGa4HoGpvEccmNuhAEVGtCrgaHGhaIkWeqiMGCgQ0cfw==}
     requiresBuild: true
     dependencies:
       nan: 2.17.0
