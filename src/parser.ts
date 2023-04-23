@@ -5,7 +5,7 @@ import Tc from "tree-sitter-c";
 // @ts-ignore
 import Tcpp from "tree-sitter-cpp";
 // @ts-ignore
-import Tcsharp from "tree-sitter-csharp";
+import Tcsharp from "tree-sitter-c-sharp";
 // @ts-ignore
 import Tgo from "tree-sitter-go";
 // @ts-ignore
