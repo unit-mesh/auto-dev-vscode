@@ -34,7 +34,7 @@
     ]
   },
   "scripts": {
-    "rebuild": "electron-rebuild -f -b",
+    "gen-wasm": "tree-sitter build-wasm node_modules/tree-sitter-c/ node_modules/tree-sitter-cpp/ node_modules/tree-sitter-c-sharp/ node_modules/tree-sitter-go/ node_modules/tree-sitter-java/ node_modules/tree-sitter-javascript/ node_modules/tree-sitter-kotlin/ node_modules/tree-sitter-lua/ node_modules/tree-sitter-python/ node_modules/tree-sitter-rust/ node_modules/tree-sitter-swift/ node_modules/tree-sitter-typescript/ node_modules/tree-sitter-zig/",
     "preinstall": "npx only-allow pnpm",
     "vscode:prepublish": "pnpm run package",
     "compile": "webpack",
@@ -43,8 +43,7 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "lint": "eslint src --ext ts"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -55,18 +54,17 @@
     "@typescript-eslint/parser": "^5.56.0",
     "@vscode/test-electron": "^2.3.0",
     "copy-webpack-plugin": "^11.0.0",
-    "electron": "19.1",
     "eslint": "^8.36.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
     "node-loader": "^2.0.0",
+    "tree-sitter-cli": "^0.20.8",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
     "webpack": "^5.76.3",
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "tree-sitter": "^0.20.1",
     "tree-sitter-c": "^0.20.2",
     "tree-sitter-c-sharp": "^0.20.0",
     "tree-sitter-cpp": "^0.20.0",
@@ -79,6 +77,7 @@
     "tree-sitter-rust": "^0.20.3",
     "tree-sitter-swift": "^0.3.6",
     "tree-sitter-typescript": "^0.20.1",
-    "tree-sitter-zig": "^0.2.0"
+    "tree-sitter-zig": "^0.2.0",
+    "web-tree-sitter": "^0.20.8"
   }
 }
