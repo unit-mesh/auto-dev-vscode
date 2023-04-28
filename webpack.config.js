@@ -39,7 +39,7 @@ const extensionConfig = {
     rules: [
       {
         resourceQuery: /raw/,
-        type: 'asset/resource',
+        type: 'asset/inline',
       },
       {
         test: /\.ts$/,

@@ -1,5 +1,6 @@
 import type {SupportedLangId}from "./supported";
 import Parser from "web-tree-sitter";
+import {readFile} from "node:fs/promises";
 
 // @ts-ignore
 import Tc from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-c.wasm?raw";
@@ -28,75 +29,86 @@ import Tlua from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-lua.wasm?raw"
 // @ts-ignore
 import Tzig from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-zig.wasm?raw";
 
+const PREFIX = "data:application/wasm;base64,";
 const LanguageMap: Map<SupportedLangId, Parser.Language> = new Map();
 async function loadLanguageOndemand(langid: SupportedLangId) {
     switch (langid) {
         case "c":
             if (!LanguageMap.has("c")) {
-                LanguageMap.set("c", await Parser.Language.load(Tc));
+                const result = new Uint8Array(Buffer.from(Tc.substring(PREFIX.length), "base64"));
+                LanguageMap.set("c", await Parser.Language.load(result));
             }
             break;
         case "cpp":
             if (!LanguageMap.has("cpp")) {
-                LanguageMap.set("cpp", await Parser.Language.load(Tcpp));
+                const result = new Uint8Array(Buffer.from(Tcpp.substring(PREFIX.length), "base64"));
+                LanguageMap.set("cpp", await Parser.Language.load(result));
             }
             break;
         case "csharp":
             if (!LanguageMap.has("csharp")) {
-                LanguageMap.set("csharp", await Parser.Language.load(Tcsharp));
+                const result = new Uint8Array(Buffer.from(Tcsharp.substring(PREFIX.length), "base64"));
+                LanguageMap.set("csharp", await Parser.Language.load(result));
             }
             break;
         case "go":
             if (!LanguageMap.has("go")) {
-                LanguageMap.set("go", await Parser.Language.load(Tgo));
+                const result = new Uint8Array(Buffer.from(Tgo.substring(PREFIX.length), "base64"));
+                LanguageMap.set("go", await Parser.Language.load(result));
             }
             break;
         case "java":
             if (!LanguageMap.has("java")) {
-
-                LanguageMap.set("java", await Parser.Language.load(Tjava));
+                const result = new Uint8Array(Buffer.from(Tjava.substring(PREFIX.length), "base64"));
+                LanguageMap.set("java", await Parser.Language.load(result));
             }
             break;
         case "javascript":
             if (!LanguageMap.has("javascript")) {
-                LanguageMap.set("javascript", await Parser.Language.load(Tjs));
+                const result = new Uint8Array(Buffer.from(Tjs.substring(PREFIX.length), "base64"));
+                LanguageMap.set("javascript", await Parser.Language.load(result));
             }
             break;
         case "kotlin":
             if (!LanguageMap.has("kotlin")) {
-
-                LanguageMap.set("kotlin", await Parser.Language.load(Tkotlin));
+                const result = new Uint8Array(Buffer.from(Tkotlin.substring(PREFIX.length), "base64"));
+                LanguageMap.set("kotlin", await Parser.Language.load(result));
             }
             break;
         case "typescript":
             if (!LanguageMap.has("typescript")) {
-                LanguageMap.set("typescript", await Parser.Language.load(Tts));
+                const result = new Uint8Array(Buffer.from(Tts.substring(PREFIX.length), "base64"));
+                LanguageMap.set("typescript", await Parser.Language.load(result));
             }
             break;
         case "python":
             if (!LanguageMap.has("python")) {
-                LanguageMap.set("python", await Parser.Language.load(Tpython));
+                const result = new Uint8Array(Buffer.from(Tpython.substring(PREFIX.length), "base64"));
+                LanguageMap.set("python", await Parser.Language.load(result));
             }
             break;
         case "rust":
             if (!LanguageMap.has("rust")) {
-                LanguageMap.set("rust", await Parser.Language.load(Trust));
+                const result = new Uint8Array(Buffer.from(Trust.substring(PREFIX.length), "base64"));
+                LanguageMap.set("rust", await Parser.Language.load(result));
             }
             break;
         case "swift":
             if (!LanguageMap.has("swift")) {
-                LanguageMap.set("swift", await Parser.Language.load(Tswift));
+                const result = new Uint8Array(Buffer.from(Tswift.substring(PREFIX.length), "base64"));
+                LanguageMap.set("swift", await Parser.Language.load(result));
             }
             break;
         case "lua":
             if (!LanguageMap.has("lua")) {
-
-                LanguageMap.set("lua", await Parser.Language.load(Tlua));
+                const result = new Uint8Array(Buffer.from(Tlua.substring(PREFIX.length), "base64"));
+                LanguageMap.set("lua", await Parser.Language.load(result));
             }
             break;
         case "zig":
             if (!LanguageMap.has("zig")) {
-                LanguageMap.set("zig", await Parser.Language.load(Tzig));
+                const result = new Uint8Array(Buffer.from(Tzig.substring(PREFIX.length), "base64"));
+                LanguageMap.set("zig", await Parser.Language.load(result));
             }
             break;
         default:
