@@ -13,7 +13,7 @@ class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
     
             try {
                 const parsed = await parse(langid, document.getText());
-                console.log(parsed);  
+                console.log(parsed);
             } catch (e) {
                 console.log(e);
             }

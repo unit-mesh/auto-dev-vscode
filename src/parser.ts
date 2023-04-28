@@ -153,7 +153,6 @@ const ParserMap: Record<SupportedLangId, (source: string) => Promise<Parser.Tree
         return parser.parse(source);
     },
     typescript:async (source: string) => {
-        console.log("typescript: ", Parser, Tts)
         const parser = new Parser()
         parser.setLanguage(LanguageMap.get("typescript"))
         return parser.parse(source);
