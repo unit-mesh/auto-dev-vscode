@@ -5,15 +5,20 @@ import { parse } from './parser';
 class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
     onDidChangeCodeLenses?: vscode.Event<void> | undefined;
     provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
-        const langid = document.languageId as SupportedLangId;
-        if (!SUPPORTED_LANGID.includes(langid)) {
-            return [];
-        }
-
-        const parsed = parse(langid, document.getText());
-        console.log(parsed);  
+        return (async () => {
+            const langid = document.languageId as SupportedLangId;
+            if (!SUPPORTED_LANGID.includes(langid)) {
+                return [];
+            }
     
-        throw new Error('Method not implemented.');
+            try {
+                const parsed = await parse(langid, document.getText());
+                console.log(parsed);  
+            } catch (e) {
+                console.log(e);
+            }
+            throw new Error('Method not implemented.');
+        })();
     }
     resolveCodeLens?(codeLens: vscode.CodeLens, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens> {
         throw new Error('Method not implemented.');
