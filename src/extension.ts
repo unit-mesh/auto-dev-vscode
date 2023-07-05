@@ -1,18 +1,19 @@
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'
 
-import {install} from "./codelens";
+import { install } from './codelens'
 
-const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE")
+const channel = vscode.window.createOutputChannel('AUTO-DEV-VSCODE')
 export function activate(context: vscode.ExtensionContext) {
-	channel.show();
-	console.log('Congratulations, your extension "auto-dev-vscode" is now active!');
+  channel.show()
+  // eslint-disable-next-line no-console
+  console.log('Congratulations, your extension "auto-dev-vscode" is now active!')
 
-	let disposable = vscode.commands.registerCommand('auto-dev-vscode.helloWorld', () => {
-		vscode.window.showInformationMessage('Hello World from auto-dev-vscode!');
-	});
-	context.subscriptions.push(disposable);
+  const disposable = vscode.commands.registerCommand('auto-dev-vscode.helloWorld', () => {
+    vscode.window.showInformationMessage('Hello World from auto-dev-vscode!')
+  })
+  context.subscriptions.push(disposable)
 
-	install(context);
+  install(context)
 }
 
 export function deactivate() {}

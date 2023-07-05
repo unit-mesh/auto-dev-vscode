@@ -1,14 +1,19 @@
 {
   "name": "auto-dev-vscode",
   "displayName": "auto-dev-vscode",
-  "description": "Put the most loved ChatGPT into your vscode, and have things done quickly",
   "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.77.0"
-  },
+  "packageManager": "pnpm@8.6.6",
+  "description": "Put the most loved ChatGPT into your vscode, and have things done quickly",
   "categories": [
     "Other"
   ],
+  "main": "./dist/extension.js",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "vscode": "^1.77.0"
+  },
   "activationEvents": [
     "onLanguage:c",
     "onLanguage:cpp",
@@ -24,7 +29,6 @@
     "onLanguage:zig",
     "onLanguage:lua"
   ],
-  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
@@ -34,37 +38,37 @@
     ]
   },
   "scripts": {
+    "build": "tsup src/extension.ts --external vscode",
+    "dev": "nr build --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "vscode:prepublish": "nr build",
     "preinstall": "npx only-allow pnpm",
-    "vscode:prepublish": "pnpm run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-    "lint": "eslint src --ext ts"
-  },
-  "devDependencies": {
-    "@types/glob": "^8.1.0",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "16.x",
-    "@types/vscode": "^1.77.0",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
-    "@vscode/test-electron": "^2.3.0",
-    "copy-webpack-plugin": "^11.0.0",
-    "eslint": "^8.36.0",
-    "glob": "^8.1.0",
-    "mocha": "^10.2.0",
-    "node-loader": "^2.0.0",
-    "npm-run-all": "^4.1.5",
-    "ts-loader": "^9.4.2",
-    "typescript": "^4.9.5",
-    "webpack": "^5.76.3",
-    "webpack-cli": "^5.0.1"
+    "publish": "vsce publish --no-dependencies",
+    "pack": "vsce package --no-dependencies",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "release": "bumpp --commit --push --tag && nr publish"
   },
   "dependencies": {
-    "@unit-mesh/treesitter-artifacts": "^1.3.0",
+    "@unit-mesh/treesitter-artifacts": "^1.4.0",
     "web-tree-sitter": "^0.20.8"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.39.7",
+    "@antfu/ni": "^0.21.4",
+    "@babel/types": "^7.22.5",
+    "@types/node": "^20.3.3",
+    "@types/vscode": "^1.79.1",
+    "@vscode/vsce": "^2.19.0",
+    "bumpp": "^9.1.1",
+    "eslint": "^8.44.0",
+    "esno": "^0.16.3",
+    "pnpm": "8.6.6",
+    "rimraf": "^5.0.1",
+    "tsup": "^7.1.0",
+    "typescript": "5.0.4",
+    "vite": "^4.3.9",
+    "vitest": "^0.32.4"
   }
 }
