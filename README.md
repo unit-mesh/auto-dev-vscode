@@ -12,15 +12,23 @@
 
 - [ ] Custom LLM config
 - [ ] Chat mode
-- [ ] Semantic Analysis API 
+    - [ ] Chat with selection
+    - [ ] Chat with code
+- [ ] Semantic Analysis for multiple languages
     - [ ] TreeSitter
+        - [ ] File level
+        - [ ] Class level
+        - [ ] Method level
+        - spike for Variable level, since is not easy to implement
     - [ ] Language Server Protocol
-- [ ] Command support
-    - [ ] `/`
+- [ ] DevIns langauge support
+    - [ ] Custom command
+- [ ] Custom prompt
 - [ ] Real-time Assistant
     - [ ] Alt + Enter ?    
-- [ ] Multiple language context providers
 - [ ] Custom Agent
+    - [ ] Custom Agent
+    - [ ] Custom Agent API
 - [ ] Extensions
     - [ ] Database
     - [ ] Terminal
