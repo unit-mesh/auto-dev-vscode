@@ -30,5 +30,8 @@ jobs:
       - name: Run tests
         run: pnpm pretest
 
+      - name: Install VSIX
+        run: pnpm install -g @vscode/vsc
+
       - name: Package VSIX
         run: vsce package
