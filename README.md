@@ -12,15 +12,20 @@
 
 - [ ] Custom LLM config
 - [ ] Chat mode
-- [ ] Semantic Analysis API
+- [ ] Semantic Analysis API 
+    - [ ] TreeSitter
+    - [ ] Language Server Protocol
 - [ ] Command support
     - [ ] `/`
+- [ ] Real-time Assistant
+    - [ ] Alt + Enter ?    
 - [ ] Multiple language context providers
 - [ ] Custom Agent
 - [ ] Extensions
     - [ ] Database
     - [ ] Terminal
     - [ ] UI
+- [ ] Local embedding with ONNX
 
 ## LICENSE
 
