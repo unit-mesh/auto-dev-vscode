@@ -3,6 +3,9 @@
   "displayName": "AutoDev",
   "description": " 🧙‍AutoDev: The AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀 ",
   "version": "0.0.1",
+  "repository": "https://github.com/unit-mesh/auto-dev-vscode",
+  "publisher": "Phodal",
+  "icon": "images/pluginIcon.png",
   "engines": {
     "vscode": "^1.77.0"
   },
