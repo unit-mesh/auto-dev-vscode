@@ -1,16 +1,30 @@
 {
   "name": "autodev",
-  "displayName": "AutoDev",
+  "displayName": "AutoDev - ",
   "description": " 🧙‍AutoDev: The AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀 ",
   "version": "0.0.1",
   "repository": "https://github.com/unit-mesh/auto-dev-vscode",
   "publisher": "Phodal",
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "bugs": {
+    "url": "https://github.com/unit-mesh/auto-dev-vscode/issues"
+  },
+  "homepage": "https://editor.unitmesh.cc",
+  "qna": "https://github.com/unit-mesh/auto-dev-vscode/issues/new/choose",
+  "license": "Apache-2.0",
+  "pricing": "Free",
   "icon": "images/pluginIcon.png",
   "engines": {
     "vscode": "^1.77.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages",
+    "Education",
+    "Machine Learning",
+    "Snippets"
   ],
   "activationEvents": [
     "onLanguage:c",
@@ -68,6 +82,9 @@
   },
   "dependencies": {
     "@unit-mesh/treesitter-artifacts": "^1.4.0",
-    "web-tree-sitter": "^0.20.8"
+    "axios": "^1.6.7",
+    "openai": "^4.20.1",
+    "vscode-languageclient": "^8.0.2",
+    "web-tree-sitter": "^0.21.0"
   }
 }
