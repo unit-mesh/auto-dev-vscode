@@ -1,6 +1,5 @@
 import type {SupportedLangId}from "./supported";
 import Parser from "web-tree-sitter";
-import {readFile} from "node:fs/promises";
 
 // @ts-ignore
 import Tc from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-c.wasm?raw";

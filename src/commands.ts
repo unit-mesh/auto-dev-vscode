@@ -10,7 +10,7 @@ const commandsMap: (
 ) => {
   [command: string]: (...args: any) => any;
 } = (sidebar, action) => ({
-  "continue.quickFix": async (message: string, code: string, edit: boolean) => {
+  "autodev.quickFix": async (message: string, code: string, edit: boolean) => {
     sidebar.webviewProtocol?.request("newSessionWithPrompt", {
       prompt: `${
         edit ? "/edit " : ""
@@ -21,7 +21,11 @@ const commandsMap: (
       vscode.commands.executeCommand("autodev.autodevGUIView.focus");
     }
   },
-  "continue.debugTerminal": async () => {
+
+  "autodev.sendToTerminal": (text: string) => {
+    action.runCommand(text);
+  },
+  "autodev.debugTerminal": async () => {
     vscode.commands.executeCommand("autodev.autodevGUIView.focus");
     const terminalContents = await action.getTerminalContents();
     sidebar.webviewProtocol?.request("userInput", {

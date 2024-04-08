@@ -2,6 +2,16 @@ import { IdeAction } from "./ide-action";
 import * as vscode from "vscode";
 
 export class IdeImpl implements IdeAction {
+  async runCommand(command: string): Promise<void> {
+    if (vscode.window.terminals.length) {
+      vscode.window.terminals[0].show();
+      vscode.window.terminals[0].sendText(command, false);
+    } else {
+      const terminal = vscode.window.createTerminal();
+      terminal.show();
+      terminal.sendText(command, false);
+    }
+  }
   //   getTerminalContents: [undefined, string];
   async getTerminalContents(commands: number = -1): Promise<string> {
     const tempCopyBuffer = await vscode.env.clipboard.readText();

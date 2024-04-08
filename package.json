@@ -59,7 +59,14 @@
         "command": "autodev.debugTerminal",
         "category": "AutoDev",
         "title": "Debug Terminal",
-        "group": "Continue"
+        "group": "AutoDev"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "autodev.debugTerminal",
+        "mac": "cmd+shift+r",
+        "key": "ctrl+shift+r"
       }
     ],
     "submenus": [
