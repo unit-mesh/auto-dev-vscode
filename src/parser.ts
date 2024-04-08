@@ -61,12 +61,6 @@ async function loadLanguageOndemand(langid: SupportedLangId) {
                 LanguageMap.set("javascript", await Parser.Language.load(result));
             }
             break;
-        case "kotlin":
-            if (!LanguageMap.has("kotlin")) {
-                const result = new Uint8Array(Buffer.from(Tkotlin.substring(PREFIX.length), "base64"));
-                LanguageMap.set("kotlin", await Parser.Language.load(result));
-            }
-            break;
         case "typescript":
             if (!LanguageMap.has("typescript")) {
                 const result = new Uint8Array(Buffer.from(Tts.substring(PREFIX.length), "base64"));
@@ -119,11 +113,6 @@ const ParserMap: Record<SupportedLangId, (source: string) => Promise<Parser.Tree
     javascript:async (source: string) => {
         const parser = new Parser()
         parser.setLanguage(LanguageMap.get("javascript"))
-        return parser.parse(source);
-    },
-    kotlin: async(source: string) => {
-        const parser = new Parser()
-        parser.setLanguage(LanguageMap.get("kotlin"))
         return parser.parse(source);
     },
     typescript:async (source: string) => {

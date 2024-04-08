@@ -2,6 +2,8 @@ import * as vscode from "vscode";
 
 import { install } from "./codelens";
 import { registerCommands } from "./commands";
+import { registerQuickFixProvider } from "./providers/registerQuickFixProvider";
+import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
 export function activate(context: vscode.ExtensionContext) {
@@ -20,6 +22,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   install(context);
 
+
+  // Register commands and providers
+  registerQuickFixProvider();
   registerCommands(context);
 
   let sidebar = new AutoDevWebviewViewProvider();
@@ -37,35 +42,4 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {}
 
-export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
-  private _webview?: vscode.Webview;
 
-  get webview() {
-    return this._webview;
-  }
-
-  public static readonly viewType = "autodev.autodevGUIView";
-  resolveWebviewView(
-    webviewView: vscode.WebviewView,
-    context: vscode.WebviewViewResolveContext<unknown>,
-    token: vscode.CancellationToken
-  ): void | Thenable<void> {
-    this._webview = webviewView.webview;
-    webviewView.webview.html = this.getSidebarContent(webviewView);
-  }
-
-  getSidebarContent(webviewView: vscode.WebviewView): string {
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello, World!</title>
-</head>
-<body>
-    <h1>Hello, World!</h1>
-</body>
-</html>
-`;
-  }
-}

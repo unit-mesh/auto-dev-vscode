@@ -5,7 +5,6 @@ export const SUPPORTED_LANGID = [
     "go",
     "java",
     "javascript",
-    "kotlin",
     "typescript",
     "python",
     "rust"
