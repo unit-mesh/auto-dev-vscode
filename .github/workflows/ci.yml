@@ -30,6 +30,9 @@ jobs:
       - name: Run tests
         run: pnpm pretest
 
+      - name: Upgrade packages 🔀
+        run: npm upgrade
+
       - name: Install VSIX
         run: npm install -g @vscode/vsce
 

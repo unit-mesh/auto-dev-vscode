@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 
 import {install} from "./codelens";
+import { registerCommands } from './registerCommands';
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE")
 export function activate(context: vscode.ExtensionContext) {
@@ -13,6 +14,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 
 	install(context);
+
+	registerCommands(context);
 }
 
 export function deactivate() {}
+
