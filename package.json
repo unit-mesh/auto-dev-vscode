@@ -53,11 +53,17 @@
     },
     "commands": [
       {
-        "command": "auto-dev-vscode.newSession",
+        "command": "autodev.newSession",
         "category": "AutoDev",
         "title": "New Session",
         "icon": "$(add)",
         "group": "AutoDev"
+      },
+      {
+        "command": "autodev.debugTerminal",
+        "category": "AutoDev",
+        "title": "Debug Terminal",
+        "group": "Continue"
       }
     ],
     "submenus": [
@@ -70,6 +76,25 @@
       "commandPalette": [
         {
           "command": "autodev.debugTerminal"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "autodev",
+          "title": "AutoDev",
+          "icon": "images/autodev-dark.svg"
+        }
+      ]
+    },
+    "views": {
+      "autodev": [
+        {
+          "type": "webview",
+          "id": "autodev.autodevGUIView",
+          "name": "",
+          "visibility": "visible"
         }
       ]
     }
