@@ -1,6 +1,10 @@
 import * as vscode from "vscode";
 
 export class ChatWithThisActionProvider extends vscode.CodeAction {
+  static providedCodeActionKinds  = [
+    vscode.CodeActionKind.Refactor
+  ]
+  
   provideCodeActions(
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection,

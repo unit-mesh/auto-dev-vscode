@@ -11,7 +11,7 @@ dependencies:
     specifier: ^4.20.1
     version: 4.33.0
   vscode-languageclient:
-    specifier: ^8.0.2
+    specifier: ^8.1.0
     version: 8.1.0
   web-tree-sitter:
     specifier: ^0.21.0

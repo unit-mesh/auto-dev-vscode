@@ -138,7 +138,7 @@
     "@unit-mesh/treesitter-artifacts": "^1.4.0",
     "axios": "^1.6.7",
     "openai": "^4.20.1",
-    "vscode-languageclient": "^8.0.2",
+    "vscode-languageclient": "^8.1.0",
     "web-tree-sitter": "^0.21.0"
   }
 }

@@ -4,6 +4,10 @@ import { SUPPORTED_LANGID } from "../supported";
 export class AutoDocumentationActionProvider
   implements vscode.CodeActionProvider
 {
+  static providedCodeActionKinds  = [
+    vscode.CodeActionKind.Refactor
+  ]
+  
   provideCodeActions(
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection,

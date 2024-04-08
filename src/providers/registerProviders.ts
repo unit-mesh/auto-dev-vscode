@@ -18,7 +18,7 @@ export function registerQuickFixProvider() {
       { language: langId },
       new AutoDocumentationActionProvider(),
       {
-        providedCodeActionKinds: [vscode.CodeActionKind.Empty],
+        providedCodeActionKinds: AutoDocumentationActionProvider.providedCodeActionKinds,
       }
     );
 
@@ -26,7 +26,7 @@ export function registerQuickFixProvider() {
       { language: langId },
       new ChatWithThisActionProvider("Chat with This"),
       {
-        providedCodeActionKinds: [vscode.CodeActionKind.Empty],
+        providedCodeActionKinds: ChatWithThisActionProvider.providedCodeActionKinds,
       }
     );
   });
