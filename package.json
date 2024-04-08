@@ -53,8 +53,11 @@
     },
     "commands": [
       {
-        "command": "auto-dev-vscode.helloWorld",
-        "title": "Hello World"
+        "command": "auto-dev-vscode.newSession",
+        "category": "AutoDev",
+        "title": "New Session",
+        "icon": "$(add)",
+        "group": "AutoDev"
       }
     ],
     "submenus": [
