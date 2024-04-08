@@ -1,21 +1,18 @@
 import * as vscode from "vscode";
-import { SUPPORTED_LANGID } from "../supported";
 
 export class AutoDocumentationActionProvider
   implements vscode.CodeActionProvider
 {
-  static providedCodeActionKinds  = [
+  static readonly providedCodeActionKinds  = [
     vscode.CodeActionKind.Refactor
   ]
-  
+
   provideCodeActions(
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection,
     context: vscode.CodeActionContext,
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.CodeAction[]> {
-    const langId = document.languageId;
-
     // 获取用户选择的代码范围
     const selectedCode = document.getText(range);
 

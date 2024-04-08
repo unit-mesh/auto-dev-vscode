@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
 
+
+// a good sample will be: https://github.com/redhat-developer/vscode-java/pull/749/files
 export class ChatWithThisActionProvider extends vscode.CodeAction {
   static providedCodeActionKinds  = [
     vscode.CodeActionKind.Refactor
