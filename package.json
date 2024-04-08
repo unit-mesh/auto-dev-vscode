@@ -108,7 +108,8 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-    "lint": "eslint src --ext ts"
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -117,6 +118,7 @@
     "@types/vscode": "^1.77.0",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
+    "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.3.0",
     "copy-webpack-plugin": "^11.0.0",
     "eslint": "^8.36.0",

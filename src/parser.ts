@@ -15,19 +15,11 @@ import Tjava from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-java.wasm?ra
 // @ts-ignore
 import Tjs from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-javascript.wasm?raw";
 // @ts-ignore
-import Tkotlin from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-kotlin.wasm?raw";
-// @ts-ignore
 import Tts from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-typescript.wasm?raw";
 // @ts-ignore
 import Tpython from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-python.wasm?raw";
 // @ts-ignore
 import Trust from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-rust.wasm?raw";
-// @ts-ignore
-import Tswift from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-swift.wasm?raw";
-// @ts-ignore
-import Tlua from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-lua.wasm?raw";
-// @ts-ignore
-import Tzig from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-zig.wasm?raw";
 
 const PREFIX = "data:application/wasm;base64,";
 const LanguageMap: Map<SupportedLangId, Parser.Language> = new Map();
@@ -93,24 +85,6 @@ async function loadLanguageOndemand(langid: SupportedLangId) {
                 LanguageMap.set("rust", await Parser.Language.load(result));
             }
             break;
-        case "swift":
-            if (!LanguageMap.has("swift")) {
-                const result = new Uint8Array(Buffer.from(Tswift.substring(PREFIX.length), "base64"));
-                LanguageMap.set("swift", await Parser.Language.load(result));
-            }
-            break;
-        case "lua":
-            if (!LanguageMap.has("lua")) {
-                const result = new Uint8Array(Buffer.from(Tlua.substring(PREFIX.length), "base64"));
-                LanguageMap.set("lua", await Parser.Language.load(result));
-            }
-            break;
-        case "zig":
-            if (!LanguageMap.has("zig")) {
-                const result = new Uint8Array(Buffer.from(Tzig.substring(PREFIX.length), "base64"));
-                LanguageMap.set("zig", await Parser.Language.load(result));
-            }
-            break;
         default:
             throw new Error("Unsupported language");
         }
@@ -165,21 +139,6 @@ const ParserMap: Record<SupportedLangId, (source: string) => Promise<Parser.Tree
     rust:async (source: string) => {
         const parser = new Parser()
         parser.setLanguage(LanguageMap.get("rust"))
-        return parser.parse(source);
-    },
-    swift:async (source: string) => {
-        const parser = new Parser()
-        parser.setLanguage(LanguageMap.get("swift"))
-        return parser.parse(source);
-    },
-    zig:async (source: string) => {
-        const parser = new Parser()
-        parser.setLanguage(LanguageMap.get("zig"))
-        return parser.parse(source);
-    },
-    lua:async (source: string) => {
-        const parser = new Parser()
-        parser.setLanguage(LanguageMap.get("lua"))
         return parser.parse(source);
     }
 }

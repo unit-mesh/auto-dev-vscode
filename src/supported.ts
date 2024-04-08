@@ -8,10 +8,7 @@ export const SUPPORTED_LANGID = [
     "kotlin",
     "typescript",
     "python",
-    "rust",
-    "swift",
-    "zig",
-    "lua",
+    "rust"
 ] as const;
 
 export type SupportedLangId = typeof SUPPORTED_LANGID[number];
