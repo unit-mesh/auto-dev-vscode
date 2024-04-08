@@ -15,7 +15,13 @@ export class AutoDevWebviewProtocol {
     this._webview = webview;
   }
 
-  request(messageType: string, data: { prompt: string }) {
+  request(messageType: string, data: any) {
     throw new Error("Method not implemented.");
   }
+}
+
+
+export type WebviewProtocol = {
+	newSessionWithPrompt: [{ prompt: string }, void];
+	getTerminalContents: [undefined, string];
 }

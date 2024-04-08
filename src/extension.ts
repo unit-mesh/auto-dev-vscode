@@ -4,6 +4,7 @@ import { install } from "./codelens";
 import { registerCommands } from "./commands";
 import { registerQuickFixProvider } from "./providers/registerProviders";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
+import { IdeImpl } from "./action/ide-impl";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
 export function activate(context: vscode.ExtensionContext) {
@@ -25,9 +26,11 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register commands and providers
   registerQuickFixProvider();
-  registerCommands(context);
 
-  let sidebar = new AutoDevWebviewViewProvider();
+  const sidebar = new AutoDevWebviewViewProvider();
+  const action = new IdeImpl();
+  registerCommands(context, sidebar, action);
+
   // Sidebar
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
