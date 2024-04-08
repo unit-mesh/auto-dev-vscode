@@ -5,7 +5,6 @@
 
 ![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/Phodal.autodev)
 
-
 >  🧙‍AutoDev: The AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀 
 
 ## Todos
@@ -36,5 +35,7 @@
 - [ ] Local embedding with ONNX
 
 ## LICENSE
+
+Inspired and based on the [Continue](https://github.com/continuedev/continue)
 
 AutoDev VSCode is licensed under the `Apache 2.0` license as defined in [LICENSE](./LICENSE).
