@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
-import { AutoDocumentationCodeActionProvider } from "./AutoDevCodeActionProvider";
+import { AutoDocumentationActionProvider } from "./AutoDocumentationActionProvider";
 
 export function registerQuickFixProvider() {
   // In your extension's activate function:
@@ -15,7 +15,7 @@ export function registerQuickFixProvider() {
   // Normal action
   vscode.languages.registerCodeActionsProvider(
     { language: "*" },
-    new AutoDocumentationCodeActionProvider(),
+    new AutoDocumentationActionProvider(),
     {
       providedCodeActionKinds: [vscode.CodeActionKind.Empty],
     }

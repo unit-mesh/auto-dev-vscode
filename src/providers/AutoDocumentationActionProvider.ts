@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
+import { SUPPORTED_LANGID } from "../supported";
 
-export class AutoDocumentationCodeActionProvider
+export class AutoDocumentationActionProvider
   implements vscode.CodeActionProvider
 {
   provideCodeActions(
@@ -9,6 +10,12 @@ export class AutoDocumentationCodeActionProvider
     context: vscode.CodeActionContext,
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.CodeAction[]> {
+    const langId = document.languageId;
+    // check is our support id;
+    if (!SUPPORTED_LANGID.includes(langId as any)) {
+      return [];
+    }
+
     // 获取用户选择的代码范围
     const selectedCode = document.getText(range);
 
@@ -17,8 +24,8 @@ export class AutoDocumentationCodeActionProvider
 
     // 创建修复建议
     const codeAction = new vscode.CodeAction(
-      "Generate Documentation",
-      vscode.CodeActionKind.QuickFix
+      "Generate Documentation (AutoDev)",
+      vscode.CodeActionKind.Empty
     );
     codeAction.edit = new vscode.WorkspaceEdit();
     codeAction.edit.insert(document.uri, range.end, "\n\n" + documentation); // 在代码后面插入生成的文档注释
