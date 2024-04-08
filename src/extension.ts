@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Sidebar
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
-      "autodv.autodevGUIView",
+      "autodev.autodevGUIView",
       sidebar,
       {
         webviewOptions: { retainContextWhenHidden: true },

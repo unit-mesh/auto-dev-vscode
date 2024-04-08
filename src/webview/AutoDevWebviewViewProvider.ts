@@ -20,7 +20,23 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
 		webviewView.webview.html = this.getSidebarContent(webviewView);
 	}
 
-	getSidebarContent(webviewView: vscode.WebviewView): string {
+	getSidebarContent(panel: vscode.WebviewPanel | vscode.WebviewView,): string {
+
+		panel.webview.options = {
+			enableScripts: true,
+			localResourceRoots: [
+			//   vscode.Uri.joinPath(extensionUri, "gui"),
+			//   vscode.Uri.joinPath(extensionUri, "assets"),
+			],
+			enableCommandUris: true,
+			portMapping: [
+			  {
+				webviewPort: 65433,
+				extensionHostPort: 65433,
+			  },
+			],
+		  };
+
 		return `<!DOCTYPE html>
 <html lang="en">
 <head>
