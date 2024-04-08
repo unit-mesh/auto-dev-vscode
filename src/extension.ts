@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import {install} from "./codelens";
-import { registerCommands } from './registerCommands';
+import { registerCommands } from './commands';
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE")
 export function activate(context: vscode.ExtensionContext) {
