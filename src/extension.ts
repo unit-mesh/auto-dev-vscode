@@ -16,6 +16,19 @@ export function activate(context: vscode.ExtensionContext) {
   const action = new IdeImpl();
   registerCommands(context, sidebar, action);
 
+  vscode.window.onDidChangeActiveTextEditor((editor: vscode.TextEditor | undefined) => {
+	if (!editor) {
+		return;
+	}
+
+	const uri = editor.document.uri;
+	console.log(uri?.fsPath);
+	// use tree sitter to parse ast and method to results and also cache for file by document
+	// 1. autotest
+	// 2. autodoc
+	// 3. chatwithcode
+  });
+
   // Sidebar
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
