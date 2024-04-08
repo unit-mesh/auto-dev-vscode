@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
 import { AutoDocumentationActionProvider } from "./AutoDocumentationActionProvider";
+import { SUPPORTED_LANGID } from "../supported";
+import { ChatWithThisActionProvider } from "./ChatWithThisActionProvider";
 
 export function registerQuickFixProvider() {
-  // In your extension's activate function:
   vscode.languages.registerCodeActionsProvider(
     { language: "*" },
     new AutoDevQuickFixProvider(),
@@ -12,14 +13,21 @@ export function registerQuickFixProvider() {
     }
   );
 
-  // Normal action
-  vscode.languages.registerCodeActionsProvider(
-    { language: "*" },
-    new AutoDocumentationActionProvider(),
-    {
-      providedCodeActionKinds: [vscode.CodeActionKind.Empty],
-    }
-  );
+  SUPPORTED_LANGID.forEach((langId) => {
+    vscode.languages.registerCodeActionsProvider(
+      { language: langId },
+      new AutoDocumentationActionProvider(),
+      {
+        providedCodeActionKinds: [vscode.CodeActionKind.Empty],
+      }
+    );
+
+    vscode.languages.registerCodeActionsProvider(
+      { language: langId },
+      new ChatWithThisActionProvider("Chat with This"),
+      {
+        providedCodeActionKinds: [vscode.CodeActionKind.Empty],
+      }
+    );
+  });
 }
-
-

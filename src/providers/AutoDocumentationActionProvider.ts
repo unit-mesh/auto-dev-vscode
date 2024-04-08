@@ -11,10 +11,6 @@ export class AutoDocumentationActionProvider
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.CodeAction[]> {
     const langId = document.languageId;
-    // check is our support id;
-    if (!SUPPORTED_LANGID.includes(langId as any)) {
-      return [];
-    }
 
     // 获取用户选择的代码范围
     const selectedCode = document.getText(range);
