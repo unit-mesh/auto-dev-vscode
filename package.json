@@ -43,6 +43,14 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "title": "Continue",
+    "properties": {
+      "continue.remoteConfigServerUrl": {
+        "type": "string",
+        "default": null,
+        "markdownDescription": "If your team is set up to use shared configuration, enter the server URL here and your user token below to enable automatic syncing."
+      }
+    },
     "commands": [
       {
         "command": "auto-dev-vscode.helloWorld",
