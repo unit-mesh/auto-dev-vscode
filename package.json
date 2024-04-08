@@ -43,9 +43,9 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "title": "Continue",
+    "title": "AutoDev",
     "properties": {
-      "continue.remoteConfigServerUrl": {
+      "autodev.remoteConfigServerUrl": {
         "type": "string",
         "default": null,
         "markdownDescription": "If your team is set up to use shared configuration, enter the server URL here and your user token below to enable automatic syncing."
@@ -56,7 +56,20 @@
         "command": "auto-dev-vscode.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "submenus": [
+      {
+        "id": "autodev.autodevSubMenu",
+        "label": "AutoDev"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "autodev.debugTerminal"
+        }
+      ]
+    }
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",

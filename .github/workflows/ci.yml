@@ -31,7 +31,7 @@ jobs:
         run: pnpm pretest
 
       - name: Install VSIX
-        run: npm install -g @vscode/vsc
+        run: npm install -g @vscode/vsce
 
       - name: Package VSIX
         run: vsce package
