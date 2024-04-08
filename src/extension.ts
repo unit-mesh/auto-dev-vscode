@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { install } from "./codelens";
 import { registerCommands } from "./commands";
-import { registerQuickFixProvider } from "./providers/registerQuickFixProvider";
+import { registerQuickFixProvider } from "./providers/registerProviders";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");

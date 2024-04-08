@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-class AutoDevQuickFixProvider implements vscode.CodeActionProvider {
+export class AutoDevQuickFixProvider implements vscode.CodeActionProvider {
 	public static readonly providedCodeActionKinds = [
 	  vscode.CodeActionKind.QuickFix,
 	];
@@ -46,13 +46,4 @@ class AutoDevQuickFixProvider implements vscode.CodeActionProvider {
 	  }
 }
 
-export function registerQuickFixProvider() {
-	// In your extension's activate function:
-	vscode.languages.registerCodeActionsProvider(
-		{ language: "*" },
-		new AutoDevQuickFixProvider(),
-		{
-		  providedCodeActionKinds: AutoDevQuickFixProvider.providedCodeActionKinds,
-		},
-	  );
-}
+
