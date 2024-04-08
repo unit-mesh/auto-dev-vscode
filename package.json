@@ -33,13 +33,9 @@
     "onLanguage:go",
     "onLanguage:java",
     "onLanguage:javascript",
-    "onLanguage:kotlin",
     "onLanguage:typescript",
     "onLanguage:python",
-    "onLanguage:rust",
-    "onLanguage:swift",
-    "onLanguage:zig",
-    "onLanguage:lua"
+    "onLanguage:rust"
   ],
   "main": "./dist/extension.js",
   "contributes": {

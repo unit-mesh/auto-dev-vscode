@@ -17,6 +17,9 @@ const commandsMap: (sidebar: AutoDevWebviewViewProvider) => {
       vscode.commands.executeCommand("continue.continueGUIView.focus");
     }
   },
+  "continue.debugTerminal": async () => {
+    // todo
+  },
 });
 
 // todo: build command context

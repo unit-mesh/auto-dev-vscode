@@ -14,4 +14,8 @@ export class AutoDevWebviewProtocol {
   constructor(private readonly webview: vscode.Webview) {
     this._webview = webview;
   }
+
+  request(messageType: string, data: { prompt: string }) {
+    throw new Error("Method not implemented.");
+  }
 }
