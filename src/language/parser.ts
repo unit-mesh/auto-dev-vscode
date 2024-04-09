@@ -142,13 +142,11 @@ export async function getLanguageForFile(
 }
 
 function wasmByLanguage(langId: string) {
-  const wasmPath = path.join(
+  return path.join(
     __dirname,
     "tree-sitter-wasms",
     `tree-sitter-${langId}.wasm`
   );
-
-  return wasmPath;
 }
 
 export async function getLanguage(
@@ -236,8 +234,7 @@ export async function getAst(
   }
 
   try {
-    const ast = parser.parse(fileContents);
-    return ast;
+    return parser.parse(fileContents);
   } catch (e) {
     return undefined;
   }
