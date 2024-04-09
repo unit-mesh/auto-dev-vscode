@@ -188,10 +188,30 @@ export async function getLanguageForFile(
       "tree-sitter-wasms",
       `tree-sitter-${extensionLanguageMap[extension]}.wasm`
     );
+
     const language = await Parser.Language.load(wasmPath);
     return language;
   } catch (e) {
     console.error("Unable to load language for file", filepath, e);
+    return undefined;
+  }
+}
+
+export async function getLanguage(
+  langId: string
+): Promise<Language | undefined> {
+  try {
+    await Parser.init();
+    const wasmPath = path.join(
+      __dirname,
+      "tree-sitter-wasms",
+      `tree-sitter-${langId}.wasm`
+    );
+
+    const language = await Parser.Language.load(wasmPath);
+    return language;
+  } catch (e) {
+    console.error("Unable to load language for lang", langId, e);
     return undefined;
   }
 }
@@ -217,52 +237,44 @@ export async function getParserForFile(filepath: string) {
 
 export function getQuerySource(filepath: string) {
   const fullLangName = extensionLanguageMap[filepath.split(".").pop() ?? ""];
-  const sourcePath = path.join(
-    __dirname,
-    "semantic",
-    `${fullLangName}.scm`
-  );
+  const sourcePath = path.join(__dirname, "semantic", `${fullLangName}.scm`);
   if (!fs.existsSync(sourcePath)) {
-    // return "";
     throw new Error("cannot find file:" + sourcePath);
-    
   }
 
   return fs.readFileSync(sourcePath).toString();
 }
 
 export async function getSnippetsInFile(
-    filepath: string,
-    contents: string,
-  ): Promise<(any & { title: string })[]> {
-    const lang = await getLanguageForFile(filepath);
-    if (!lang) {
-      return [];
-    }
-    const parser = await getParserForFile(filepath);
-    if (!parser) {
-      return [];
-    }
-    const ast = parser.parse(contents);
-    const query = lang?.query(getQuerySource(filepath));
-    const matches = query?.matches(ast.rootNode);
-
-    console.log(matches);
-
-    return (
-      matches?.flatMap((match) => {
-        const node = match.captures[0].node;
-        const title = match.captures[1].node.text;
-        const results = {
-          title,
-          content: node.text,
-          startLine: node.startPosition.row,
-          endLine: node.endPosition.row,
-        };
-        return results;
-      }) ?? []
-    );
+  filepath: string,
+  contents: string
+): Promise<(any & { title: string })[]> {
+  const lang = await getLanguageForFile(filepath);
+  if (!lang) {
+    return [];
   }
+  const parser = await getParserForFile(filepath);
+  if (!parser) {
+    return [];
+  }
+  const ast = parser.parse(contents);
+  const query = lang?.query(getQuerySource(filepath));
+  const matches = query?.matches(ast.rootNode);
+
+  return (
+    matches?.flatMap((match) => {
+      const node = match.captures[0].node;
+      const title = match.captures[1].node.text;
+      const results = {
+        title,
+        content: node.text,
+        startLine: node.startPosition.row,
+        endLine: node.endPosition.row,
+      };
+      return results;
+    }) ?? []
+  );
+}
 
 export async function getAst(
   filepath: string,
