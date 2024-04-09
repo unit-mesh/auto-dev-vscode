@@ -27,15 +27,7 @@
     "Snippets"
   ],
   "activationEvents": [
-    "onLanguage:c",
-    "onLanguage:cpp",
-    "onLanguage:csharp",
-    "onLanguage:go",
-    "onLanguage:java",
-    "onLanguage:javascript",
-    "onLanguage:typescript",
-    "onLanguage:python",
-    "onLanguage:rust"
+
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -110,7 +102,8 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "postinstall": "mkdir -p dist/semantic && cp -a node_modules/@unit-mesh/treesitter-artifacts/wasm/ dist/tree-sitter-wasms && cp -a src/semantic-treesitter/**/*.scm dist/semantic",
+    "postinstall": "mkdir -p dist/semantic && pnpm run copy-wasm",
+    "copy-wasm": "cp -a node_modules/@unit-mesh/treesitter-artifacts/wasm/ dist/tree-sitter-wasms && cp -a src/semantic-treesitter/**/*.scm dist/semantic",
     "vscode:prepublish": "pnpm run package",
     "compile": "webpack",
     "watch": "webpack --watch",

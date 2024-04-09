@@ -27,7 +27,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-
       # Set environment variables
       - name: Export Properties
         id: properties
@@ -48,7 +47,7 @@ jobs:
         run: npm install -g @vscode/vsce
 
       - name: Package VSIX
-        run: vsce package
+        run: pnpm run copy-wasm && vsce package
 
      # Prepare plugin archive content for creating artifact
       - name: Prepare Plugin Artifact
