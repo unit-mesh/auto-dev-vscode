@@ -39,10 +39,10 @@ const commandsMap: (
     range: IdentifierBlockRange,
     edit: vscode.WorkspaceEdit
   ) => {
-    selectCodeInRange(range.blockRange.start, range.blockRange.end);
     const doc = generateDocumentation(document.getText());
-
     edit.insert(document.uri, range.blockRange.start, doc);
+
+    selectCodeInRange(range.blockRange.start, range.blockRange.end);
   },
 });
 
