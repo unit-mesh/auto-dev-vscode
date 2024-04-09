@@ -15,25 +15,22 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
     this.context = context;
   }
 
-  static readonly providedCodeActionKinds = [vscode.CodeActionKind.Refactor];
+  static readonly providedCodeActionKinds = [
+    vscode.CodeActionKind.RefactorRewrite,
+  ];
 
-  provideCodeActions(
+  async provideCodeActions(
     document: vscode.TextDocument,
     range: vscode.Range | vscode.Selection,
     context: vscode.CodeActionContext,
     token: vscode.CancellationToken
-  ): vscode.ProviderResult<vscode.CodeAction[]> {
+  ): Promise<vscode.CodeAction[] | null | undefined> {
     const lang = document.languageId;
     if (!SUPPORTED_LANGUAGES.includes(lang)) {
       return [];
     }
 
-    if (lang !== "java") {
-      return [];
-    }
-
-    // todo: init all grammars here?
-    const file = /** await */ TreeSitterFile.tryBuild(document.getText(), "java");
+    const file = await TreeSitterFile.tryBuild(document.getText(), lang);
     if (!(file instanceof TreeSitterFile)) {
       return;
     }
@@ -49,20 +46,23 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
       let blockRange = result.blockRange;
       // 获取用户选择的代码范围
       if (blockRange.contains(range)) {
-        const selectedCode = document.getText(blockRange);
-        const documentation = this.generateDocumentation(selectedCode);
         const codeAction = new vscode.CodeAction(
-          "Generate Documentation (AutoDev)",
-          vscode.CodeActionKind.Empty
+          `Generate doc for \`${result.identifierRange.text}\` (AutoDev)`,
+          AutoDevActionProvider.providedCodeActionKinds[0]
         );
-        codeAction.edit = new vscode.WorkspaceEdit();
-        codeAction.edit.insert(document.uri,blockRange.start,"\n\n" + documentation);
+
+		codeAction.isPreferred = false;
+		codeAction.edit = new vscode.WorkspaceEdit();
+		codeAction.command = {
+			command: "autodev.generateDoc",
+			title: `Generate doc for \`${result.identifierRange.text}\` (AutoDev)`,
+			arguments: [document, result, codeAction.edit]
+		};
 
         actions.push(codeAction);
       }
     }
 
-	console.log("actions", actions);
     return actions;
   }
 
@@ -70,16 +70,5 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
     const lsp = new JavaSemanticLsp(context);
     const client = lsp?.getLanguageClient();
     console.log(client);
-  }
-
-  private generateDocumentation(code: string): string {
-    // 实现根据选中的代码生成文档注释的逻辑
-    // 这里是一个示例，您可能需要根据您的语言和需求进行修改
-    // 例如，您可以使用代码解析工具来分析代码结构并生成相应的文档注释
-    return `/**
- * This function/method does something.
- * @param {string} param1 Description of parameter 1.
- * @returns {number} Description of the return value.
- */`;
   }
 }

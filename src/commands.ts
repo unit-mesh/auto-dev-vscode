@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 import { IdeAction } from "./action/ide-action";
 import { AutoDevContext } from "./autodev-context";
+import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
 
 enum AutoDevCommand {}
 
@@ -33,6 +34,16 @@ const commandsMap: (
       input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
     });
   },
+  "autodev.generateDoc": async (
+    document: vscode.TextDocument,
+    range: IdentifierBlockRange,
+    edit: vscode.WorkspaceEdit
+  ) => {
+    selectCodeInRange(range.blockRange.start, range.blockRange.end);
+    const doc = generateDocumentation(document.getText());
+
+    edit.insert(document.uri, range.blockRange.start, doc);
+  },
 });
 
 export function registerCommands(context: AutoDevContext) {
@@ -42,4 +53,23 @@ export function registerCommands(context: AutoDevContext) {
       vscode.commands.registerCommand(command, handler)
     );
   });
+}
+
+function selectCodeInRange(start: vscode.Position, end: vscode.Position) {
+  const editor = vscode.window.activeTextEditor;
+  if (editor) {
+    const newSelection = new vscode.Selection(start, end);
+    editor.selection = newSelection;
+    editor.revealRange(newSelection);
+  }
+}
+
+function generateDocumentation(code: string): string {
+  return `
+/**
+   * This function/method does something.
+   * @param {string} param1 Description of parameter 1.
+   * @returns {number} Description of the return value.
+   */
+`;
 }

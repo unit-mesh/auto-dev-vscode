@@ -60,6 +60,12 @@
         "category": "AutoDev",
         "title": "Debug Terminal",
         "group": "AutoDev"
+      },
+      {
+        "command": "autodev.generateDoc",
+        "category": "AutoDev",
+        "title": "Auto Generate Document",
+        "group": "AutoDev"
       }
     ],
     "keybindings": [
