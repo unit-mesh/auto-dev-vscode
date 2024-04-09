@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@unit-mesh/treesitter-artifacts':
-    specifier: ^1.4.0
-    version: 1.4.0
+    specifier: ^1.5.0
+    version: 1.5.0
   axios:
     specifier: ^1.6.7
     version: 1.6.8
@@ -431,8 +431,8 @@ packages:
       eslint-visitor-keys: 3.4.0
     dev: true
 
-  /@unit-mesh/treesitter-artifacts@1.4.0:
-    resolution: {integrity: sha512-5BbhWwEJppuZ2QiDesh1h/YMHSAA8snT+3W9mUCzQOqVspzPeHG36LuOg9kpiSbfj58NT52e+QZ+wXabJmGi7Q==}
+  /@unit-mesh/treesitter-artifacts@1.5.0:
+    resolution: {integrity: sha512-YqweskD3fSNobkBRGT0xh631cqsRIqoCXHdhtGqVuu/iavkAFy4NktPo2KxC3T09Aw3KC9miSovIIchbtQvS5w==}
     engines: {node: '>=18.0.0'}
     requiresBuild: true
     dev: false

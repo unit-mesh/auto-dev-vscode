@@ -136,7 +136,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "@unit-mesh/treesitter-artifacts": "^1.4.0",
+    "@unit-mesh/treesitter-artifacts": "^1.5.0",
     "axios": "^1.6.7",
     "openai": "^4.20.1",
     "vscode-languageclient": "^8.1.0",
