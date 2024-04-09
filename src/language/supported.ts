@@ -1,4 +1,4 @@
-export const extensionLanguageMap: { [key: string]: string } = {
+export const EXT_LANGUAGE_MAP: { [key: string]: string } = {
   cpp: "cpp",
   hpp: "cpp",
   cc: "cpp",
