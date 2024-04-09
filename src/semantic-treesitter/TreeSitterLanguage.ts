@@ -1,9 +1,9 @@
 // A generic language wrapper type.
 
-import { TSLanguageConfig } from "../semantic-treesitter/TSLanguageConfig";
-import { JAVA_TREESITTER } from "../semantic-treesitter/java.treesitter";
+import { TSLanguageConfig } from "./TSLanguageConfig";
+import { JavaConfig } from "./java/JavaConfig";
 
-export const ALL_LANGUAGES: TSLanguageConfig[] = [JAVA_TREESITTER];
+export const ALL_LANGUAGES: TSLanguageConfig[] = [JavaConfig];
 
 export class TSLanguage {
   // Find a tree-sitter language configuration from a language identifier

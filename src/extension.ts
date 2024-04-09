@@ -7,10 +7,7 @@ import { IdeImpl } from "./action/ide-impl";
 import { DocumentManager } from "./document/DocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevContext } from "./autodev-context";
-import { JavaSemanticLsp } from "./semantic-lsp/JavaSemanticLsp";
-import { getParserForFile, getSnippetsInFile } from "./language/parser";
-import { JAVA_TREESITTER } from "./semantic-treesitter/java.treesitter";
-import { TreeSitterFile } from "./language/TreeSitterFile";
+import { TreeSitterFile } from "./semantic-treesitter/TreeSitterFile";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
 export function activate(context: vscode.ExtensionContext) {

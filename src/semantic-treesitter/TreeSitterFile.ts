@@ -1,6 +1,7 @@
 import Parser, { Language, Tree } from "web-tree-sitter";
-import { TSLanguageConfig } from "../semantic-treesitter/TSLanguageConfig";
+import { TSLanguageConfig } from "./TSLanguageConfig";
 import { TSLanguage } from "./TreeSitterLanguage";
+import { TextRange } from "../document/TextRange";
 
 export class TreeSitterFile {
   private src: string;
@@ -61,14 +62,6 @@ export class TreeSitterFile {
     return new TreeSitterFile(src, tree, tsLang, parser, language);
   }
 
-  hoverableRanges(): TextRange[] | TreeSitterFileError {
-    if (!this.parser) {
-      return TreeSitterFileError.QueryError;
-    }
-
-    return this.getByQuery(this.langConfig.hoverableQuery.scopeQuery);
-  }
-
   methodRanges(): TextRange[] | TreeSitterFileError {
     if (!this.parser) {
       return TreeSitterFileError.QueryError;
@@ -105,22 +98,6 @@ export class TreeSitterFile {
     } catch (error) {
       return TreeSitterFileError.QueryError;
     }
-  }
-}
-
-export class TextRange {
-  displayName: string;
-  start: { line: number; character: number };
-  end: { line: number; character: number };
-
-  constructor(
-    start: { line: number; character: number },
-    end: { line: number; character: number },
-    displayName: string = ""
-  ) {
-    this.start = start;
-    this.end = end;
-    this.displayName = displayName;
   }
 }
 

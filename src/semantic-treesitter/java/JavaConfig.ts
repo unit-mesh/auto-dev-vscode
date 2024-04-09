@@ -1,10 +1,7 @@
-import { TSLanguageConfig, MemoizedQuery } from "./TSLanguageConfig";
-import path from "path";
-import { extensionLanguageMap } from "../language/supported";
-import Parser from "web-tree-sitter";
-import { getLanguage } from "../language/parser";
+import { TSLanguageConfig, MemoizedQuery } from "../TSLanguageConfig";
+import { getLanguage } from "../../language/parser";
 
-export const JAVA_TREESITTER: TSLanguageConfig = {
+export const JavaConfig: TSLanguageConfig = {
     languageIds: ['Java'],
     fileExtensions: ['java'],
     grammar: () => { 
