@@ -33,7 +33,7 @@ jobs:
       - name: Upgrade packages 🔀
         run: npm upgrade
 
-      - name: Install VSIX
+      - name: Install VSCE
         run: npm install -g @vscode/vsce
 
       - name: Package VSIX
@@ -52,4 +52,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.artifact.outputs.filename }}
-          path: .
+          path: ${{ steps.artifact.outputs.filename }}
