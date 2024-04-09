@@ -1,4 +1,4 @@
-import Parser, { Tree } from "web-tree-sitter";
+import Parser, { Language, Tree } from "web-tree-sitter";
 import { TSLanguageConfig } from "../semantic-treesitter/TSLanguageConfig";
 import { TSLanguage } from "./TreeSitterLanguage";
 
@@ -7,17 +7,20 @@ export class TreeSitterFile {
   private tree: Tree;
   private langConfig: TSLanguageConfig;
   private parser: Parser | undefined = undefined;
+  private language: Parser.Language;
 
   constructor(
     src: string,
     tree: Tree,
-    language: TSLanguageConfig,
-    parser: Parser
+    tsLanguage: TSLanguageConfig,
+    parser: Parser,
+    language: Language
   ) {
     this.src = src;
     this.tree = tree;
-    this.langConfig = language;
+    this.langConfig = tsLanguage;
     this.parser = parser;
+    this.language = language;
   }
 
   static async tryBuild(
@@ -29,15 +32,21 @@ export class TreeSitterFile {
       return TreeSitterFileError.FileTooLarge;
     }
 
-    const language = TSLanguage.fromId(langId);
-    if (language === undefined) {
+    const tsLang = TSLanguage.fromId(langId);
+    if (tsLang === undefined) {
       return TreeSitterFileError.UnsupportedLanguage;
     }
 
     const parser = new Parser();
+    var language: Language | undefined = undefined;
     try {
-      parser.setLanguage(await language.grammar());
+      language = await tsLang.grammar();
+      parser.setLanguage(language);
     } catch (error) {
+      return TreeSitterFileError.LanguageMismatch;
+    }
+
+    if (!language) {
       return TreeSitterFileError.LanguageMismatch;
     }
 
@@ -49,7 +58,7 @@ export class TreeSitterFile {
       return TreeSitterFileError.ParseTimeout;
     }
 
-    return new TreeSitterFile(src, tree, language, parser);
+    return new TreeSitterFile(src, tree, tsLang, parser, language);
   }
 
   hoverableRanges(): TextRange[] | TreeSitterFileError {
@@ -58,14 +67,33 @@ export class TreeSitterFile {
     }
 
     try {
-      //   const query = this.l.query(this.hoverableRange);
-      //   const root = this.tree.rootNode;
-      //   const matches = query?.matches(ast.rootNode);
+      const query = this.language.query(
+        this.langConfig.hoverableQuery.scopeQuery
+      );
+      const root = this.tree.rootNode;
+      const matches = query?.matches(root);
+
+      return (
+        matches?.flatMap((match) => {
+          const node = match.captures[0].node;
+          //   const title = match.captures[1].node.text;
+
+          const results = new TextRange(
+            {
+              line: node.startPosition.row,
+              character: node.startPosition.column,
+            },
+            {
+              line: node.endPosition.row,
+              character: node.endPosition.column,
+            }
+          );
+          return results;
+        }) ?? []
+      );
     } catch (error) {
       return TreeSitterFileError.QueryError;
     }
-
-    return [];
   }
 }
 /**

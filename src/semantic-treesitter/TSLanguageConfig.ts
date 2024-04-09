@@ -24,15 +24,10 @@ export interface TSLanguageConfig {
 }
 
 export class MemoizedQuery {
-  slot: Query = new Query();
   scopeQuery: string;
 
   constructor(scopeQuery: string) {
     this.scopeQuery = scopeQuery;
-  }
-
-  query() : Query {
-    return this.slot;
   }
 }
 

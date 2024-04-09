@@ -40,17 +40,17 @@ export function activate(context: vscode.ExtensionContext) {
       // 3. chatwithcode
       let language = editor.document.languageId;
       if (language === "java") {
-        // const lsp = new JavaSemanticLsp(autoDevContext);
-        // const client = lsp?.getLanguageClient();
-        // console.log(client);
-
-        // // let parser = await getParserForFile(uri.fsPath);
-        // // console.log(parser);
-        // // let snippet = await getSnippetsInFile(uri.fsPath, editor.document.getText());
-        // // console.log(snippet);
+        /** 
+         * TODO: use LSP for parse java language
+         * const lsp = new JavaSemanticLsp(autoDevContext);
+         * const client = lsp?.getLanguageClient();
+         * console.log(client);
+        */ 
         TreeSitterFile.tryBuild(editor.document.getText(), "java").then(file => {
-          console.log(file);
-          file.hoverableRanges();
+          if (file instanceof TreeSitterFile) {
+            const results = file.hoverableRanges();
+            console.log(results);
+          }
         });
       }
     }
