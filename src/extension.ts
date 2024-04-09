@@ -10,7 +10,7 @@ import { AutoDevContext } from "./autodev-context";
 import { registerQuickFixProvider } from "./providers/registerQuickFixProvider";
 import { registerAutoDevProviders } from "./providers/registerAutoDevProviders";
 
-const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
+const channel = vscode.window.createOutputChannel("AutoDev");
 
 export function activate(context: vscode.ExtensionContext) {
   channel.show();
@@ -31,7 +31,6 @@ export function activate(context: vscode.ExtensionContext) {
       if (!editor) {
         return;
       }
-      // todo: add cache for [TreeSitterFile]
     }
   );
 
