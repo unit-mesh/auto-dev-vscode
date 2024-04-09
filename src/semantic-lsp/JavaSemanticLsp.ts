@@ -1,28 +1,38 @@
 import { LanguageClient } from "vscode-languageclient/node";
 import { AutoDevContext } from "../autodev-context";
-import { extensions } from "vscode";
-import { SemanticLsp } from './SemanticLsp';
+import { DocumentSymbol, SymbolInformation, extensions } from "vscode";
+import { SemanticLsp } from "./SemanticLsp";
 
-export class JavaSemanticLsp implements SemanticLsp {
-    context: AutoDevContext;
-    constructor(context: AutoDevContext) {
-        this.context = context;
+type DocumentSymbolsResponse = DocumentSymbol[] | SymbolInformation[] | null;
+
+export class JavaSemanticLsp extends SemanticLsp {
+  context: AutoDevContext;
+  constructor(context: AutoDevContext) {
+    super();
+    this.context = context;
+  }
+
+  isActive(): boolean {
+    let java = extensions.getExtension("redhat.java");
+    if (!java?.activate()) {
+      return false;
     }
 
-    isActive() {
-        return true;
+    return true;
+  }
+
+  async getLanguageClient(): Promise<LanguageClient | undefined> {
+    let java = extensions.getExtension("redhat.java");
+    if (!java?.activate()) {
+      return undefined;
     }
 
-    startClient(language: String) : LanguageClient | undefined {
-        let java = extensions.getExtension("redhat.java");
-        if (!java) {
-            return undefined;
-        }
+    console.log(java);
+    // todo: spike integration with java language server;
+    return java.exports;
+  }
 
-        // todo: spike integration with java language server;
-    }
-
-    makeRequest(method: string, param: any): Promise<any> {
-        throw new Error("Method not implemented.");
-    }
+  makeRequest(method: string, param: any): Promise<any> {
+    throw new Error("Method not implemented.");
+  }
 }

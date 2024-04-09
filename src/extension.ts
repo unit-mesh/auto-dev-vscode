@@ -1,12 +1,13 @@
 import * as vscode from "vscode";
 
 import { install as registerCodeLens } from "./codelens";
-import { registerCommands } from "./commands";
+import { registerCommands } from "./protocol-commands";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 import { IdeImpl } from "./action/ide-impl";
 import { DocumentManager } from "./document/DocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevContext } from "./autodev-context";
+import { JavaSemanticLsp } from "./semantic-lsp/JavaSemanticLsp";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
 export function activate(context: vscode.ExtensionContext) {
@@ -34,6 +35,12 @@ export function activate(context: vscode.ExtensionContext) {
       // 1. autotest
       // 2. autodoc
       // 3. chatwithcode
+      var language = editor.document.languageId;
+      if (language === "java") {
+        const lsp = new JavaSemanticLsp(autoDevContext);
+        const client = lsp?.getLanguageClient(language);
+        console.log(client);
+      }
     }
   );
 
