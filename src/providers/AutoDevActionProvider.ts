@@ -3,7 +3,7 @@ import { AutoDevContext } from "../autodev-context";
 import { SUPPORTED_LANGUAGES } from "../language/supported";
 import { TreeSitterFile, TreeSitterFileError, } from "../semantic-treesitter/TreeSitterFile";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
-import { JavaSemanticLsp } from "../semantic-lsp/JavaSemanticLsp";
+import { JavaSemanticLsp } from "../semantic-lsp/java/JavaSemanticLsp";
 
 export class AutoDevActionProvider implements vscode.CodeActionProvider {
 	private context: AutoDevContext;

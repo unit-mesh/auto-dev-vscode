@@ -1,7 +1,7 @@
 import { LanguageClient } from "vscode-languageclient/node";
-import { AutoDevContext } from "../autodev-context";
+import { AutoDevContext } from "../../autodev-context";
 import { DocumentSymbol, SymbolInformation, extensions } from "vscode";
-import { SemanticLsp } from "./SemanticLsp";
+import { SemanticLsp } from "../SemanticLsp";
 
 type DocumentSymbolsResponse = DocumentSymbol[] | SymbolInformation[] | null;
 
