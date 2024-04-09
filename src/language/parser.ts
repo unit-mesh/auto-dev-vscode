@@ -1,5 +1,5 @@
-import type {SupportedLanguage}from "./supported";
-import Parser from "web-tree-sitter";
+import {extensionLanguageMap, type SupportedLanguage}from "./supported";
+import Parser, { Language } from "web-tree-sitter";
 
 // @ts-ignore
 import Tc from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-c.wasm?raw";
@@ -19,6 +19,7 @@ import Tts from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-typescript.was
 import Tpython from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-python.wasm?raw";
 // @ts-ignore
 import Trust from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-rust.wasm?raw";
+import path from "path";
 
 const PREFIX = "data:application/wasm;base64,";
 const LanguageMap: Map<SupportedLanguage, Parser.Language> = new Map();
@@ -144,4 +145,88 @@ export async function parse(langid: SupportedLanguage, source: string): Promise<
 
     await loadLanguageOndemand(langid);
     return ParserMap[langid](source);
+}
+
+export async function getLanguageForFile(
+  filepath: string
+): Promise<Language | undefined> {
+  try {
+    await Parser.init();
+    const extension = path.extname(filepath).slice(1);
+
+    if (!extensionLanguageMap[extension]) {
+      return undefined;
+    }
+
+    const wasmPath = path.join(
+      __dirname,
+      "tree-sitter-wasms",
+      `tree-sitter-${extensionLanguageMap[extension]}.wasm`
+    );
+    const language = await Parser.Language.load(wasmPath);
+    return language;
+  } catch (e) {
+    console.error("Unable to load language for file", filepath, e);
+    return undefined;
+  }
+}
+
+export async function getParserForFile(filepath: string) {
+  if (process.env.IS_BINARY) {
+    return undefined;
+  }
+
+  try {
+    await Parser.init();
+    const parser = new Parser();
+
+    const language = await getLanguageForFile(filepath);
+    parser.setLanguage(language);
+
+    return parser;
+  } catch (e) {
+    console.error("Unable to load language for file", filepath, e);
+    return undefined;
+  }
+}
+
+export async function getAst(
+  filepath: string,
+  fileContents: string
+): Promise<Parser.Tree | undefined> {
+  const parser = await getParserForFile(filepath);
+
+  if (!parser) {
+    return undefined;
+  }
+
+  try {
+    const ast = parser.parse(fileContents);
+    return ast;
+  } catch (e) {
+    return undefined;
+  }
+}
+
+export async function getTreePathAtCursor(
+  ast: Parser.Tree,
+  cursorIndex: number
+): Promise<Parser.SyntaxNode[] | undefined> {
+  const path = [ast.rootNode];
+  while (path[path.length - 1].childCount > 0) {
+    let foundChild = false;
+    for (let child of path[path.length - 1].children) {
+      if (child.startIndex <= cursorIndex && child.endIndex >= cursorIndex) {
+        path.push(child);
+        foundChild = true;
+        break;
+      }
+    }
+
+    if (!foundChild) {
+      break;
+    }
+  }
+
+  return path;
 }

@@ -1,13 +1,47 @@
+export const extensionLanguageMap: { [key: string]: string } = {
+  cpp: "cpp",
+  hpp: "cpp",
+  cc: "cpp",
+  cxx: "cpp",
+  hxx: "cpp",
+  cp: "cpp",
+  hh: "cpp",
+  inc: "cpp",
+  // Depended on this PR: https://github.com/tree-sitter/tree-sitter-cpp/pull/173
+  // ccm: "cpp",
+  // c++m: "cpp",
+  // cppm: "cpp",
+  // cxxm: "cpp",
+  cs: "c_sharp",
+  c: "c",
+  h: "c",
+  css: "css",
+  ts: "typescript",
+  mts: "typescript",
+  cts: "typescript",
+  js: "javascript",
+  jsx: "javascript",
+  mjs: "javascript",
+  cjs: "javascript",
+  py: "python",
+  pyw: "python",
+  pyi: "python",
+  go: "go",
+  java: "java",
+  rs: "rust",
+  // kt: "kotlin",
+};
+
 export const SUPPORTED_LANGUAGES = [
-    "c",
-    "cpp",
-    "csharp",
-    "go",
-    "java",
-    "javascript",
-    "typescript",
-    "python",
-    "rust"
+  "c",
+  "cpp",
+  "csharp",
+  "go",
+  "java",
+  "javascript",
+  "typescript",
+  "python",
+  "rust",
 ] as const;
 
-export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];

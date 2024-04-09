@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "./language/supported";
-import { parse } from './language/parser';
+import { getParser } from './language/parser';
 import { AutoDevContext } from "./autodev-context";
 
 class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
@@ -13,7 +13,7 @@ class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
             }
     
             try {
-                const parsed = await parse(langid, document.getText());
+                const parsed = await getParser(langid, document.getText());
                 console.log(parsed);
             } catch (e) {
                 console.log(e);

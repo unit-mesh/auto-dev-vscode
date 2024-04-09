@@ -8,6 +8,7 @@ import { DocumentManager } from "./document/DocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevContext } from "./autodev-context";
 import { JavaSemanticLsp } from "./semantic-lsp/JavaSemanticLsp";
+import { getParserForFile } from "./language/parser";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
 export function activate(context: vscode.ExtensionContext) {
@@ -23,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
   registerCommands(autoDevContext);
 
   vscode.window.onDidChangeActiveTextEditor(
-    (editor: vscode.TextEditor | undefined) => {
+    async (editor: vscode.TextEditor | undefined) => {
       if (!editor) {
         return;
       }
@@ -38,8 +39,12 @@ export function activate(context: vscode.ExtensionContext) {
       var language = editor.document.languageId;
       if (language === "java") {
         const lsp = new JavaSemanticLsp(autoDevContext);
-        const client = lsp?.getLanguageClient(language);
+        const client = lsp?.getLanguageClient();
         console.log(client);
+
+        let parser = await getParserForFile(uri.fsPath);
+        console.log(parser);
+        // getParserForFile(uri, language, editor.document.getText());
       }
     }
   );
