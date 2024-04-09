@@ -4,7 +4,7 @@ import { extensionLanguageMap } from "../language/supported";
 import Parser from "web-tree-sitter";
 import { getLanguage } from "../language/parser";
 
-const JAVA: TSLanguageConfig = {
+export const JAVA_TREESITTER: TSLanguageConfig = {
     languageIds: ['Java'],
     fileExtensions: ['java'],
     grammar: () => { 

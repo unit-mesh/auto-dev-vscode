@@ -9,6 +9,8 @@ import { DiffManager } from "./diff/DiffManager";
 import { AutoDevContext } from "./autodev-context";
 import { JavaSemanticLsp } from "./semantic-lsp/JavaSemanticLsp";
 import { getParserForFile, getSnippetsInFile } from "./language/parser";
+import { JAVA_TREESITTER } from "./semantic-treesitter/java.treesitter";
+import { TreeSitterFile } from "./language/TreeSitterFile";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
 export function activate(context: vscode.ExtensionContext) {
@@ -38,14 +40,18 @@ export function activate(context: vscode.ExtensionContext) {
       // 3. chatwithcode
       let language = editor.document.languageId;
       if (language === "java") {
-        const lsp = new JavaSemanticLsp(autoDevContext);
-        const client = lsp?.getLanguageClient();
-        console.log(client);
+        // const lsp = new JavaSemanticLsp(autoDevContext);
+        // const client = lsp?.getLanguageClient();
+        // console.log(client);
 
-        let parser = await getParserForFile(uri.fsPath);
-        console.log(parser);
-        let snippet = await getSnippetsInFile(uri.fsPath, editor.document.getText());
-        console.log(snippet);
+        // // let parser = await getParserForFile(uri.fsPath);
+        // // console.log(parser);
+        // // let snippet = await getSnippetsInFile(uri.fsPath, editor.document.getText());
+        // // console.log(snippet);
+        TreeSitterFile.tryBuild(editor.document.getText(), "java").then(file => {
+          console.log(file);
+          file.hoverableRanges();
+        });
       }
     }
   );

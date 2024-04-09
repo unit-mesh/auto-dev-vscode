@@ -30,6 +30,10 @@ export class MemoizedQuery {
   constructor(scopeQuery: string) {
     this.scopeQuery = scopeQuery;
   }
+
+  query() : Query {
+    return this.slot;
+  }
 }
 
 // A grouping of symbol kinds that allow references among them.
