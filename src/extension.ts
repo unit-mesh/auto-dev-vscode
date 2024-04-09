@@ -4,7 +4,7 @@ import { registerCodeLens } from "./codelens";
 import { registerCommands } from "./commands";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 import { IdeImpl } from "./action/ide-impl";
-import { DocumentManager } from "./document/DocumentManager";
+import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevContext } from "./autodev-context";
 import { registerQuickFixProvider } from "./providers/registerQuickFixProvider";
@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const sidebar = new AutoDevWebviewViewProvider();
   const action = new IdeImpl();
-  const documentManager = new DocumentManager();
+  const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();
   const autoDevContext = new AutoDevContext(sidebar, action, documentManager, diffManager, context);
 
@@ -31,6 +31,8 @@ export function activate(context: vscode.ExtensionContext) {
       if (!editor) {
         return;
       }
+
+      documentManager.updateCurrentDocument(editor.document);
     }
   );
 
