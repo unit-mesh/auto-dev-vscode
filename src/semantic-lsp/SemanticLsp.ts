@@ -1,4 +1,3 @@
-import { SupportedLanguage } from "../language/supported";
 import { LanguageClient } from "vscode-languageclient/node";
 
 export class SemanticLsp {

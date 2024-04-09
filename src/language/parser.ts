@@ -56,7 +56,7 @@ async function loadLanguageOndemand(langid: SupportedLanguage) {
   }
 }
 
-const ParserMap: Record<
+export const ParserMap: Record<
   SupportedLanguage,
   (source: string) => Promise<Parser.Tree>
 > = {

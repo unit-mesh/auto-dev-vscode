@@ -1,12 +1,12 @@
-// A generic language wrapper type.
-
 import { TSLanguageConfig } from "./TSLanguageConfig";
-import { JavaConfig } from "./java/JavaConfig";
-import { TypeScriptConfig } from "./typescript/TypeScriptConfig";
+import { JavaTSConfig } from "./java/JavaTSConfig";
+import { TypeScriptTSConfig } from "./typescript/TypeScriptTSConfig";
+import { GoTSConfig } from "./go/GoTSConfig";
 
 export const ALL_LANGUAGES: TSLanguageConfig[] = [
-  JavaConfig,
-  TypeScriptConfig
+  JavaTSConfig,
+  GoTSConfig,
+  TypeScriptTSConfig
 ];
 
 export class TSLanguage {
