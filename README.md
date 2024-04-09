@@ -42,6 +42,10 @@
     - [ ] UI
 - [ ] Local embedding with ONNX
 
+## Resources
+
+test TreeSitter: [https://tree-sitter.github.io/tree-sitter/playground](https://tree-sitter.github.io/tree-sitter/playground)
+
 ## LICENSE
 
 Inspired and based on：

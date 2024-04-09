@@ -40,7 +40,18 @@ export const JavaTSConfig: TSLanguageConfig = {
 			        interfaces: (super_interfaces (interface_type_list (type_identifier)  @impl-name))?
 			    )
 			)
-			`),
+  `),
+	methodIOQuery: new MemoizedQuery(`
+		(method_declaration
+		  type: (type_identifier) @returnType
+		  name: (identifier) @id
+		  parameters: (formal_parameters
+		    (formal_parameter 
+		        (type_identifier) @param.type
+		        (identifier) @param.value)
+		        @param
+		    )
+		)`),
 	namespaces: [
 		[
 			// variables
