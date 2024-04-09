@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
-import { SUPPORTED_LANGID, SupportedLangId } from "./supported";
-import { parse } from './parser';
+import { SUPPORTED_LANGUAGES, SupportedLanguage } from "./language/supported";
+import { parse } from './language/parser';
 
 class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
     onDidChangeCodeLenses?: vscode.Event<void> | undefined;
     provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
         return (async () => {
-            const langid = document.languageId as SupportedLangId;
-            if (!SUPPORTED_LANGID.includes(langid)) {
+            const langid = document.languageId as SupportedLanguage;
+            if (!SUPPORTED_LANGUAGES.includes(langid)) {
                 return [];
             }
     
@@ -26,7 +26,7 @@ class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 }
 
 export function install(context: vscode.ExtensionContext) {
-    const filter = SUPPORTED_LANGID.map(it => ({language: it} as vscode.DocumentFilter))
+    const filter = SUPPORTED_LANGUAGES.map(it => ({language: it} as vscode.DocumentFilter))
     const codelensProviderSub = vscode.languages.registerCodeLensProvider(
         filter,
         new AutoDevCodeLensProvider(),

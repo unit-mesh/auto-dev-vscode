@@ -1,4 +1,4 @@
-import type {SupportedLangId}from "./supported";
+import type {SupportedLanguage}from "./supported";
 import Parser from "web-tree-sitter";
 
 // @ts-ignore
@@ -21,8 +21,8 @@ import Tpython from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-python.was
 import Trust from "@unit-mesh/treesitter-artifacts/wasm/tree-sitter-rust.wasm?raw";
 
 const PREFIX = "data:application/wasm;base64,";
-const LanguageMap: Map<SupportedLangId, Parser.Language> = new Map();
-async function loadLanguageOndemand(langid: SupportedLangId) {
+const LanguageMap: Map<SupportedLanguage, Parser.Language> = new Map();
+async function loadLanguageOndemand(langid: SupportedLanguage) {
     switch (langid) {
         case "c":
             if (!LanguageMap.has("c")) {
@@ -83,7 +83,7 @@ async function loadLanguageOndemand(langid: SupportedLangId) {
         }
 }
 
-const ParserMap: Record<SupportedLangId, (source: string) => Promise<Parser.Tree>> = {
+const ParserMap: Record<SupportedLanguage, (source: string) => Promise<Parser.Tree>> = {
     c: async (source: string) => {
         const parser = new Parser()
         parser.setLanguage(LanguageMap.get("c"));
@@ -132,7 +132,7 @@ const ParserMap: Record<SupportedLangId, (source: string) => Promise<Parser.Tree
 }
 
 let inited = false;
-export async function parse(langid: SupportedLangId, source: string): Promise<Parser.Tree> {
+export async function parse(langid: SupportedLanguage, source: string): Promise<Parser.Tree> {
     if (!inited) {
         await Parser.init();
         inited = true;

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
 import { AutoDocumentationActionProvider } from "./AutoDocumentationActionProvider";
-import { SUPPORTED_LANGID } from "../supported";
+import { SUPPORTED_LANGUAGES } from "../language/supported";
 import { commands } from "vscode";
 import { CodeActionParams } from "vscode-languageclient";
 
@@ -14,7 +14,7 @@ export function registerActionProvider(context: vscode.ExtensionContext) {
     }
   );
 
-  SUPPORTED_LANGID.forEach((langId) => {
+  SUPPORTED_LANGUAGES.forEach((langId) => {
     vscode.languages.registerCodeActionsProvider(
       { language: langId },
       new AutoDocumentationActionProvider(),

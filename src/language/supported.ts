@@ -1,4 +1,4 @@
-export const SUPPORTED_LANGID = [
+export const SUPPORTED_LANGUAGES = [
     "c",
     "cpp",
     "csharp",
@@ -10,4 +10,4 @@ export const SUPPORTED_LANGID = [
     "rust"
 ] as const;
 
-export type SupportedLangId = typeof SUPPORTED_LANGID[number];
+export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
