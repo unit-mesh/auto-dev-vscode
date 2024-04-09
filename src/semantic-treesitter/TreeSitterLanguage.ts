@@ -2,8 +2,12 @@
 
 import { TSLanguageConfig } from "./TSLanguageConfig";
 import { JavaConfig } from "./java/JavaConfig";
+import { TypeScriptConfig } from "./typescript/TypeScriptConfig";
 
-export const ALL_LANGUAGES: TSLanguageConfig[] = [JavaConfig];
+export const ALL_LANGUAGES: TSLanguageConfig[] = [
+  JavaConfig,
+  TypeScriptConfig
+];
 
 export class TSLanguage {
   // Find a tree-sitter language configuration from a language identifier

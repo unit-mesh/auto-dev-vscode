@@ -34,15 +34,15 @@ export class TreeSitterFile {
 			return TreeSitterFileError.FileTooLarge;
 		}
 
-		const tsLang = TSLanguage.fromId(langId);
-		if (tsLang === undefined) {
+		const tsConfig = TSLanguage.fromId(langId);
+		if (tsConfig === undefined) {
 			return TreeSitterFileError.UnsupportedLanguage;
 		}
 
 		const parser = new Parser();
 		let language: Language | undefined = undefined;
 		try {
-			language = await tsLang.grammar();
+			language = await tsConfig.grammar();
 			parser.setLanguage(language);
 		} catch (error) {
 			return TreeSitterFileError.LanguageMismatch;
@@ -60,7 +60,7 @@ export class TreeSitterFile {
 			return TreeSitterFileError.ParseTimeout;
 		}
 
-		return new TreeSitterFile(src, tree, tsLang, parser, language);
+		return new TreeSitterFile(src, tree, tsConfig, parser, language);
 	}
 
 	methodRanges(): IdentifierBlockRange[] | TreeSitterFileError {
