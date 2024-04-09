@@ -38,3 +38,18 @@ jobs:
 
       - name: Package VSIX
         run: vsce package
+
+     # Prepare plugin archive content for creating artifact
+      - name: Prepare Plugin Artifact
+        id: artifact
+        shell: bash
+        run: |
+          FILENAME=`ls *.vsix`
+          echo "filename=${FILENAME" >> $GITHUB_OUTPUT
+
+      # Store already-built plugin as an artifact for downloading
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact.outputs.filename }}
+          path: .
