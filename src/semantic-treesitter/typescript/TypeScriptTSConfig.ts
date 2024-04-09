@@ -22,6 +22,31 @@ export const TypeScriptTSConfig: TSLanguageConfig = {
       (function_declaration
         (identifier) @name.definition.method) @definition.method
     `),
+	structureQuery: new MemoizedQuery(`
+			(import_statement
+			  (import_clause
+			    (named_import_clause
+			      (import_specifier
+			        (identifier) @import-name)))) @import-name
+			)
+			
+			(class_declaration
+			  name: (identifier) @class-name
+			  body: (class_body
+			    (method_definition
+			      name: (property_identifier) @class-method-name
+			      parameters: (formal_parameters (identifier)? @parameter)
+			    )
+			  )
+			)
+			
+			(interface_declaration
+			  (identifier) @interface-name
+			)
+						
+			(program (function_declaration
+			      name: * @function-name))
+		`),
 	namespaces: [
 		[
 			//variables
