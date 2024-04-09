@@ -3,7 +3,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build-test:
+  build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -33,8 +33,7 @@ jobs:
         id: properties
         shell: bash
         run: |
-          PROPERTIES="cat package.json"
-          VERSION="$(echo "$PROPERTIES" | grep -o '"version": *"[0-9.]*"' package.json | awk -F '"' '{print $4}' | cut -f2- -d ' ')"
+          VERSION="$(cat package.json | grep -o '"version": *"[0-9.]*"' package.json | awk -F '"' '{print $4}' | cut -f2- -d ' ')"
           
       - name: Compile
         run: pnpm run compile
