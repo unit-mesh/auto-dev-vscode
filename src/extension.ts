@@ -8,7 +8,7 @@ import { DocumentManager } from "./document/DocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevContext } from "./autodev-context";
 import { JavaSemanticLsp } from "./semantic-lsp/JavaSemanticLsp";
-import { getParserForFile } from "./language/parser";
+import { getParserForFile, getSnippetsInFile } from "./language/parser";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
 export function activate(context: vscode.ExtensionContext) {
@@ -44,7 +44,8 @@ export function activate(context: vscode.ExtensionContext) {
 
         let parser = await getParserForFile(uri.fsPath);
         console.log(parser);
-        // getParserForFile(uri, language, editor.document.getText());
+        let snippet = await getSnippetsInFile(uri.fsPath, editor.document.getText());
+        console.log(snippet);
       }
     }
   );
