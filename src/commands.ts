@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 import { IdeAction } from "./action/ide-action";
+import { AutoDevContext } from "./autodev-context";
 
 enum AutoDevCommand {}
 
@@ -34,14 +35,10 @@ const commandsMap: (
   },
 });
 
-export function registerCommands(
-  context: vscode.ExtensionContext,
-  sidebar: AutoDevWebviewViewProvider,
-  action: IdeAction
-) {
-  const commands = commandsMap(sidebar, action);
+export function registerCommands(context: AutoDevContext) {
+  const commands = commandsMap(context.sidebar, context.action);
   Object.entries(commands).forEach(([command, handler]) => {
-    context.subscriptions.push(
+    context.vscContext.subscriptions.push(
       vscode.commands.registerCommand(command, handler)
     );
   });

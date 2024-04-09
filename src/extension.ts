@@ -1,19 +1,25 @@
 import * as vscode from "vscode";
 
-import { install } from "./codelens";
+import { install as registerCodeLens } from "./codelens";
 import { registerCommands } from "./commands";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 import { IdeImpl } from "./action/ide-impl";
+import { DocumentManager } from "./document/DocumentManager";
+import { DiffManager } from "./diff/DiffManager";
+import { AutoDevContext } from "./autodev-context";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
 export function activate(context: vscode.ExtensionContext) {
   channel.show();
-  install(context);
 
   const sidebar = new AutoDevWebviewViewProvider();
   const action = new IdeImpl();
+  const documentManager = new DocumentManager();
+  const diffManager = new DiffManager();
+  const autoDevContext = new AutoDevContext(sidebar, action, documentManager, diffManager, context);
 
-  registerCommands(context, sidebar, action);
+  registerCodeLens(autoDevContext);
+  registerCommands(autoDevContext);
 
   vscode.window.onDidChangeActiveTextEditor(
     (editor: vscode.TextEditor | undefined) => {

@@ -24,4 +24,4 @@ export class AutoDevWebviewProtocol {
 export type WebviewProtocol = {
 	newSessionWithPrompt: [{ prompt: string }, void];
 	getTerminalContents: [undefined, string];
-}
+};
