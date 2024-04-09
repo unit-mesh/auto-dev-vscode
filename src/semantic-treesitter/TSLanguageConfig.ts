@@ -24,6 +24,9 @@ export interface TSLanguageConfig {
   // method query
   methodQuery: MemoizedQuery;
 
+  // structure query
+  structureQuery: MemoizedQuery;
+
   // Namespaces defined by this language,
   // E.g.: type namespace, variable namespace, function namespace
   namespaces: NameSpaces;

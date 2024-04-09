@@ -14,10 +14,33 @@ export const JavaTSConfig: TSLanguageConfig = {
       (method_declaration
         name: (identifier) @name.definition.method) @definition.method
     `),
-  classQuery: new MemoizedQuery(`
+	classQuery: new MemoizedQuery(`
       (class_declaration
         name: (identifier) @name.definition.class) @definition.class
     `),
+	structureQuery: new MemoizedQuery(`
+			(package_declaration
+			  (scoped_identifier) @package-name)
+			
+			(import_declaration
+			  (scoped_identifier) @import-name)
+			
+			(method_declaration
+			  (modifiers
+			      (annotation
+			        name: (identifier) @annotation.name
+			            arguments: (annotation_argument_list)? @annotation.key_values
+			      )
+			    )
+			)
+			
+			(program
+			    (class_declaration
+			      name: (identifier) @class-name
+			        interfaces: (super_interfaces (interface_type_list (type_identifier)  @impl-name))?
+			    )
+			)
+			`),
 	namespaces: [
 		[
 			// variables
