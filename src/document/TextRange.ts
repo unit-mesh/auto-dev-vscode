@@ -1,25 +1,22 @@
-import { SyntaxNode } from "web-tree-sitter";
+import { Point, SyntaxNode } from "web-tree-sitter";
+import { Position, Range } from "vscode";
 
-export class TextRange {
+export class TextRange extends Range {
 	text: string;
-	start: { line: number; character: number };
-	end: { line: number; character: number };
 
 	constructor(
 		displayName: string = "",
-		start: { line: number; character: number },
-		end: { line: number; character: number }
+		start: Position,
+		end: Position
 	) {
-		this.start = start;
-		this.end = end;
+		super(start, end);
 		this.text = displayName;
 	}
 
 	static fromNode(id: SyntaxNode) {
-		return new TextRange(
-			id.text,
-			{ line: id.startPosition.row, character: id.startPosition.column },
-			{ line: id.endPosition.row, character: id.endPosition.column },
-		);
+		const startPosition = new Position(id.startPosition.row, id.startPosition.column);
+		const endPosition = new Position(id.endPosition.row, id.endPosition.column);
+
+		return new TextRange(id.text, startPosition, endPosition);
 	}
 }

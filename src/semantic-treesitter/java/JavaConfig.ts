@@ -1,11 +1,13 @@
 import { TSLanguageConfig, MemoizedQuery } from "../TSLanguageConfig";
 import { getLanguage } from "../../language/parser";
 
+let javaLanguage = getLanguage('java');
+
 export const JavaConfig: TSLanguageConfig = {
     languageIds: ['Java'],
     fileExtensions: ['java'],
-    grammar: () => { 
-        return getLanguage('java');
+    grammar: () => {
+      return javaLanguage;
     },
     scopeQuery: new MemoizedQuery(""),
     hoverableQuery: new MemoizedQuery(`

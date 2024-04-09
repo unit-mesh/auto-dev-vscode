@@ -7,9 +7,15 @@ import { IdeImpl } from "./action/ide-impl";
 import { DocumentManager } from "./document/DocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevContext } from "./autodev-context";
-import { TreeSitterFile } from "./semantic-treesitter/TreeSitterFile";
+import { TreeSitterFile, TreeSitterFileError } from "./semantic-treesitter/TreeSitterFile";
+import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
+import { commands } from "vscode";
+import { CodeActionParams } from "vscode-languageclient";
+import { registerQuickFixProvider } from "./providers/registerProviders";
+import { registerAutoDevProviders } from "./providers/registerAutoDevProviders";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
+
 export function activate(context: vscode.ExtensionContext) {
   channel.show();
 
@@ -21,6 +27,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   registerCodeLens(autoDevContext);
   registerCommands(autoDevContext);
+  registerAutoDevProviders(autoDevContext);
+  registerQuickFixProvider(autoDevContext);
 
   vscode.window.onDidChangeActiveTextEditor(
     async (editor: vscode.TextEditor | undefined) => {
@@ -28,29 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const uri = editor.document.uri;
-      //   registerActionProvider(context);
-      // doc management
-      // use tree sitter to parse ast and method to results and also cache for file by document
-      // 1. autotest
-      // 2. autodoc
-      // 3. chatwithcode
-      let language = editor.document.languageId;
-      if (language === "java") {
-        /** 
-         * TODO: use LSP for parse java language
-         * const lsp = new JavaSemanticLsp(autoDevContext);
-         * const client = lsp?.getLanguageClient();
-         * console.log(client);
-        */ 
-       // todo: init all grammars here?
-        TreeSitterFile.tryBuild(editor.document.getText(), "java").then(file => {
-          if (file instanceof TreeSitterFile) {
-            const results = file.methodRanges();
-            console.log(results);
-          }
-        });
-      }
+      // todo: add cache
     }
   );
 
@@ -59,11 +45,11 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerWebviewViewProvider(
       "autodev.autodevGUIView",
       sidebar,
-      {
-        webviewOptions: { retainContextWhenHidden: true },
-      }
+      { webviewOptions: { retainContextWhenHidden: true }, }
     )
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+// @ts-ignore
 export function deactivate() {}

@@ -12,12 +12,10 @@ export class TSLanguage {
   //
   // [0]: https://github.com/monkslc/hyperpolyglot/blob/master/src/codegen/languages.rs
   static fromId(langId: string): TSLanguageConfig | undefined {
-    const foundLanguage = ALL_LANGUAGES.find((target) => {
+    return ALL_LANGUAGES.find((target) => {
       return target.languageIds.some(
         (id) => id.toLowerCase() === langId.toLowerCase()
       );
     });
-
-    return foundLanguage;
   }
 }

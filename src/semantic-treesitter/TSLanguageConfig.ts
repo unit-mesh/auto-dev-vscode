@@ -10,7 +10,7 @@ export interface TSLanguageConfig {
   fileExtensions: string[];
 
   // tree-sitter grammar for this language
-  grammar: () => Promise<Language | undefined>;
+  grammar: () => Language | undefined;
 
   // Compiled tree-sitter scope query for this language.
   scopeQuery: MemoizedQuery;
