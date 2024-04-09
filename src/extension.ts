@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
-import { install as registerCodeLens } from "./codelens";
-import { registerCommands } from "./protocol-commands";
+import { registerCodeLens } from "./codelens";
+import { registerCommands } from "./commands";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 import { IdeImpl } from "./action/ide-impl";
 import { DocumentManager } from "./document/DocumentManager";
@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
       // 1. autotest
       // 2. autodoc
       // 3. chatwithcode
-      var language = editor.document.languageId;
+      let language = editor.document.languageId;
       if (language === "java") {
         const lsp = new JavaSemanticLsp(autoDevContext);
         const client = lsp?.getLanguageClient();

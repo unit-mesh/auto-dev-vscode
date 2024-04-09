@@ -104,6 +104,7 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "postinstall": "cp -a node_modules/@unit-mesh/treesitter-artifacts/wasm/ dist/tree-sitter-wasms",
     "vscode:prepublish": "pnpm run package",
     "compile": "webpack",
     "watch": "webpack --watch",
