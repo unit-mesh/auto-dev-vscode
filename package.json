@@ -27,7 +27,8 @@
     "Snippets"
   ],
   "activationEvents": [
-
+    "onStartupFinished",
+    "onView:autodevGUIView"
   ],
   "main": "./dist/extension.js",
   "contributes": {

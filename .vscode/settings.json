@@ -12,6 +12,7 @@
     "typescript.tsc.autoDetect": "off",
     "cmake.configureOnOpen": true,
     "cSpell.words": [
-        "hoverable"
+        "hoverable",
+        "treesitter"
     ]
 }

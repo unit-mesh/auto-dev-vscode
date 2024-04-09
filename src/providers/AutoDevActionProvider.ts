@@ -23,10 +23,10 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		token: vscode.CancellationToken
 	): Promise<vscode.CodeAction[] | null | undefined> {
 		const lang = document.languageId;
-		if (!SUPPORTED_LANGUAGES.includes(lang)) return [];
+		if (!SUPPORTED_LANGUAGES.includes(lang)) {return [];}
 
 		const file = await TreeSitterFile.from(document);
-		if (!(file instanceof TreeSitterFile)) return;
+		if (!(file instanceof TreeSitterFile)) {return;}
 
 		const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
 		let actions: vscode.CodeAction[] = [];
