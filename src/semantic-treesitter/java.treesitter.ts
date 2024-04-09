@@ -15,6 +15,10 @@ export const JAVA_TREESITTER: TSLanguageConfig = {
       [(identifier)
        (type_identifier)] @hoverable
     `),
+    methodQuery: new MemoizedQuery(`
+      (method_declaration
+        name: (identifier) @name.definition.method) @definition.method
+    `),      
     namespaces: [
       [
         // variables

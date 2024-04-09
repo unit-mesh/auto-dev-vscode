@@ -38,7 +38,7 @@ export class TreeSitterFile {
     }
 
     const parser = new Parser();
-    var language: Language | undefined = undefined;
+    let language: Language | undefined = undefined;
     try {
       language = await tsLang.grammar();
       parser.setLanguage(language);
@@ -66,18 +66,28 @@ export class TreeSitterFile {
       return TreeSitterFileError.QueryError;
     }
 
+    return this.getByQuery(this.langConfig.hoverableQuery.scopeQuery);
+  }
+
+  methodRanges(): TextRange[] | TreeSitterFileError {
+    if (!this.parser) {
+      return TreeSitterFileError.QueryError;
+    }
+
+    return this.getByQuery(this.langConfig.methodQuery.scopeQuery);
+  }
+
+  private getByQuery(queryString: string): TextRange[] | TreeSitterFileError {
     try {
-      const query = this.language.query(
-        this.langConfig.hoverableQuery.scopeQuery
-      );
+      const query = this.language.query(queryString);
       const root = this.tree.rootNode;
       const matches = query?.matches(root);
 
       return (
         matches?.flatMap((match) => {
+          // name.definition.method
           const node = match.captures[0].node;
-          //   const title = match.captures[1].node.text;
-
+          // definition.method
           const results = new TextRange(
             {
               line: node.startPosition.row,
@@ -86,7 +96,8 @@ export class TreeSitterFile {
             {
               line: node.endPosition.row,
               character: node.endPosition.column,
-            }
+            },
+            match.captures[1].node.text ?? ""
           );
           return results;
         }) ?? []
@@ -96,22 +107,20 @@ export class TreeSitterFile {
     }
   }
 }
-/**
- *  range: {
-    start: { line: number; character: number };
-    end: { line: number; character: number };
-  };
- */
+
 export class TextRange {
+  displayName: string;
   start: { line: number; character: number };
   end: { line: number; character: number };
 
   constructor(
     start: { line: number; character: number },
-    end: { line: number; character: number }
+    end: { line: number; character: number },
+    displayName: string = ""
   ) {
     this.start = start;
     this.end = end;
+    this.displayName = displayName;
   }
 }
 

@@ -18,6 +18,9 @@ export interface TSLanguageConfig {
   // Compiled tree-sitter hoverables query
   hoverableQuery: MemoizedQuery;
 
+  // method query
+  methodQuery: MemoizedQuery;
+
   // Namespaces defined by this language,
   // E.g.: type namespace, variable namespace, function namespace
   namespaces: NameSpaces;

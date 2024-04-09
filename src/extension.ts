@@ -46,9 +46,10 @@ export function activate(context: vscode.ExtensionContext) {
          * const client = lsp?.getLanguageClient();
          * console.log(client);
         */ 
+       // todo: init all grammars here?
         TreeSitterFile.tryBuild(editor.document.getText(), "java").then(file => {
           if (file instanceof TreeSitterFile) {
-            const results = file.hoverableRanges();
+            const results = file.methodRanges();
             console.log(results);
           }
         });
