@@ -3,6 +3,7 @@ import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider
 import { IdeAction } from "./action/ide-action";
 import { AutoDevContext } from "./autodev-context";
 import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
+import { selectCodeInRange } from "./commands/editor";
 
 enum AutoDevCommand {}
 
@@ -40,9 +41,15 @@ const commandsMap: (
     edit: vscode.WorkspaceEdit
   ) => {
     const doc = generateDocumentation(document.getText());
-    edit.insert(document.uri, range.blockRange.start, doc);
-
     selectCodeInRange(range.blockRange.start, range.blockRange.end);
+
+    // edit.insert(document.uri, range.blockRange.start, doc);
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+      editor.edit((editBuilder) => {
+        editBuilder.insert(range.blockRange.start, doc);
+      });
+    }
   },
 });
 
@@ -53,15 +60,6 @@ export function registerCommands(context: AutoDevContext) {
       vscode.commands.registerCommand(command, handler)
     );
   });
-}
-
-function selectCodeInRange(start: vscode.Position, end: vscode.Position) {
-  const editor = vscode.window.activeTextEditor;
-  if (editor) {
-    const newSelection = new vscode.Selection(start, end);
-    editor.selection = newSelection;
-    editor.revealRange(newSelection);
-  }
 }
 
 function generateDocumentation(code: string): string {
