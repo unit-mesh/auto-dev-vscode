@@ -18,6 +18,9 @@ export interface TSLanguageConfig {
   // Compiled tree-sitter hoverables query
   hoverableQuery: MemoizedQuery;
 
+  // class query
+  classQuery: MemoizedQuery;
+
   // method query
   methodQuery: MemoizedQuery;
 

@@ -76,6 +76,14 @@ export class TreeSitterFile {
 		return this.getByQuery(this.langConfig.methodQuery.scopeQuery);
 	}
 
+	classRanges(): IdentifierBlockRange[] | TreeSitterFileError {
+		if (!this.parser) {
+			return TreeSitterFileError.QueryError;
+		}
+
+		return this.getByQuery(this.langConfig.classQuery.scopeQuery);
+	}
+
 	private getByQuery(queryString: string): IdentifierBlockRange[] | TreeSitterFileError {
 		try {
 			const query = this.language.query(queryString);

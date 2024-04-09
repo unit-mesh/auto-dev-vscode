@@ -1,10 +1,7 @@
 import * as vscode from "vscode";
 import { AutoDevContext } from "../autodev-context";
 import { SUPPORTED_LANGUAGES } from "../language/supported";
-import {
-	TreeSitterFile,
-	TreeSitterFileError,
-} from "../semantic-treesitter/TreeSitterFile";
+import { TreeSitterFile, TreeSitterFileError, } from "../semantic-treesitter/TreeSitterFile";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { JavaSemanticLsp } from "../semantic-lsp/JavaSemanticLsp";
 
@@ -31,35 +28,52 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		const file = await TreeSitterFile.from(document);
 		if (!(file instanceof TreeSitterFile)) return;
 
-		const results: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
-		if (!(results instanceof Array)) {
-			return;
+		const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
+		let actions: vscode.CodeAction[] = [];
+		if (methodRanges instanceof Array) {
+			actions = AutoDevActionProvider.buildMethodActions(methodRanges, range, document);
 		}
 
-		// todo: add other actions for method ranges
-		let actions: vscode.CodeAction[] = [];
-		for (const result of results) {
-			let blockRange = result.blockRange;
-			// 获取用户选择的代码范围
-			if (blockRange.contains(range)) {
-				const codeAction = new vscode.CodeAction(
-					`Generate doc for \`${result.identifierRange.text}\` (AutoDev)`,
-					AutoDevActionProvider.providedCodeActionKinds[0]
-				);
-
-				codeAction.isPreferred = false;
-				codeAction.edit = new vscode.WorkspaceEdit();
-				codeAction.command = {
-					command: "autodev.generateDoc",
-					title: `Generate doc for \`${result.identifierRange.text}\` (AutoDev)`,
-					arguments: [document, result, codeAction.edit]
-				};
-
-				actions.push(codeAction);
-			}
+		const classRanges: IdentifierBlockRange[] | TreeSitterFileError = file.classRanges();
+		if (classRanges instanceof Array) {
+			actions = actions.concat(AutoDevActionProvider.buildClassAction(classRanges, range, document));
 		}
 
 		return actions;
+	}
+
+	private static buildMethodActions(methodRanges: IdentifierBlockRange[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
+		return methodRanges
+			.filter(result => result.blockRange.contains(range))
+			.map(result => {
+				const title = `AutoDoc for method \`${result.identifierRange.text}\` (AutoDev)`;
+				return AutoDevActionProvider.createAction(title, document, result);
+			});
+	}
+
+	private static buildClassAction(classRanges: IdentifierBlockRange[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
+		return classRanges
+			.filter(result => result.identifierRange.contains(range))
+			.map(result => {
+				const title = `AutoDoc for class \`${result.identifierRange.text}\` (AutoDev)`;
+				return AutoDevActionProvider.createAction(title, document, result);
+			});
+	}
+
+	private static createAction(title: string, document: vscode.TextDocument, result: IdentifierBlockRange) {
+		const codeAction = new vscode.CodeAction(
+			title,
+			AutoDevActionProvider.providedCodeActionKinds[0]
+		);
+
+		codeAction.isPreferred = false;
+		codeAction.edit = new vscode.WorkspaceEdit();
+		codeAction.command = {
+			command: "autodev.generateDoc",
+			title: title,
+			arguments: [document, result, codeAction.edit]
+		};
+		return codeAction;
 	}
 
 	private static renderWithLsp(context: AutoDevContext) {
