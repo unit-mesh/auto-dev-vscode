@@ -3,11 +3,11 @@ import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
 import { AutoDevContext } from "../autodev-context";
 
 export function registerQuickFixProvider(context: AutoDevContext) {
-  vscode.languages.registerCodeActionsProvider(
-    { language: "*" },
-    new AutoDevQuickFixProvider(),
-    {
-      providedCodeActionKinds: AutoDevQuickFixProvider.providedCodeActionKinds,
-    }
-  );
+	vscode.languages.registerCodeActionsProvider(
+		{ language: "*" },
+		new AutoDevQuickFixProvider(),
+		{
+			providedCodeActionKinds: AutoDevQuickFixProvider.providedCodeActionKinds,
+		}
+	);
 }

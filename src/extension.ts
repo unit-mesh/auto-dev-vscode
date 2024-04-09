@@ -7,11 +7,7 @@ import { IdeImpl } from "./action/ide-impl";
 import { DocumentManager } from "./document/DocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevContext } from "./autodev-context";
-import { TreeSitterFile, TreeSitterFileError } from "./semantic-treesitter/TreeSitterFile";
-import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
-import { commands } from "vscode";
-import { CodeActionParams } from "vscode-languageclient";
-import { registerQuickFixProvider } from "./providers/registerProviders";
+import { registerQuickFixProvider } from "./providers/registerQuickFixProvider";
 import { registerAutoDevProviders } from "./providers/registerAutoDevProviders";
 
 const channel = vscode.window.createOutputChannel("AUTO-DEV-VSCODE");
@@ -35,8 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (!editor) {
         return;
       }
-
-      // todo: add cache
+      // todo: add cache for [TreeSitterFile]
     }
   );
 

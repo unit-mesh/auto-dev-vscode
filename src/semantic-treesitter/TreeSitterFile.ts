@@ -3,6 +3,8 @@ import { TSLanguageConfig } from "./TSLanguageConfig";
 import { TSLanguage } from "./TreeSitterLanguage";
 import { TextRange } from "../document/TextRange";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
+import * as vscode from "vscode";
+import { TreeSitterFileCache } from "./DocumentCache";
 
 export class TreeSitterFile {
 	private src: string;
@@ -25,6 +27,9 @@ export class TreeSitterFile {
 		this.language = language;
 	}
 
+	/**
+	 * catch build document
+	 */
 	static async tryBuild(
 		src: string,
 		langId: string
@@ -93,6 +98,25 @@ export class TreeSitterFile {
 		} catch (error) {
 			return TreeSitterFileError.QueryError;
 		}
+	}
+
+	static cache: TreeSitterFileCache = new TreeSitterFileCache();
+
+	static async from(document: vscode.TextDocument) {
+		const cached = TreeSitterFile.cache.getDocument(document.uri.toString(), document.version);
+		if (cached) {
+			return cached;
+		}
+
+		const src = document.getText();
+		const langId = document.languageId;
+
+		const file = await TreeSitterFile.tryBuild(src, langId);
+		if (file instanceof TreeSitterFile) {
+			TreeSitterFile.cache.setDocument(document.uri.toString(), document.version, file);
+		}
+
+		return file;
 	}
 }
 
