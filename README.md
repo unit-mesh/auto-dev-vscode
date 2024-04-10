@@ -53,5 +53,6 @@ Inspired and based on：
 - AI-based Coding Editor [Continue](https://github.com/continuedev/continue)
 - AI-based conversational search [Bloop](https://github.com/BloopAI/bloop)
 - AI-powered coding wizard [AutoDev](https://github.com/unit-mesh/auto-dev)
+- TreeSitter-based architecture analysis: [Guarding](https://github.com/modernizing/guarding)
 
 AutoDev VSCode is licensed under the `Apache 2.0` license as defined in [LICENSE](./LICENSE).

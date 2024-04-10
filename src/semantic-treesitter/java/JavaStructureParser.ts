@@ -48,7 +48,7 @@ export class JavaStructureParser extends StructureParser {
 					// @ts-ignore
 					const classNode = capture.node.parent();
 					if (classNode == null) {
-						// JavaIdent.insertLocation(classObj, classNode);
+						this.insertLocation(classObj, classNode);
 						if (!isLastNode) {
 							isLastNode = true;
 						}
