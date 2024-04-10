@@ -20,8 +20,8 @@ export default defineConfig((api) => {
             dest: "tree-sitter-wasms",
           },
           {
-            src: "node_modules/web-tree-sitter/tree-sitter.wasm",
-            dest: "tree-sitter.wasm",
+            src: "node_modules/web-tree-sitter/*.wasm",
+            dest: "",
           },
           {
             src: "src/semantic-treesitter/**/*.scm",
