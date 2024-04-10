@@ -1,44 +1,7 @@
 import { TSLanguage } from "../TreeSitterLanguage";
 import Parser, { Query } from "web-tree-sitter";
 import { SupportedLanguage } from "../../language/supported";
-
-export interface CodePoint {
-	row: number;
-	column: number;
-}
-
-interface CodeFile {
-	file_name: string;
-	path: string;
-	package: string;
-	imports: string[];
-	classes: CodeStructure[];
-	functions: CodeFunction[];
-}
-
-export interface CodeStructure {
-	name: string;
-	package: string;
-	extends: string[];
-	implements: string[];
-	constant: ClassConstant[];
-	// in some languages, functions and methods are different names
-	methods: CodeFunction[];
-	start?: CodePoint;
-	end?: CodePoint;
-}
-
-export interface CodeFunction {
-	name: string;
-	vars: string[];
-	start: CodePoint;
-	end: CodePoint;
-}
-
-export interface ClassConstant {
-	name: string;
-	typ: string;
-}
+import { CodeFile, CodeStructure } from "../../model/program";
 
 export class Structure {
 	protected parser: Parser | undefined;
