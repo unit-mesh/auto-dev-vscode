@@ -59,6 +59,12 @@
         "category": "AutoDev",
         "title": "Auto Generate Document",
         "group": "AutoDev"
+      },
+      {
+        "command": "autodev.genApiData",
+        "category": "AutoDev",
+        "title": "Generate API Data",
+        "group": "AutoDev"
       }
     ],
     "keybindings": [

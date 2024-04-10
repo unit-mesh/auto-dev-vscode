@@ -18,7 +18,7 @@ export abstract class Structurer {
 		return language?.query(tsConfig.structureQuery.scopeQuery)
 	}
 
-	protected async parseFile(code: string): Promise<CodeFile | undefined> {
+	async parseFile(code: string): Promise<CodeFile | undefined> {
 		return undefined;
 	}
 
