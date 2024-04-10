@@ -3,7 +3,7 @@
 </p>
 <h1 align="center">AutoDev VSCode</h1>
 <p align="center">
-    <a href="https://img.shields.io/visual-studio-marketplace/v/Phodal.autodev">
+    <a href="https://marketplace.visualstudio.com/items?itemName=Phodal.autodev">
         <img src="https://img.shields.io/visual-studio-marketplace/v/Phodal.autodev" alt="Visual Studio Marketplace Version" />
     </a>
     <a href="https://github.com/unit-mesh/auto-dev-vscode/actions/workflows/ci.yml">
