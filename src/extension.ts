@@ -12,12 +12,12 @@ import { registerAutoDevProviders } from "./providers/registerAutoDevProviders";
 import { StructureProvider } from "./semantic-treesitter/StructureProvider";
 import Parser from "web-tree-sitter";
 
-import { setExtensionContext, removeExtensionContext } from './context'
+import { setExtensionContext, removeExtensionContext } from './context';
 
 const channel = vscode.window.createOutputChannel("AutoDev");
 
 export function activate(context: vscode.ExtensionContext) {
-  setExtensionContext(context)
+  setExtensionContext(context);
 
   channel.show();
 
@@ -28,10 +28,10 @@ export function activate(context: vscode.ExtensionContext) {
   let structureProvider = new StructureProvider();
   const extension = new AutoDevExtension(sidebar, action, documentManager, diffManager, context);
   Parser.init().then(async () => {
-      await structureProvider.init()
+      await structureProvider.init();
       extension.setStructureProvider(structureProvider);
     }
-  )
+  );
 
   registerCodeLens(extension);
   registerCommands(extension);

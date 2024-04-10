@@ -41,11 +41,11 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
 
     const jsSrc = panel.webview.asWebviewUri(
       vscode.Uri.joinPath(this._context.extensionUri, 'dist/renderer/index-DSMEdJyR.js')
-     )
+     );
 
     const cssSrc = panel.webview.asWebviewUri(
       vscode.Uri.joinPath(this._context.extensionUri, 'dist/renderer/index-BW36QkLH.css')
-     )
+     );
 
     return `
 	<!doctype html>

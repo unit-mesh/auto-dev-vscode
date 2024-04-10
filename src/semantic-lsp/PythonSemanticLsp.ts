@@ -17,7 +17,7 @@ export class PythonSemanticLsp implements SemanticLsp {
 
 	constructor(autoDevExtension: AutoDevExtension) {
 		this.autoDevExtension = autoDevExtension;
-		this.context = autoDevExtension.extensionContext
+		this.context = autoDevExtension.extensionContext;
 	}
 
 	isActive(): boolean {

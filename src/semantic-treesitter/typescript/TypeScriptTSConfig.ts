@@ -1,5 +1,3 @@
-import * as vscode from "vscode";
-
 import { MemoizedQuery, TSLanguageConfig } from "../TSLanguageConfig";
 import { getLanguage } from "../../language/parser";
 

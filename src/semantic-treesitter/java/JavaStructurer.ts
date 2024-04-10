@@ -5,7 +5,7 @@ import { JavaTSConfig } from "./JavaTSConfig";
 import { SupportedLanguage } from "../../language/supported";
 
 export class JavaStructurer extends Structurer {
-	protected langId: SupportedLanguage = "java"
+	protected langId: SupportedLanguage = "java";
 
 	/**
 	 * Parses the given code string and generates a CodeFile object representing the structure of the code.

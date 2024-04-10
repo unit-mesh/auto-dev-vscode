@@ -3,14 +3,14 @@ import { Structurer } from "./Structurer";
 import { JavaStructurer } from "./java/JavaStructurer";
 
 export class StructureProvider {
-	private structureMap: Map<SupportedLanguage, Structurer> = new Map()
+	private structureMap: Map<SupportedLanguage, Structurer> = new Map();
 
 	async init() {
 		const structurer = new JavaStructurer();
 		await structurer.init();
 
 		let map: Map<string, Structurer> = new Map();
-		map.set("java", structurer)
+		map.set("java", structurer);
 		this.structureMap = map;
 	}
 

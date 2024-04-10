@@ -5,14 +5,14 @@ import Parser, { Language } from "web-tree-sitter";
 import fs from "fs";
 import path from "path";
 
-import { getExtensionUri } from '../context'
+import { getExtensionUri } from '../context';
 
 const LanguageMap: Map<SupportedLanguage, Parser.Language> = new Map();
 async function loadLanguageOndemand(
   langid: SupportedLanguage,
   uri: vscode.Uri | undefined = getExtensionUri(),
 ) {
-  if (!uri) return
+  if (!uri) {return;}
 
   switch (langid) {
     case "c":
