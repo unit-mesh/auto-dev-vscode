@@ -35,7 +35,7 @@ jobs:
           VERSION="$(cat package.json | grep -o '"version": *"[0-9.]*"' package.json | awk -F '"' '{print $4}' | cut -f2- -d ' ')"
           
       - name: Compile
-        run: pnpm run compile
+        run: pnpm run build
 
       - name: Run tests
         run: pnpm pretest
@@ -47,7 +47,7 @@ jobs:
         run: npm install -g @vscode/vsce
 
       - name: Package VSIX
-        run: pnpm run copy-wasm && vsce package
+        run: vsce package
 
      # Prepare plugin archive content for creating artifact
       - name: Prepare Plugin Artifact

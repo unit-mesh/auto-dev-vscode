@@ -109,10 +109,12 @@
   },
   "scripts": {
     "watch": "vite build --watch",
+    "watch-tests": "tsc -p . -w --outDir out",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
-    "preview": "vite preview"
+    "pretest": "pnpm run lint",
+    "test": "vscode-test"
   },
   "packageManager": "pnpm@8.15.5",
   "dependencies": {
