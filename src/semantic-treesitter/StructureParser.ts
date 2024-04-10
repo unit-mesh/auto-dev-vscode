@@ -3,15 +3,18 @@ import { SupportedLanguage } from "../language/supported";
 import { TSLanguage } from "./TreeSitterLanguage";
 import { CodeFile, CodeFunction } from "../model/program";
 
-export class StructureParser {
+export abstract class StructureParser {
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
+	protected abstract langId: SupportedLanguage;
 
-	async init(langId: SupportedLanguage): Promise<Query | undefined> {
-		const tsConfig = TSLanguage.fromId(langId)!!;
-		this.parser = new Parser();
+	async init(): Promise<Query | undefined> {
+		const tsConfig = TSLanguage.fromId(this.langId)!!;
+		const parser = new Parser();
 		const language = await tsConfig.grammar();
-		this.parser.setLanguage(language);
+		parser.setLanguage(language);
+		this.parser = parser
+		this.language = language
 		return language?.query(tsConfig.structureQuery.scopeQuery)
 	}
 

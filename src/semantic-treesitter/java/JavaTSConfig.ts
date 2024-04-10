@@ -37,7 +37,7 @@ export const JavaTSConfig: TSLanguageConfig = {
 			(program
 			    (class_declaration
 			      name: (identifier) @class-name
-			        interfaces: (super_interfaces (interface_type_list (type_identifier)  @impl-name))?
+			        interfaces: (super_interfaces (type_list (type_identifier)  @impl-name))?
 			    )
 			)
   `),

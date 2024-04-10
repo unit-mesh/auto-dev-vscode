@@ -2,13 +2,20 @@ import Parser from "web-tree-sitter";
 import { CodeFile, CodeStructure } from "../../model/program";
 import { StructureParser } from "../StructureParser";
 import { JavaTSConfig } from "./JavaTSConfig";
+import { SupportedLanguage } from "../../language/supported";
 
 export class JavaStructureParser extends StructureParser {
-	private structureQuery: string = JavaTSConfig.structureQuery.scopeQuery
+	protected langId: SupportedLanguage = "java"
 
+	/**
+	 * Parses the given code string and generates a CodeFile object representing the structure of the code.
+	 *
+	 * @param code The code string to be parsed.
+	 * @returns A Promise that resolves to the generated CodeFile object, or undefined if the parsing fails.
+	 */
 	override async parseFile(code: string): Promise<CodeFile | undefined> {
 		const tree = this.parser!!.parse(code);
-		let query = this.language?.query(this.structureQuery)!!;
+		let query = this.language!!.query(JavaTSConfig.structureQuery.scopeQuery)!!;
 		const captures = query!!.captures(tree.rootNode);
 
 		const codeFile: CodeFile = {
