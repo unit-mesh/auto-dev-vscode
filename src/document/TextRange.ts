@@ -1,4 +1,4 @@
-import { Point, SyntaxNode } from "web-tree-sitter";
+import { SyntaxNode } from "web-tree-sitter";
 import { Position, Range } from "vscode";
 
 export class TextRange extends Range {

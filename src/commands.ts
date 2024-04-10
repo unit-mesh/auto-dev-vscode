@@ -55,9 +55,9 @@ const commandsMap: (
       return;
     }
 
-    await structurer.init()
-    const file = await structurer.parseFile(document.getText())
-    console.info("CodeFile: ", file)
+    await structurer.init();
+    const file = await structurer.parseFile(document.getText());
+    console.info("CodeFile: ", file);
   }
 });
 

@@ -1,53 +1,66 @@
 import * as vscode from "vscode";
 import { AutoDevWebviewProtocol } from "./AutoDevWebviewProtocol";
 
-
 export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
-	private _webview?: vscode.Webview;
-	public webviewProtocol: AutoDevWebviewProtocol = new AutoDevWebviewProtocol(this._webview!);
+  private _webview?: vscode.Webview;
 
-	get webview() {
-		return this._webview;
-	}
+  public webviewProtocol!: AutoDevWebviewProtocol;
 
-	public static readonly viewType = "autodev.autodevGUIView";
-	resolveWebviewView(
-		webviewView: vscode.WebviewView,
-		context: vscode.WebviewViewResolveContext<unknown>,
-		token: vscode.CancellationToken
-	): void | Thenable<void> {
-		this._webview = webviewView.webview;
-		webviewView.webview.html = this.getSidebarContent(webviewView);
-	}
+  constructor(private readonly _context: vscode.ExtensionContext) {}
 
-	getSidebarContent(panel: vscode.WebviewPanel | vscode.WebviewView,): string {
+  get webview() {
+    return this._webview;
+  }
 
-		panel.webview.options = {
-			enableScripts: true,
-			localResourceRoots: [
-			//   vscode.Uri.joinPath(extensionUri, "gui"),
-			//   vscode.Uri.joinPath(extensionUri, "assets"),
-			],
-			enableCommandUris: true,
-			portMapping: [
-			  {
-				webviewPort: 65433,
-				extensionHostPort: 65433,
-			  },
-			],
-		  };
+  public static readonly viewType = "autodev.autodevGUIView";
+  resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    _context: vscode.WebviewViewResolveContext<unknown>,
+    _token: vscode.CancellationToken
+  ): void | Thenable<void> {
+    this._webview = webviewView.webview;
+    this.webviewProtocol = new AutoDevWebviewProtocol(this._webview);
 
-		return `<!DOCTYPE html>
+    webviewView.webview.html = this.getSidebarContent(webviewView);
+  }
+
+  getSidebarContent(panel: vscode.WebviewPanel | vscode.WebviewView): string {
+    panel.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [
+        vscode.Uri.joinPath(this._context.extensionUri, "dist/renderer")
+      ],
+      enableCommandUris: true,
+      portMapping: [
+        {
+          webviewPort: 65433,
+          extensionHostPort: 65433,
+        },
+      ],
+    };
+
+    const jsSrc = panel.webview.asWebviewUri(
+      vscode.Uri.joinPath(this._context.extensionUri, 'dist/renderer/index-DSMEdJyR.js')
+     );
+
+    const cssSrc = panel.webview.asWebviewUri(
+      vscode.Uri.joinPath(this._context.extensionUri, 'dist/renderer/index-BW36QkLH.css')
+     );
+
+    return `
+	<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello, World!</title>
-</head>
-<body>
-    <h1>Hello, World!</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+    <script type="module" crossorigin src="${jsSrc}"></script>
+    <link rel="stylesheet" crossorigin href="${cssSrc}">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
-`;
-	}
+	`;
+  }
 }

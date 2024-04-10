@@ -3,7 +3,7 @@ import { AutoDevExtension } from "../../auto-dev-extension";
 import { DocumentSymbol, SymbolInformation, extensions } from "vscode";
 import { SemanticLsp } from "../SemanticLsp";
 
-type DocumentSymbolsResponse = DocumentSymbol[] | SymbolInformation[] | null;
+// type DocumentSymbolsResponse = DocumentSymbol[] | SymbolInformation[] | null;
 
 export class JavaSemanticLsp extends SemanticLsp {
   context: AutoDevExtension;
