@@ -1,4 +1,4 @@
-import { Language } from "web-tree-sitter";
+import { Language, Query } from "web-tree-sitter";
 
 // Languages based on tree-sitter grammars
 export interface TSLanguageConfig {

@@ -1,28 +1,15 @@
-import { TSLanguage } from "../TreeSitterLanguage";
-import Parser, { Query } from "web-tree-sitter";
-import { SupportedLanguage } from "../../language/supported";
+import Parser from "web-tree-sitter";
 import { CodeFile, CodeStructure } from "../../model/program";
+import { StructureParser } from "../StructureParser";
+import { JavaTSConfig } from "./JavaTSConfig";
 
-export class Structure {
-	protected parser: Parser | undefined;
+export class JavaStructureParser extends StructureParser {
+	private structureQuery: string = JavaTSConfig.structureQuery.scopeQuery
 
-	async init(langId: SupportedLanguage): Promise<Query | undefined> {
-		const tsConfig = TSLanguage.fromId(langId)!!;
-		this.parser = new Parser();
-		const language = await tsConfig.grammar();
-		this.parser.setLanguage(language);
-		return language?.query(tsConfig.structureQuery.scopeQuery)
-	}
-
-	async parse(code: string, query: Query): Promise<CodeFile | undefined> {
-		return undefined;
-	}
-}
-
-export class JavaStructure extends Structure {
-	override async parse(code: string, query: Query): Promise<CodeFile | undefined> {
+	override async parseFile(code: string): Promise<CodeFile | undefined> {
 		const tree = this.parser!!.parse(code);
-		const captures = query.captures(tree.rootNode);
+		let query = this.language?.query(this.structureQuery)!!;
+		const captures = query!!.captures(tree.rootNode);
 
 		const codeFile: CodeFile = {
 			file_name: "", functions: [], path: "",
