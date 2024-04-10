@@ -1,10 +1,11 @@
+import * as vscode from "vscode";
 import { MemoizedQuery, TSLanguageConfig } from "../TSLanguageConfig";
 import { getLanguage } from "../../language/parser";
 
 export const JavaTSConfig: TSLanguageConfig = {
 	languageIds: ['Java'],
 	fileExtensions: ['java'],
-	grammar: () => getLanguage('java'),
+	grammar: (uri?: vscode.Uri) => getLanguage(uri, 'java'),
 	scopeQuery: new MemoizedQuery(""),
 	hoverableQuery: new MemoizedQuery(`
       [(identifier)

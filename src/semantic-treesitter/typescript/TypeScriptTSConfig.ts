@@ -1,10 +1,12 @@
+import * as vscode from "vscode";
+
 import { MemoizedQuery, TSLanguageConfig } from "../TSLanguageConfig";
 import { getLanguage } from "../../language/parser";
 
 export const TypeScriptTSConfig: TSLanguageConfig = {
 	languageIds: ["TypeScript", "TSX"],
 	fileExtensions: ["ts", "tsx"],
-	grammar: () => getLanguage('typescript'),
+	grammar: (uri?: vscode.Uri) => getLanguage(uri, 'typescript'),
 	scopeQuery: new MemoizedQuery(""),
 	hoverableQuery: new MemoizedQuery(`
       [(identifier)

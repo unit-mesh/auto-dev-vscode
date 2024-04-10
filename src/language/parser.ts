@@ -7,9 +7,12 @@ import path from "path";
 
 const LanguageMap: Map<SupportedLanguage, Parser.Language> = new Map();
 async function loadLanguageOndemand(
-  uri: vscode.Uri,
+  uri: vscode.Uri | undefined,
   langid: SupportedLanguage
 ) {
+  // TODO uri is required
+  if (!uri) return
+
   switch (langid) {
     case "c":
       if (!LanguageMap.has("c")) {
@@ -189,7 +192,7 @@ async function wasmByLanguage(extensionUri: vscode.Uri, langId: string) {
 }
 
 export async function getLanguage(
-  uri: vscode.Uri,
+  uri: vscode.Uri | undefined,
   langId: string
 ): Promise<Language | undefined> {
   try {

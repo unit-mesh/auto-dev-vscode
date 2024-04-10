@@ -1,3 +1,5 @@
+import * as vscode from "vscode";
+
 import { Language } from "web-tree-sitter";
 
 // Languages based on tree-sitter grammars
@@ -10,7 +12,7 @@ export interface TSLanguageConfig {
   fileExtensions: string[];
 
   // tree-sitter grammar for this language
-  grammar: () => Promise<Language | undefined>;
+  grammar: (uri?: vscode.Uri) => Promise<Language | undefined>;
 
   // Compiled tree-sitter scope query for this language.
   scopeQuery: MemoizedQuery;
