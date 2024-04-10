@@ -2,3 +2,5 @@
 /dist
 *.vsix
 .idea
+out
+.vscode-test

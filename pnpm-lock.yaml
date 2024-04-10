@@ -40,8 +40,8 @@ devDependencies:
     specifier: ^0.0.9
     version: 0.0.9
   '@vscode/test-electron':
-    specifier: ^2.3.0
-    version: 2.3.0
+    specifier: ^2.3.9
+    version: 2.3.9
   copy-webpack-plugin:
     specifier: ^11.0.0
     version: 11.0.0(webpack@5.76.3)
@@ -396,7 +396,7 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.5.0
+      semver: 7.6.0
       tsutils: 3.21.0(typescript@4.9.5)
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -417,7 +417,7 @@ packages:
       '@typescript-eslint/typescript-estree': 5.56.0(typescript@4.9.5)
       eslint: 8.36.0
       eslint-scope: 5.1.1
-      semver: 7.5.0
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -453,14 +453,14 @@ packages:
       yargs: 17.7.2
     dev: true
 
-  /@vscode/test-electron@2.3.0:
-    resolution: {integrity: sha512-fwzA9RtazH1GT/sckYlbxu6t5e4VaMXwCVtyLv4UAG0hP6NTfnMaaG25XCfWqlVwFhBMcQXHBCy5dmz2eLUnkw==}
+  /@vscode/test-electron@2.3.9:
+    resolution: {integrity: sha512-z3eiChaCQXMqBnk2aHHSEkobmC2VRalFQN0ApOAtydL172zXGxTwGrRtviT5HnUB+Q+G3vtEYFtuQkYqBzYgMA==}
     engines: {node: '>=16'}
     dependencies:
       http-proxy-agent: 4.0.1
       https-proxy-agent: 5.0.1
       jszip: 3.10.1
-      semver: 7.5.0
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
     dev: true
