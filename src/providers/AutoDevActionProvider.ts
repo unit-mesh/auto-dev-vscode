@@ -33,7 +33,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			const parser = new JavaStructurer();
 			await parser.init();
 			const codeFile = await parser.parseFile(document.getText());
-			console.log(codeFile);
+			console.log(JSON.stringify(codeFile));
 		}
 
 		const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();

@@ -27,7 +27,7 @@ export const JavaTSConfig: TSLanguageConfig = {
 			
 			(method_declaration
 			  type: (type_identifier) @method-returnType
-			  name: (identifier) @method-id
+			  name: (identifier) @method-name
 			  parameters: (formal_parameters
 			    (formal_parameter 
 			        (type_identifier) @method-param.type

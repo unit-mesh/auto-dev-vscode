@@ -37,6 +37,7 @@ export class JavaStructurer extends Structurer {
 		for (let i = 0; i < captures.length; i++) {
 			const capture: Parser.QueryCapture = captures[i];
 			const captureName = query.captureNames[i];
+			var methodReturnType = '';
 
 			const text = capture.node.text;
 			switch (captureName) {
@@ -60,6 +61,23 @@ export class JavaStructurer extends Structurer {
 							isLastNode = true;
 						}
 					}
+					break;
+				case 'method-returnType':
+					methodReturnType = text;
+					break;
+				case 'method-name':
+					// @ts-ignore
+					const methodNode = capture.node.parent();
+					const methodObj = this.createFunction(capture, text);
+					if (methodReturnType !== '') {
+						methodObj.returnType = methodReturnType;
+					}
+					if (methodNode != null) {
+						this.insertLocation(classObj, methodNode);
+					}
+
+					methodReturnType = '';
+					classObj.methods.push(methodObj);
 					break;
 				case 'impl-name':
 					classObj.implements.push(text);

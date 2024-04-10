@@ -22,6 +22,7 @@ export interface CodeStructure {
 export interface CodeFunction {
 	name: string;
 	vars: string[];
+	returnType?: string;
 	start: CodePosition;
 	end: CodePosition;
 }
