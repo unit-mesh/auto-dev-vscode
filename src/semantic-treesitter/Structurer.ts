@@ -1,7 +1,7 @@
 import Parser, { Query } from "web-tree-sitter";
 import { SupportedLanguage } from "../language/supported";
 import { TSLanguage } from "./TreeSitterLanguage";
-import { CodeFile, CodeFunction } from "../model/program";
+import { CodeFile, CodeFunction, CodeStructure } from "../model/program";
 
 export abstract class Structurer {
 	protected parser: Parser | undefined;
@@ -22,9 +22,9 @@ export abstract class Structurer {
 		return undefined;
 	}
 
-	protected insertLocation(model: any, node: Parser.SyntaxNode) {
-		model.set_start(node.startPosition.row, node.startPosition.column);
-		model.set_end(node.endPosition.row, node.endPosition.column);
+	protected insertLocation(model: CodeStructure, node: Parser.SyntaxNode) {
+		model.start = { row: node.startPosition.row, column: node.startPosition.column };
+		model.end = { row: node.endPosition.row, column: node.endPosition.column };
 	}
 
 	protected createFunction(capture: Parser.QueryCapture, text: string): CodeFunction {
@@ -35,8 +35,7 @@ export abstract class Structurer {
 			end: { row: 0, column: 0 }
 		}
 
-		// @ts-ignore
-		const node = capture.node.parent()!!;
+		const node = capture.node.parent ?? capture.node;
 		functionObj.start = { row: node.startPosition.row, column: node.startPosition.column };
 		functionObj.end = { row: node.endPosition.row, column: node.endPosition.column };
 		return functionObj;

@@ -1,4 +1,4 @@
-import Parser from "web-tree-sitter";
+import Parser, { SyntaxNode } from "web-tree-sitter";
 import { CodeFile, CodeStructure } from "../../model/program";
 import { Structurer } from "../Structurer";
 import { JavaTSConfig } from "./JavaTSConfig";
@@ -19,7 +19,9 @@ export class JavaStructurer extends Structurer {
 		const captures = query!!.captures(tree.rootNode);
 
 		const codeFile: CodeFile = {
-			file_name: "", functions: [], path: "",
+			file_name: "",
+			functions: [],
+			path: "",
 			package: '',
 			imports: [],
 			classes: []
@@ -30,14 +32,16 @@ export class JavaStructurer extends Structurer {
 			methods: [],
 			name: '',
 			package: '',
-			implements: []
+			implements: [],
+			start: { row: 0, column: 0 },
+			end: { row: 0, column: 0 }
 		};
 		let isLastNode = false;
 
 		for (let i = 0; i < captures.length; i++) {
-			const capture: Parser.QueryCapture = captures[i];
+			const capture: Parser.QueryCapture = captures[i]!!;
 			const captureName = query.captureNames[i];
-			var methodReturnType = '';
+			let methodReturnType = '';
 
 			const text = capture.node.text;
 			switch (captureName) {
@@ -50,12 +54,15 @@ export class JavaStructurer extends Structurer {
 				case 'class-name':
 					if (classObj.name !== '') {
 						codeFile.classes.push({ ...classObj });
-						classObj = { constant: [], extends: [], methods: [], name: '', package: codeFile.package, implements: [] };
+						classObj = {
+							constant: [], extends: [], methods: [], name: '', package: codeFile.package, implements: [],
+							start: { row: 0, column: 0 },
+							end: { row: 0, column: 0 }
+						};
 					}
 					classObj.name = text;
-					// @ts-ignore
-					const classNode = capture.node.parent();
-					if (classNode == null) {
+					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
+					if (classNode !== null) {
 						this.insertLocation(classObj, classNode);
 						if (!isLastNode) {
 							isLastNode = true;
@@ -66,13 +73,12 @@ export class JavaStructurer extends Structurer {
 					methodReturnType = text;
 					break;
 				case 'method-name':
-					// @ts-ignore
-					const methodNode = capture.node.parent();
+					const methodNode = capture.node?.parent ?? null;
 					const methodObj = this.createFunction(capture, text);
 					if (methodReturnType !== '') {
 						methodObj.returnType = methodReturnType;
 					}
-					if (methodNode != null) {
+					if (methodNode !== null) {
 						this.insertLocation(classObj, methodNode);
 					}
 

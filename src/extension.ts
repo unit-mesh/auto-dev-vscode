@@ -10,6 +10,7 @@ import { AutoDevExtension } from "./auto-dev-extension";
 import { registerQuickFixProvider } from "./providers/registerQuickFixProvider";
 import { registerAutoDevProviders } from "./providers/registerAutoDevProviders";
 import { StructureProvider } from "./semantic-treesitter/StructureProvider";
+import Parser from "web-tree-sitter";
 
 const channel = vscode.window.createOutputChannel("AutoDev");
 
@@ -22,9 +23,11 @@ export function activate(context: vscode.ExtensionContext) {
   const diffManager = new DiffManager();
   let structureProvider = new StructureProvider();
   const extension = new AutoDevExtension(sidebar, action, documentManager, diffManager, context);
-  structureProvider.init().then(r => {
-    extension.setStructureProvider(structureProvider);
-  })
+  Parser.init().then(async () => {
+      await structureProvider.init()
+      extension.setStructureProvider(structureProvider);
+    }
+  )
 
   registerCodeLens(extension);
   registerCommands(extension);

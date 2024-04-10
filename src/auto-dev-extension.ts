@@ -28,7 +28,7 @@ export class AutoDevExtension {
 	}
 
 	setStructureProvider(structureProvider: StructureProvider) {
-		this.structureProvider = structureProvider
+		this.structureProvider = structureProvider;
 	}
 
 	getStructureProvider(): StructureProvider | undefined {
