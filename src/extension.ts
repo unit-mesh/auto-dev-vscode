@@ -9,6 +9,7 @@ import { DiffManager } from "./diff/DiffManager";
 import { AutoDevContext } from "./autodev-context";
 import { registerQuickFixProvider } from "./providers/registerQuickFixProvider";
 import { registerAutoDevProviders } from "./providers/registerAutoDevProviders";
+import { StructureProvider } from "./semantic-treesitter/StructureProvider";
 
 const channel = vscode.window.createOutputChannel("AutoDev");
 
@@ -19,7 +20,11 @@ export function activate(context: vscode.ExtensionContext) {
   const action = new IdeImpl();
   const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();
+  let structureProvider = new StructureProvider();
   const autoDevContext = new AutoDevContext(sidebar, action, documentManager, diffManager, context);
+  structureProvider.init().then(r => {
+    autoDevContext.setStructureProvider(structureProvider);
+  })
 
   registerCodeLens(autoDevContext);
   registerCommands(autoDevContext);

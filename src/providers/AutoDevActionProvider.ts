@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
+
 import { AutoDevContext } from "../autodev-context";
 import { SUPPORTED_LANGUAGES } from "../language/supported";
 import { TreeSitterFile, TreeSitterFileError, } from "../semantic-treesitter/TreeSitterFile";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { JavaSemanticLsp } from "../semantic-lsp/java/JavaSemanticLsp";
-import { JavaStructurer } from "../semantic-treesitter/java/JavaStructurer";
 
 export class AutoDevActionProvider implements vscode.CodeActionProvider {
 	private context: AutoDevContext;
@@ -28,13 +28,6 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 
 		const file = await TreeSitterFile.from(document);
 		if (!(file instanceof TreeSitterFile)) {return;}
-
-		if(lang == "java") {
-			const parser = new JavaStructurer();
-			await parser.init();
-			const codeFile = await parser.parseFile(document.getText());
-			console.log(JSON.stringify(codeFile));
-		}
 
 		const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
 		let actions: vscode.CodeAction[] = [];
