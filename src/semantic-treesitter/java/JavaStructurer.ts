@@ -82,8 +82,6 @@ export class JavaStructurer extends Structurer {
 				case 'impl-name':
 					classObj.implements.push(text);
 					break;
-				case 'parameter':
-					break;
 				default:
 					// console.log(`pattern: ${capture.node.startIndex}, capture: ${captureName}, row: ${capture.node.startPosition.row}, text: ${text}`);
 					break;
