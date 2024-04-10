@@ -8,16 +8,16 @@ import {
 } from "vscode-languageclient/node";
 import { SemanticLsp } from "./SemanticLsp";
 import vscode, { extensions, workspace } from "vscode";
-import { AutoDevContext } from "../autodev-context";
+import { AutoDevExtension } from "../auto-dev-extension";
 
 export class PythonSemanticLsp implements SemanticLsp {
-	private autoDevContext: AutoDevContext;
+	private autoDevExtension: AutoDevExtension;
 	private context: vscode.ExtensionContext;
 	private client: LanguageClient | undefined;
 
-	constructor(autoDevContext: AutoDevContext) {
-		this.autoDevContext = autoDevContext;
-		this.context = autoDevContext.vscContext
+	constructor(autoDevExtension: AutoDevExtension) {
+		this.autoDevExtension = autoDevExtension;
+		this.context = autoDevExtension.extensionContext
 	}
 
 	isActive(): boolean {

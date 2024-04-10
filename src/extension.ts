@@ -6,7 +6,7 @@ import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider
 import { IdeImpl } from "./action/ide-impl";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
-import { AutoDevContext } from "./autodev-context";
+import { AutoDevExtension } from "./auto-dev-extension";
 import { registerQuickFixProvider } from "./providers/registerQuickFixProvider";
 import { registerAutoDevProviders } from "./providers/registerAutoDevProviders";
 import { StructureProvider } from "./semantic-treesitter/StructureProvider";
@@ -21,15 +21,15 @@ export function activate(context: vscode.ExtensionContext) {
   const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();
   let structureProvider = new StructureProvider();
-  const autoDevContext = new AutoDevContext(sidebar, action, documentManager, diffManager, context);
+  const extension = new AutoDevExtension(sidebar, action, documentManager, diffManager, context);
   structureProvider.init().then(r => {
-    autoDevContext.setStructureProvider(structureProvider);
+    extension.setStructureProvider(structureProvider);
   })
 
-  registerCodeLens(autoDevContext);
-  registerCommands(autoDevContext);
-  registerAutoDevProviders(autoDevContext);
-  registerQuickFixProvider(autoDevContext);
+  registerCodeLens(extension);
+  registerCommands(extension);
+  registerAutoDevProviders(extension);
+  registerQuickFixProvider(extension);
 
   vscode.window.onDidChangeActiveTextEditor(
     async (editor: vscode.TextEditor | undefined) => {

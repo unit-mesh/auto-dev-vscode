@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "./language/supported";
 import { parse } from './language/parser';
-import { AutoDevContext } from "./autodev-context";
+import { AutoDevExtension } from "./auto-dev-extension";
 
 class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
     onDidChangeCodeLenses: vscode.Event<void> | undefined;
@@ -26,12 +26,12 @@ class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
     }
 }
 
-export function registerCodeLens(context: AutoDevContext) {
+export function registerCodeLens(context: AutoDevExtension) {
     const filter = SUPPORTED_LANGUAGES.map(it => ({language: it} as vscode.DocumentFilter));
     const codelensProviderSub = vscode.languages.registerCodeLensProvider(
         filter,
         new AutoDevCodeLensProvider(),
     );
 
-    context.vscContext.subscriptions.push(codelensProviderSub);
+    context.extensionContext.subscriptions.push(codelensProviderSub);
 }

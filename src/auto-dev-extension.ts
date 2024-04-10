@@ -6,12 +6,12 @@ import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { StructureProvider } from "./semantic-treesitter/StructureProvider";
 
-export class AutoDevContext {
+export class AutoDevExtension {
 	sidebar: AutoDevWebviewViewProvider;
 	action: IdeImpl;
 	diffManager: DiffManager;
 	documentManager: RecentlyDocumentManager;
-	vscContext: vscode.ExtensionContext;
+	extensionContext: vscode.ExtensionContext;
 	structureProvider: StructureProvider | undefined;
 
 	constructor(
@@ -24,7 +24,7 @@ export class AutoDevContext {
 		this.action = action;
 		this.diffManager = diffManager;
 		this.documentManager = documentManager;
-		this.vscContext = context;
+		this.extensionContext = context;
 	}
 
 	setStructureProvider(structureProvider: StructureProvider) {

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 import { IdeAction } from "./action/ide-action";
-import { AutoDevContext } from "./autodev-context";
+import { AutoDevExtension } from "./auto-dev-extension";
 import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
 import { insertCodeByRange, selectCodeInRange } from "./commands/editor";
 
@@ -46,10 +46,10 @@ const commandsMap: (
   },
 });
 
-export function registerCommands(context: AutoDevContext) {
-  const commands = commandsMap(context.sidebar, context.action);
+export function registerCommands(extension: AutoDevExtension) {
+  const commands = commandsMap(extension.sidebar, extension.action);
   Object.entries(commands).forEach(([command, handler]) => {
-    context.vscContext.subscriptions.push(
+    extension.extensionContext.subscriptions.push(
       vscode.commands.registerCommand(command, handler)
     );
   });

@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
-import { AutoDevContext } from "../autodev-context";
+import { AutoDevExtension } from "../auto-dev-extension";
 import { SUPPORTED_LANGUAGES } from "../language/supported";
 
-export function registerQuickFixProvider(context: AutoDevContext) {
+export function registerQuickFixProvider(context: AutoDevExtension) {
 	SUPPORTED_LANGUAGES.forEach((language) => {
 		vscode.languages.registerCodeActionsProvider({ language },
 			new AutoDevQuickFixProvider(),

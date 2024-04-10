@@ -1,15 +1,15 @@
 import * as vscode from "vscode";
 
-import { AutoDevContext } from "../autodev-context";
+import { AutoDevExtension } from "../auto-dev-extension";
 import { SUPPORTED_LANGUAGES } from "../language/supported";
 import { TreeSitterFile, TreeSitterFileError, } from "../semantic-treesitter/TreeSitterFile";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { JavaSemanticLsp } from "../semantic-lsp/java/JavaSemanticLsp";
 
 export class AutoDevActionProvider implements vscode.CodeActionProvider {
-	private context: AutoDevContext;
+	private context: AutoDevExtension;
 
-	constructor(context: AutoDevContext) {
+	constructor(context: AutoDevExtension) {
 		this.context = context;
 	}
 
@@ -77,7 +77,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		return codeAction;
 	}
 
-	private static renderWithLsp(context: AutoDevContext) {
+	private static renderWithLsp(context: AutoDevExtension) {
 		const lsp = new JavaSemanticLsp(context);
 		const client = lsp?.getLanguageClient();
 		console.log(client);
