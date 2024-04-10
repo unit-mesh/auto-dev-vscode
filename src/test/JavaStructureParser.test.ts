@@ -1,9 +1,9 @@
-import assert from 'node:assert';
+import * as assert from 'assert';
 
 import * as vscode from 'vscode';
 import Parser from "web-tree-sitter";
 
-import { JavaStructurer } from "../src/semantic-treesitter/java/JavaStructurer";
+import { JavaStructurer } from "../semantic-treesitter/java/JavaStructurer";
 
 suite('JavaStructureParser', () => {
 	suiteTeardown(() => {

@@ -108,13 +108,15 @@
     }
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "watch": "vite build --watch",
     "watch-tests": "tsc -p . -w --outDir out",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx",
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "pretest": "pnpm run lint",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "vscode:prepublish": "pnpm run build"
   },
   "packageManager": "pnpm@8.15.5",
   "dependencies": {
@@ -123,9 +125,9 @@
     "web-tree-sitter": "^0.22.2"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
-    "@types/node": "~18.19.30",
-    "@types/vscode": "^1.88.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.77.0",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
     "@vscode/test-cli": "^0.0.9",
