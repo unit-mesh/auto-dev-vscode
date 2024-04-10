@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import Parser from "web-tree-sitter";
 
-import { JavaStructureParser } from "../semantic-treesitter/java/JavaStructureParser";
+import { JavaStructurer } from "../semantic-treesitter/java/JavaStructurer";
 
 suite('JavaStructureParser', () => {
 	suiteTeardown(() => {
@@ -11,7 +11,7 @@ suite('JavaStructureParser', () => {
 
 	test('CodeFile', async () => {
 		await Parser.init();
-		let structureParser = new JavaStructureParser();
+		let structureParser = new JavaStructurer();
 		await structureParser.init();
 		const codeFile = await structureParser.parseFile("class Test { }");
 		console.log(codeFile);

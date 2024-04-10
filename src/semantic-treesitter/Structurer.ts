@@ -3,7 +3,7 @@ import { SupportedLanguage } from "../language/supported";
 import { TSLanguage } from "./TreeSitterLanguage";
 import { CodeFile, CodeFunction } from "../model/program";
 
-export abstract class StructureParser {
+export abstract class Structurer {
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 	protected abstract langId: SupportedLanguage;
