@@ -2,12 +2,19 @@
   <img src="images/pluginIcon.png" width="160px" height="160px"  alt="logo" />
 </p>
 <h1 align="center">AutoDev VSCode</h1>
-
-![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/Phodal.autodev)
-[![CI](https://github.com/unit-mesh/auto-dev-vscode/actions/workflows/ci.yml/badge.svg)](https://github.com/unit-mesh/auto-dev-vscode/actions/workflows/ci.yml)
+<p align="center">
+    <a href="https://img.shields.io/visual-studio-marketplace/v/Phodal.autodev">
+        <img src="https://img.shields.io/visual-studio-marketplace/v/Phodal.autodev" alt="Visual Studio Marketplace Version" />
+    </a>
+    <a href="https://github.com/unit-mesh/auto-dev-vscode/actions/workflows/ci.yml">
+        <img src="https://github.com/unit-mesh/auto-dev-vscode/actions/workflows/ci.yml/badge.svg" alt="CI" />
+    </a>
+</p>
 
 > 🧙‍AutoDev: The AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful
 > bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀
+
+JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.com/unit-mesh/auto-dev)
 
 ## Todos
 

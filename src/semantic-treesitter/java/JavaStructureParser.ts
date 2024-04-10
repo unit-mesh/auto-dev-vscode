@@ -67,7 +67,7 @@ export class JavaStructureParser extends StructureParser {
 				case 'parameter':
 					break;
 				default:
-					console.log(`pattern: ${capture.node.startIndex}, capture: ${captureName}, row: ${capture.node.startPosition.row}, text: ${text}`);
+					// console.log(`pattern: ${capture.node.startIndex}, capture: ${captureName}, row: ${capture.node.startPosition.row}, text: ${text}`);
 					break;
 			}
 		}
