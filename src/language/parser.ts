@@ -5,12 +5,13 @@ import Parser, { Language } from "web-tree-sitter";
 import fs from "fs";
 import path from "path";
 
+import { getExtensionUri } from '../context'
+
 const LanguageMap: Map<SupportedLanguage, Parser.Language> = new Map();
 async function loadLanguageOndemand(
-  uri: vscode.Uri | undefined,
-  langid: SupportedLanguage
+  langid: SupportedLanguage,
+  uri: vscode.Uri | undefined = getExtensionUri(),
 ) {
-  // TODO uri is required
   if (!uri) return
 
   switch (langid) {
@@ -143,7 +144,7 @@ let inited = false;
 export async function parse(
   uri: vscode.Uri,
   langid: SupportedLanguage,
-  source: string
+  source: string,
 ): Promise<Parser.Tree> {
   if (!inited) {
     await Parser.init();
@@ -154,13 +155,13 @@ export async function parse(
     throw new Error(`Unsupported language: ${langid}`);
   }
 
-  await loadLanguageOndemand(uri, langid);
+  await loadLanguageOndemand(langid, uri);
   return ParserMap[langid](source);
 }
 
 export async function getLanguageForFile(
-  uri: vscode.Uri,
-  filepath: string
+  filepath: string,
+  uri?: vscode.Uri,
 ): Promise<Language | undefined> {
   try {
     await Parser.init();
@@ -171,7 +172,7 @@ export async function getLanguageForFile(
       return undefined;
     }
 
-    return await getLanguage(uri, langid);
+    return await getLanguage(langid, uri);
   } catch (e) {
     console.error("Unable to load language for file", filepath, e);
     return undefined;
@@ -192,13 +193,13 @@ async function wasmByLanguage(extensionUri: vscode.Uri, langId: string) {
 }
 
 export async function getLanguage(
-  uri: vscode.Uri | undefined,
-  langId: string
+  langId: string,
+  uri?: vscode.Uri | undefined,
 ): Promise<Language | undefined> {
   try {
     await Parser.init();
 
-    await loadLanguageOndemand(uri, langId);
+    await loadLanguageOndemand(langId, uri);
     return LanguageMap.get(langId);
   } catch (e) {
     console.error("Unable to load language for lang", langId, e);
@@ -215,7 +216,7 @@ export async function getParserForFile(uri: vscode.Uri, filepath: string) {
     await Parser.init();
     const parser = new Parser();
 
-    const language = await getLanguageForFile(uri, filepath);
+    const language = await getLanguageForFile(filepath, uri);
     parser.setLanguage(language);
 
     return parser;
@@ -240,7 +241,7 @@ export async function getSnippetsInFile(
   filepath: string,
   contents: string
 ): Promise<(any & { title: string })[]> {
-  const lang = await getLanguageForFile(uri, filepath);
+  const lang = await getLanguageForFile(filepath, uri);
   if (!lang) {
     return [];
   }

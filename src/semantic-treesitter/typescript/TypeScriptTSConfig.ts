@@ -6,7 +6,7 @@ import { getLanguage } from "../../language/parser";
 export const TypeScriptTSConfig: TSLanguageConfig = {
 	languageIds: ["TypeScript", "TSX"],
 	fileExtensions: ["ts", "tsx"],
-	grammar: (uri?: vscode.Uri) => getLanguage(uri, 'typescript'),
+	grammar: () => getLanguage('typescript'),
 	scopeQuery: new MemoizedQuery(""),
 	hoverableQuery: new MemoizedQuery(`
       [(identifier)

@@ -12,7 +12,7 @@ export interface TSLanguageConfig {
   fileExtensions: string[];
 
   // tree-sitter grammar for this language
-  grammar: (uri?: vscode.Uri) => Promise<Language | undefined>;
+  grammar: () => Promise<Language | undefined>;
 
   // Compiled tree-sitter scope query for this language.
   scopeQuery: MemoizedQuery;

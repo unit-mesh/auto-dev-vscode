@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 // import checker from "vite-plugin-checker";
 import dts from 'vite-plugin-dts';
 import { externalizeDeps } from "vite-plugin-externalize-deps";
-import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // https://vitejs.dev/config/
 export default defineConfig({

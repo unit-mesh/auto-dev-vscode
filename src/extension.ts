@@ -12,9 +12,13 @@ import { registerAutoDevProviders } from "./providers/registerAutoDevProviders";
 import { StructureProvider } from "./semantic-treesitter/StructureProvider";
 import Parser from "web-tree-sitter";
 
+import { setExtensionContext, removeExtensionContext } from './context'
+
 const channel = vscode.window.createOutputChannel("AutoDev");
 
 export function activate(context: vscode.ExtensionContext) {
+  setExtensionContext(context)
+
   channel.show();
 
   const sidebar = new AutoDevWebviewViewProvider(context);
@@ -56,4 +60,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 // @ts-ignore
-export function deactivate() {}
+export function deactivate() {
+  removeExtensionContext();
+}
