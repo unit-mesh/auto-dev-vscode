@@ -1,6 +1,7 @@
 import { SupportedLanguage } from "../language/supported";
 import { Structurer } from "./Structurer";
 import { JavaStructurer } from "./java/JavaStructurer";
+import { CodeFile } from "../model/program";
 
 export class StructureProvider {
 	private structureMap: Map<SupportedLanguage, Structurer> = new Map()
