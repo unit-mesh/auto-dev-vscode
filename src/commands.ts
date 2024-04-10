@@ -1,18 +1,17 @@
 import * as vscode from "vscode";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 import { IdeAction } from "./action/ide-action";
-import { AutoDevContext } from "./autodev-context";
+import { AutoDevExtension } from "./auto-dev-extension";
 import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
 import { insertCodeByRange, selectCodeInRange } from "./commands/editor";
 
 const commandsMap: (
-  sidebar: AutoDevWebviewViewProvider,
-  action: IdeAction
+  extention: AutoDevExtension
 ) => {
   [command: string]: (...args: any) => any;
-} = (sidebar, action) => ({
+} = (ext) => ({
   "autodev.quickFix": async (message: string, code: string, edit: boolean) => {
-    sidebar.webviewProtocol?.request("newSessionWithPrompt", {
+    ext.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
       prompt: `${
         edit ? "/edit " : ""
       }${code}\n\nHow do I fix this problem in the above code?: ${message}`,
@@ -24,12 +23,15 @@ const commandsMap: (
   },
 
   "autodev.sendToTerminal": (text: string) => {
-    action.runCommand(text);
+    ext.action.runCommand(text).then(
+      () => {},
+      (err) => vscode.window.showErrorMessage(err.message)
+    );
   },
   "autodev.debugTerminal": async () => {
     vscode.commands.executeCommand("autodev.autodevGUIView.focus");
-    const terminalContents = await action.getTerminalContents();
-    sidebar.webviewProtocol?.request("userInput", {
+    const terminalContents = await ext.action.getTerminalContents();
+    ext.sidebar.webviewProtocol?.request("userInput", {
       input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
     });
   },
@@ -42,12 +44,27 @@ const commandsMap: (
     selectCodeInRange(range.blockRange.start, range.blockRange.end);
     insertCodeByRange(range.blockRange.start, doc);
   },
+  "autodev.genApiData": async (
+    document: vscode.TextDocument,
+    range: IdentifierBlockRange,
+    edit: vscode.WorkspaceEdit
+  ) => {
+    let structurer = ext.getStructureProvider()?.getStructurer(document.languageId);
+    if (!structurer) {
+      vscode.window.showErrorMessage("No structure provider found for this language");
+      return;
+    }
+
+    await structurer.init()
+    const file = await structurer.parseFile(document.getText())
+    console.info("CodeFile: ", file)
+  }
 });
 
-export function registerCommands(context: AutoDevContext) {
-  const commands = commandsMap(context.sidebar, context.action);
+export function registerCommands(extension: AutoDevExtension) {
+  const commands = commandsMap(extension);
   Object.entries(commands).forEach(([command, handler]) => {
-    context.vscContext.subscriptions.push(
+    extension.extensionContext.subscriptions.push(
       vscode.commands.registerCommand(command, handler)
     );
   });

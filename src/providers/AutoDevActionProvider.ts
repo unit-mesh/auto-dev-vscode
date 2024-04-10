@@ -1,14 +1,15 @@
 import * as vscode from "vscode";
-import { AutoDevContext } from "../autodev-context";
+
+import { AutoDevExtension } from "../auto-dev-extension";
 import { SUPPORTED_LANGUAGES } from "../language/supported";
 import { TreeSitterFile, TreeSitterFileError, } from "../semantic-treesitter/TreeSitterFile";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { JavaSemanticLsp } from "../semantic-lsp/java/JavaSemanticLsp";
 
 export class AutoDevActionProvider implements vscode.CodeActionProvider {
-	readonly context: AutoDevContext;
+	private context: AutoDevExtension;
 
-	constructor(context: AutoDevContext) {
+	constructor(context: AutoDevExtension) {
 		this.context = context;
 	}
 
@@ -43,12 +44,33 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 	}
 
 	private static buildMethodActions(methodRanges: IdentifierBlockRange[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
-		return methodRanges
+		let methodDocActions = methodRanges
 			.filter(result => result.blockRange.contains(range))
 			.map(result => {
 				const title = `AutoDoc for method \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevActionProvider.createAction(title, document, result);
+				return AutoDevActionProvider.createDocAction(title, document, result);
 			});
+
+		// TODO: merge this with the above map
+		methodRanges
+			.filter(result => result.blockRange.contains(range))
+			.forEach(result => {
+			const title = `Api analysis for method \`${result.identifierRange.text}\` (AutoDev)`;
+			const codeAction = new vscode.CodeAction(
+				title,
+				AutoDevActionProvider.providedCodeActionKinds[0]
+			);
+			codeAction.isPreferred = false;
+			codeAction.edit = new vscode.WorkspaceEdit();
+			codeAction.command = {
+				command: "autodev.genApiData",
+				title: title,
+				arguments: [document, result, codeAction.edit]
+			};
+			methodDocActions.push(codeAction);
+		});
+
+		return methodDocActions;
 	}
 
 	private static buildClassAction(classRanges: IdentifierBlockRange[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
@@ -56,11 +78,11 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			.filter(result => result.identifierRange.contains(range))
 			.map(result => {
 				const title = `AutoDoc for class \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevActionProvider.createAction(title, document, result);
+				return AutoDevActionProvider.createDocAction(title, document, result);
 			});
 	}
 
-	private static createAction(title: string, document: vscode.TextDocument, result: IdentifierBlockRange) {
+	private static createDocAction(title: string, document: vscode.TextDocument, result: IdentifierBlockRange) {
 		const codeAction = new vscode.CodeAction(
 			title,
 			AutoDevActionProvider.providedCodeActionKinds[0]
@@ -76,7 +98,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		return codeAction;
 	}
 
-	static renderWithLsp(context: AutoDevContext) {
+	private static renderWithLsp(context: AutoDevExtension) {
 		const lsp = new JavaSemanticLsp(context);
 		const client = lsp?.getLanguageClient();
 		console.log(client);

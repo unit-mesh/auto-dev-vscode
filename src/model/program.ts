@@ -7,7 +7,12 @@ export interface CodeFile {
 	functions: CodeFunction[];
 }
 
-export interface CodeStructure {
+export interface PositionElement {
+	start: CodePosition;
+	end: CodePosition;
+}
+
+export interface CodeStructure extends PositionElement {
 	name: string;
 	package: string;
 	extends: string[];
@@ -15,13 +20,14 @@ export interface CodeStructure {
 	constant: CodeVariable[];
 	// in some languages, functions and methods are different names
 	methods: CodeFunction[];
-	start?: CodePosition;
-	end?: CodePosition;
+	start: CodePosition;
+	end: CodePosition;
 }
 
-export interface CodeFunction {
+export interface CodeFunction extends PositionElement {
 	name: string;
 	vars: string[];
+	returnType?: string;
 	start: CodePosition;
 	end: CodePosition;
 }

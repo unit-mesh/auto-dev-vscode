@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "./language/supported";
-import { parse } from "./language/parser";
-import { AutoDevContext } from "./autodev-context";
+import { parse } from './language/parser';
+import { AutoDevExtension } from "./auto-dev-extension";
 
 class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
-  constructor(private readonly context: AutoDevContext) {}
+  constructor(private readonly context: AutoDevExtension) {}
 
   onDidChangeCodeLenses: vscode.Event<void> | undefined;
   provideCodeLenses(
@@ -19,7 +19,7 @@ class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 
       try {
         const parsed = await parse(
-          this.context.vscContext.extensionUri,
+          this.context.extensionContext.extensionUri,
           langid,
           document.getText()
         );
@@ -38,14 +38,12 @@ class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
   }
 }
 
-export function registerCodeLens(context: AutoDevContext) {
-  const filter = SUPPORTED_LANGUAGES.map(
-    (it) => ({ language: it } as vscode.DocumentFilter)
-  );
-  const codelensProviderSub = vscode.languages.registerCodeLensProvider(
-    filter,
-    new AutoDevCodeLensProvider(context)
-  );
+export function registerCodeLens(context: AutoDevExtension) {
+    const filter = SUPPORTED_LANGUAGES.map(it => ({language: it} as vscode.DocumentFilter));
+    const codelensProviderSub = vscode.languages.registerCodeLensProvider(
+        filter,
+        new AutoDevCodeLensProvider(context),
+    );
 
-  context.vscContext.subscriptions.push(codelensProviderSub);
+    context.extensionContext.subscriptions.push(codelensProviderSub);
 }

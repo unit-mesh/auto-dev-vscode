@@ -1,10 +1,11 @@
+import * as vscode from "vscode";
 import Parser, { Language, Tree } from "web-tree-sitter";
+
 import { TSLanguageConfig } from "./TSLanguageConfig";
 import { TSLanguage } from "./TreeSitterLanguage";
 import { TextRange } from "../document/TextRange";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
-import * as vscode from "vscode";
-import { TreeSitterFileCache } from "./DocumentCache";
+import { TreeSitterFileCacheManager } from "../cache/TreeSitterFileCacheManager";
 
 export class TreeSitterFile {
 	private src: string;
@@ -108,10 +109,10 @@ export class TreeSitterFile {
 		}
 	}
 
-	static cache: TreeSitterFileCache = new TreeSitterFileCache();
+	static cache: TreeSitterFileCacheManager = new TreeSitterFileCacheManager();
 
 	static async from(document: vscode.TextDocument) {
-		const cached = TreeSitterFile.cache.getDocument(document.uri.toString(), document.version);
+		const cached = TreeSitterFile.cache.getDocument(document.uri, document.version);
 		if (cached) {
 			return cached;
 		}
@@ -121,7 +122,7 @@ export class TreeSitterFile {
 
 		const file = await TreeSitterFile.tryBuild(src, langId);
 		if (file instanceof TreeSitterFile) {
-			TreeSitterFile.cache.setDocument(document.uri.toString(), document.version, file);
+			TreeSitterFile.cache.setDocument(document.uri, document.version, file);
 		}
 
 		return file;

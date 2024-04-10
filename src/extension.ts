@@ -6,9 +6,11 @@ import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider
 import { IdeImpl } from "./action/ide-impl";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
-import { AutoDevContext } from "./autodev-context";
+import { AutoDevExtension } from "./auto-dev-extension";
 import { registerQuickFixProvider } from "./providers/registerQuickFixProvider";
 import { registerAutoDevProviders } from "./providers/registerAutoDevProviders";
+import { StructureProvider } from "./semantic-treesitter/StructureProvider";
+import Parser from "web-tree-sitter";
 
 const channel = vscode.window.createOutputChannel("AutoDev");
 
@@ -19,12 +21,18 @@ export function activate(context: vscode.ExtensionContext) {
   const action = new IdeImpl();
   const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();
-  const autoDevContext = new AutoDevContext(sidebar, action, documentManager, diffManager, context);
+  let structureProvider = new StructureProvider();
+  const extension = new AutoDevExtension(sidebar, action, documentManager, diffManager, context);
+  Parser.init().then(async () => {
+      await structureProvider.init()
+      extension.setStructureProvider(structureProvider);
+    }
+  )
 
-  registerCodeLens(autoDevContext);
-  registerCommands(autoDevContext);
-  registerAutoDevProviders(autoDevContext);
-  registerQuickFixProvider(autoDevContext);
+  registerCodeLens(extension);
+  registerCommands(extension);
+  registerAutoDevProviders(extension);
+  registerQuickFixProvider(extension);
 
   vscode.window.onDidChangeActiveTextEditor(
     async (editor: vscode.TextEditor | undefined) => {

@@ -26,14 +26,16 @@ export const JavaTSConfig: TSLanguageConfig = {
 			  (scoped_identifier) @import-name)
 			
 			(method_declaration
-			  (modifiers
-			      (annotation
-			        name: (identifier) @annotation.name
-			            arguments: (annotation_argument_list)? @annotation.key_values
-			      )
+			  type: (type_identifier) @method-returnType
+			  name: (identifier) @method-name
+			  parameters: (formal_parameters
+			    (formal_parameter 
+			        (type_identifier) @method-param.type
+			        (identifier) @method-param.value)
+			        @method-params
 			    )
 			)
-			
+
 			(program
 			    (class_declaration
 			      name: (identifier) @class-name

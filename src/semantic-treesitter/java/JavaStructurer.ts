@@ -1,11 +1,11 @@
-import Parser from "web-tree-sitter";
+import Parser, { SyntaxNode } from "web-tree-sitter";
 import { CodeFile, CodeStructure } from "../../model/program";
-import { StructureParser } from "../StructureParser";
+import { Structurer } from "../Structurer";
 import { JavaTSConfig } from "./JavaTSConfig";
 import { SupportedLanguage } from "../../language/supported";
 
-export class JavaStructureParser extends StructureParser {
-	protected langId: SupportedLanguage = "java";
+export class JavaStructurer extends Structurer {
+	protected langId: SupportedLanguage = "java"
 
 	/**
 	 * Parses the given code string and generates a CodeFile object representing the structure of the code.
@@ -19,7 +19,9 @@ export class JavaStructureParser extends StructureParser {
 		const captures = query!!.captures(tree.rootNode);
 
 		const codeFile: CodeFile = {
-			file_name: "", functions: [], path: "",
+			file_name: "",
+			functions: [],
+			path: "",
 			package: '',
 			imports: [],
 			classes: []
@@ -30,13 +32,16 @@ export class JavaStructureParser extends StructureParser {
 			methods: [],
 			name: '',
 			package: '',
-			implements: []
+			implements: [],
+			start: { row: 0, column: 0 },
+			end: { row: 0, column: 0 }
 		};
 		let isLastNode = false;
 
 		for (let i = 0; i < captures.length; i++) {
-			const capture: Parser.QueryCapture = captures[i];
+			const capture: Parser.QueryCapture = captures[i]!!;
 			const captureName = query.captureNames[i];
+			let methodReturnType = '';
 
 			const text = capture.node.text;
 			switch (captureName) {
@@ -49,25 +54,42 @@ export class JavaStructureParser extends StructureParser {
 				case 'class-name':
 					if (classObj.name !== '') {
 						codeFile.classes.push({ ...classObj });
-						classObj = { constant: [], extends: [], methods: [], name: '', package: codeFile.package, implements: [] };
+						classObj = {
+							constant: [], extends: [], methods: [], name: '', package: codeFile.package, implements: [],
+							start: { row: 0, column: 0 },
+							end: { row: 0, column: 0 }
+						};
 					}
 					classObj.name = text;
-					// @ts-ignore
-					const classNode = capture.node.parent();
-					if (classNode == null) {
+					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
+					if (classNode !== null) {
 						this.insertLocation(classObj, classNode);
 						if (!isLastNode) {
 							isLastNode = true;
 						}
 					}
 					break;
+				case 'method-returnType':
+					methodReturnType = text;
+					break;
+				case 'method-name':
+					const methodNode = capture.node?.parent ?? null;
+					const methodObj = this.createFunction(capture, text);
+					if (methodReturnType !== '') {
+						methodObj.returnType = methodReturnType;
+					}
+					if (methodNode !== null) {
+						this.insertLocation(classObj, methodNode);
+					}
+
+					methodReturnType = '';
+					classObj.methods.push(methodObj);
+					break;
 				case 'impl-name':
 					classObj.implements.push(text);
 					break;
-				case 'parameter':
-					break;
 				default:
-					console.log(`pattern: ${capture.node.startIndex}, capture: ${captureName}, row: ${capture.node.startPosition.row}, text: ${text}`);
+					// console.log(`pattern: ${capture.node.startIndex}, capture: ${captureName}, row: ${capture.node.startPosition.row}, text: ${text}`);
 					break;
 			}
 		}

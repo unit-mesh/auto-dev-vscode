@@ -1,13 +1,13 @@
 import { LanguageClient } from "vscode-languageclient/node";
-import { AutoDevContext } from "../../autodev-context";
-import { /**DocumentSymbol, SymbolInformation, */ extensions } from "vscode";
+import { AutoDevExtension } from "../../auto-dev-extension";
+import { DocumentSymbol, SymbolInformation, extensions } from "vscode";
 import { SemanticLsp } from "../SemanticLsp";
 
 // type DocumentSymbolsResponse = DocumentSymbol[] | SymbolInformation[] | null;
 
 export class JavaSemanticLsp extends SemanticLsp {
-  context: AutoDevContext;
-  constructor(context: AutoDevContext) {
+  context: AutoDevExtension;
+  constructor(context: AutoDevExtension) {
     super();
     this.context = context;
   }
