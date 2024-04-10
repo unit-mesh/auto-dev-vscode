@@ -17,7 +17,7 @@ export class PythonSemanticLsp implements SemanticLsp {
 
 	constructor(autoDevContext: AutoDevContext) {
 		this.autoDevContext = autoDevContext;
-		this.context = autoDevContext.vscContext
+		this.context = autoDevContext.vscContext;
 	}
 
 	isActive(): boolean {
@@ -70,7 +70,7 @@ export class PythonSemanticLsp implements SemanticLsp {
 	}
 
 	async makeRequest(method: string, param: any): Promise<any> {
-		if (!this.client) return;
+		if (!this.client) {return;}
 
 		if (this.client.state === State.Starting) {
 			return new Promise((resolve, reject) => {

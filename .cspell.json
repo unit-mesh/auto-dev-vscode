@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "languageId": "typescript,javascript",
+  "dictionaries": ["powershell", "typescript", "node"],
+  "useGitignore": true,
+  "ignorePaths": [],
+  "words": ["phodal"],
+  "allowCompoundWords": true,
+  "overrides": []
+}

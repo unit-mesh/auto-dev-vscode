@@ -1,6 +1,37 @@
-/node_modules
-/dist
-*.vsix
+.DS_store
+.history
+
+node_modules
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
 .idea
-out
+# .vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# build artifacts
+dist
+dist-*
+temp/
+
+# package managers
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+
+# VSCode extension
+*.vsix
 .vscode-test

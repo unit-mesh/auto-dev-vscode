@@ -6,7 +6,7 @@ import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { JavaSemanticLsp } from "../semantic-lsp/java/JavaSemanticLsp";
 
 export class AutoDevActionProvider implements vscode.CodeActionProvider {
-	private context: AutoDevContext;
+	readonly context: AutoDevContext;
 
 	constructor(context: AutoDevContext) {
 		this.context = context;
@@ -76,7 +76,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		return codeAction;
 	}
 
-	private static renderWithLsp(context: AutoDevContext) {
+	static renderWithLsp(context: AutoDevContext) {
 		const lsp = new JavaSemanticLsp(context);
 		const client = lsp?.getLanguageClient();
 		console.log(client);

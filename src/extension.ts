@@ -15,7 +15,7 @@ const channel = vscode.window.createOutputChannel("AutoDev");
 export function activate(context: vscode.ExtensionContext) {
   channel.show();
 
-  const sidebar = new AutoDevWebviewViewProvider();
+  const sidebar = new AutoDevWebviewViewProvider(context);
   const action = new IdeImpl();
   const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();

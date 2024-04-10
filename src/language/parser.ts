@@ -1,24 +1,38 @@
+import * as vscode from "vscode";
+
 import { EXT_LANGUAGE_MAP, type SupportedLanguage } from "./supported";
 import Parser, { Language } from "web-tree-sitter";
 import fs from "fs";
 import path from "path";
 
 const LanguageMap: Map<SupportedLanguage, Parser.Language> = new Map();
-async function loadLanguageOndemand(langid: SupportedLanguage) {
+async function loadLanguageOndemand(
+  uri: vscode.Uri,
+  langid: SupportedLanguage
+) {
   switch (langid) {
     case "c":
       if (!LanguageMap.has("c")) {
-        LanguageMap.set("c", await Parser.Language.load(wasmByLanguage("c")));
+        LanguageMap.set(
+          "c",
+          await Parser.Language.load(await wasmByLanguage(uri, "c"))
+        );
       }
       break;
     case "cpp":
       if (!LanguageMap.has("cpp")) {
-        LanguageMap.set("cpp", await Parser.Language.load(wasmByLanguage("cpp")));
+        LanguageMap.set(
+          "cpp",
+          await Parser.Language.load(await wasmByLanguage(uri, "cpp"))
+        );
       }
       break;
     case "csharp":
       if (!LanguageMap.has("csharp")) {
-        LanguageMap.set("csharp", await Parser.Language.load(wasmByLanguage("c_sharp")));
+        LanguageMap.set(
+          "csharp",
+          await Parser.Language.load(await wasmByLanguage(uri, "c_sharp"))
+        );
       }
       break;
     case "go":
@@ -28,27 +42,42 @@ async function loadLanguageOndemand(langid: SupportedLanguage) {
       break;
     case "java":
       if (!LanguageMap.has("java")) {
-        LanguageMap.set("java", await Parser.Language.load(wasmByLanguage("java")));
+        LanguageMap.set(
+          "java",
+          await Parser.Language.load(await wasmByLanguage(uri, "java"))
+        );
       }
       break;
     case "javascript":
       if (!LanguageMap.has("javascript")) {
-        LanguageMap.set("javascript", await Parser.Language.load(wasmByLanguage("javascript")));
+        LanguageMap.set(
+          "javascript",
+          await Parser.Language.load(await wasmByLanguage(uri, "javascript"))
+        );
       }
       break;
     case "typescript":
       if (!LanguageMap.has("typescript")) {
-        LanguageMap.set("typescript", await Parser.Language.load(wasmByLanguage("typescript")));
+        LanguageMap.set(
+          "typescript",
+          await Parser.Language.load(await wasmByLanguage(uri, "typescript"))
+        );
       }
       break;
     case "python":
       if (!LanguageMap.has("python")) {
-        LanguageMap.set("python", await Parser.Language.load(wasmByLanguage("python")));
+        LanguageMap.set(
+          "python",
+          await Parser.Language.load(await wasmByLanguage(uri, "python"))
+        );
       }
       break;
     case "rust":
       if (!LanguageMap.has("rust")) {
-        LanguageMap.set("rust", await Parser.Language.load(wasmByLanguage("rust")));
+        LanguageMap.set(
+          "rust",
+          await Parser.Language.load(await wasmByLanguage(uri, "rust"))
+        );
       }
       break;
     default:
@@ -108,7 +137,11 @@ export const ParserMap: Record<
 };
 
 let inited = false;
-export async function parse(langid: SupportedLanguage, source: string): Promise<Parser.Tree> {
+export async function parse(
+  uri: vscode.Uri,
+  langid: SupportedLanguage,
+  source: string
+): Promise<Parser.Tree> {
   if (!inited) {
     await Parser.init();
     inited = true;
@@ -118,11 +151,12 @@ export async function parse(langid: SupportedLanguage, source: string): Promise<
     throw new Error(`Unsupported language: ${langid}`);
   }
 
-  await loadLanguageOndemand(langid);
+  await loadLanguageOndemand(uri, langid);
   return ParserMap[langid](source);
 }
 
 export async function getLanguageForFile(
+  uri: vscode.Uri,
   filepath: string
 ): Promise<Language | undefined> {
   try {
@@ -134,28 +168,34 @@ export async function getLanguageForFile(
       return undefined;
     }
 
-    return await getLanguage(langid);
+    return await getLanguage(uri, langid);
   } catch (e) {
     console.error("Unable to load language for file", filepath, e);
     return undefined;
   }
 }
 
-function wasmByLanguage(langId: string) {
-  return path.join(
-    __dirname,
-    "tree-sitter-wasms",
-    `tree-sitter-${langId}.wasm`
+async function wasmByLanguage(extensionUri: vscode.Uri, langId: string) {
+  const bits = await vscode.workspace.fs.readFile(
+    vscode.Uri.joinPath(
+      extensionUri,
+      "dist",
+      "tree-sitter-wasms",
+      `tree-sitter-${langId}.wasm`
+    )
   );
+
+  return bits;
 }
 
 export async function getLanguage(
+  uri: vscode.Uri,
   langId: string
 ): Promise<Language | undefined> {
   try {
     await Parser.init();
 
-    await loadLanguageOndemand(langId);
+    await loadLanguageOndemand(uri, langId);
     return LanguageMap.get(langId);
   } catch (e) {
     console.error("Unable to load language for lang", langId, e);
@@ -163,7 +203,7 @@ export async function getLanguage(
   }
 }
 
-export async function getParserForFile(filepath: string) {
+export async function getParserForFile(uri: vscode.Uri, filepath: string) {
   if (process.env.IS_BINARY) {
     return undefined;
   }
@@ -172,7 +212,7 @@ export async function getParserForFile(filepath: string) {
     await Parser.init();
     const parser = new Parser();
 
-    const language = await getLanguageForFile(filepath);
+    const language = await getLanguageForFile(uri, filepath);
     parser.setLanguage(language);
 
     return parser;
@@ -193,14 +233,15 @@ export function getQuerySource(filepath: string) {
 }
 
 export async function getSnippetsInFile(
+  uri: vscode.Uri,
   filepath: string,
   contents: string
 ): Promise<(any & { title: string })[]> {
-  const lang = await getLanguageForFile(filepath);
+  const lang = await getLanguageForFile(uri, filepath);
   if (!lang) {
     return [];
   }
-  const parser = await getParserForFile(filepath);
+  const parser = await getParserForFile(uri, filepath);
   if (!parser) {
     return [];
   }
@@ -224,10 +265,11 @@ export async function getSnippetsInFile(
 }
 
 export async function getAst(
+  uri: vscode.Uri,
   filepath: string,
   fileContents: string
 ): Promise<Parser.Tree | undefined> {
-  const parser = await getParserForFile(filepath);
+  const parser = await getParserForFile(uri, filepath);
 
   if (!parser) {
     return undefined;

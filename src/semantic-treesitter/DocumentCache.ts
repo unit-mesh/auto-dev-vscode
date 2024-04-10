@@ -14,7 +14,7 @@ export class TreeSitterFileCache {
 
 	// 将 TreeSitterFile 存储到缓存中
 	public setDocument(uri: string, version: number, file: TreeSitterFile): void {
-		const key: DocumentKey = { uri, version };
+		// const key: DocumentKey = { uri, version };
 		if (!this.cache.has(uri)) {
 			this.cache.set(uri, new Map<number, TreeSitterFile>());
 		}

@@ -13,9 +13,9 @@ export abstract class StructureParser {
 		const parser = new Parser();
 		const language = await tsConfig.grammar();
 		parser.setLanguage(language);
-		this.parser = parser
-		this.language = language
-		return language?.query(tsConfig.structureQuery.scopeQuery)
+		this.parser = parser;
+		this.language = language;
+		return language?.query(tsConfig.structureQuery.scopeQuery);
 	}
 
 	protected async parseFile(code: string): Promise<CodeFile | undefined> {
@@ -33,7 +33,7 @@ export abstract class StructureParser {
 			name: text,
 			start: { row: 0, column: 0 },
 			end: { row: 0, column: 0 }
-		}
+		};
 
 		// @ts-ignore
 		const node = capture.node.parent()!!;

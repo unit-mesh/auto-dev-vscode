@@ -5,8 +5,6 @@ import { AutoDevContext } from "./autodev-context";
 import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
 import { insertCodeByRange, selectCodeInRange } from "./commands/editor";
 
-enum AutoDevCommand {}
-
 const commandsMap: (
   sidebar: AutoDevWebviewViewProvider,
   action: IdeAction
