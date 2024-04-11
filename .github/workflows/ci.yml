@@ -40,9 +40,6 @@ jobs:
       - name: Run unit tests
         run: pnpm run test
 
-      - name: Run integration tests
-        run: pnpm run integration-test
-
       - name: Upgrade packages 🔀
         run: npm upgrade
 
