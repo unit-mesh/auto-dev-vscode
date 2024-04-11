@@ -1,4 +1,4 @@
-import Parser, { SyntaxNode } from "web-tree-sitter";
+import Parser from "web-tree-sitter";
 import { CodeFile, CodeFunction, CodeStructure } from "../../model/program";
 import { Structurer } from "../Structurer";
 import { JavaTSConfig } from "./JavaTSConfig";
@@ -38,19 +38,16 @@ export class JavaStructurer extends Structurer {
 		};
 		let isLastNode = false;
 		const methods: CodeFunction[] = [];
+		let methodReturnType = '';
+		let methodName = '';
 
-		for (let i = 0; i < captures.length; i++) {
-			const capture: Parser.QueryCapture = captures[i]!!;
-			let methodReturnType = '';
-			let methodName = '';
-
-			const captureName = query.captureNames[i];
+		for (const element of captures) {
+			const capture: Parser.QueryCapture = element!!;
 			const text = capture.node.text;
 
-			// console.log(captureName);
-			// console.log(text);
+			console.log(capture.name)
 
-			switch (captureName) {
+			switch (capture.name) {
 				case 'package-name':
 					codeFile.package = text;
 					break;
@@ -83,18 +80,21 @@ export class JavaStructurer extends Structurer {
 					methodName = text;
 					break;
 				case 'method-body':
-					const methodNode = capture.node;
-					const methodObj = this.createFunction(capture, methodName);
-					if (methodReturnType !== '') {
-						methodObj.returnType = methodReturnType;
-					}
-					if (methodNode !== null) {
-						this.insertLocation(classObj, methodNode);
+					if (methodName !== '') {
+						const methodNode = capture.node;
+						const methodObj = this.createFunction(capture, methodName);
+						if (methodReturnType !== '') {
+							methodObj.returnType = methodReturnType;
+						}
+						if (methodNode !== null) {
+							this.insertLocation(classObj, methodNode);
+						}
+
+						methods.push(methodObj);
 					}
 
 					methodReturnType = '';
 					methodName = '';
-					methods.push(methodObj);
 					break;
 				case 'impl-name':
 					classObj.implements.push(text);

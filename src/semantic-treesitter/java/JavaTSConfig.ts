@@ -26,13 +26,13 @@ export const JavaTSConfig: TSLanguageConfig = {
 			  (scoped_identifier) @import-name)
 			
       (method_declaration
-        type: (type_identifier) @method-returnType
+        type: (_) @method-returnType
         name: (identifier) @method-name
         parameters: (formal_parameters
           (formal_parameter 
               (type_identifier) @method-param.type
               (identifier) @method-param.value
-          ) 
+          )? 
           @method-params)
         body: (block) @method-body
       )
