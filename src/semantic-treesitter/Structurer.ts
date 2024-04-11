@@ -8,12 +8,12 @@ export abstract class Structurer {
 	protected language: Parser.Language | undefined;
 	protected abstract langId: SupportedLanguage;
 
-	async init(): Promise<Query | undefined> {
+	async init(parser?: Parser): Promise<Query | undefined> {
 		const tsConfig = TSLanguage.fromId(this.langId)!!;
-		const parser = new Parser();
+		const _parser = parser ?? new Parser();
 		const language = await tsConfig.grammar();
-		parser.setLanguage(language);
-		this.parser = parser;
+		_parser.setLanguage(language);
+		this.parser = _parser;
 		this.language = language;
 		return language?.query(tsConfig.structureQuery.scopeQuery);
 	}

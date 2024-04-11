@@ -1,10 +1,10 @@
 import { MemoizedQuery, TSLanguageConfig } from "../TSLanguageConfig";
-import { getLanguage } from "../../parser/TreeSitterParser";
+import { LangServiceUtil } from "../../language/TSLanguageService";
 
 export const TypeScriptTSConfig: TSLanguageConfig = {
 	languageIds: ["TypeScript", "TSX"],
 	fileExtensions: ["ts", "tsx"],
-	grammar: () => getLanguage('typescript'),
+	grammar: () => LangServiceUtil.getLanguage('typescript'),
 	scopeQuery: new MemoizedQuery(""),
 	hoverableQuery: new MemoizedQuery(`
       [(identifier)

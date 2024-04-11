@@ -1,11 +1,10 @@
-import * as vscode from "vscode";
 import { MemoizedQuery, TSLanguageConfig } from "../TSLanguageConfig";
-import { getLanguage } from "../../parser/TreeSitterParser";
+import { LangServiceUtil } from "../../language/TSLanguageService";
 
 export const GoTSConfig: TSLanguageConfig = {
 	languageIds: ["Go"],
 	fileExtensions: ["go"],
-	grammar: () => getLanguage('go'),
+	grammar: () => LangServiceUtil.getLanguage('go'),
 	scopeQuery: new MemoizedQuery(""),
 	hoverableQuery: new MemoizedQuery(`
      [(identifier)
