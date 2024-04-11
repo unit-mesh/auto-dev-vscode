@@ -1,9 +1,10 @@
 import { LanguageClient } from "vscode-languageclient/node";
 
 export class SemanticLsp {
-  isActive(): boolean {
-    return true;
+  async isActive(): Promise<boolean> {
+    return false;
   }
+
   async getLanguageClient(): Promise<LanguageClient | undefined> {
     return undefined;
   }

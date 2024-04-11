@@ -1,9 +1,7 @@
 import { LanguageClient } from "vscode-languageclient/node";
 import { AutoDevExtension } from "../../auto-dev-extension";
-import { DocumentSymbol, SymbolInformation, extensions } from "vscode";
+import { extensions } from "vscode";
 import { SemanticLsp } from "../SemanticLsp";
-
-// type DocumentSymbolsResponse = DocumentSymbol[] | SymbolInformation[] | null;
 
 export class JavaSemanticLsp extends SemanticLsp {
   context: AutoDevExtension;
@@ -12,18 +10,16 @@ export class JavaSemanticLsp extends SemanticLsp {
     this.context = context;
   }
 
-  isActive(): boolean {
+  async isActive(): Promise<boolean> {
     let java = extensions.getExtension("redhat.java");
-    if (!java?.activate()) {
-      return false;
-    }
-
-    return true;
+    await java?.activate();
+    return java?.isActive || false;
   }
 
   async getLanguageClient(): Promise<LanguageClient | undefined> {
     let java = extensions.getExtension("redhat.java");
-    if (!java?.activate()) {
+    await java?.activate();
+    if (java?.isActive !== true) {
       return undefined;
     }
 
