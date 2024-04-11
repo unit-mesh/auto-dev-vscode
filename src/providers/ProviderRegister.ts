@@ -1,9 +1,9 @@
-import { AutoDevExtension } from "../AutoDevExtension.ts";
-import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage.ts";
+import { AutoDevExtension } from "../AutoDevExtension";
+import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import vscode from "vscode";
-import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider.ts";
-import { AutoDevActionProvider } from "./AutoDevActionProvider.ts";
-import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider.ts";
+import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider";
+import { AutoDevActionProvider } from "./AutoDevActionProvider";
+import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
 
 export function registerCodeLensProviders(context: AutoDevExtension) {
 	const filter = SUPPORTED_LANGUAGES.map(it => ({ language: it } as vscode.DocumentFilter));

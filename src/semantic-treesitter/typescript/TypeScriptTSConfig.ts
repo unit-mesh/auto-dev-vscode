@@ -1,5 +1,5 @@
 import { MemoizedQuery, TSLanguageConfig } from "../TSLanguageConfig";
-import { getLanguage } from "../../parser/TreeSitterParser.ts";
+import { getLanguage } from "../../parser/TreeSitterParser";
 
 export const TypeScriptTSConfig: TSLanguageConfig = {
 	languageIds: ["TypeScript", "TSX"],
@@ -69,4 +69,3 @@ export const TypeScriptTSConfig: TSLanguageConfig = {
 		]
 	]
 };
-  

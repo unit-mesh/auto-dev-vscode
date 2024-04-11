@@ -1,5 +1,5 @@
-import { CodeFile, CodeFunction, CodeStructure } from "../CodeFile.ts";
-import { Presenter } from "./Presenter.ts";
+import { CodeFile, CodeFunction, CodeStructure } from "../CodeFile";
+import { Presenter } from "./Presenter";
 
 export class PlantUMLPresenter implements Presenter {
 	convert(file: CodeFile): string {
@@ -11,12 +11,12 @@ export class PlantUMLPresenter implements Presenter {
 
 		// Add package if available
 		if (file.package) {
-			plantUmlString += `'package ${file.package}`;
+			plantUmlString += `'package ${file.package}\n`;
 		}
 
 		// Iterate through imports and add them to the PlantUML string as comments
 		file.imports.forEach(importItem => {
-			plantUmlString += `'import ${importItem}\n`;
+			plantUmlString += `'${importItem}\n`;
 		});
 
 		// Iterate through classes and convert them to PlantUML syntax
@@ -41,7 +41,8 @@ export class PlantUMLPresenter implements Presenter {
 	}
 
 	private convertFunctionToPlantUml(functionItem: CodeFunction, isMethod: boolean = false): string {
-		let plantUmlString = `${isMethod ? '+' : ''}${functionItem.name}(`;
+		// FIXME: the space before the string should be calculated based on the nest level
+		let plantUmlString = `  ${isMethod ? '+' : ''}${functionItem.name}(`;
 
 		// Iterate through function parameters and convert them to PlantUML syntax
 		functionItem.vars.forEach((variable, index) => {

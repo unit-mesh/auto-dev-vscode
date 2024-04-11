@@ -1,6 +1,6 @@
-import { PlantUMLPresenter } from "./PlantUMLPresenter.ts";
-import { CodeFile } from "../CodeFile.ts";
-import { LANGUAGE_COMMENT_MAP } from "../../language/LanguageCommentMap.ts";
+import { PlantUMLPresenter } from "./PlantUMLPresenter";
+import { CodeFile } from "../CodeFile";
+import { LANGUAGE_COMMENT_MAP } from "../../language/LanguageCommentMap";
 
 export class CommentUmlPresenter extends PlantUMLPresenter {
 	convert(file: CodeFile): string {

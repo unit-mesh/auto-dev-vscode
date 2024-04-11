@@ -1,10 +1,10 @@
-import { CodeFile } from "../codemodel/CodeFile.ts";
-import { PlantUMLPresenter } from "../codemodel/presenter/PlantUMLPresenter.ts";
-import { expect } from 'chai';
+import { CodeFile } from "../codemodel/CodeFile";
+import { PlantUMLPresenter } from "../codemodel/presenter/PlantUMLPresenter";
 
 describe('PlantUMLPresenter', () => {
   it('should convert a simple file to PlantUML', () => {
-    let codeFile: CodeFile = {
+    // given
+    const codeFile: CodeFile = {
       package: 'com.example',
       fileName: "ExampleClass.java",
       language: "java",
@@ -30,18 +30,18 @@ describe('PlantUMLPresenter', () => {
         },
       ],
     };
-
-    // Act
     const presenter = new PlantUMLPresenter();
+
+    // when
     const plantUmlString = presenter.convert(codeFile);
 
-    // Assert
-    expect(plantUmlString).to.equal(
+    // then
+    expect(plantUmlString).toBe(
       `@startuml
 'package com.example
 'import java.util.List
 class ExampleClass {
-  +exampleMethod(param1: string, param2: int) : void
+  +exampleMethod(param1: string, param2: int): void
 }
 @enduml
 `,

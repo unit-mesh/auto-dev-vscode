@@ -3,8 +3,8 @@ import Parser from "web-tree-sitter";
 import path from "path";
 import fs from "fs";
 
-import { getLanguageForFile } from "./TreeSitterParser.ts";
-import { EXT_LANGUAGE_MAP } from "../language/ExtLanguageMap.ts";
+import { getLanguageForFile } from "./TreeSitterParser";
+import { EXT_LANGUAGE_MAP } from "../language/ExtLanguageMap";
 
 export async function getParserForFile(uri: vscode.Uri, filepath: string) {
 	if (process.env.IS_BINARY) {

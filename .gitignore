@@ -26,6 +26,7 @@ pnpm-debug.log*
 dist
 dist-*
 temp/
+out/
 
 # package managers
 yarn.lock

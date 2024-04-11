@@ -1,5 +1,5 @@
 import { extensions } from "vscode";
-import { PackageDependencies } from "./DependenceInfo.ts";
+import { PackageDependencies } from "./DependenceInfo";
 
 export class GradleSync {
 	findDeps(): PackageDependencies[] {
