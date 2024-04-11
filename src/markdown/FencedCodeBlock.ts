@@ -1,6 +1,18 @@
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage.ts";
 
-export class FencedCode {
+/**
+ * FencedCodeBlock class represents a block of code that is delimited by triple backticks (```) and can optionally have a
+ * language identifier.
+ *
+ * This class is used to parse and represent code blocks within Markdown or other text documents. It provides methods to
+ * parse the content of a code block and to retrieve the language identifier and the code itself.
+ *
+ * @class FencedCodeBlock
+ * @param {string} language The language identifier of the code block.
+ * @param {string} text The text content of the code block.
+ * @param {boolean} isComplete Indicates whether the code block is complete or not.
+ */
+export class FencedCodeBlock {
 	language: string;
 	text: string;
 	isComplete: boolean;
@@ -11,7 +23,7 @@ export class FencedCode {
 		this.isComplete = isComplete;
 	}
 
-	static parse(content: string): FencedCode {
+	static parse(content: string): FencedCodeBlock {
 		const regex = /```([\w#+]*)/;
 		// convert content \\n to \n
 		const lines = content.replace(/\\n/g, "\n").split("\n");
@@ -56,18 +68,18 @@ export class FencedCode {
 		}
 
 		let trimmedCode = codeBuilder.slice(startIndex, endIndex + 1).join("\n");
-		const language = FencedCode.findLanguage(languageId || "");
+		const language = FencedCodeBlock.findLanguage(languageId || "");
 
 		// if content is not empty, but code is empty, then it's a markdown
 		if (!trimmedCode.trim()) {
-			return new FencedCode("markdown", content.replace(/\\n/g, "\n"), codeClosed);
+			return new FencedCodeBlock("markdown", content.replace(/\\n/g, "\n"), codeClosed);
 		}
 
 		if (languageId === "devin" || languageId === "devins") {
 			trimmedCode = trimmedCode.replace(/\\`\\`\\`/g, "```");
 		}
 
-		return new FencedCode(language, trimmedCode, codeClosed);
+		return new FencedCodeBlock(language, trimmedCode, codeClosed);
 	}
 
 	/**
