@@ -6,10 +6,10 @@ export const SUPPORTED_LANGUAGES = [
   "csharp",
   "go",
   "java",
-  "javascript",
-  "typescript",
   "python",
   "rust",
+  "javascript",
+  "typescript",
 ];
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
