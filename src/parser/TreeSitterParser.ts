@@ -41,7 +41,10 @@ async function loadLanguageOndemand(
       break;
     case "go":
       if (!LanguageParserMap.has("go")) {
-        LanguageParserMap.set("go", await Parser.Language.load("go"));
+        LanguageParserMap.set(
+          "go",
+          await Parser.Language.load(await wasmByLanguage(uri, "go"))
+        );
       }
       break;
     case "java":
@@ -140,15 +143,15 @@ export const ParserMap: Record<
   },
 };
 
-let inited = false;
+let isInit = false;
 export async function parse(
   uri: vscode.Uri,
   langid: SupportedLanguage,
   source: string,
 ): Promise<Parser.Tree> {
-  if (!inited) {
+  if (!isInit) {
     await Parser.init();
-    inited = true;
+    isInit = true;
   }
 
   if (!ParserMap[langid]) {
@@ -157,6 +160,19 @@ export async function parse(
 
   await loadLanguageOndemand(langid, uri);
   return ParserMap[langid](source);
+}
+
+async function wasmByLanguage(extensionUri: vscode.Uri, langId: string) {
+  const bits = await vscode.workspace.fs.readFile(
+    vscode.Uri.joinPath(
+      extensionUri,
+      "dist",
+      "tree-sitter-wasms",
+      `tree-sitter-${langId}.wasm`
+    )
+  );
+
+  return bits;
 }
 
 export async function getLanguageForFile(
@@ -177,19 +193,6 @@ export async function getLanguageForFile(
     console.error("Unable to load language for file", filepath, e);
     return undefined;
   }
-}
-
-async function wasmByLanguage(extensionUri: vscode.Uri, langId: string) {
-  const bits = await vscode.workspace.fs.readFile(
-    vscode.Uri.joinPath(
-      extensionUri,
-      "dist",
-      "tree-sitter-wasms",
-      `tree-sitter-${langId}.wasm`
-    )
-  );
-
-  return bits;
 }
 
 export async function getLanguage(
