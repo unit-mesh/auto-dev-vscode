@@ -1,8 +1,8 @@
 import { extensions } from "vscode";
-import { DependenceInfo } from "./DependenceInfo";
+import { PackageDependencies } from "./DependenceInfo.ts";
 
 export class GradleSync {
-	findDeps(): DependenceInfo[] {
+	findDeps(): PackageDependencies[] {
 		let java = extensions.getExtension("redhat.java");
 		if (!java?.activate()) {
 			return [];

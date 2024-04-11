@@ -10,7 +10,6 @@ export function selectCodeInRange(start: vscode.Position, end: vscode.Position) 
 }
 
 export function insertCodeByRange(textRange: Position, doc: string) {
-	// edit.insert(document.uri, range.blockRange.start, doc);
 	const editor = vscode.window.activeTextEditor;
 	if (editor) {
 		editor.edit((editBuilder) => {
