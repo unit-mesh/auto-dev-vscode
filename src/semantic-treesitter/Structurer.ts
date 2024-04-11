@@ -1,7 +1,9 @@
 import Parser, { Query } from "web-tree-sitter";
 import { SupportedLanguage } from "../language/supported";
 import { TSLanguage } from "./TreeSitterLanguage";
-import { CodeFile, CodeFunction, CodeStructure } from "../model/program";
+import { CodeFile } from "../model/CodeFile.ts";
+import { CodeStructure } from "../model/CodeStructure.ts";
+import { CodeFunction } from "../model/CodeFunction.ts";
 
 export abstract class Structurer {
 	protected parser: Parser | undefined;

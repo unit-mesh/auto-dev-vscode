@@ -1,8 +1,10 @@
 import Parser from "web-tree-sitter";
-import { CodeFile, CodeFunction, CodeStructure } from "../../model/program";
 import { Structurer } from "../Structurer";
 import { JavaTSConfig } from "./JavaTSConfig";
 import { SupportedLanguage } from "../../language/supported";
+import { CodeFile } from "../../model/CodeFile.ts";
+import { CodeStructure } from "../../model/CodeStructure.ts";
+import { CodeFunction } from "../../model/CodeFunction.ts";
 
 export class JavaStructurer extends Structurer {
 	protected langId: SupportedLanguage = "java";
@@ -44,8 +46,6 @@ export class JavaStructurer extends Structurer {
 		for (const element of captures) {
 			const capture: Parser.QueryCapture = element!!;
 			const text = capture.node.text;
-
-			console.log(capture.name)
 
 			switch (capture.name) {
 				case 'package-name':
