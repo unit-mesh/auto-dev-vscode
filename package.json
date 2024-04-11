@@ -113,8 +113,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx",
     "lint:fix": "eslint . --ext ts,tsx --fix",
-    "pretest": "pnpm run lint",
-    "test": "vscode-test",
+    "preintegration-test": "tsc -p . --outDir out",
+    "integration-test": "vscode-test",
     "watch-tests": "tsc -p . -w --outDir out",
     "unit-test": "vitest --run",
     "vscode:prepublish": "pnpm run build"
