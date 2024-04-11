@@ -1,5 +1,5 @@
 import Velocity from "velocityjs";
-import { TemplateContext } from "./TemplateContext.ts";
+import { TemplateContext } from "./TemplateContext";
 import fs from "fs";
 
 export class TemplateRender {
