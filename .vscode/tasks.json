@@ -6,7 +6,20 @@
 		{
 			"type": "npm",
 			"script": "watch",
-			"problemMatcher": "$ts-webpack-watch",
+			"problemMatcher": {
+				"pattern": {
+					"regexp": ".*?(build started...).*?",
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": {
+						"regexp": ".*?(build started...).*?"
+					},
+					"endsPattern": {
+						"regexp": ".*?(built in ).*?"
+					}
+				},
+			},
 			"isBackground": true,
 			"presentation": {
 				"reveal": "never",
