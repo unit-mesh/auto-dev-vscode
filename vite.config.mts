@@ -16,7 +16,7 @@ export default defineConfig((api) => {
       viteStaticCopy({
         targets: [
           {
-            src: "node_modules/@unit-mesh/treesitter-artifacts/wasm",
+            src: "node_modules/@unit-mesh/treesitter-artifacts/wasm/*.wasm",
             dest: "tree-sitter-wasms",
           },
           {
