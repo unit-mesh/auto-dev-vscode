@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { type SupportedLanguage } from "../language/SupportedLangauge.ts";
+import { type SupportedLanguage } from "../language/SupportedLanguage.ts";
 import Parser, { Language } from "web-tree-sitter";
 import path from "path";
 

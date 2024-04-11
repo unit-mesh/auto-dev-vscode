@@ -1,5 +1,5 @@
 import { PositionElement } from "./PositionElement.ts";
-import { SupportedLanguage } from "../language/SupportedLangauge.ts";
+import { SupportedLanguage } from "../language/SupportedLanguage.ts";
 
 export interface CodeFile {
 	fileName: string;

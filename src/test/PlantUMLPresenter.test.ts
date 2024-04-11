@@ -1,5 +1,5 @@
-import { CodeFile } from "../model/CodeFile.ts";
-import { PlantUMLPresenter } from "../model/presenter/PlantUMLPresenter.ts";
+import { CodeFile } from "../codemodel/CodeFile.ts";
+import { PlantUMLPresenter } from "../codemodel/presenter/PlantUMLPresenter.ts";
 import { expect } from 'chai';
 
 describe('PlantUMLPresenter', () => {

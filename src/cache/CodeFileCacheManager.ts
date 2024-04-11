@@ -1,6 +1,6 @@
 import { Uri } from "vscode";
 import { FileCacheManger } from "./FileCacheManger";
-import { CodeFile } from "../model/CodeFile.ts";
+import { CodeFile } from "../codemodel/CodeFile.ts";
 
 export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 	private cache: Map<Uri, Map<number, CodeFile>>;

@@ -1,5 +1,3 @@
-
-
 export const SUPPORTED_LANGUAGES = [
   "c",
   "cpp",

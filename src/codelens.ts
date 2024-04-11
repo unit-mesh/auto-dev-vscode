@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { SUPPORTED_LANGUAGES, SupportedLanguage } from "./language/SupportedLangauge.ts";
+import { SUPPORTED_LANGUAGES, SupportedLanguage } from "./language/SupportedLanguage.ts";
 import { parse } from './parser/TreeSitterParser.ts';
 import { AutoDevExtension } from "./auto-dev-extension";
 
