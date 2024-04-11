@@ -232,7 +232,8 @@ export function getQuerySource(filepath: string) {
   if (!fs.existsSync(sourcePath)) {
     throw new Error("cannot find file:" + sourcePath);
   }
-
+  
+  // TODO: use vscode.workspace.fs.readFile
   return fs.readFileSync(sourcePath).toString();
 }
 
