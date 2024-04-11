@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
-import { SUPPORTED_LANGUAGES, SupportedLanguage } from "./language/SupportedLanguage.ts";
-import { parse } from './parser/TreeSitterParser.ts';
-import { AutoDevExtension } from "./auto-dev-extension";
+import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../language/SupportedLanguage.ts";
+import { parse } from '../parser/TreeSitterParser.ts';
+import { AutoDevExtension } from "../AutoDevExtension.ts";
 
-class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
+export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
   constructor(private readonly context: AutoDevExtension) {}
 
   onDidChangeCodeLenses: vscode.Event<void> | undefined;
@@ -38,12 +38,3 @@ class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
   }
 }
 
-export function registerCodeLens(context: AutoDevExtension) {
-    const filter = SUPPORTED_LANGUAGES.map(it => ({language: it} as vscode.DocumentFilter));
-    const codelensProviderSub = vscode.languages.registerCodeLensProvider(
-        filter,
-        new AutoDevCodeLensProvider(context),
-    );
-
-    context.extensionContext.subscriptions.push(codelensProviderSub);
-}

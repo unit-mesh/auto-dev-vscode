@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
 import { IdeAction } from "./action/ide-action";
-import { AutoDevExtension } from "./auto-dev-extension";
+import { AutoDevExtension } from "./AutoDevExtension.ts";
 import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
 import { insertCodeByRange, selectCodeInRange } from "./commands/editor";
 

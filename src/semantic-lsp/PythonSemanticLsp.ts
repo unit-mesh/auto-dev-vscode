@@ -8,7 +8,7 @@ import {
 } from "vscode-languageclient/node";
 import { SemanticLsp } from "./SemanticLsp";
 import vscode, { extensions, workspace } from "vscode";
-import { AutoDevExtension } from "../auto-dev-extension";
+import { AutoDevExtension } from "../AutoDevExtension.ts";
 
 export class PythonSemanticLsp implements SemanticLsp {
 	private autoDevExtension: AutoDevExtension;

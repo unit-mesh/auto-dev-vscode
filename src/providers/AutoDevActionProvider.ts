@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { AutoDevExtension } from "../auto-dev-extension";
+import { AutoDevExtension } from "../AutoDevExtension.ts";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage.ts";
 import { TreeSitterFile, TreeSitterFileError, } from "../semantic-treesitter/TreeSitterFile";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";

@@ -1,5 +1,5 @@
 import { LanguageClient } from "vscode-languageclient/node";
-import { AutoDevExtension } from "../../auto-dev-extension";
+import { AutoDevExtension } from "../../AutoDevExtension.ts";
 import { extensions } from "vscode";
 import { SemanticLsp } from "../SemanticLsp";
 
