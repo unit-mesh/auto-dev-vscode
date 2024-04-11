@@ -36,3 +36,4 @@ pnpm-lock.yaml
 # VSCode extension
 *.vsix
 .vscode-test
+coverage/
