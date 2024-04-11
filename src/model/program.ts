@@ -1,5 +1,5 @@
 export interface CodeFile {
-	file_name: string;
+	fileName: string;
 	path: string;
 	package: string;
 	imports: string[];

@@ -1,5 +1,5 @@
 import Parser, { SyntaxNode } from "web-tree-sitter";
-import { CodeFile, CodeStructure } from "../../model/program";
+import { CodeFile, CodeFunction, CodeStructure } from "../../model/program";
 import { Structurer } from "../Structurer";
 import { JavaTSConfig } from "./JavaTSConfig";
 import { SupportedLanguage } from "../../language/supported";
@@ -19,7 +19,7 @@ export class JavaStructurer extends Structurer {
 		const captures = query!!.captures(tree.rootNode);
 
 		const codeFile: CodeFile = {
-			file_name: "",
+			fileName: "",
 			functions: [],
 			path: "",
 			package: '',
@@ -37,13 +37,19 @@ export class JavaStructurer extends Structurer {
 			end: { row: 0, column: 0 }
 		};
 		let isLastNode = false;
+		const methods: CodeFunction[] = [];
 
 		for (let i = 0; i < captures.length; i++) {
 			const capture: Parser.QueryCapture = captures[i]!!;
-			const captureName = query.captureNames[i];
 			let methodReturnType = '';
+			let methodName = '';
 
+			const captureName = query.captureNames[i];
 			const text = capture.node.text;
+
+			// console.log(captureName);
+			// console.log(text);
+
 			switch (captureName) {
 				case 'package-name':
 					codeFile.package = text;
@@ -55,7 +61,8 @@ export class JavaStructurer extends Structurer {
 					if (classObj.name !== '') {
 						codeFile.classes.push({ ...classObj });
 						classObj = {
-							constant: [], extends: [], methods: [], name: '', package: codeFile.package, implements: [],
+							package: codeFile.package, implements: [],
+							constant: [], extends: [], methods: [], name: '',
 							start: { row: 0, column: 0 },
 							end: { row: 0, column: 0 }
 						};
@@ -73,8 +80,11 @@ export class JavaStructurer extends Structurer {
 					methodReturnType = text;
 					break;
 				case 'method-name':
-					const methodNode = capture.node?.parent ?? null;
-					const methodObj = this.createFunction(capture, text);
+					methodName = text;
+					break;
+				case 'method-body':
+					const methodNode = capture.node;
+					const methodObj = this.createFunction(capture, methodName);
 					if (methodReturnType !== '') {
 						methodObj.returnType = methodReturnType;
 					}
@@ -83,7 +93,8 @@ export class JavaStructurer extends Structurer {
 					}
 
 					methodReturnType = '';
-					classObj.methods.push(methodObj);
+					methodName = '';
+					methods.push(methodObj);
 					break;
 				case 'impl-name':
 					classObj.implements.push(text);
@@ -93,6 +104,8 @@ export class JavaStructurer extends Structurer {
 					break;
 			}
 		}
+
+		classObj.methods = methods;
 
 		if (isLastNode) {
 			codeFile.classes.push({ ...classObj });
