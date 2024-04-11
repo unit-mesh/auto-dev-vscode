@@ -47,11 +47,16 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] Database
     - [ ] Terminal
     - [ ] UI
-- [ ] Local embedding with ONNX
+- [ ] Local embedding
+    - [ ] ONNX Runtime
+    - [ ] Embedding Database
+        - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike
+            - [vectordb](https://www.npmjs.com/package/vectordb)
+        - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike
 
 ## Resources
 
-test TreeSitter: [https://tree-sitter.github.io/tree-sitter/playground](https://tree-sitter.github.io/tree-sitter/playground)
+- TreeSitter [Playground](https://tree-sitter.github.io/tree-sitter/playground)
 
 ## LICENSE
 
