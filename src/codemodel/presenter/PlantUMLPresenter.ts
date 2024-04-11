@@ -1,5 +1,5 @@
-import { CodeFile, CodeFunction, CodeStructure } from "../CodeFile.ts";
-import { Presenter } from "./Presenter.ts";
+import { CodeFile, CodeFunction, CodeStructure } from "../CodeFile";
+import { Presenter } from "./Presenter";
 
 export class PlantUMLPresenter implements Presenter {
 	convert(file: CodeFile): string {

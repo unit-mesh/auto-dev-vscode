@@ -1,5 +1,5 @@
 import Parser from "web-tree-sitter";
-import { JavaStructurer } from "../semantic-treesitter/java/JavaStructurer.ts";
+import { JavaStructurer } from "../semantic-treesitter/java/JavaStructurer";
 import * as vscode from "vscode";
 
 describe('JavaStructureParser', () => {

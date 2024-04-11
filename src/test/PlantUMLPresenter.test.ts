@@ -1,5 +1,5 @@
-import { CodeFile } from "../codemodel/CodeFile.ts";
-import { PlantUMLPresenter } from "../codemodel/presenter/PlantUMLPresenter.ts";
+import { CodeFile } from "../codemodel/CodeFile";
+import { PlantUMLPresenter } from "../codemodel/presenter/PlantUMLPresenter";
 
 describe('PlantUMLPresenter', () => {
   it('should convert a simple file to PlantUML', () => {

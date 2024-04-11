@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { MemoizedQuery, TSLanguageConfig } from "../TSLanguageConfig";
-import { getLanguage } from "../../parser/TreeSitterParser.ts";
+import { getLanguage } from "../../parser/TreeSitterParser";
 
 export const GoTSConfig: TSLanguageConfig = {
 	languageIds: ["Go"],
@@ -54,4 +54,3 @@ export const GoTSConfig: TSLanguageConfig = {
 		["label"],
 	]
 };
-  

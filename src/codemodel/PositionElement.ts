@@ -1,4 +1,4 @@
-import { CodePosition } from "./CodeFile.ts";
+import { CodePosition } from "./CodeFile";
 
 export interface PositionElement {
 	start: CodePosition;

@@ -10,7 +10,6 @@
     /* Bundler mode */
     "moduleResolution": "Node",
     "esModuleInterop": true,
-    "allowImportingTsExtensions": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,

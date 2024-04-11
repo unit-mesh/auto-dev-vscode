@@ -1,4 +1,4 @@
-import { SupportedLanguage } from "./SupportedLanguage.ts";
+import { SupportedLanguage } from "./SupportedLanguage";
 
 export const LANGUAGE_COMMENT_MAP: { [key: SupportedLanguage]: string } = {
 	"c": "//",
