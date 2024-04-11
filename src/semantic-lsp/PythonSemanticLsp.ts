@@ -20,7 +20,7 @@ export class PythonSemanticLsp implements SemanticLsp {
 		this.context = autoDevExtension.extensionContext;
 	}
 
-	isActive(): boolean {
+	async isActive(): Promise<boolean> {
 		return true;
 	}
 
