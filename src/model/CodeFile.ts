@@ -6,15 +6,15 @@ export interface CodeFile {
 	package: string;
 	imports: string[];
 	classes: CodeStructure[];
-	functions: CodeFunction[];
+	functions?: CodeFunction[];
 }
 
 export interface CodeStructure extends PositionElement {
 	name: string;
 	package: string;
-	extends: string[];
+	extends?: string[];
 	implements: string[];
-	constant: CodeVariable[];
+	constant?: CodeVariable[];
 	// in some languages, functions and methods are different names
 	methods: CodeFunction[];
 	start: CodePosition;

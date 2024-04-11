@@ -20,11 +20,6 @@ export class PlantUMLPresenter implements Presenter {
 			plantUmlString += this.convertClassToPlantUml(classItem);
 		});
 
-		// Iterate through functions and convert them to PlantUML syntax
-		file.functions.forEach(functionItem => {
-			plantUmlString += this.convertFunctionToPlantUml(functionItem);
-		});
-
 		plantUmlString += `@enduml\n`;
 		return plantUmlString;
 	}
