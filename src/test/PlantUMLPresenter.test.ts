@@ -3,7 +3,6 @@ import { PlantUMLPresenter } from "../codemodel/presenter/PlantUMLPresenter";
 
 describe('PlantUMLPresenter', () => {
   it('should convert a simple file to PlantUML', () => {
-    // given
     const codeFile: CodeFile = {
       package: 'com.example',
       fileName: "ExampleClass.java",
@@ -30,12 +29,10 @@ describe('PlantUMLPresenter', () => {
         },
       ],
     };
-    const presenter = new PlantUMLPresenter();
 
-    // when
+    const presenter = new PlantUMLPresenter();
     const plantUmlString = presenter.convert(codeFile);
 
-    // then
     expect(plantUmlString).toBe(
       `@startuml
 'package com.example

@@ -18,8 +18,6 @@ describe('PostCodeProcessor', () => {
 			const completeCode = 'if (true) {\nconsole.log("Hello, world!");\n}';
 			const processor = new PostCodeProcessor(prefixCode, suffixCode, completeCode);
 			const formattedCode = processor.execute();
-
-			console.log(formattedCode)
 			expect(formattedCode).toBe(
 				"    if (true) {\n" +
 				"    console.log(\"Hello, world!\");\n" +
@@ -36,7 +34,5 @@ describe('PostCodeProcessor', () => {
 
 			expect(formattedCode).toBe('');
 		});
-
-		// Add more test cases as needed
 	});
 });

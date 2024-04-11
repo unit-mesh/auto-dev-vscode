@@ -117,7 +117,7 @@
     "integration-test": "vscode-test",
     "integration-test:watch": "tsc -p . -w --outDir out",
     "test": "vitest --run",
-    "test:watch": "vitest",
+    "test:watch": "vitest --silent=false",
     "vscode:prepublish": "pnpm run build"
   },
   "packageManager": "pnpm@8.15.5",

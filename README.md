@@ -10,7 +10,7 @@
         <img src="https://github.com/unit-mesh/auto-dev-vscode/actions/workflows/ci.yml/badge.svg" alt="CI" />
     </a>
     <a href="https://codecov.io/gh/unit-mesh/auto-dev-vscode">
-        <img src="https://codecov.io/gh/unit-mesh/auto-dev-vscode/branch/main/graph/badge.svg?token=2i07qhIqQh" alt="codecov" />
+        <img src="https://codecov.io/gh/unit-mesh/auto-dev-vscode/graph/badge.svg?token=2i07qhIqQh" alt="codecov" />
     </a>
 </p>
 

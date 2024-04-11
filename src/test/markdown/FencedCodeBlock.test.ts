@@ -37,8 +37,6 @@ describe('FencedCodeBlock', () => {
 			expect(parsedBlock.text).toBe('console.log("Hello, world!");');
 			expect(parsedBlock.isComplete).toBe(true);
 		});
-
-		// Add more test cases as needed
 	});
 
 	describe('findLanguage method', () => {
@@ -51,7 +49,5 @@ describe('FencedCodeBlock', () => {
 		it('should return default language for unknown languages', () => {
 			expect(FencedCodeBlock.findLanguage('unknown')).toBe('markdown');
 		});
-
-		// Add more test cases as needed
 	});
 });
