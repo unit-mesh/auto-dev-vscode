@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { AutoDevExtension } from "../auto-dev-extension";
-import { SUPPORTED_LANGUAGES } from "../language/supported";
+import { SUPPORTED_LANGUAGES } from "../language/SupportedLangauge.ts";
 import { TreeSitterFile, TreeSitterFileError, } from "../semantic-treesitter/TreeSitterFile";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { JavaSemanticLsp } from "../semantic-lsp/java/JavaSemanticLsp";

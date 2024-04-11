@@ -1,11 +1,12 @@
 import * as vscode from "vscode";
 
-import { EXT_LANGUAGE_MAP, type SupportedLanguage } from "./supported";
+import { type SupportedLanguage } from "./SupportedLangauge.ts";
 import Parser, { Language } from "web-tree-sitter";
 import fs from "fs";
 import path from "path";
 
 import { getExtensionUri } from '../context';
+import { EXT_LANGUAGE_MAP } from "./ExtLanguageMap.ts";
 
 const LanguageMap: Map<SupportedLanguage, Parser.Language> = new Map();
 async function loadLanguageOndemand(

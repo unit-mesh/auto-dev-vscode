@@ -1,4 +1,4 @@
-import { SupportedLanguage } from "../language/supported";
+import { SupportedLanguage } from "../language/SupportedLangauge.ts";
 import { Structurer } from "./Structurer";
 import { JavaStructurer } from "./java/JavaStructurer";
 

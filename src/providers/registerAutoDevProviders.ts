@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { AutoDevExtension } from "../auto-dev-extension";
-import { SUPPORTED_LANGUAGES } from "../language/supported";
+import { SUPPORTED_LANGUAGES } from "../language/SupportedLangauge.ts";
 import { AutoDevActionProvider } from "./AutoDevActionProvider";
 
 export function registerAutoDevProviders(context: AutoDevExtension) {

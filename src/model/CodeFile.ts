@@ -1,7 +1,9 @@
 import { PositionElement } from "./PositionElement.ts";
+import { SupportedLanguage } from "../language/SupportedLangauge.ts";
 
 export interface CodeFile {
 	fileName: string;
+	language: SupportedLanguage;
 	path: string;
 	package: string;
 	imports: string[];

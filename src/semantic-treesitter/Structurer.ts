@@ -1,5 +1,5 @@
 import Parser, { Query } from "web-tree-sitter";
-import { SupportedLanguage } from "../language/supported";
+import { SupportedLanguage } from "../language/SupportedLangauge.ts";
 import { TSLanguage } from "./TreeSitterLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../model/CodeFile.ts";
 

@@ -7,6 +7,7 @@ describe('PlantUMLPresenter', () => {
     let codeFile: CodeFile = {
       package: 'com.example',
       fileName: "ExampleClass.java",
+      language: "java",
       path: 'com/example',
       functions: [],
       imports: ['import java.util.List'],

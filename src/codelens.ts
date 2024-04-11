@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { SUPPORTED_LANGUAGES, SupportedLanguage } from "./language/supported";
-import { parse } from './language/parser';
+import { SUPPORTED_LANGUAGES, SupportedLanguage } from "./language/SupportedLangauge.ts";
+import { parse } from './language/TreeSitterParser.ts';
 import { AutoDevExtension } from "./auto-dev-extension";
 
 class AutoDevCodeLensProvider implements vscode.CodeLensProvider {

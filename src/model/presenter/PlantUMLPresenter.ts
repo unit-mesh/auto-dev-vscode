@@ -3,6 +3,10 @@ import { Presenter } from "./Presenter.ts";
 
 export class PlantUMLPresenter implements Presenter {
 	convert(file: CodeFile): string {
+		return this.render(file);
+	}
+
+	protected render(file: CodeFile): string {
 		let plantUmlString = `@startuml\n`;
 
 		// Add package if available

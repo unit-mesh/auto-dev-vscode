@@ -1,7 +1,7 @@
 import Parser from "web-tree-sitter";
 import { Structurer } from "../Structurer";
 import { JavaTSConfig } from "./JavaTSConfig";
-import { SupportedLanguage } from "../../language/supported";
+import { SupportedLanguage } from "../../language/SupportedLangauge.ts";
 import { CodeFile, CodeFunction, CodeStructure } from "../../model/CodeFile.ts";
 
 export class JavaStructurer extends Structurer {
@@ -20,6 +20,7 @@ export class JavaStructurer extends Structurer {
 
 		const codeFile: CodeFile = {
 			fileName: "",
+			language: this.langId,
 			functions: [],
 			path: "",
 			package: '',
