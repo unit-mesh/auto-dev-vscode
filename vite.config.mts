@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { externalizeDeps } from "vite-plugin-externalize-deps";
@@ -39,5 +40,9 @@ export default defineConfig((api) => {
         fileName: "extension",
       },
     },
+    test: {
+      include: ["src/test/**/*.test.ts"],
+      globals: true,
+    }
   };
 });

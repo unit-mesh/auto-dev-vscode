@@ -4,13 +4,9 @@ const { defineConfig } = require('@vscode/test-cli');
 module.exports = defineConfig([
   {
     label: 'unitTests',
-    files: 'out/test/**/*.test.js',
+    files: 'src/integration-test/**/*.test.ts',
     version: 'insiders',
-    workspaceFolder: './sampleWorkspace',
-    mocha: {
-      ui: 'tdd',
-      timeout: 20000
-    }
+    workspaceFolder: './sampleWorkspace'
   }
   // you can specify additional test configurations, too
 ]);

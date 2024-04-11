@@ -116,7 +116,7 @@
     "pretest": "pnpm run lint",
     "test": "vscode-test",
     "watch-tests": "tsc -p . -w --outDir out",
-    "unit-test": "mocha out/test/**/*.test.js",
+    "unit-test": "vitest --run",
     "vscode:prepublish": "pnpm run build"
   },
   "packageManager": "pnpm@8.15.5",
@@ -144,6 +144,7 @@
     "vite-plugin-checker": "^0.6.4",
     "vite-plugin-dts": "^3.8.1",
     "vite-plugin-externalize-deps": "^0.8.0",
-    "vite-plugin-static-copy": "^1.0.2"
+    "vite-plugin-static-copy": "^1.0.2",
+    "vitest": "^1.4.0"
   }
 }
