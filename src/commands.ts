@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { AutoDevExtension } from "./AutoDevExtension.ts";
+import { AutoDevExtension } from "./AutoDevExtension";
 import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
 import { insertCodeByRange, selectCodeInRange } from "./commands/editor";
 

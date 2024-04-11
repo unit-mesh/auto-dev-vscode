@@ -5,12 +5,12 @@ import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider
 import { IdeImpl } from "./action/ide-impl";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
-import { AutoDevExtension } from "./AutoDevExtension.ts";
+import { AutoDevExtension } from "./AutoDevExtension";
 import { StructureProvider } from "./semantic-treesitter/StructureProvider";
 import Parser from "web-tree-sitter";
 
 import { setExtensionContext, removeExtensionContext } from './context';
-import { registerAutoDevProviders, registerCodeLensProviders, registerQuickFixProvider } from "./providers/ProviderRegister.ts";
+import { registerAutoDevProviders, registerCodeLensProviders, registerQuickFixProvider } from "./providers/ProviderRegister";
 
 const channel = vscode.window.createOutputChannel("AutoDev");
 
