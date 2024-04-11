@@ -123,6 +123,7 @@
   "packageManager": "pnpm@8.15.5",
   "dependencies": {
     "@unit-mesh/treesitter-artifacts": "^1.5.0",
+    "velocityjs": "^2.0.6",
     "vscode-languageclient": "^9.0.1",
     "web-tree-sitter": "^0.22.2"
   },
