@@ -115,8 +115,9 @@
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "preintegration-test": "tsc -p . --outDir out",
     "integration-test": "vscode-test",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "unit-test": "vitest --run",
+    "integration-test:watch": "tsc -p . -w --outDir out",
+    "test": "vitest --run",
+    "test:watch": "vitest",
     "vscode:prepublish": "pnpm run build"
   },
   "packageManager": "pnpm@8.15.5",

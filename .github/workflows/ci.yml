@@ -33,12 +33,15 @@ jobs:
         shell: bash
         run: |
           VERSION="$(cat package.json | grep -o '"version": *"[0-9.]*"' package.json | awk -F '"' '{print $4}' | cut -f2- -d ' ')"
-          
+
       - name: Compile
         run: pnpm run build
 
-      - name: Run tests
-        run: pnpm pretest
+      - name: Run unit tests
+        run: pnpm run test
+
+      - name: Run integration tests
+        run: pnpm run integration-test
 
       - name: Upgrade packages 🔀
         run: npm upgrade
