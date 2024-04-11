@@ -12,9 +12,6 @@
     <a href="https://codecov.io/gh/unit-mesh/auto-dev-vscode">
         <img src="https://codecov.io/gh/unit-mesh/auto-dev-vscode/branch/main/graph/badge.svg?token=2i07qhIqQh" alt="codecov" />
     </a>
-    <a href="https://github.com/unit-mesh/auto-dev-vscode/actions/workflows/ci.yml">
-        <img src="https://github.com/unit-mesh/auto-dev-vscode/actions/workflows/ci.yml/badge.svg" alt="GitHub Action" />
-    </a>
 </p>
 
 > 🧙‍AutoDev: The AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful
