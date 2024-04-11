@@ -92,11 +92,11 @@ export class FencedCodeBlock {
 	static findLanguage(languageName: string): string {
 		let fixedLanguage = languageName;
 		switch (languageName.toLowerCase()) {
-			case "csharp":
-				fixedLanguage = "c#";
+			case "c#":
+				fixedLanguage = "csharp";
 				break;
-			case "cpp":
-				fixedLanguage = "c++";
+			case "c++":
+				fixedLanguage = "cpp";
 				break;
 		}
 
