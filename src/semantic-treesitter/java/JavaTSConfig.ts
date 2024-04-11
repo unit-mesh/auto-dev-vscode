@@ -1,5 +1,5 @@
 import { MemoizedQuery, TSLanguageConfig } from "../TSLanguageConfig";
-import { getLanguage } from "../../language/TreeSitterParser.ts";
+import { getLanguage } from "../../parser/TreeSitterParser.ts";
 
 export const JavaTSConfig: TSLanguageConfig = {
 	languageIds: ['Java'],

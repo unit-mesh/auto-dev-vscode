@@ -1,14 +1,13 @@
 import * as vscode from "vscode";
 
-import { type SupportedLanguage } from "./SupportedLangauge.ts";
+import { type SupportedLanguage } from "../language/SupportedLangauge.ts";
 import Parser, { Language } from "web-tree-sitter";
-import fs from "fs";
 import path from "path";
 
-import { getExtensionUri } from '../context';
-import { EXT_LANGUAGE_MAP } from "./ExtLanguageMap.ts";
+import { getExtensionUri } from '../context.ts';
+import { EXT_LANGUAGE_MAP } from "../language/ExtLanguageMap.ts";
 
-const LanguageMap: Map<SupportedLanguage, Parser.Language> = new Map();
+const LanguageParserMap: Map<SupportedLanguage, Parser.Language> = new Map();
 async function loadLanguageOndemand(
   langid: SupportedLanguage,
   uri: vscode.Uri | undefined = getExtensionUri(),
@@ -17,69 +16,69 @@ async function loadLanguageOndemand(
 
   switch (langid) {
     case "c":
-      if (!LanguageMap.has("c")) {
-        LanguageMap.set(
+      if (!LanguageParserMap.has("c")) {
+        LanguageParserMap.set(
           "c",
           await Parser.Language.load(await wasmByLanguage(uri, "c"))
         );
       }
       break;
     case "cpp":
-      if (!LanguageMap.has("cpp")) {
-        LanguageMap.set(
+      if (!LanguageParserMap.has("cpp")) {
+        LanguageParserMap.set(
           "cpp",
           await Parser.Language.load(await wasmByLanguage(uri, "cpp"))
         );
       }
       break;
     case "csharp":
-      if (!LanguageMap.has("csharp")) {
-        LanguageMap.set(
+      if (!LanguageParserMap.has("csharp")) {
+        LanguageParserMap.set(
           "csharp",
           await Parser.Language.load(await wasmByLanguage(uri, "c_sharp"))
         );
       }
       break;
     case "go":
-      if (!LanguageMap.has("go")) {
-        LanguageMap.set("go", await Parser.Language.load("go"));
+      if (!LanguageParserMap.has("go")) {
+        LanguageParserMap.set("go", await Parser.Language.load("go"));
       }
       break;
     case "java":
-      if (!LanguageMap.has("java")) {
-        LanguageMap.set(
+      if (!LanguageParserMap.has("java")) {
+        LanguageParserMap.set(
           "java",
           await Parser.Language.load(await wasmByLanguage(uri, "java"))
         );
       }
       break;
     case "javascript":
-      if (!LanguageMap.has("javascript")) {
-        LanguageMap.set(
+      if (!LanguageParserMap.has("javascript")) {
+        LanguageParserMap.set(
           "javascript",
           await Parser.Language.load(await wasmByLanguage(uri, "javascript"))
         );
       }
       break;
     case "typescript":
-      if (!LanguageMap.has("typescript")) {
-        LanguageMap.set(
+      if (!LanguageParserMap.has("typescript")) {
+        LanguageParserMap.set(
           "typescript",
           await Parser.Language.load(await wasmByLanguage(uri, "typescript"))
         );
       }
       break;
     case "python":
-      if (!LanguageMap.has("python")) {
-        LanguageMap.set(
+      if (!LanguageParserMap.has("python")) {
+        LanguageParserMap.set(
           "python",
           await Parser.Language.load(await wasmByLanguage(uri, "python"))
         );
       }
       break;
     case "rust":
-      if (!LanguageMap.has("rust")) {
-        LanguageMap.set(
+      if (!LanguageParserMap.has("rust")) {
+        LanguageParserMap.set(
           "rust",
           await Parser.Language.load(await wasmByLanguage(uri, "rust"))
         );
@@ -96,47 +95,47 @@ export const ParserMap: Record<
 > = {
   c: async (source: string) => {
     const parser = new Parser();
-    parser.setLanguage(LanguageMap.get("c"));
+    parser.setLanguage(LanguageParserMap.get("c"));
     return parser.parse(source);
   },
   cpp: async (source: string) => {
     const parser = new Parser();
-    parser.setLanguage(LanguageMap.get("cpp"));
+    parser.setLanguage(LanguageParserMap.get("cpp"));
     return parser.parse(source);
   },
   csharp: async (source: string) => {
     const parser = new Parser();
-    parser.setLanguage(LanguageMap.get("csharp"));
+    parser.setLanguage(LanguageParserMap.get("csharp"));
     return parser.parse(source);
   },
   go: async (source: string) => {
     const parser = new Parser();
-    parser.setLanguage(LanguageMap.get("go"));
+    parser.setLanguage(LanguageParserMap.get("go"));
     return parser.parse(source);
   },
   java: async (source: string) => {
     const parser = new Parser();
-    parser.setLanguage(LanguageMap.get("java"));
+    parser.setLanguage(LanguageParserMap.get("java"));
     return parser.parse(source);
   },
   javascript: async (source: string) => {
     const parser = new Parser();
-    parser.setLanguage(LanguageMap.get("javascript"));
+    parser.setLanguage(LanguageParserMap.get("javascript"));
     return parser.parse(source);
   },
   typescript: async (source: string) => {
     const parser = new Parser();
-    parser.setLanguage(LanguageMap.get("typescript"));
+    parser.setLanguage(LanguageParserMap.get("typescript"));
     return parser.parse(source);
   },
   python: async (source: string) => {
     const parser = new Parser();
-    parser.setLanguage(LanguageMap.get("python"));
+    parser.setLanguage(LanguageParserMap.get("python"));
     return parser.parse(source);
   },
   rust: async (source: string) => {
     const parser = new Parser();
-    parser.setLanguage(LanguageMap.get("rust"));
+    parser.setLanguage(LanguageParserMap.get("rust"));
     return parser.parse(source);
   },
 };
@@ -201,112 +200,10 @@ export async function getLanguage(
     await Parser.init();
 
     await loadLanguageOndemand(langId, uri);
-    return LanguageMap.get(langId);
+    return LanguageParserMap.get(langId);
   } catch (e) {
     console.error("Unable to load language for lang", langId, e);
     return undefined;
   }
 }
 
-export async function getParserForFile(uri: vscode.Uri, filepath: string) {
-  if (process.env.IS_BINARY) {
-    return undefined;
-  }
-
-  try {
-    await Parser.init();
-    const parser = new Parser();
-
-    const language = await getLanguageForFile(filepath, uri);
-    parser.setLanguage(language);
-
-    return parser;
-  } catch (e) {
-    console.error("Unable to load language for file", filepath, e);
-    return undefined;
-  }
-}
-
-export function getQuerySource(filepath: string) {
-  const fullLangName = EXT_LANGUAGE_MAP[filepath.split(".").pop() ?? ""];
-  const sourcePath = path.join(__dirname, "semantic", `${fullLangName}.scm`);
-  if (!fs.existsSync(sourcePath)) {
-    throw new Error("cannot find file:" + sourcePath);
-  }
-  
-  // TODO: use vscode.workspace.fs.readFile
-  return fs.readFileSync(sourcePath).toString();
-}
-
-export async function getSnippetsInFile(
-  uri: vscode.Uri,
-  filepath: string,
-  contents: string
-): Promise<(any & { title: string })[]> {
-  const lang = await getLanguageForFile(filepath, uri);
-  if (!lang) {
-    return [];
-  }
-  const parser = await getParserForFile(uri, filepath);
-  if (!parser) {
-    return [];
-  }
-  const ast = parser.parse(contents);
-  const query = lang?.query(getQuerySource(filepath));
-  const matches = query?.matches(ast.rootNode);
-
-  return (
-    matches?.flatMap((match) => {
-      const node = match.captures[0].node;
-      const title = match.captures[1].node.text;
-      const results = {
-        title,
-        content: node.text,
-        startLine: node.startPosition.row,
-        endLine: node.endPosition.row,
-      };
-      return results;
-    }) ?? []
-  );
-}
-
-export async function getAst(
-  uri: vscode.Uri,
-  filepath: string,
-  fileContents: string
-): Promise<Parser.Tree | undefined> {
-  const parser = await getParserForFile(uri, filepath);
-
-  if (!parser) {
-    return undefined;
-  }
-
-  try {
-    return parser.parse(fileContents);
-  } catch (e) {
-    return undefined;
-  }
-}
-
-export async function getTreePathAtCursor(
-  ast: Parser.Tree,
-  cursorIndex: number
-): Promise<Parser.SyntaxNode[] | undefined> {
-  const path = [ast.rootNode];
-  while (path[path.length - 1].childCount > 0) {
-    let foundChild = false;
-    for (let child of path[path.length - 1].children) {
-      if (child.startIndex <= cursorIndex && child.endIndex >= cursorIndex) {
-        path.push(child);
-        foundChild = true;
-        break;
-      }
-    }
-
-    if (!foundChild) {
-      break;
-    }
-  }
-
-  return path;
-}
