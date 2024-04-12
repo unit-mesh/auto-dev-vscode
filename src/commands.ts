@@ -69,7 +69,11 @@ const commandsMap: (
       channel.append(`relatedProvider: ${relatedProvider}\n`);
       // todo: replace method to really method
       let outputs = await relatedProvider?.inputOutputs(file, file.classes[0].methods[0]);
-      channel.append(`current outputs: ${outputs}\n`);
+      if (outputs !== undefined) {
+        outputs.map((output) => {
+          channel.append(`current outputs: ${JSON.stringify(output)}\n`);
+        });
+      }
     }
   }
 });

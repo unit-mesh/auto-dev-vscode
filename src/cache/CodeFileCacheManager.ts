@@ -5,6 +5,8 @@ import { SupportedLanguage } from "../language/SupportedLanguage";
 import { EXT_LANGUAGE_MAP } from "../language/ExtLanguageMap";
 import { StructurerProviderManager } from "../semantic/structurer/StructurerProviderManager";
 import { channel } from "../channel";
+import { CommentUmlPresenter } from "../codemodel/presenter/CommentUmlPresenter";
+import { PlantUMLPresenter } from "../codemodel/presenter/PlantUMLPresenter";
 
 export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 	private documentMap: Map<Uri, Map<number, CodeFile>>;
