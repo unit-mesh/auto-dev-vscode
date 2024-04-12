@@ -12,4 +12,4 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 pnpm-lock.yaml
-/gui-sidebar
+gui-sidebar/**
