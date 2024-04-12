@@ -1,4 +1,3 @@
-# AutoDev GUIWebView
+Shamelessly taken from [continuedev/continue](https://github.com/continuedev/continue/tree/main/gui)
 
-can be basedon?? [https://github.com/continuedev/continue/tree/main/gui](https://github.com/continuedev/continue/tree/main/gui)
-
+LICENSE is [here](../LICENSE.continue)
