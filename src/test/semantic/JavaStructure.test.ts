@@ -1,5 +1,4 @@
 import { JavaStructurer } from "../../semantic-treesitter/structurer/JavaStructurer";
-import { TSLanguageService } from "../../language/service/TSLanguageService";
 import { TestLanguageService } from "../TestLanguageService";
 
 const Parser = require("web-tree-sitter");
@@ -23,6 +22,47 @@ public class ExampleClass {
 		await structurer.init(languageService);
 
 		const codeFile = await structurer.parseFile(javaHelloWorld);
-		expect(codeFile?.package).toEqual('com.example');
+		expect(codeFile).toEqual({
+			"fileName": "",
+			"language": "java",
+			"functions": [],
+			"path": "",
+			"package": "com.example",
+			"imports": [
+				"java.util.List"
+			],
+			"classes": [
+				{
+					"constant": [],
+					"extends": [],
+					"methods": [
+						{
+							"vars": [],
+							"name": "exampleMethod",
+							"start": {
+								"row": 4,
+								"column": 1
+							},
+							"end": {
+								"row": 6,
+								"column": 2
+							},
+							"returnType": "void"
+						}
+					],
+					"name": "ExampleClass",
+					"package": "",
+					"implements": [],
+					"start": {
+						"row": 4,
+						"column": 54
+					},
+					"end": {
+						"row": 6,
+						"column": 2
+					}
+				}
+			]
+		});
 	});
 });

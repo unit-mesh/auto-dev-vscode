@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { Language } from "web-tree-sitter";
+// In the test, we need to import Parser from "web-tree-sitter" as a const.
 const Parser = require("web-tree-sitter");
 
 import { TSLanguageService } from "../language/service/TSLanguageService";
@@ -24,7 +25,6 @@ export class TestLanguageService extends TSLanguageService {
 			`tree-sitter-${langId}.wasm`
 		);
 
-		// read wasm path as Uint8Array
 		const bits = fs.readFileSync(wasmPath);
 		await Parser.init();
 		return await Parser.Language.load(bits);
