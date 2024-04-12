@@ -1,6 +1,6 @@
 import Parser from "web-tree-sitter";
 import { Structurer } from "./Structurer";
-import { JavaTSConfig } from "../java/JavaTSConfig";
+import { JavaTSConfig } from "../langconfig/JavaTSConfig";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 

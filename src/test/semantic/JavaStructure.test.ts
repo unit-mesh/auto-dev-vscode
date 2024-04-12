@@ -15,10 +15,10 @@ public class ExampleClass {
 
 		await Parser.init();
 		const parser = new Parser();
-		// const structurer = new JavaStructurer();
-		// await structurer.init(parser);
-		// const codeFile = await structurer.parseFile(javaHelloWorld);
-		//
-		// expect(codeFile?.package).toEqual('com.example');
+		const structurer = new JavaStructurer();
+		await structurer.init(parser);
+		const codeFile = await structurer.parseFile(javaHelloWorld);
+
+		expect(codeFile?.package).toEqual('com.example');
 	});
 });

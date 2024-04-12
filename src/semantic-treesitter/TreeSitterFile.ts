@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import Parser, { Language, Tree } from "web-tree-sitter";
 
-import { TSLanguageConfig } from "./TSLanguageConfig";
+import { TSLanguageConfig } from "./langconfig/TSLanguageConfig";
 import { TSLanguage } from "./TreeSitterLanguage";
 import { TextRange } from "../document/TextRange";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";

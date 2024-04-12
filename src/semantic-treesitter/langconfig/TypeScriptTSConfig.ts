@@ -1,4 +1,4 @@
-import { MemoizedQuery, TSLanguageConfig } from "../TSLanguageConfig";
+import { MemoizedQuery, TSLanguageConfig } from "./TSLanguageConfig";
 import { LangServiceUtil } from "../../language/TSLanguageService";
 
 export const TypeScriptTSConfig: TSLanguageConfig = {
