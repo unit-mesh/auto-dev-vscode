@@ -1,6 +1,6 @@
 {
-  "name": "semantic",
-  "private": true,
+  "name": "@unitmesh/semantic",
+  "private": false,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -8,7 +8,10 @@
     "build": "tsc && vite build",
     "test": "vitest --run",
     "test:watch": "vitest --silent=false"
-
+  },
+  "dependencies": {
+    "@unit-mesh/treesitter-artifacts": "^1.5.0",
+    "web-tree-sitter": "^0.22.2"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
