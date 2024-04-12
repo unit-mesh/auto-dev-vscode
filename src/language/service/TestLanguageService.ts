@@ -1,12 +1,12 @@
-import { TSLanguageService } from "./TSLanguageService";
-const Parser = require("web-tree-sitter");
 import path from "path";
+import Parser from "web-tree-sitter";
+
+import { TSLanguageService } from "./TSLanguageService";
+import { ROOT_DIR } from "../../test/TestUtil";
 
 export class TestLanguageService implements TSLanguageService {
-	// @ts-ignore
 	async getLanguage(langId: string): Promise<Parser.Language | undefined> {
-		// node_modules path
-		const nodeModulesPath = path.join(__dirname, "..", "..", "node_modules");
+		const nodeModulesPath = path.join(ROOT_DIR, "node_modules");
 		const wasmPath = path.join(
 			nodeModulesPath,
 			"@unit-mesh",
