@@ -4,11 +4,14 @@ import { TSLanguage } from "../TreeSitterLanguage";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
+import { TSLanguageConfig } from "../langconfig/TSLanguageConfig";
+import { JavaTSConfig } from "../langconfig/JavaTSConfig";
 
 export abstract class Structurer {
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 	protected abstract langId: SupportedLanguage;
+	protected config: TSLanguageConfig | undefined;
 
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
 		const tsConfig = TSLanguage.fromId(this.langId)!!;

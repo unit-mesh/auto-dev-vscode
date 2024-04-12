@@ -4,6 +4,8 @@ import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
 import { insertCodeByRange, selectCodeInRange } from "./commands/editor";
 import { DefaultLanguageService } from "./language/service/DefaultLanguageService";
 
+import { channel } from "./channel";
+
 const commandsMap: (
   extention: AutoDevExtension
 ) => {
@@ -56,7 +58,7 @@ const commandsMap: (
 
     await structurer.init(new DefaultLanguageService());
     const file = await structurer.parseFile(document.getText());
-    console.info("CodeFile: ", file);
+    channel.append("CodeFile: " + JSON.stringify(file));
   }
 });
 

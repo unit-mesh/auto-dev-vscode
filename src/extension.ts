@@ -9,10 +9,13 @@ import { AutoDevExtension } from "./AutoDevExtension";
 import { StructurerProviderManager } from "./semantic-treesitter/structurer/StructurerProviderManager";
 import Parser from "web-tree-sitter";
 
-import { setExtensionContext, removeExtensionContext } from './context';
-import { registerAutoDevProviders, registerCodeLensProviders, registerQuickFixProvider } from "./providers/ProviderRegister";
-
-const channel = vscode.window.createOutputChannel("AutoDev");
+import { removeExtensionContext, setExtensionContext } from './context';
+import {
+  registerAutoDevProviders,
+  registerCodeLensProviders,
+  registerQuickFixProvider
+} from "./providers/ProviderRegister";
+import { channel } from "./channel";
 
 export function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);

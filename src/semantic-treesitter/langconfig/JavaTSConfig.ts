@@ -5,6 +5,7 @@ export const JavaTSConfig: TSLanguageConfig = {
 	languageIds: ['Java'],
 	fileExtensions: ['java'],
 	grammar: (langService: TSLanguageService) => langService.getLanguage('java'),
+	// todo: load from `.scm` file
 	scopeQuery: new MemoizedQuery(""),
 	hoverableQuery: new MemoizedQuery(`
       [(identifier)
