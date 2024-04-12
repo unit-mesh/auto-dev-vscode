@@ -11,16 +11,17 @@ const JAVA_BUILTIN_TYPES = new Set([
 type JavaType = string;
 type CanonicalName = string;
 
-export class JavaRelatedProvider implements RelatedProvider {
+export class JavaRelatedProvider extends RelatedProvider {
 	// dynamic get resources
 	importCache: Map<JavaType, CanonicalName> = new Map();
 	private fileManager: CodeFileCacheManager | undefined;
 
 	constructor(fileManager?: CodeFileCacheManager) {
+		super();
 		this.fileManager = fileManager;
 	}
 
-	inputOutputs(file: CodeFile, method: CodeFunction): CodeStructure[] {
+	async inputOutputs(file: CodeFile, method: CodeFunction): Promise<CodeStructure[]> {
 		// split type and check in imports
 		const maybeRelated = file.imports.filter(imp => {
 			const parts = imp.split(".");
@@ -35,11 +36,10 @@ export class JavaRelatedProvider implements RelatedProvider {
 		channel.append(`Maybe related: ${maybeRelated}\n`);
 
 		// check import in fileManager
-		const relatedFiles = maybeRelated.map(imp => {
-				return this.fileManager?.getRecentlyStructure(imp, "java");
-		})
-			.filter((value): value is CodeStructure => value !== undefined);
+		const relatedFiles: Promise<CodeStructure>[] = maybeRelated.map(async imp => {
+			return this.fileManager!!.getRecentlyStructure(imp, "java");
+		});
 
-		return relatedFiles;
+		return Promise.all(relatedFiles);
 	}
 }

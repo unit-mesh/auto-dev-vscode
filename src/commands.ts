@@ -68,7 +68,7 @@ const commandsMap: (
       let relatedProvider = extension.getRelatedProviderManager().getRelatedProvider(document.languageId);
       channel.append(`relatedProvider: ${relatedProvider}\n`);
       // todo: replace method to really method
-      let outputs = relatedProvider?.inputOutputs(file, file.classes[0].methods[0]);
+      let outputs = await relatedProvider?.inputOutputs(file, file.classes[0].methods[0]);
       channel.append(`current outputs: ${outputs}\n`);
     }
   }

@@ -3,7 +3,6 @@ import { FileCacheManger } from "./FileCacheManger";
 import { CodeFile, CodeStructure } from "../codemodel/CodeFile";
 import { SupportedLanguage } from "../language/SupportedLanguage";
 import { EXT_LANGUAGE_MAP } from "../language/ExtLanguageMap";
-import { JavaStructurer } from "../semantic/structurer/JavaStructurer";
 import { StructurerProviderManager } from "../semantic/structurer/StructurerProviderManager";
 import { channel } from "../channel";
 
@@ -42,7 +41,7 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 	}
 
 	// 通过类名获取 CodeStructure
-	public getRecentlyStructure(canonicalName: string, lang: SupportedLanguage): CodeStructure | undefined {
+	public async getRecentlyStructure(canonicalName: string, lang: SupportedLanguage): Promise<CodeStructure> {
 		let structure = this.canonicalNameMap.get(canonicalName);
 		if (structure !== undefined) {
 			return structure;
@@ -50,7 +49,7 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 
 		let structurer = this.structureProvider.getStructurer(lang);
 		if (structurer === undefined) {
-			return undefined;
+			return Promise.reject(`Unsupported language: ${lang}`);
 		}
 
 		let textDocuments = vscode.workspace.textDocuments.filter((doc) => {
@@ -61,13 +60,22 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 			return EXT_LANGUAGE_MAP[ext] !== lang;
 		});
 
-		// let files = textDocuments.map(async (doc) => {
-		// 	await structurer?.parseFile(doc.getText())
-		// })
+		let files = textDocuments.map(async (doc) => {
+			const cache = this.documentMap.get(doc.uri)?.get(doc.version);
+			if (cache !== undefined) {
+				return cache.classes.filter((value) => value.canonicalName === canonicalName)[0];
+			}
 
-		channel.append(`TextDocuments: ${textDocuments.length}\n`)
+			let codeFile = await structurer?.parseFile(doc.getText());
+			if (codeFile === undefined) {
+				return Promise.reject(`Failed to parse file: ${doc.uri}`);
+			}
 
-		return undefined
+			this.setDocument(doc.uri, doc.version, codeFile);
+			return codeFile.classes.filter((value) => value.canonicalName === canonicalName)[0];
+		});
+
+		return files[0];
 	}
 
 	// get all canonicalNameMap
