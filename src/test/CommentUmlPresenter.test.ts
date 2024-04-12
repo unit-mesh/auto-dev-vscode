@@ -14,6 +14,7 @@ describe('CommentUmlPresenter', () => {
 				{
 					name: 'ExampleClass',
 					package: 'com.example.ExampleClass',
+					canonicalName: 'com.example.ExampleClass',
 					start: { row: 1, column: 1 },
 					end: { row: 1, column: 1 },
 					implements: [],
