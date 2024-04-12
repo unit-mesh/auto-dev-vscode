@@ -8,12 +8,12 @@ import { channel } from "./channel";
 import { PlantUMLPresenter } from "./codemodel/presenter/PlantUMLPresenter";
 
 const commandsMap: (
-  extention: AutoDevExtension
+  extension: AutoDevExtension
 ) => {
   [command: string]: (...args: any) => any;
-} = (ext) => ({
+} = (extension) => ({
   "autodev.quickFix": async (message: string, code: string, edit: boolean) => {
-    ext.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
+    extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
       prompt: `${
         edit ? "/edit " : ""
       }${code}\n\nHow do I fix this problem in the above code?: ${message}`,
@@ -25,15 +25,15 @@ const commandsMap: (
   },
 
   "autodev.sendToTerminal": (text: string) => {
-    ext.action.runCommand(text).then(
+    extension.action.runCommand(text).then(
       () => {},
       (err) => vscode.window.showErrorMessage(err.message)
     );
   },
   "autodev.debugTerminal": async () => {
     vscode.commands.executeCommand("autodev.autodevGUIView.focus");
-    const terminalContents = await ext.action.getTerminalContents();
-    ext.sidebar.webviewProtocol?.request("userInput", {
+    const terminalContents = await extension.action.getTerminalContents();
+    extension.sidebar.webviewProtocol?.request("userInput", {
       input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
     });
   },
@@ -51,17 +51,25 @@ const commandsMap: (
     range: IdentifierBlockRange,
     edit: vscode.WorkspaceEdit
   ) => {
-    let structurer = ext.getStructureProvider()?.getStructurer(document.languageId);
+    let structurer = extension.getStructureProvider()?.getStructurer(document.languageId);
     if (!structurer) {
       vscode.window.showErrorMessage("No structurer provider found for this language");
       return;
     }
 
+    // filter current method
+
     await structurer.init(new DefaultLanguageService());
     const file = await structurer.parseFile(document.getText());
     if (file !== undefined) {
       const output = new PlantUMLPresenter().convert(file);
-      channel.append(output);
+      channel.append(`current uml: ${output}`);
+
+      let relatedProvider = extension.getRelatedProviderManager().getRelatedProvider(document.languageId);
+      channel.append(`relatedProvider: ${relatedProvider}\n`);
+      // todo: replace method to really method
+      let outputs = relatedProvider?.inputOutputs(file, file.classes[0].methods[0]);
+      channel.append(`current outputs: ${outputs}\n`);
     }
   }
 });

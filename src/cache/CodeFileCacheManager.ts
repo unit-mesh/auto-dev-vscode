@@ -1,14 +1,21 @@
-import { Uri } from "vscode";
+import vscode, { Uri } from "vscode";
 import { FileCacheManger } from "./FileCacheManger";
 import { CodeFile, CodeStructure } from "../codemodel/CodeFile";
+import { SupportedLanguage } from "../language/SupportedLanguage";
+import { EXT_LANGUAGE_MAP } from "../language/ExtLanguageMap";
+import { JavaStructurer } from "../semantic/structurer/JavaStructurer";
+import { StructurerProviderManager } from "../semantic/structurer/StructurerProviderManager";
+import { channel } from "../channel";
 
 export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 	private documentMap: Map<Uri, Map<number, CodeFile>>;
 	private canonicalNameMap: Map<string, CodeStructure>;
+	private structureProvider: StructurerProviderManager;
 
-	constructor() {
+	constructor(structureProvider: StructurerProviderManager) {
 		this.documentMap = new Map<Uri, Map<number, CodeFile>>();
 		this.canonicalNameMap = new Map<string, CodeStructure>();
+		this.structureProvider = structureProvider;
 	}
 
 	// 将 TreeSitterFile 存储到缓存中
@@ -35,8 +42,32 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 	}
 
 	// 通过类名获取 CodeStructure
-	public getStructureByCanonicalName(canonicalName: string): CodeStructure | undefined {
-		return this.canonicalNameMap.get(canonicalName);
+	public getRecentlyStructure(canonicalName: string, lang: SupportedLanguage): CodeStructure | undefined {
+		let structure = this.canonicalNameMap.get(canonicalName);
+		if (structure !== undefined) {
+			return structure;
+		}
+
+		let structurer = this.structureProvider.getStructurer(lang);
+		if (structurer === undefined) {
+			return undefined;
+		}
+
+		let textDocuments = vscode.workspace.textDocuments.filter((doc) => {
+			const ext = doc.uri.path.split('.').pop();
+			if (ext === undefined) {
+				return false;
+			}
+			return EXT_LANGUAGE_MAP[ext] !== lang;
+		});
+
+		// let files = textDocuments.map(async (doc) => {
+		// 	await structurer?.parseFile(doc.getText())
+		// })
+
+		channel.append(`TextDocuments: ${textDocuments.length}\n`)
+
+		return undefined
 	}
 
 	// get all canonicalNameMap

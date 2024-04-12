@@ -1,6 +1,7 @@
 import { RelatedProvider } from "./RelatedProvider";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 import { CodeFileCacheManager } from "../../cache/CodeFileCacheManager";
+import { channel } from "../../channel";
 
 const JAVA_BUILTIN_TYPES = new Set([
 	"byte", "short", "int", "long", "float", "double", "boolean", "char", "void"
@@ -31,9 +32,11 @@ export class JavaRelatedProvider implements RelatedProvider {
 			return false;
 		});
 
+		channel.append(`Maybe related: ${maybeRelated}\n`);
+
 		// check import in fileManager
 		const relatedFiles = maybeRelated.map(imp => {
-				return this.fileManager?.getStructureByCanonicalName(imp);
+				return this.fileManager?.getRecentlyStructure(imp, "java");
 		})
 			.filter((value): value is CodeStructure => value !== undefined);
 

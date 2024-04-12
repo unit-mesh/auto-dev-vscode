@@ -27,6 +27,17 @@
     "Snippets"
   ],
   "activationEvents": [
+    "onLanguage:java",
+    "onLanguage:c",
+    "onLanguage:cpp",
+    "onLanguage:csharp",
+    "onLanguage:go",
+    "onLanguage:java",
+    "onLanguage:javascript",
+    "onLanguage:kotlin",
+    "onLanguage:typescript",
+    "onLanguage:python",
+    "onLanguage:rust",
     "onStartupFinished",
     "onView:autodevGUIView"
   ],

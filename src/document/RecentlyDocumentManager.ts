@@ -15,7 +15,7 @@ export class RecentlyDocumentManager {
 		return this.openTextDocuments;
 	}
 
-	putOpenTextDocument(document: TextDocument) {
+	pushTextDocument(document: TextDocument) {
 		this.openTextDocuments.push(document);
 	}
 
@@ -36,7 +36,7 @@ export class RecentlyDocumentManager {
         this.closedTextDocuments.push(this.currentDocument);
       }
 
-      this.putOpenTextDocument(document);
+      this.pushTextDocument(document);
       this.currentDocument = document;
 	}
 }

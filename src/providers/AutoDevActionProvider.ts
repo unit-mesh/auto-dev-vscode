@@ -67,6 +67,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 				title: title,
 				arguments: [document, result, codeAction.edit]
 			};
+
 			methodDocActions.push(codeAction);
 		});
 

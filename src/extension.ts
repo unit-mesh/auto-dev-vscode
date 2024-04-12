@@ -7,7 +7,8 @@ import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
 import { StructurerProviderManager } from "./semantic/structurer/StructurerProviderManager";
-import Parser from "web-tree-sitter";
+// import Parser from "web-tree-sitter";
+const Parser = require("web-tree-sitter");
 
 import { removeExtensionContext, setExtensionContext } from './context';
 import {
@@ -26,11 +27,12 @@ export function activate(context: vscode.ExtensionContext) {
 
   const sidebar = new AutoDevWebviewViewProvider(context);
   const action = new VSCodeAction();
+  let structureProvider = new StructurerProviderManager();
+
   const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();
-  const relatedManager = new RelatedProviderManager();
-  let structureProvider = new StructurerProviderManager();
-  const fileCacheManager = new CodeFileCacheManager();
+  const fileCacheManager = new CodeFileCacheManager(structureProvider);
+  const relatedManager = new RelatedProviderManager(fileCacheManager);
   const extension = new AutoDevExtension(
     sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
   );
