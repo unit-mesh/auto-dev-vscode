@@ -1,18 +1,32 @@
-import { CodeFile } from "../../codemodel/CodeFile";
+import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 
+/**
+ * The `RelatedProvider` class provides methods for retrieving input and output structures related to a given symbol.
+ *
+ * An input structure is a code file that is used as input to the symbol, while an output structure is a code
+ * file that receives output from the symbol.
+ *
+ * @interface RelatedProvider
+ */
 export interface RelatedProvider {
-	file: CodeFile;
-
 	/**
-	 * Returns the fan-in of the given symbol.
-	 * For example, In java in
-	 */
-	inputParameters(symbol: string): CodeFile[];
-
-	/**
-	 * Returns the fan-out of the given node.
+	 * Returns the fan-in and fan-out of the given method.
+	 * For example:
 	 *
-	 * In some languages, the return type is multiple.
+	 * ```java
+	 * package com.example;
+	 *
+	 * public class CodeFile {
+	 *  public CodeMethod getMethodById(String id) {
+	 *    //...return a + b;
+	 *  }
+	 * }
+	 * ```
+	 *
+	 * @param [file] will be current file, like: `com.example.CodeFile`
+	 * @param [method] will be `com.example.CodeFile.getMethodById`
+	 * @returns will be CodeMethod, since `getMethodById` does not have any input parameters,
+	 * and the return type is `CodeMethod`.
 	 */
-	outputTypes(symbol: string): CodeFile[];
+	inputOutputs(file: CodeFile, method: CodeFunction): CodeStructure[];
 }
