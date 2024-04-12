@@ -1,24 +1,25 @@
 import { RelatedProvider } from "./RelatedProvider";
 import { CodeFile } from "../../codemodel/CodeFile";
-import { RecentlyDocumentManager } from "../../document/RecentlyDocumentManager";
+import { CodeFileCacheManager } from "../../cache/CodeFileCacheManager";
 
 export class JavaRelatedProvider implements RelatedProvider {
 	file: CodeFile;
-	nodeImportMap: Map<string, string> = new Map();
-	private documentManager: RecentlyDocumentManager;
+	nodeImportMap: Map<string, CodeFile> = new Map();
+	// dynamic get resources
+	private fileManager: CodeFileCacheManager;
 
-	constructor(file: CodeFile, documentManager: RecentlyDocumentManager) {
+	constructor(file: CodeFile, fileManager: CodeFileCacheManager) {
 		this.file = file;
-		this.documentManager = documentManager;
+		this.fileManager = fileManager;
 
 		// lookup file imports and recentlyDocuments
 	}
 
-	fanIn(symbol: string): CodeFile[] {
+	inputParameters(symbol: string): CodeFile[] {
 		return [];
 	}
 
-	fanOut(symbol: string): CodeFile[] {
+	outputTypes(symbol: string): CodeFile[] {
 		return [];
 	}
 }

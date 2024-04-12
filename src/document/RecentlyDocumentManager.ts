@@ -1,4 +1,5 @@
 import { TextDocument } from "vscode";
+import { SupportedLanguage } from "../language/SupportedLanguage";
 
 export class RecentlyDocumentManager {
 	private openTextDocuments: TextDocument[] = [];
@@ -24,6 +25,10 @@ export class RecentlyDocumentManager {
 
 	getCurrentDocument() {
 		return this.currentDocument;
+	}
+
+	filterByLanguage(language: SupportedLanguage): TextDocument[] {
+		return this.openTextDocuments.filter((document) => document.languageId === language);
 	}
 
 	updateCurrentDocument(document: TextDocument) {
