@@ -6,10 +6,10 @@ export interface RelatedProvider {
 	/**
 	 * Returns the fan-in of the given node.
 	 */
-	fanIn(canonicalName: string): string[];
+	fanIn(symbol: string): CodeFile[];
 
 	/**
 	 * Returns the fan-out of the given node.
 	 */
-	fanOut(canonicalName: string): string[];
+	fanOut(symbol: string): CodeFile[];
 }

@@ -5,7 +5,6 @@ import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 import { TSLanguageConfig } from "../langconfig/TSLanguageConfig";
-import { JavaTSConfig } from "../langconfig/JavaTSConfig";
 
 export abstract class Structurer {
 	protected parser: Parser | undefined;
