@@ -22,6 +22,11 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
 ## Todos
 
 - [ ] Custom LLM config
+- [ ] Context Provider
+    - [ ] Structurer
+        - [ ] UML Render
+    - [ ] RelatedCode
+    - [ ] SimilarChunk?
 - [ ] Chat mode
     - [ ] Chat UI
     - [ ] Chat with selection
