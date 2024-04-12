@@ -16,6 +16,8 @@ import {
   registerQuickFixProvider
 } from "./providers/ProviderRegister";
 import { channel } from "./channel";
+import { RelatedProviderManager } from "./semantic/related/RelatedProviderManager";
+import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
 
 export function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);
@@ -26,8 +28,12 @@ export function activate(context: vscode.ExtensionContext) {
   const action = new VSCodeAction();
   const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();
+  const relatedManager = new RelatedProviderManager();
   let structureProvider = new StructurerProviderManager();
-  const extension = new AutoDevExtension(sidebar, action, documentManager, diffManager, context);
+  const fileCacheManager = new CodeFileCacheManager();
+  const extension = new AutoDevExtension(
+    sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
+  );
   Parser.init().then(async () => {
       await structureProvider.init();
       extension.setStructureProvider(structureProvider);
