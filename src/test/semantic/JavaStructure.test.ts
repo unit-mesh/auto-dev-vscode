@@ -1,4 +1,5 @@
 import { JavaStructurer } from "../../semantic-treesitter/java/JavaStructurer";
+
 const Parser = require("web-tree-sitter");
 
 describe('JavaStructure', () => {
@@ -14,10 +15,10 @@ public class ExampleClass {
 
 		await Parser.init();
 		const parser = new Parser();
-		// const structurer = new JavaStructurer();
-		// await structurer.init(parser);
-		// const codeFile = await structurer.parseFile(javaHelloWorld);
-		//
-		// expect(codeFile?.package).toEqual('com.example');
+		const structurer = new JavaStructurer();
+		await structurer.init(parser);
+		const codeFile = await structurer.parseFile(javaHelloWorld);
+
+		expect(codeFile?.package).toEqual('com.example');
 	});
 });

@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { registerCommands } from "./commands";
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
-import { IdeImpl } from "./action/ide-impl";
+import { VSCodeAction } from "./action/VSCodeAction";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
   channel.show();
 
   const sidebar = new AutoDevWebviewViewProvider(context);
-  const action = new IdeImpl();
+  const action = new VSCodeAction();
   const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();
   let structureProvider = new StructureProvider();

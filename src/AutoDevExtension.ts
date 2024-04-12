@@ -1,14 +1,14 @@
 import * as vscode from "vscode";
 
 import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
-import { IdeImpl } from "./action/ide-impl";
+import { VSCodeAction } from "./action/VSCodeAction";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { StructureProvider } from "./semantic-treesitter/StructureProvider";
 
 export class AutoDevExtension {
 	sidebar: AutoDevWebviewViewProvider;
-	action: IdeImpl;
+	action: VSCodeAction;
 	diffManager: DiffManager;
 	documentManager: RecentlyDocumentManager;
 	extensionContext: vscode.ExtensionContext;
@@ -16,7 +16,7 @@ export class AutoDevExtension {
 
 	constructor(
 		sidebar: AutoDevWebviewViewProvider,
-		action: IdeImpl,
+		action: VSCodeAction,
 		documentManager: RecentlyDocumentManager,
 		diffManager: DiffManager,
 		context: vscode.ExtensionContext) {

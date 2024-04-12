@@ -1,7 +1,7 @@
-import { IdeAction } from "./ide-action";
+import { IdeAction } from "./IdeAction";
 import * as vscode from "vscode";
 
-export class IdeImpl implements IdeAction {
+export class VSCodeAction implements IdeAction {
   async runCommand(command: string): Promise<void> {
     if (vscode.window.terminals.length) {
       vscode.window.terminals[0].show();
