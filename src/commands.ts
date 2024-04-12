@@ -5,6 +5,7 @@ import { insertCodeByRange, selectCodeInRange } from "./commands/editor";
 import { DefaultLanguageService } from "./language/service/DefaultLanguageService";
 
 import { channel } from "./channel";
+import { PlantUMLPresenter } from "./codemodel/presenter/PlantUMLPresenter";
 
 const commandsMap: (
   extention: AutoDevExtension
@@ -58,7 +59,10 @@ const commandsMap: (
 
     await structurer.init(new DefaultLanguageService());
     const file = await structurer.parseFile(document.getText());
-    channel.append("CodeFile: " + JSON.stringify(file));
+    if (file !== undefined) {
+      const output = new PlantUMLPresenter().convert(file);
+      channel.append(output);
+    }
   }
 });
 
