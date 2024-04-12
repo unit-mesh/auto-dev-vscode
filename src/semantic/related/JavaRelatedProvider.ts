@@ -33,7 +33,7 @@ export class JavaRelatedProvider extends RelatedProvider {
 			return false;
 		});
 
-		channel.append(`Maybe related: ${maybeRelated}\n`);
+		channel.append(`maybe related element: ${maybeRelated}\n`);
 
 		// check import in fileManager
 		const relatedFiles: Promise<CodeStructure>[] = maybeRelated.map(async imp => {

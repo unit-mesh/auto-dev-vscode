@@ -61,10 +61,11 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
         - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike
             - [vectordb](https://www.npmjs.com/package/vectordb)
         - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike
+- [ ] i18n
 
 ## Resources
 
-- Code search [Sweepr](https://github.com/sweepai/sweep)
+- Code search [Sweep](https://github.com/sweepai/sweep)
 - TreeSitter [Playground](https://tree-sitter.github.io/tree-sitter/playground)
 
 ## LICENSE

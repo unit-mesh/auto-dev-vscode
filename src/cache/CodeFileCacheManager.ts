@@ -4,9 +4,7 @@ import { CodeFile, CodeStructure } from "../codemodel/CodeFile";
 import { SupportedLanguage } from "../language/SupportedLanguage";
 import { EXT_LANGUAGE_MAP } from "../language/ExtLanguageMap";
 import { StructurerProviderManager } from "../semantic/structurer/StructurerProviderManager";
-import { channel } from "../channel";
-import { CommentUmlPresenter } from "../codemodel/presenter/CommentUmlPresenter";
-import { PlantUMLPresenter } from "../codemodel/presenter/PlantUMLPresenter";
+import { Structurer } from "../semantic/structurer/Structurer";
 
 export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 	private documentMap: Map<Uri, Map<number, CodeFile>>;
@@ -42,7 +40,6 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 		return undefined;
 	}
 
-	// 通过类名获取 CodeStructure
 	public async getRecentlyStructure(canonicalName: string, lang: SupportedLanguage): Promise<CodeStructure> {
 		let structure = this.canonicalNameMap.get(canonicalName);
 		if (structure !== undefined) {
@@ -54,6 +51,11 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 			return Promise.reject(`Unsupported language: ${lang}`);
 		}
 
+		let files = this.lookupFromRecently(lang, canonicalName, structurer);
+		return files[0];
+	}
+
+	private lookupFromRecently(lang: string, canonicalName: string, structurer: Structurer): Promise<CodeStructure>[] {
 		let textDocuments = vscode.workspace.textDocuments.filter((doc) => {
 			const ext = doc.uri.path.split('.').pop();
 			if (ext === undefined) {
@@ -62,7 +64,7 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 			return EXT_LANGUAGE_MAP[ext] !== lang;
 		});
 
-		let files = textDocuments.map(async (doc) => {
+		let codeStructures = textDocuments.map(async (doc) => {
 			const cache = this.documentMap.get(doc.uri)?.get(doc.version);
 			if (cache !== undefined) {
 				return cache.classes.filter((value) => value.canonicalName === canonicalName)[0];
@@ -77,15 +79,9 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 			return codeFile.classes.filter((value) => value.canonicalName === canonicalName)[0];
 		});
 
-		return files[0];
+		return codeStructures;
 	}
 
-	// get all canonicalNameMap
-	public getCanonicalNameMap(): Map<string, CodeStructure> {
-		return this.canonicalNameMap;
-	}
-
-	// 清空缓存
 	public clearCache(): void {
 		this.documentMap.clear();
 	}

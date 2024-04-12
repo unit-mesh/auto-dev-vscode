@@ -51,22 +51,21 @@ const commandsMap: (
     range: IdentifierBlockRange,
     edit: vscode.WorkspaceEdit
   ) => {
-    let structurer = extension.getStructureProvider()?.getStructurer(document.languageId);
+    let structurer = extension.structureProvider?.getStructurer(document.languageId);
     if (!structurer) {
       vscode.window.showErrorMessage("No structurer provider found for this language");
       return;
     }
 
-    // filter current method
-
     await structurer.init(new DefaultLanguageService());
     const file = await structurer.parseFile(document.getText());
     if (file !== undefined) {
       const output = new PlantUMLPresenter().convert(file);
+
+      let relatedProvider = extension.relatedManager.getRelatedProvider(document.languageId);
+
       channel.append(`current uml: ${output}`);
 
-      let relatedProvider = extension.getRelatedProviderManager().getRelatedProvider(document.languageId);
-      channel.append(`relatedProvider: ${relatedProvider}\n`);
       // todo: replace method to really method
       let outputs = await relatedProvider?.inputOutputs(file, file.classes[0].methods[0]);
       if (outputs !== undefined) {

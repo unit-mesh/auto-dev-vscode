@@ -55,7 +55,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		methodRanges
 			.filter(result => result.blockRange.contains(range))
 			.forEach(result => {
-			const title = `Api analysis for method \`${result.identifierRange.text}\` (AutoDev)`;
+			const title = `Gen API Data for \`${result.identifierRange.text}\` (AutoDev)`;
 			const codeAction = new vscode.CodeAction(
 				title,
 				AutoDevActionProvider.providedCodeActionKinds[0]

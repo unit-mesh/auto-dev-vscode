@@ -38,16 +38,4 @@ export class AutoDevExtension {
 	setStructureProvider(structureProvider: StructurerProviderManager) {
 		this.structureProvider = structureProvider;
 	}
-
-	getStructureProvider(): StructurerProviderManager | undefined {
-		return this.structureProvider;
-	}
-
-	getRelatedProviderManager(): RelatedProviderManager {
-		return this.relatedManager;
-	}
-
-	getFileCacheManager(): CodeFileCacheManager {
-		return this.fileCacheManager;
-	}
 }
