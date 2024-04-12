@@ -99,7 +99,6 @@ export class JavaStructurer extends Structurer {
 					classObj.implements.push(text);
 					break;
 				default:
-					// console.log(`pattern: ${capture.node.startIndex}, capture: ${captureName}, row: ${capture.node.startPosition.row}, text: ${text}`);
 					break;
 			}
 		}

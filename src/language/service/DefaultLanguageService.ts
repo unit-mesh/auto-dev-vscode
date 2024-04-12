@@ -1,5 +1,5 @@
-import { TSLanguageService } from "./TSLanguageService";
 import Parser from "web-tree-sitter";
+import { TSLanguageService } from "./TSLanguageService";
 import { getLanguage } from "../../parser/TreeSitterParser";
 
 export class DefaultLanguageService extends TSLanguageService {

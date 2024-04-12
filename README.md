@@ -59,6 +59,7 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
 
 ## Resources
 
+- Code search [Sweepr](https://github.com/sweepai/sweep)
 - TreeSitter [Playground](https://tree-sitter.github.io/tree-sitter/playground)
 
 ## LICENSE
