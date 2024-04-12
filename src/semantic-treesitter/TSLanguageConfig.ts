@@ -27,7 +27,7 @@ export interface TSLanguageConfig {
   // method input and output query
   methodIOQuery?: MemoizedQuery;
 
-  // structure query
+  // structurer query
   structureQuery: MemoizedQuery;
 
   // Namespaces defined by this language,

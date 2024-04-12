@@ -6,7 +6,7 @@ import { VSCodeAction } from "./action/VSCodeAction";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { StructureProvider } from "./semantic-treesitter/StructureProvider";
+import { StructurerProviderManager } from "./semantic-treesitter/structurer/StructurerProviderManager";
 import Parser from "web-tree-sitter";
 
 import { setExtensionContext, removeExtensionContext } from './context';
@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
   const action = new VSCodeAction();
   const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();
-  let structureProvider = new StructureProvider();
+  let structureProvider = new StructurerProviderManager();
   const extension = new AutoDevExtension(sidebar, action, documentManager, diffManager, context);
   Parser.init().then(async () => {
       await structureProvider.init();

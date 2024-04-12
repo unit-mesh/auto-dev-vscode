@@ -56,7 +56,7 @@ export interface DependencyEntry {
 // Interface for package dependencies
 /**
  * PackageDependencies is an interface that represents a package and its dependencies.
- * It is used to describe the structure of a package, including its name, version, package manager,
+ * It is used to describe the structurer of a package, including its name, version, package manager,
  * dependencies, file path, and child dependencies.
  *
  * @interface PackageDependencies

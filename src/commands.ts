@@ -49,7 +49,7 @@ const commandsMap: (
   ) => {
     let structurer = ext.getStructureProvider()?.getStructurer(document.languageId);
     if (!structurer) {
-      vscode.window.showErrorMessage("No structure provider found for this language");
+      vscode.window.showErrorMessage("No structurer provider found for this language");
       return;
     }
 

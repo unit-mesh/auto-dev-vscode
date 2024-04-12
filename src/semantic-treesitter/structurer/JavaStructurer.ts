@@ -1,6 +1,6 @@
 import Parser from "web-tree-sitter";
-import { Structurer } from "../Structurer";
-import { JavaTSConfig } from "./JavaTSConfig";
+import { Structurer } from "./Structurer";
+import { JavaTSConfig } from "../java/JavaTSConfig";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 
@@ -8,7 +8,7 @@ export class JavaStructurer extends Structurer {
 	protected langId: SupportedLanguage = "java";
 
 	/**
-	 * Parses the given code string and generates a CodeFile object representing the structure of the code.
+	 * Parses the given code string and generates a CodeFile object representing the structurer of the code.
 	 *
 	 * @param code The code string to be parsed.
 	 * @returns A Promise that resolves to the generated CodeFile object, or undefined if the parsing fails.

@@ -1,4 +1,4 @@
-import { JavaStructurer } from "../../semantic-treesitter/java/JavaStructurer";
+import { JavaStructurer } from "../../semantic-treesitter/structurer/JavaStructurer";
 
 const Parser = require("web-tree-sitter");
 

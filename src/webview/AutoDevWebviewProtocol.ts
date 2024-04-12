@@ -1,8 +1,6 @@
 import * as vscode from "vscode";
 
 export class AutoDevWebviewProtocol {
-  // pub /sub pattern
-  // private _messageQueue: Array<any> = [];
   private _onMessage = new vscode.EventEmitter<any>();
   _webview: vscode.Webview;
   _webviewListener?: vscode.Disposable;

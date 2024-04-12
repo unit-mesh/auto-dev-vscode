@@ -4,7 +4,7 @@ import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider
 import { VSCodeAction } from "./action/VSCodeAction";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
-import { StructureProvider } from "./semantic-treesitter/StructureProvider";
+import { StructurerProviderManager } from "./semantic-treesitter/structurer/StructurerProviderManager";
 
 export class AutoDevExtension {
 	sidebar: AutoDevWebviewViewProvider;
@@ -12,7 +12,7 @@ export class AutoDevExtension {
 	diffManager: DiffManager;
 	documentManager: RecentlyDocumentManager;
 	extensionContext: vscode.ExtensionContext;
-	structureProvider: StructureProvider | undefined;
+	structureProvider: StructurerProviderManager | undefined;
 
 	constructor(
 		sidebar: AutoDevWebviewViewProvider,
@@ -27,11 +27,11 @@ export class AutoDevExtension {
 		this.extensionContext = context;
 	}
 
-	setStructureProvider(structureProvider: StructureProvider) {
+	setStructureProvider(structureProvider: StructurerProviderManager) {
 		this.structureProvider = structureProvider;
 	}
 
-	getStructureProvider(): StructureProvider | undefined {
+	getStructureProvider(): StructurerProviderManager | undefined {
 		return this.structureProvider;
 	}
 }

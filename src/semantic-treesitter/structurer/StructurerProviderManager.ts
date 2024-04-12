@@ -1,8 +1,8 @@
-import { SupportedLanguage } from "../language/SupportedLanguage";
+import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { Structurer } from "./Structurer";
-import { JavaStructurer } from "./java/JavaStructurer";
+import { JavaStructurer } from "./JavaStructurer";
 
-export class StructureProvider {
+export class StructurerProviderManager {
 	private structureMap: Map<SupportedLanguage, Structurer> = new Map();
 
 	async init() {
