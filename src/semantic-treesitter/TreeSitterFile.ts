@@ -6,6 +6,7 @@ import { TSLanguage } from "./TreeSitterLanguage";
 import { TextRange } from "../document/TextRange";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { TreeSitterFileCacheManager } from "../cache/TreeSitterFileCacheManager";
+import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
 
 export class TreeSitterFile {
 	private src: string;
@@ -48,7 +49,7 @@ export class TreeSitterFile {
 		const parser = new Parser();
 		let language: Language | undefined = undefined;
 		try {
-			language = await tsConfig.grammar();
+			language = await tsConfig.grammar(new DefaultLanguageService());
 			parser.setLanguage(language);
 		} catch (error) {
 			return TreeSitterFileError.LanguageMismatch;

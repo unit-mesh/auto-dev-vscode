@@ -2,16 +2,17 @@ import Parser, { Query } from "web-tree-sitter";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { TSLanguage } from "../TreeSitterLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
+import { TSLanguageService } from "../../language/service/TSLanguageService";
 
 export abstract class Structurer {
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 	protected abstract langId: SupportedLanguage;
 
-	async init(parser?: Parser): Promise<Query | undefined> {
+	async init(langService: TSLanguageService): Promise<Query | undefined> {
 		const tsConfig = TSLanguage.fromId(this.langId)!!;
-		const _parser = parser ?? new Parser();
-		const language = await tsConfig.grammar();
+		const _parser = langService.getParser() ?? new Parser();
+		const language = await tsConfig.grammar(langService);
 		_parser.setLanguage(language);
 		this.parser = _parser;
 		this.language = language;

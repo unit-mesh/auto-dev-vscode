@@ -1,10 +1,10 @@
 import { MemoizedQuery, TSLanguageConfig } from "./TSLanguageConfig";
-import { LangServiceUtil } from "../../language/service/TSLanguageService";
+import { LangServiceUtil, TSLanguageService } from "../../language/service/TSLanguageService";
 
 export const TypeScriptTSConfig: TSLanguageConfig = {
 	languageIds: ["TypeScript", "TSX"],
 	fileExtensions: ["ts", "tsx"],
-	grammar: () => LangServiceUtil.getLanguage('typescript'),
+	grammar: (langService: TSLanguageService) => langService.getLanguage('typescript'),
 	scopeQuery: new MemoizedQuery(""),
 	hoverableQuery: new MemoizedQuery(`
       [(identifier)

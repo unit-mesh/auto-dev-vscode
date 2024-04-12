@@ -1,4 +1,6 @@
 import { JavaStructurer } from "../../semantic-treesitter/structurer/JavaStructurer";
+import { TSLanguageService } from "../../language/service/TSLanguageService";
+import { TestLanguageService } from "../TestLanguageService";
 
 const Parser = require("web-tree-sitter");
 
@@ -14,11 +16,13 @@ public class ExampleClass {
 }`;
 
 		await Parser.init();
-		// const parser = new Parser();
-		// const structurer = new JavaStructurer();
-		// await structurer.init(parser);
-		// const codeFile = await structurer.parseFile(javaHelloWorld);
-		//
-		// expect(codeFile?.package).toEqual('com.example');
+		const parser = new Parser();
+		const languageService = new TestLanguageService(parser);
+
+		const structurer = new JavaStructurer();
+		await structurer.init(languageService);
+
+		const codeFile = await structurer.parseFile(javaHelloWorld);
+		expect(codeFile?.package).toEqual('com.example');
 	});
 });

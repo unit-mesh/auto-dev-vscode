@@ -1,10 +1,10 @@
 import { MemoizedQuery, TSLanguageConfig } from "./TSLanguageConfig";
-import { LangServiceUtil } from "../../language/service/TSLanguageService";
+import { TSLanguageService } from "../../language/service/TSLanguageService";
 
 export const GoTSConfig: TSLanguageConfig = {
 	languageIds: ["Go"],
 	fileExtensions: ["go"],
-	grammar: () => LangServiceUtil.getLanguage('go'),
+	grammar: (langService: TSLanguageService) => langService.getLanguage('go'),
 	scopeQuery: new MemoizedQuery(""),
 	hoverableQuery: new MemoizedQuery(`
      [(identifier)

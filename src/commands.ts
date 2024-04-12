@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { AutoDevExtension } from "./AutoDevExtension";
 import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
 import { insertCodeByRange, selectCodeInRange } from "./commands/editor";
+import { DefaultLanguageService } from "./language/service/DefaultLanguageService";
 
 const commandsMap: (
   extention: AutoDevExtension
@@ -53,7 +54,7 @@ const commandsMap: (
       return;
     }
 
-    await structurer.init();
+    await structurer.init(new DefaultLanguageService());
     const file = await structurer.parseFile(document.getText());
     console.info("CodeFile: ", file);
   }
