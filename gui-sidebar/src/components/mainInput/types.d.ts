@@ -1,4 +1,4 @@
-import { ContextProviderDescription } from "core";
+import { ContextProviderDescription } from "../../core";
 
 export type ComboBoxItemType =
   | "contextProvider"

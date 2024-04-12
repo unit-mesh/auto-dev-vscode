@@ -1,6 +1,6 @@
 import { PhotoIcon as OutlinePhotoIcon } from "@heroicons/react/24/outline";
 import { PhotoIcon as SolidPhotoIcon } from "@heroicons/react/24/solid";
-import { modelSupportsImages } from "core/llm/autodetect";
+import { modelSupportsImages } from "../../core/llm/autodetect";
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";

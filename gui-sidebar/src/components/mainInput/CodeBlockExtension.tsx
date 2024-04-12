@@ -1,6 +1,6 @@
 import { mergeAttributes, Node } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react";
-import { ContextItemWithId } from "../../shims/typings";
+import { ContextItemWithId } from "../../core";
 import { useDispatch, useSelector } from "react-redux";
 import { vscBadgeBackground } from "..";
 import { setEditingContextItemAtIndex } from "../../redux/slices/stateSlice";

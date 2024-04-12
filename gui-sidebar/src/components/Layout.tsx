@@ -254,17 +254,9 @@ const Layout = () => {
               )}
             </div>
             <HeaderButtonWithText
-              text="Help"
               onClick={() => {
-                navigate("/help");
-              }}
-            >
-              <QuestionMarkCircleIcon width="1.4em" height="1.4em" />
-            </HeaderButtonWithText>
-            <HeaderButtonWithText
-              onClick={() => {
-                // navigate("/settings");
-                postToIde("openConfigJson", undefined);
+                navigate("/settings");
+                // postToIde("openConfigJson", undefined);
               }}
               text="Config"
             >

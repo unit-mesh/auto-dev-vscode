@@ -4,8 +4,8 @@ import {
   PaintBrushIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { ContextItemWithId } from "core";
-import { getMarkdownLanguageTagForFile } from "core/util";
+import { ContextItemWithId } from "../../core";
+import { getMarkdownLanguageTagForFile } from "../../core/util";
 import React from "react";
 import styled from "styled-components";
 import { defaultBorderRadius, lightGray, vscEditorBackground } from "..";

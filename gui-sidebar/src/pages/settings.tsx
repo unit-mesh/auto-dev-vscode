@@ -1,10 +1,10 @@
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { ContinueConfig } from "core";
-import { useEffect } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import { ContinueConfig } from '../core'
+import { useEffect } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 import {
   Button,
   Hr,
@@ -12,14 +12,15 @@ import {
   TextArea,
   lightGray,
   vscBackground,
-  vscForeground,
+  // vscForeground,
   vscInputBackground,
-} from "../components";
-import InfoHover from "../components/InfoHover";
-import Loader from "../components/loaders/Loader";
-import { RootState } from "../redux/store";
-import { getFontSize, getPlatform } from "../util";
-import { postToIde } from "../util/ide";
+  Select
+} from '../components'
+import InfoHover from '../components/InfoHover'
+import Loader from '../components/loaders/Loader'
+import ModelSettings from '../components/modelSelection/ModelSettings'
+import { RootState } from '../redux/store'
+import { getFontSize } from '../util'
 
 const CancelButton = styled(Button)`
   background-color: transparent;
@@ -29,15 +30,15 @@ const CancelButton = styled(Button)`
     background-color: ${lightGray};
     color: black;
   }
-`;
+`
 
 const SaveButton = styled(Button)`
   &:hover {
     opacity: 0.8;
   }
-`;
+`
 
-const Slider = styled.input.attrs({ type: "range" })`
+const Slider = styled.input.attrs({ type: 'range' })`
   --webkit-appearance: none;
   width: 100%;
   background-color: ${vscInputBackground};
@@ -75,63 +76,32 @@ const Slider = styled.input.attrs({ type: "range" })`
     outline: none;
     border: none;
   }
-`;
-
-const ConfigJsonButton = styled(Button)`
-  padding: 2px 4px;
-  margin-left: auto;
-  margin-right: 4px;
-  background-color: transparent;
-  color: ${vscForeground};
-  border: 1px solid ${lightGray};
-  &:hover {
-    background-color: ${lightGray};
-  }
-`;
-
-const ALL_MODEL_ROLES = ["default", "summarize", "edit", "chat"];
+`
 
 function Settings() {
-  const formMethods = useForm<ContinueConfig>();
-  const onSubmit = (data: ContinueConfig) => console.log(data);
+  const formMethods = useForm<ContinueConfig>()
+  const onSubmit = (data: ContinueConfig) => {
+    console.log(data)
+  }
 
-  const navigate = useNavigate();
-  const config = useSelector((state: RootState) => state.state.config);
-  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const config = useSelector((state: RootState) => state.state.config)
 
   const submitChanges = () => {
-    // TODO
-    // if (!client) return;
-    // const systemMessage = formMethods.watch("system_message") as
-    //   | string
-    //   | undefined;
-    // const temperature = formMethods.watch("temperature") as number | undefined;
-    // // const models = formMethods.watch("models");
-    // client.setSystemMessage(systemMessage || "");
-    // if (temperature) client.setTemperature(temperature);
-    // if (models) {
-    //   for (const role of ALL_MODEL_ROLES) {
-    //     if (models[role]) {
-    //       client.setModelForRole(role, models[role] as string, models[role]);
-    //     }
-    //   }
-    // }
-  };
+    // pass
+  }
 
   const submitAndLeave = () => {
-    submitChanges();
-    navigate("/");
-  };
+    submitChanges()
+    navigate('/')
+  }
 
   useEffect(() => {
-    if (!config) return;
+    if (!config) return
 
-    formMethods.setValue("systemMessage", config.systemMessage);
-    formMethods.setValue(
-      "completionOptions.temperature",
-      config.completionOptions?.temperature,
-    );
-  }, [config]);
+    formMethods.setValue('systemMessage', config.systemMessage)
+    formMethods.setValue('completionOptions.temperature', config.completionOptions?.temperature)
+  }, [config])
 
   return (
     <FormProvider {...formMethods}>
@@ -140,7 +110,7 @@ function Settings() {
           className="items-center flex sticky top-0"
           style={{
             borderBottom: `0.5px solid ${lightGray}`,
-            backgroundColor: vscBackground,
+            backgroundColor: vscBackground
           }}
         >
           <ArrowLeftIcon
@@ -150,18 +120,6 @@ function Settings() {
             className="inline-block ml-4 cursor-pointer"
           />
           <h3 className="text-lg font-bold m-2 inline-block">Settings</h3>
-          <ConfigJsonButton
-            onClick={() => {
-              postToIde("showFile", {
-                filepath:
-                  getPlatform() == "windows"
-                    ? "~\\.continue\\config.json"
-                    : "~/.continue/config.json",
-              });
-            }}
-          >
-            Open config.json
-          </ConfigJsonButton>
         </div>
         <form onSubmit={formMethods.handleSubmit(onSubmit)}>
           {config ? (
@@ -176,7 +134,7 @@ function Settings() {
               </h3>
               <TextArea
                 placeholder="Enter a system message (e.g. 'Always respond in German')"
-                {...formMethods.register("systemMessage")}
+                {...formMethods.register('systemMessage')}
               />
 
               <Hr />
@@ -195,56 +153,28 @@ function Settings() {
                   min="0"
                   max="1"
                   step="0.01"
-                  {...formMethods.register("completionOptions.temperature")}
+                  {...formMethods.register('completionOptions.temperature')}
                 />
                 <p>1</p>
               </div>
-              <div className="text-center" style={{ marginTop: "-25px" }}>
+              <div className="text-center" style={{ marginTop: '-25px' }}>
                 <p className="text-sm text-gray-500">
-                  {(formMethods.watch("completionOptions.temperature") as
-                    | number
-                    | undefined) ||
+                  {(formMethods.watch('completionOptions.temperature') as number | undefined) ||
                     config.completionOptions?.temperature ||
-                    "-"}
+                    '-'}
                 </p>
               </div>
               <Hr />
 
-              {/**
               <h3 className="flex gap-1">Models</h3>
-              {ALL_MODEL_ROLES.map((role) => {
+              {config.models.map((model) => {
                 return (
                   <>
-                    <h4>{role}</h4>
-
-                    <ModelSettings
-                      role={role}
-                      llm={(config.models as any)[role]}
-                    />
+                    <h4>{model.title}</h4>
+                    <ModelSettings model={model} />
                   </>
-                );
+                )
               })}
-
-              <Hr />
-
-              <h3 className="flex gap-1">
-                Custom Commands
-                <InfoHover
-                  msg={`Custom commands let you map a prompt to a shortened slash command.
-            They are like slash commands, but more easily defined - write just a
-            prompt instead of a Step class. Their output will always be in chat
-            form`}
-                />
-              </h3>
-              <Hr />
-
-              <h3 className="flex gap-1">
-                Context Providers
-                <InfoHover
-                  msg={`Context Providers let you type '@' and quickly reference sources of information, like files, GitHub Issues, webpages, and more.`}
-                />
-              </h3>
-            */}
             </div>
           ) : (
             <Loader />
@@ -264,15 +194,27 @@ function Settings() {
             step="1"
             defaultValue={getFontSize()}
             onChange={(e) => {
-              localStorage.setItem("fontSize", e.target.value);
+              localStorage.setItem('fontSize', e.target.value)
             }}
           />
+
+          <p>Theme</p>
+          <div className="my-4">
+            <Select defaultValue="dark">
+              <option disabled value="">
+                Select Theme
+              </option>
+              <option value="auto">Auto</option>
+              <option value="dark">Dark</option>
+              <option value="highlight">Highlight</option>
+            </Select>
+          </div>
         </div>
 
         <div className="flex gap-2 justify-end px-4">
           <CancelButton
             onClick={() => {
-              navigate("/");
+              navigate('/')
             }}
           >
             Cancel
@@ -281,7 +223,7 @@ function Settings() {
         </div>
       </div>
     </FormProvider>
-  );
+  )
 }
 
-export default Settings;
+export default Settings

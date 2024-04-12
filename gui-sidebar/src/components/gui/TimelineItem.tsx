@@ -1,5 +1,5 @@
 import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
-import { ChatHistoryItem } from "../../shims/typings";
+import { ChatHistoryItem } from "../../core";
 import styled from "styled-components";
 import { lightGray, vscBackground } from "..";
 import { getFontSize } from "../../util";

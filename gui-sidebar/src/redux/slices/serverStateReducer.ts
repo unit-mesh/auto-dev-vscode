@@ -3,23 +3,8 @@ import {
   ContextProviderDescription,
   ContinueConfig,
   SlashCommandDescription,
-} from "core";
-import FreeTrial from "core/llm/llms/FreeTrial";
-
-const TEST_SLASH_COMMANDS = [
-  {
-    name: "edit",
-    description: "Edit the code",
-  },
-  {
-    name: "cmd",
-    description: "Generate a command",
-  },
-  {
-    name: "help",
-    description: "Get help using Continue",
-  },
-];
+} from "../../core";
+import FreeTrial from "../../core/llm/llms/FreeTrial";
 
 type ServerState = {
   meilisearchUrl: string | undefined;

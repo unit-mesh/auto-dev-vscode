@@ -1,5 +1,5 @@
-import { ContextSubmenuItem } from "core";
-import { getBasename, getLastNPathParts } from "core/util";
+import { ContextSubmenuItem } from "../core";
+import { getBasename, getLastNPathParts } from "../core/util";
 import MiniSearch, { SearchResult } from "minisearch";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";

@@ -1,6 +1,6 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-import { ContextItemWithId } from "../../shims/typings";
-import { contextItemToRangeInFileWithContents } from "../../shims/utils";
+import { ContextItemWithId } from "../../core";
+import { contextItemToRangeInFileWithContents } from "../../core/commands/util";
 import React from "react";
 import styled from "styled-components";
 import {

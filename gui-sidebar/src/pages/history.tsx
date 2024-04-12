@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { PersistedSessionInfo, SessionInfo } from "core";
+import { PersistedSessionInfo, SessionInfo } from "../core";
 import MiniSearch from "minisearch";
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -89,8 +89,6 @@ function TableRow({
 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const apiUrl = window.serverUrl;
-  const workspacePaths = window.workspacePaths || [""];
   const [hovered, setHovered] = useState(false);
 
   const { saveSession, deleteSession, loadSession } = useHistory(dispatch);

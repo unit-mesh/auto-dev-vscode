@@ -3,7 +3,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 export const configSlice = createSlice({
   name: "config",
   initialState: {
-    vscMachineId: window.vscMachineId,
+    vscMachineId: '11',
   },
   reducers: {
     setVscMachineId: (state, action: PayloadAction<string>) => {

@@ -1,18 +1,9 @@
-import { usePostHog } from "posthog-js/react";
 import React, { useContext, useLayoutEffect } from "react";
 import { useDispatch } from "react-redux";
-import styled from "styled-components";
 import { Button, Input } from "..";
 import { SubmenuContextProvidersContext } from "../../App";
 import { setShowDialog } from "../../redux/slices/uiStateSlice";
 import { postToIde } from "../../util/ide";
-
-const GridDiv = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 8px;
-  align-items: center;
-`;
 
 function AddDocsDialog() {
   const [docsUrl, setDocsUrl] = React.useState("");
@@ -23,7 +14,6 @@ function AddDocsDialog() {
   const { addItem } = useContext(SubmenuContextProvidersContext);
 
   const ref = React.useRef<HTMLInputElement>(null);
-  const posthog = usePostHog();
 
   useLayoutEffect(() => {
     setTimeout(() => {
@@ -67,7 +57,6 @@ function AddDocsDialog() {
             title: docsTitle,
             description: new URL(docsUrl).hostname,
           });
-          posthog.capture("add_docs", { url: docsUrl });
         }}
       >
         Done

@@ -4,9 +4,9 @@ import {
   MessageContent,
   MessagePart,
   RangeInFile,
-} from "core";
-import { stripImages } from "core/llm/countTokens";
-import { getBasename } from "core/util";
+} from "../../core";
+import { stripImages } from "../../core/llm/countTokens";
+import { getBasename } from "../../core/util";
 import { ideRequest } from "../../util/ide";
 import { WebviewIde } from "../../util/webviewIde";
 

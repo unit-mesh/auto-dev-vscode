@@ -1,18 +1,18 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import configReducer from "./slices/configSlice";
-import miscReducer from "./slices/miscSlice";
-import serverStateReducer from "./slices/serverStateReducer";
-import stateReducer from "./slices/stateSlice";
-import uiStateReducer from "./slices/uiStateSlice";
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import configReducer from './slices/configSlice'
+import miscReducer from './slices/miscSlice'
+import serverStateReducer from './slices/serverStateReducer'
+import stateReducer from './slices/stateSlice'
+import uiStateReducer from './slices/uiStateSlice'
 
-import { createTransform, persistReducer, persistStore } from "redux-persist";
-import { createFilter } from "redux-persist-transform-filter";
-import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
-import storage from "redux-persist/lib/storage";
+import { persistReducer, persistStore } from 'redux-persist'
+import { createFilter } from 'redux-persist-transform-filter'
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
+import storage from 'redux-persist/lib/storage'
 
 export interface ChatMessage {
-  role: "system" | "user" | "assistant";
-  content: string;
+  role: 'system' | 'user' | 'assistant'
+  content: string
 }
 
 const rootReducer = combineReducers({
@@ -20,51 +20,33 @@ const rootReducer = combineReducers({
   config: configReducer,
   misc: miscReducer,
   uiState: uiStateReducer,
-  serverState: serverStateReducer,
-});
+  serverState: serverStateReducer
+})
 
-export type RootState = ReturnType<typeof rootReducer>;
-
-const windowIDTransform = (windowID) =>
-  createTransform(
-    // transform state on its way to being serialized and persisted.
-    (inboundState, key) => {
-      return { [windowID]: inboundState };
-    },
-    // transform state being rehydrated
-    (outboundState, key) => {
-      return outboundState[windowID] || {};
-    }
-  );
+export type RootState = ReturnType<typeof rootReducer>
 
 const saveSubsetFilters = [
-  createFilter("state", [
-    "history",
-    "contextItems",
-    "sessionId",
-    "defaultModelTitle",
-  ]),
-];
+  createFilter('state', ['history', 'contextItems', 'sessionId', 'defaultModelTitle'])
+]
 
 const persistConfig = {
-  key: "root",
+  key: 'root',
   storage,
   transforms: [
-    ...saveSubsetFilters,
-    // windowIDTransform((window as any).windowId || "undefinedWindowId"),
+    ...saveSubsetFilters
   ],
-  stateReconciler: autoMergeLevel2,
-};
+  stateReconciler: autoMergeLevel2
+}
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
   reducer: persistedReducer,
   // reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
-    }),
-});
+      serializableCheck: false
+    })
+})
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(store)

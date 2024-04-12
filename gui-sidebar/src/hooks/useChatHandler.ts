@@ -9,10 +9,9 @@ import {
   MessageContent,
   RangeInFile,
   SlashCommandDescription,
-} from "core";
-import { constructMessages } from "core/llm/constructMessages";
-import { stripImages } from "core/llm/countTokens";
-import { usePostHog } from "posthog-js/react";
+} from "../core";
+import { constructMessages } from "../core/llm/constructMessages";
+import { stripImages } from "../core/llm/countTokens";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import resolveEditorContent from "../components/mainInput/resolveInput";
@@ -29,8 +28,6 @@ import { RootState } from "../redux/store";
 import { ideStreamRequest, llmStreamChat, postToIde } from "../util/ide";
 
 function useChatHandler(dispatch: Dispatch) {
-  const posthog = usePostHog();
-
   const defaultModel = useSelector(defaultModelSelector);
 
   const slashCommands = useSelector(
@@ -167,12 +164,6 @@ function useChatHandler(dispatch: Dispatch) {
       // TODO: hacky way to allow rerender
       await new Promise((resolve) => setTimeout(resolve, 0));
 
-      posthog.capture("step run", {
-        step_name: "User Input",
-        params: {},
-      });
-      posthog.capture("userInput", {});
-
       const messages = constructMessages(newHistory);
 
       // Determine if the input is a slash command
@@ -182,10 +173,6 @@ function useChatHandler(dispatch: Dispatch) {
         await _streamNormalInput(messages);
       } else {
         const [slashCommand, commandInput] = commandAndInput;
-        posthog.capture("step run", {
-          step_name: slashCommand.name,
-          params: {},
-        });
         await _streamSlashCommand(
           messages,
           slashCommand,
@@ -200,6 +187,7 @@ function useChatHandler(dispatch: Dispatch) {
         message: `Error streaming response: ${e.message}`,
       });
     } finally {
+      console.log(false)
       dispatch(setInactive());
     }
   }

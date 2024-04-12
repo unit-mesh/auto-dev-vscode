@@ -9,9 +9,9 @@ import {
   ContextItemWithId,
   ContextProviderDescription,
   RangeInFile,
-} from "core";
-import { modelSupportsImages } from "core/llm/autodetect";
-import { getBasename } from "core/util";
+} from "../../core";
+import { modelSupportsImages } from "../../core/llm/autodetect";
+import { getBasename } from "../../core/util";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -111,7 +111,7 @@ function getDataUrlForFile(file: File, img): string {
   canvas.width = img.width * scaleFactor;
   canvas.height = img.height * scaleFactor;
 
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d")!;
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
   const downsizedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
@@ -119,9 +119,9 @@ function getDataUrlForFile(file: File, img): string {
 }
 
 interface TipTapEditorProps {
-  availableContextProviders: ContextProviderDescription[];
+  availableContextProviders?: ContextProviderDescription[];
   availableSlashCommands: ComboBoxItem[];
-  isMainInput: boolean;
+  isMainInput?: boolean;
   onEnter: (editorState: JSONContent) => void;
 
   editorState?: JSONContent;
@@ -181,7 +181,7 @@ function TipTapEditor(props: TipTapEditorProps) {
 
   const getSubmenuContextItemsRef = useUpdatingRef(getSubmenuContextItems);
   const availableContextProvidersRef = useUpdatingRef(
-    props.availableContextProviders,
+    props.availableContextProviders || [],
   );
 
   const historyLengthRef = useUpdatingRef(historyLength);
@@ -336,18 +336,18 @@ function TipTapEditor(props: TipTapEditorProps) {
         for (const node of p.content) {
           if (
             node.type === "slashcommand" &&
-            ["/edit", "/comment"].includes(node.attrs.label)
+            ["/edit", "/comment"].includes(node.attrs!.label)
           ) {
             // Update context items
             dispatch(
-              setEditingContextItemAtIndex({ item: codeBlock.attrs.item }),
+              setEditingContextItemAtIndex({ item: codeBlock.attrs!.item }),
             );
             return;
           }
         }
       }
     },
-  });
+  })!;
 
   const onEnterRef = useUpdatingRef(() => {
     const json = editor.getJSON();
@@ -477,7 +477,7 @@ function TipTapEditor(props: TipTapEditorProps) {
         };
 
         let index = 0;
-        for (const el of editor.getJSON().content) {
+        for (const el of editor.getJSON().content!) {
           if (el.type === "codeBlock") {
             index += 2;
           } else {
@@ -567,7 +567,7 @@ function TipTapEditor(props: TipTapEditorProps) {
         setShowDragOverMsg(true);
       }}
       onDrop={(event) => {
-        if (!modelSupportsImages(defaultModel.provider, defaultModel.model)) {
+        if (!modelSupportsImages(defaultModel!.provider, defaultModel!.model)) {
           return;
         }
         setShowDragOverMsg(false);
@@ -618,7 +618,7 @@ function TipTapEditor(props: TipTapEditorProps) {
         }}
       />
       {showDragOverMsg &&
-        modelSupportsImages(defaultModel.provider, defaultModel.model) && (
+        modelSupportsImages(defaultModel!.provider, defaultModel!.model) && (
           <>
             <HoverDiv></HoverDiv>
             <HoverTextDiv>Hold ⇧ to drop image</HoverTextDiv>
