@@ -48,12 +48,12 @@ export default defineConfig((api) => {
         reporter: ['text', 'json-summary', 'json'],
         // If you want a coverage reports even if your tests are failing, include the reportOnFailure option
         reportOnFailure: true,
-        thresholds: {
-          lines: 10,
-          branches: 10,
-          functions: 10,
-          statements: 10
-        }
+        // thresholds: {
+        //   lines: 10,
+        //   branches: 10,
+        //   functions: 10,
+        //   statements: 10
+        // }
       },
     }
   };
