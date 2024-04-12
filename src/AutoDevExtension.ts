@@ -4,7 +4,7 @@ import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider
 import { VSCodeAction } from "./action/VSCodeAction";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
-import { StructurerProviderManager } from "./semantic-treesitter/structurer/StructurerProviderManager";
+import { StructurerProviderManager } from "./semantic/structurer/StructurerProviderManager";
 
 export class AutoDevExtension {
 	sidebar: AutoDevWebviewViewProvider;

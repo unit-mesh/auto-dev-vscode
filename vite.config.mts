@@ -25,7 +25,7 @@ export default defineConfig((api) => {
             dest: "",
           },
           {
-            src: "src/semantic-treesitter/**/*.scm",
+            src: "src/semantic/**/*.scm",
             dest: "semantic",
           },
         ],

@@ -6,7 +6,7 @@ import { VSCodeAction } from "./action/VSCodeAction";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { StructurerProviderManager } from "./semantic-treesitter/structurer/StructurerProviderManager";
+import { StructurerProviderManager } from "./semantic/structurer/StructurerProviderManager";
 import Parser from "web-tree-sitter";
 
 import { removeExtensionContext, setExtensionContext } from './context';
