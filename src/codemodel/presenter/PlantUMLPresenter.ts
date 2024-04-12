@@ -16,7 +16,7 @@ export class PlantUMLPresenter implements Presenter {
 
 		// Iterate through imports and add them to the PlantUML string as comments
 		file.imports.forEach(importItem => {
-			plantUmlString += `'import ${importItem}\n`;
+			plantUmlString += `'${importItem}\n`;
 		});
 
 		// Iterate through classes and convert them to PlantUML syntax
