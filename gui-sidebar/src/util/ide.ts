@@ -1,9 +1,9 @@
-import { ChatMessage, LLMFullCompletionOptions, LLMReturnValue } from "core";
-import { Message } from "core/util/messenger";
+import { ChatMessage, LLMFullCompletionOptions, LLMReturnValue } from "../shims/typings";
+import { Message } from "../shims/typings";
 import {
   ReverseWebviewProtocol,
   WebviewProtocol,
-} from "core/web/webviewProtocol";
+} from "../shims/webviewProtocol";
 import { v4 as uuidv4 } from "uuid";
 import "vscode-webview";
 interface vscode {

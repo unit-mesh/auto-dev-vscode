@@ -22,7 +22,6 @@
     "@tiptap/starter-kit": "^2.1.13",
     "@tiptap/suggestion": "^2.1.13",
     "@types/vscode-webview": "^1.57.1",
-    "core": "file:../core",
     "dompurify": "^3.0.6",
     "downshift": "^7.6.0",
     "lodash": "^4.17.21",

@@ -13,7 +13,7 @@ import Models from "./pages/models";
 import MonacoPage from "./pages/monaco";
 import SettingsPage from "./pages/settings";
 
-import { ContextSubmenuItem } from "core";
+import { ContextSubmenuItem } from "./shims/typings";
 import useSubmenuContextProviders from "./hooks/useSubmenuContextProviders";
 import { useVscTheme } from "./hooks/useVscTheme";
 import Stats from "./pages/stats";
