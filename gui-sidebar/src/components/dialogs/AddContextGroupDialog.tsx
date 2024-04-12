@@ -1,4 +1,4 @@
-import { ContextItemWithId } from "core";
+import { ContextItemWithId } from "../../shims/typings";
 import { useDispatch } from "react-redux";
 import { Button, Input } from "..";
 import {

@@ -2,8 +2,8 @@ import {
   HandThumbDownIcon,
   HandThumbUpIcon,
 } from "@heroicons/react/24/outline";
-import { ChatHistoryItem } from "core";
-import { stripImages } from "core/llm/countTokens";
+import { ChatHistoryItem } from "../../shims/typings";
+import { stripImages } from "../../shims/utils";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
