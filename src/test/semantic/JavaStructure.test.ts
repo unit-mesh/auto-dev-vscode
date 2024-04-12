@@ -1,5 +1,6 @@
 import { JavaStructurer } from "../../semantic-treesitter/structurer/JavaStructurer";
 import { TestLanguageService } from "../TestLanguageService";
+import { CodeFile } from "../../codemodel/CodeFile";
 
 const Parser = require("web-tree-sitter");
 
@@ -22,7 +23,7 @@ public class ExampleClass {
 		await structurer.init(languageService);
 
 		const codeFile = await structurer.parseFile(javaHelloWorld);
-		expect(codeFile).toEqual({
+		expect(codeFile as CodeFile).toEqual({
 			"fileName": "",
 			"language": "java",
 			"functions": [],
@@ -51,6 +52,7 @@ public class ExampleClass {
 						}
 					],
 					"name": "ExampleClass",
+					"canonicalName": "com.example.ExampleClass",
 					"package": "",
 					"implements": [],
 					"start": {

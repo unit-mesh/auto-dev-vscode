@@ -31,6 +31,7 @@ export class JavaStructurer extends Structurer {
 			classes: []
 		};
 		let classObj: CodeStructure = {
+			canonicalName: '',
 			constant: [],
 			extends: [],
 			methods: [],
@@ -60,6 +61,7 @@ export class JavaStructurer extends Structurer {
 					if (classObj.name !== '') {
 						codeFile.classes.push({ ...classObj });
 						classObj = {
+							canonicalName: "",
 							package: codeFile.package, implements: [],
 							constant: [], extends: [], methods: [], name: '',
 							start: { row: 0, column: 0 },
@@ -67,6 +69,7 @@ export class JavaStructurer extends Structurer {
 						};
 					}
 					classObj.name = text;
+					classObj.canonicalName = codeFile.package + "." + classObj.name;
 					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
 					if (classNode !== null) {
 						this.insertLocation(classObj, classNode);

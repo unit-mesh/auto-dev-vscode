@@ -13,6 +13,8 @@ export interface CodeFile {
 
 export interface CodeStructure extends PositionElement {
 	name: string;
+	// like a package, `com.example.ExampleClass` is the canonical name
+	canonicalName: string,
 	package: string;
 	extends?: string[];
 	implements: string[];
