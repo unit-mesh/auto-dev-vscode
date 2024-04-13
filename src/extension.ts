@@ -17,7 +17,7 @@ import {
   registerQuickFixProvider
 } from "./providers/ProviderRegister";
 import { channel } from "./channel";
-import { RelatedProviderManager } from "./semantic/RelatedProviderManager";
+import { RelatedCodeProviderManager } from "./semantic/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -32,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
   const documentManager = new RecentlyDocumentManager();
   const diffManager = new DiffManager();
   const fileCacheManager = new CodeFileCacheManager(structureProvider);
-  const relatedManager = new RelatedProviderManager(fileCacheManager);
+  const relatedManager = new RelatedCodeProviderManager(fileCacheManager);
   const extension = new AutoDevExtension(
     sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
   );

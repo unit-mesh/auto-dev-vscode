@@ -5,7 +5,7 @@ import { VSCodeAction } from "./action/VSCodeAction";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { StructurerProviderManager } from "./semantic/StructurerProviderManager";
-import { RelatedProviderManager } from "./semantic/RelatedProviderManager";
+import { RelatedCodeProviderManager } from "./semantic/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
 
 export class AutoDevExtension {
@@ -15,7 +15,7 @@ export class AutoDevExtension {
 	documentManager: RecentlyDocumentManager;
 	extensionContext: vscode.ExtensionContext;
 	structureProvider: StructurerProviderManager | undefined;
-	relatedManager: RelatedProviderManager;
+	relatedManager: RelatedCodeProviderManager;
 	fileCacheManager: CodeFileCacheManager;
 
 	constructor(
@@ -23,7 +23,7 @@ export class AutoDevExtension {
 		action: VSCodeAction,
 		documentManager: RecentlyDocumentManager,
 		diffManager: DiffManager,
-		relatedManager: RelatedProviderManager,
+		relatedManager: RelatedCodeProviderManager,
 		fileCacheManager: CodeFileCacheManager,
 		context: vscode.ExtensionContext) {
 		this.sidebar = sidebar;

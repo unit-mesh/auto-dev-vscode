@@ -1,12 +1,12 @@
 import { TSLanguageConfig } from "./_base/TSLanguageConfig";
-import { JavaTSConfig } from "./java/JavaTSConfig";
-import { TypeScriptTSConfig } from "./typescript/TypeScriptTSConfig";
-import { GoTSConfig } from "./go/GoTSConfig";
+import { JavaLangConfig } from "./java/JavaLangConfig";
+import { TypeScriptLangConfig } from "./typescript/TypeScriptLangConfig";
+import { GoLangConfig } from "./go/GoLangConfig";
 
 export const ALL_LANGUAGES: TSLanguageConfig[] = [
-  JavaTSConfig,
-  GoTSConfig,
-  TypeScriptTSConfig,
+  JavaLangConfig,
+  GoLangConfig,
+  TypeScriptLangConfig,
 ];
 
 export class TSLanguageUtil {

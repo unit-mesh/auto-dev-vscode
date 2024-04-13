@@ -1,4 +1,4 @@
-import { RelatedProvider } from "../_base/RelatedProvider";
+import { RelatedCodeProvider } from "../_base/RelatedCodeProvider";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 import { CodeFileCacheManager } from "../../cache/CodeFileCacheManager";
 import { channel } from "../../channel";
@@ -11,7 +11,7 @@ const JAVA_BUILTIN_TYPES = new Set([
 type JavaType = string;
 type CanonicalName = string;
 
-export class JavaRelatedProvider extends RelatedProvider {
+export class JavaRelatedProvider extends RelatedCodeProvider {
 	// dynamic get resources
 	importCache: Map<JavaType, CanonicalName> = new Map();
 	private fileManager: CodeFileCacheManager | undefined;

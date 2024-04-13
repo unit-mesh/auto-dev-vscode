@@ -6,9 +6,9 @@ import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile"
  * An input structure is a code file that is used as input to the symbol, while an output structure is a code
  * file that receives output from the symbol.
  *
- * @interface RelatedProvider
+ * @interface RelatedCodeProvider
  */
-export class RelatedProvider {
+export class RelatedCodeProvider {
 	/**
 	 * Returns the fan-in and fan-out of the given method.
 	 * For example:
