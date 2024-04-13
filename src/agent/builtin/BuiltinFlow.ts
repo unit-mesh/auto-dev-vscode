@@ -1,7 +1,7 @@
 /**
  * AutoDev TaskFlow is the built-in Workflow for AutoDev, see in [#81](https://github.com/unit-mesh/auto-dev/issues/81)
  */
-interface TaskFlow<Tasking> {
+export interface TaskFlow<Tasking> {
 	/**
 	 * This method is used to clarify the purpose of user's requirement.
 	 * It returns a string will specify format, will parse in design()
