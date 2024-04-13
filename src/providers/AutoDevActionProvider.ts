@@ -5,6 +5,7 @@ import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import { TreeSitterFile, TreeSitterFileError, } from "../semantic/TreeSitterFile";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { JavaSemanticLsp } from "../semantic-lsp/java/JavaSemanticLsp";
+import { documentToTreeSitterFile } from "../semantic/TreeSitterFileUtil";
 
 export class AutoDevActionProvider implements vscode.CodeActionProvider {
 	private context: AutoDevExtension;
@@ -28,7 +29,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			return [];
 		}
 
-		const file = await TreeSitterFile.from(document);
+		const file = await documentToTreeSitterFile(document);
 		if (!(file instanceof TreeSitterFile)) {
 			return;
 		}
