@@ -4,6 +4,8 @@ import { Tooling } from "./_base/Tooling";
 import { PackageManger } from "./_base/PackageManger";
 
 export class GradleTooling implements Tooling {
+	moduleTarget = "build.gradle";
+
 	// TODO: the old code uses the `findDeps` method to find dependencies, but it's not implemented here
 	findDeps(): PackageDependencies[] {
 		let java = extensions.getExtension("redhat.java");
@@ -30,5 +32,13 @@ export class GradleTooling implements Tooling {
 
 	getToolingVersion(): string {
 		return "";
+	}
+
+	lookupRelativeTooling(filepath: String): string {
+		return "";
+	}
+
+	getTasks(): string[] {
+		return [];
 	}
 }
