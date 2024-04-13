@@ -1,5 +1,6 @@
 import { IdeAction } from "./IdeAction";
 import * as vscode from "vscode";
+import path from "path";
 
 export class VSCodeAction implements IdeAction {
   async runCommand(command: string): Promise<void> {
