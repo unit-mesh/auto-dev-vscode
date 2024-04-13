@@ -24,26 +24,32 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		token: vscode.CancellationToken
 	): Promise<vscode.CodeAction[] | null | undefined> {
 		const lang = document.languageId;
-		if (!SUPPORTED_LANGUAGES.includes(lang)) {return [];}
+		if (!SUPPORTED_LANGUAGES.includes(lang)) {
+			return [];
+		}
 
 		const file = await TreeSitterFile.from(document);
-		if (!(file instanceof TreeSitterFile)) {return;}
+		if (!(file instanceof TreeSitterFile)) {
+			return;
+		}
 
 		const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
 		let actions: vscode.CodeAction[] = [];
 		if (methodRanges instanceof Array) {
-			actions = AutoDevActionProvider.buildMethodActions(methodRanges, range, document);
+			actions = this.buildMethodActions(methodRanges, range, document, lang);
 		}
 
 		const classRanges: IdentifierBlockRange[] | TreeSitterFileError = file.classRanges();
 		if (classRanges instanceof Array) {
-			actions = actions.concat(AutoDevActionProvider.buildClassAction(classRanges, range, document));
+			let classAction = this.buildClassAction(classRanges, range, document);
+			actions = actions.concat(classAction);
 		}
 
 		return actions;
 	}
 
-	private static buildMethodActions(methodRanges: IdentifierBlockRange[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
+	private buildMethodActions(methodRanges: IdentifierBlockRange[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument, lang: string):
+		vscode.CodeAction[] {
 		let methodDocActions = methodRanges
 			.filter(result => result.blockRange.contains(range))
 			.map(result => {
@@ -51,30 +57,21 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 				return AutoDevActionProvider.createDocAction(title, document, result);
 			});
 
-		// TODO: merge this with the above map
-		methodRanges
-			.filter(result => result.blockRange.contains(range))
-			.forEach(result => {
-			const title = `Gen API Data for \`${result.identifierRange.text}\` (AutoDev)`;
-			const codeAction = new vscode.CodeAction(
-				title,
-				AutoDevActionProvider.providedCodeActionKinds[0]
-			);
-			codeAction.isPreferred = false;
-			codeAction.edit = new vscode.WorkspaceEdit();
-			codeAction.command = {
-				command: "autodev.genApiData",
-				title: title,
-				arguments: [document, result, codeAction.edit]
-			};
 
-			methodDocActions.push(codeAction);
-		});
+		let apisDocActions: vscode.CodeAction[] = [];
+		if (this.context.structureProvider?.getStructurer(lang)) {
+			apisDocActions = methodRanges
+				.filter(result => result.blockRange.contains(range))
+				.map(result => {
+					const title = `Gen API Data for \`${result.identifierRange.text}\` (AutoDev)`;
+					return AutoDevActionProvider.createGenApiDataAction(title, result, document);
+				});
+		}
 
-		return methodDocActions;
+		return methodDocActions.concat(apisDocActions);
 	}
 
-	private static buildClassAction(classRanges: IdentifierBlockRange[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
+	private buildClassAction(classRanges: IdentifierBlockRange[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
 		return classRanges
 			.filter(result => result.identifierRange.contains(range))
 			.map(result => {
@@ -83,7 +80,23 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			});
 	}
 
-	private static createDocAction(title: string, document: vscode.TextDocument, result: IdentifierBlockRange) {
+	private static createGenApiDataAction(title: string, result: IdentifierBlockRange, document: vscode.TextDocument): vscode.CodeAction {
+		const codeAction = new vscode.CodeAction(
+			title,
+			AutoDevActionProvider.providedCodeActionKinds[0]
+		);
+		codeAction.isPreferred = false;
+		codeAction.edit = new vscode.WorkspaceEdit();
+		codeAction.command = {
+			command: "autodev.genApiData",
+			title: title,
+			arguments: [document, result, codeAction.edit]
+		};
+
+		return codeAction;
+	}
+
+	private static createDocAction(title: string, document: vscode.TextDocument, result: IdentifierBlockRange): vscode.CodeAction {
 		const codeAction = new vscode.CodeAction(
 			title,
 			AutoDevActionProvider.providedCodeActionKinds[0]
@@ -96,6 +109,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			title: title,
 			arguments: [document, result, codeAction.edit]
 		};
+
 		return codeAction;
 	}
 

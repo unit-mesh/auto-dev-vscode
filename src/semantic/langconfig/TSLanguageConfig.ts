@@ -1,4 +1,4 @@
-import { Language } from "web-tree-sitter";
+import { Language, Query } from "web-tree-sitter";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 
@@ -42,6 +42,10 @@ export class MemoizedQuery {
 
   constructor(scopeQuery: string) {
     this.scopeQuery = scopeQuery;
+  }
+
+  query(language: Language) : Query {
+    return language.query(this.scopeQuery);
   }
 }
 

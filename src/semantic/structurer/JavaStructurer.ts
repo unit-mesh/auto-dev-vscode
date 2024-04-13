@@ -18,7 +18,7 @@ export class JavaStructurer extends Structurer {
 	 */
 	override async parseFile(code: string): Promise<CodeFile | undefined> {
 		const tree = this.parser!!.parse(code);
-		let query = this.language!!.query(this.config.structureQuery.scopeQuery)!!;
+		const query = this.config.structureQuery.query(this.language!!);
 		const captures = query!!.captures(tree.rootNode);
 
 		const codeFile: CodeFile = {

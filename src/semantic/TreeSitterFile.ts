@@ -9,10 +9,10 @@ import { TreeSitterFileCacheManager } from "../cache/TreeSitterFileCacheManager"
 import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
 
 export class TreeSitterFile {
-	private src: string;
+	private sourcecode: string;
 	private tree: Tree;
 	private langConfig: TSLanguageConfig;
-	private parser: Parser | undefined = undefined;
+	private readonly parser: Parser | undefined = undefined;
 	private language: Parser.Language;
 
 	constructor(
@@ -22,7 +22,7 @@ export class TreeSitterFile {
 		parser: Parser,
 		language: Language
 	) {
-		this.src = src;
+		this.sourcecode = src;
 		this.tree = tree;
 		this.langConfig = tsLanguage;
 		this.parser = parser;
@@ -71,19 +71,12 @@ export class TreeSitterFile {
 	}
 
 	methodRanges(): IdentifierBlockRange[] | TreeSitterFileError {
-		if (!this.parser) {
-			return TreeSitterFileError.QueryError;
-		}
+		return !this.parser ? TreeSitterFileError.QueryError : this.getByQuery(this.langConfig.methodQuery.scopeQuery);
 
-		return this.getByQuery(this.langConfig.methodQuery.scopeQuery);
 	}
 
 	classRanges(): IdentifierBlockRange[] | TreeSitterFileError {
-		if (!this.parser) {
-			return TreeSitterFileError.QueryError;
-		}
-
-		return this.getByQuery(this.langConfig.classQuery.scopeQuery);
+		return !this.parser ? TreeSitterFileError.QueryError : this.getByQuery(this.langConfig.classQuery.scopeQuery);
 	}
 
 	private getByQuery(queryString: string): IdentifierBlockRange[] | TreeSitterFileError {
@@ -94,11 +87,9 @@ export class TreeSitterFile {
 
 			return (
 				matches?.flatMap((match) => {
-					// name.definition.method
 					const identifierNode = match.captures[0].node;
 					const blockNode = match.captures[1].node;
 
-					// definition.method
 					return new IdentifierBlockRange(
 						TextRange.fromNode(identifierNode),
 						TextRange.fromNode(blockNode)
