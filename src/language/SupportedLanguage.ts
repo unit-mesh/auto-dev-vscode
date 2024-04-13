@@ -8,6 +8,7 @@ export const SUPPORTED_LANGUAGES = [
   "rust",
   "javascript",
   "typescript",
+  "typescriptreact",
 ];
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];

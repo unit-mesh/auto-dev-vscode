@@ -71,6 +71,14 @@ async function loadLanguageOndemand(
         );
       }
       break;
+    case "typescriptreact":
+      if (!LanguageParserMap.has("typescriptreact")) {
+        LanguageParserMap.set(
+          "typescriptreact",
+          await Parser.Language.load(await wasmByLanguage(uri, "tsx"))
+        );
+      }
+      break;
     case "python":
       if (!LanguageParserMap.has("python")) {
         LanguageParserMap.set(
