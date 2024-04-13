@@ -2,7 +2,7 @@ import { MemoizedQuery, TSLanguageConfig } from "./TSLanguageConfig";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 
 export const JavaTSConfig: TSLanguageConfig = {
-	languageIds: ['Java'],
+	languageIds: ['java'],
 	fileExtensions: ['java'],
 	grammar: (langService: TSLanguageService) => langService.getLanguage('java'),
 	// todo: load from `.scm` file

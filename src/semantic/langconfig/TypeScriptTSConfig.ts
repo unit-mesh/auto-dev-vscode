@@ -30,29 +30,48 @@ export const TypeScriptTSConfig: TSLanguageConfig = {
         (identifier) @name.definition.method) @definition.method
     `),
 	structureQuery: new MemoizedQuery(`
-			(import_statement
-			  (import_clause
-			    (named_import_clause
-			      (import_specifier
-			        (identifier) @import-name)))) @import-name
-			)
-			
-			(class_declaration
-			  name: (identifier) @class-name
-			  body: (class_body
-			    (method_definition
-			      name: (property_identifier) @class-method-name
-			      parameters: (formal_parameters (identifier)? @parameter)
-			    )
-			  )
-			)
-			
-			(interface_declaration
-			  (identifier) @interface-name
-			)
-						
-			(program (function_declaration
-			      name: * @function-name))
+    (import_statement
+      (import_clause
+        (named_imports
+          (import_specifier
+            name: (identifier)? @source-name
+            alias: (identifier)? @as-name
+          )
+        )
+      )
+    )
+    
+    (import_statement
+      (import_clause (identifier)?  @use-name)
+      source: (string)? @import-source
+    )
+    
+    (import_statement
+      source: (_)? @import-source
+    )
+
+    (class_declaration
+      name: (type_identifier ) @class-name
+      body: (class_body
+        (method_definition
+          name: (property_identifier) @class-method-name
+          parameters: (formal_parameters (required_parameter)? @parameter)
+        )
+      )
+    )
+		
+	  (interface_declaration
+	     name: (type_identifier) @interface-name
+	     body: (interface_body (
+	       method_signature
+	         name: (property_identifier) @interface.method.id
+	         parameters: (formal_parameters (required_parameter)? @parameter)
+	         return_type: (type_annotation)? @interface.returnType
+	     ))
+	  )
+					
+		(program (function_declaration
+          name: (identifier) @function-name))
 		`),
 	namespaces: [
 		[
