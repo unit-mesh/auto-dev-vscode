@@ -1,3 +1,5 @@
+import { PackageManger } from "./PackageManger";
+
 export enum DEP_SCOPE {
 	NORMAL,
 	RUNTIME,
@@ -82,9 +84,3 @@ export interface PackageDependencies {
 	childrens?: PackageDependencies[];
 }
 
-enum PackageManger {
-	MAVEN,
-	GRADLE,
-	NPM,
-	YARN
-}
