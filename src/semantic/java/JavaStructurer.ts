@@ -4,11 +4,11 @@ import { Structurer } from "../_base/Structurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
-import { TSLanguageConfig } from "../_base/TSLanguageConfig";
+import { LanguageConfig } from "../_base/LanguageConfig";
 
 export class JavaStructurer extends Structurer {
 	protected langId: SupportedLanguage = "java";
-	protected config: TSLanguageConfig = JavaLangConfig;
+	protected config: LanguageConfig = JavaLangConfig;
 
 	/**
 	 * Parses the given code string and generates a CodeFile object representing the structurer of the code.

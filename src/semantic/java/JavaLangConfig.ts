@@ -1,7 +1,7 @@
-import { MemoizedQuery, TSLanguageConfig } from "../_base/TSLanguageConfig";
+import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 
-export const JavaLangConfig: TSLanguageConfig = {
+export const JavaLangConfig: LanguageConfig = {
 	languageIds: ['java'],
 	fileExtensions: ['java'],
 	grammar: (langService: TSLanguageService) => langService.getLanguage('java'),

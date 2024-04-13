@@ -1,7 +1,7 @@
-import { MemoizedQuery, TSLanguageConfig } from "../_base/TSLanguageConfig";
+import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 
-export const GoLangConfig: TSLanguageConfig = {
+export const GoLangConfig: LanguageConfig = {
 	languageIds: ["Go"],
 	fileExtensions: ["go"],
 	grammar: (langService: TSLanguageService) => langService.getLanguage('go'),

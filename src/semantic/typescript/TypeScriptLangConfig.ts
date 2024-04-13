@@ -1,8 +1,8 @@
-import { MemoizedQuery, TSLanguageConfig } from "../_base/TSLanguageConfig";
+import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 
-export const TypeScriptLangConfig: TSLanguageConfig = {
+export const TypeScriptLangConfig: LanguageConfig = {
 	languageIds: ["typescript", "typescriptreact"],
 	fileExtensions: ["ts", "tsx"],
 	grammar: (langService: TSLanguageService, langId: SupportedLanguage) => {

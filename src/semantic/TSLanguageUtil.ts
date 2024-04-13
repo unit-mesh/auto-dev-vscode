@@ -1,16 +1,16 @@
-import { TSLanguageConfig } from "./_base/TSLanguageConfig";
+import { LanguageConfig } from "./_base/LanguageConfig";
 import { JavaLangConfig } from "./java/JavaLangConfig";
 import { TypeScriptLangConfig } from "./typescript/TypeScriptLangConfig";
 import { GoLangConfig } from "./go/GoLangConfig";
 
-export const ALL_LANGUAGES: TSLanguageConfig[] = [
+export const ALL_LANGUAGES: LanguageConfig[] = [
   JavaLangConfig,
   GoLangConfig,
   TypeScriptLangConfig,
 ];
 
 export class TSLanguageUtil {
-  static fromId(langId: string): TSLanguageConfig | undefined {
+  static fromId(langId: string): LanguageConfig | undefined {
     return ALL_LANGUAGES.find((target) => {
       return target.languageIds.some(
         (id) => id.toLowerCase() === langId.toLowerCase()

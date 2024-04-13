@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import Parser, { Language, Tree } from "web-tree-sitter";
 
-import { TSLanguageConfig } from "./_base/TSLanguageConfig";
+import { LanguageConfig } from "./_base/LanguageConfig";
 import { TSLanguageUtil } from "./TSLanguageUtil";
 import { TextRange } from "../document/TextRange";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
@@ -11,14 +11,14 @@ import { DefaultLanguageService } from "../language/service/DefaultLanguageServi
 export class TreeSitterFile {
 	private sourcecode: string;
 	private tree: Tree;
-	private langConfig: TSLanguageConfig;
+	private langConfig: LanguageConfig;
 	private readonly parser: Parser | undefined = undefined;
 	private language: Parser.Language;
 
 	constructor(
 		src: string,
 		tree: Tree,
-		tsLanguage: TSLanguageConfig,
+		tsLanguage: LanguageConfig,
 		parser: Parser,
 		language: Language
 	) {

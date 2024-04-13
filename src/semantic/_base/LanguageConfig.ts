@@ -3,7 +3,7 @@ import { TSLanguageService } from "../../language/service/TSLanguageService";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 
 // Languages based on tree-sitter grammars
-export interface TSLanguageConfig {
+export interface LanguageConfig {
   // A list of language names that can be processed by these scope queries
   // e.g.: ["Typescript", "TSX"], ["Rust"]
   languageIds: string[];

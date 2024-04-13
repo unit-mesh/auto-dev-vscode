@@ -4,7 +4,7 @@ import { TSLanguageUtil } from "../TSLanguageUtil";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
-import { TSLanguageConfig } from "./TSLanguageConfig";
+import { LanguageConfig } from "./LanguageConfig";
 
 /**
  * Abstract class for structurers that parse code and generate a code structure.
@@ -16,7 +16,7 @@ export abstract class Structurer {
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 	protected abstract langId: SupportedLanguage;
-	protected config: TSLanguageConfig | undefined;
+	protected config: LanguageConfig | undefined;
 
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
 		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
