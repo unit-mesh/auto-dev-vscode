@@ -3,7 +3,11 @@ import * as vscode from "vscode";
 import path from "path";
 import { TextDecoder } from "node:util";
 
+import { GitAction } from "./GitAction";
+
 export class VSCodeAction implements IdeAction {
+  gitAction: GitAction = new GitAction();
+
 	async runCommand(command: string): Promise<void> {
 		if (vscode.window.terminals.length) {
 			vscode.window.terminals[0].show();
