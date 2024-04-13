@@ -28,6 +28,16 @@ export const TypeScriptLangConfig: LanguageConfig = {
 	methodQuery: new MemoizedQuery(`
       (function_declaration
         (identifier) @name.definition.method) @definition.method
+        
+      (class_declaration
+        name: (type_identifier )
+        body: (class_body
+          (method_definition
+            name: (property_identifier) @name.definition.method
+            @definition.method
+          )
+        )
+      )
     `),
 	structureQuery: new MemoizedQuery(`
     (import_statement

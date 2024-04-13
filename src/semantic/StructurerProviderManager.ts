@@ -7,10 +7,9 @@ export class StructurerProviderManager {
 	private structureMap: Map<SupportedLanguage, Structurer> = new Map();
 
 	async init() {
+		let map: Map<string, Structurer> = new Map();
 		const structurer = new JavaStructurer();
 		await structurer.init(new DefaultLanguageService());
-
-		let map: Map<string, Structurer> = new Map();
 		map.set("java", structurer);
 		this.structureMap = map;
 	}

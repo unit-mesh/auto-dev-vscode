@@ -72,7 +72,6 @@ export class TreeSitterFile {
 
 	methodRanges(): IdentifierBlockRange[] | TreeSitterFileError {
 		return !this.parser ? TreeSitterFileError.QueryError : this.getByQuery(this.langConfig.methodQuery.scopeQuery);
-
 	}
 
 	classRanges(): IdentifierBlockRange[] | TreeSitterFileError {
