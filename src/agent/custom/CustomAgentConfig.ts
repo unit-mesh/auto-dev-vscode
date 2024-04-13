@@ -1,13 +1,7 @@
-enum CustomAgentResponseAction {
-	Direct = 'Direct',
-	Stream = 'Stream',
-	TextChunk = 'TextChunk',
-	Flow = 'Flow',
-	WebView = 'WebView',
-	DevIns = 'DevIns'
-}
+import { InteractionType } from "../../custom/InteractionType";
+import { CustomAgentResponseAction } from "./CustomAgentResponseAction";
 
-class CustomFlowTransition {
+export class CustomFlowTransition {
 	/**
 	 * will be JsonPath
 	 */
@@ -23,7 +17,7 @@ class CustomFlowTransition {
 	}
 }
 
-class ConnectorConfig {
+export class ConnectorConfig {
 	/**
 	 * will be Json Config
 	 */
@@ -39,22 +33,14 @@ class ConnectorConfig {
 	}
 }
 
-enum InteractionType {
-	ChatPanel = 'ChatPanel',
-	AppendCursor = 'AppendCursor',
-	AppendCursorStream = 'AppendCursorStream',
-	OutputFile = 'OutputFile',
-	ReplaceSelection = 'ReplaceSelection'
-}
 
-
-enum CustomAgentState {
+export enum CustomAgentState {
 	START = 'START',
 	HANDLING = 'HANDLING',
 	FINISHED = 'FINISHED'
 }
 
-class CustomAgentAuth {
+export class CustomAgentAuth {
 	type: AuthType;
 	token: string;
 
@@ -64,12 +50,12 @@ class CustomAgentAuth {
 	}
 }
 
-enum AuthType {
+export enum AuthType {
 	Bearer = 'Bearer'
 }
 
 
-class CustomAgentConfig {
+export class CustomAgentConfig {
 	name: string;
 	description: string;
 	url: string;
