@@ -1,19 +1,57 @@
 import { Tooling } from "./_base/Tooling";
-import { PackageDependencies } from "./_base/Dependence";
+import { DEP_SCOPE, DependencyEntry, PackageDependencies } from "./_base/Dependence";
 import { PackageManger } from "./_base/PackageManger";
 import path from "path";
 
 export class NpmTooling implements Tooling {
 	moduleTarget = "package.json";
 
+	depTypeMap: { [key: string]: DEP_SCOPE } = {
+		'dependencies': DEP_SCOPE.NORMAL,
+		'optionalDependencies': DEP_SCOPE.OPTIONAL,
+		'devDependencies': DEP_SCOPE.DEV
+	};
+
 	getDependencies(): PackageDependencies {
+		return this.lookupSource(this.moduleTarget);
+	}
+
+	lookupSource(filepath: string): PackageDependencies {
+		let packageJson = JSON.parse(filepath);
+		let name = packageJson.name;
+		const version: string = packageJson.version;
+
+		const deps: DependencyEntry[] = ["dependencies", "optionalDependencies", "devDependencies"].flatMap(field =>
+			this.createDepByType(field, filepath)
+		);
+
 		return {
-			name: this.getToolingName(),
-			version: this.getToolingVersion(),
-			path: "",
-			dependencies: [],
-			packageManager: PackageManger.MAVEN,
+			name,
+			version,
+			packageManager: PackageManger.NPM,
+			dependencies: deps,
+			path: filepath
 		};
+	}
+
+	private createDepByType(field: string, content: string): DependencyEntry[] {
+		const listOf: DependencyEntry[] = [];
+		const optionalDep: { [key: string]: string } | undefined = JSON.parse(content)[field];
+		if (optionalDep !== undefined) {
+			listOf.push(...this.createDependencies(optionalDep, this.depTypeMap[field]));
+		}
+
+		return listOf;
+	}
+
+	private createDependencies(depMap: { [key: string]: string }, scope: DEP_SCOPE): DependencyEntry[] {
+		return Object.entries(depMap).map(([key, value]) => ({
+			name: key,
+			group: "",
+			artifact: key,
+			version: value,
+			scope: scope
+		}));
 	}
 
 	getToolingName(): string {
