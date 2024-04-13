@@ -1,5 +1,5 @@
 import { Editor, ReactRenderer } from "@tiptap/react";
-import { ContextProviderDescription, ContextSubmenuItem } from "core";
+import { ContextProviderDescription, ContextSubmenuItem } from "../../shims/typings";
 import { MutableRefObject } from "react";
 import tippy from "tippy.js";
 import { ideRequest } from "../../util/ide";

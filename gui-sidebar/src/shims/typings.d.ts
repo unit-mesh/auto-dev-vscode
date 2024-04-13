@@ -730,3 +730,10 @@ export interface RangeInFileWithContents {
     };
     contents: string;
 }
+
+export type PromptTemplate =
+    | string
+    | ((
+    history: ChatMessage[],
+    otherData: Record<string, string>,
+) => string | ChatMessage[]);

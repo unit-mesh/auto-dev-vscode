@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { PersistedSessionInfo, SessionInfo } from "core";
+import { PersistedSessionInfo, SessionInfo } from "../shims/typings";
 import MiniSearch from "minisearch";
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

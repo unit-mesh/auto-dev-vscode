@@ -9,9 +9,9 @@ import {
   ContextItemWithId,
   ContextProviderDescription,
   RangeInFile,
-} from "core";
-import { modelSupportsImages } from "core/llm/autodetect";
-import { getBasename } from "core/util";
+} from "../../shims/typings";
+import { modelSupportsImages } from "../../shims/llm-autodetect";
+import { getBasename } from "../../shims/utils";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";

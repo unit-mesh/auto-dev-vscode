@@ -9,7 +9,7 @@ import {
   vscBackground,
   vscForeground,
 } from "..";
-import { WebviewIde } from "../../util/webviewIde";
+import { WebviewIde } from "../../shims/webviewIde";
 import FileIcon from "../FileIcon";
 
 const ContextItemDiv = styled.div`

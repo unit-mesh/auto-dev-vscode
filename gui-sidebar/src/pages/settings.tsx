@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { ContinueConfig } from "core";
+import { ContinueConfig } from "../shims/typings";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";

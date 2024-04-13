@@ -7,9 +7,8 @@ import {
   ContextItemId,
   ContextItemWithId,
   PersistedSessionInfo,
-} from "core";
-import { BrowserSerializedContinueConfig } from "core/config/load";
-import { stripImages } from "core/llm/countTokens";
+} from "../../shims/typings";
+import { stripImages } from "../../shims/utils";
 import { v4 } from "uuid";
 
 const TEST_CONTEXT_ITEMS: ContextItemWithId[] = [
@@ -86,7 +85,7 @@ type State = {
   history: ChatHistory;
   contextItems: ContextItemWithId[];
   active: boolean;
-  config: BrowserSerializedContinueConfig;
+  config: any;
   title: string;
   sessionId: string;
   defaultModelTitle: string;
@@ -160,7 +159,8 @@ export const stateSlice = createSlice({
   reducers: {
     setConfig: (
       state,
-      { payload: config }: PayloadAction<BrowserSerializedContinueConfig>,
+      // { payload: config }: PayloadAction<BrowserSerializedContinueConfig>,
+      { payload: config }: PayloadAction<{models: Array<{title: string}>}>,
     ) => {
       const defaultModelTitle =
         config.models.find((model) => model.title === state.defaultModelTitle)

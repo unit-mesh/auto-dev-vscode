@@ -1,4 +1,4 @@
-import { DEFAULT_MAX_TOKENS } from "core/llm/constants";
+import { DEFAULT_MAX_TOKENS } from "../../shims/llm-constants";
 import { RootState } from "../store";
 
 export const defaultModelSelector = (state: RootState) => {

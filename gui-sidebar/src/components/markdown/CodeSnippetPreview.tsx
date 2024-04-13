@@ -4,14 +4,14 @@ import {
   PaintBrushIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { ContextItemWithId } from "core";
-import { getMarkdownLanguageTagForFile } from "core/util";
+import { ContextItemWithId } from "../../shims/typings";
+import { getMarkdownLanguageTagForFile } from "../../shims/utils";
 import React from "react";
 import styled from "styled-components";
 import { defaultBorderRadius, lightGray, vscEditorBackground } from "..";
 import { getFontSize } from "../../util";
 import { postToIde } from "../../util/ide";
-import { WebviewIde } from "../../util/webviewIde";
+import { WebviewIde } from "../../shims/webviewIde";
 import FileIcon from "../FileIcon";
 import HeaderButtonWithText from "../HeaderButtonWithText";
 import StyledMarkdownPreview from "./StyledMarkdownPreview";

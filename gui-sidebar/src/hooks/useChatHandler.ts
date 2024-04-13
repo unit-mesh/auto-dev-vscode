@@ -9,9 +9,9 @@ import {
   MessageContent,
   RangeInFile,
   SlashCommandDescription,
-} from "core";
-import { constructMessages } from "core/llm/constructMessages";
-import { stripImages } from "core/llm/countTokens";
+} from "../shims/typings";
+import { constructMessages } from "../shims/llm-construct-messages";
+import { stripImages } from "../shims/utils";
 import { usePostHog } from "posthog-js/react";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";

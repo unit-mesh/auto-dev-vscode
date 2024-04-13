@@ -1,11 +1,13 @@
-import { ContextSubmenuItem } from "core";
-import { getBasename, getLastNPathParts } from "core/util";
+// TODO: Refactor this file
+// @ts-nocheck
+import { ContextSubmenuItem } from "../shims/typings";
+import { getBasename, getLastNPathParts } from "../shims/utils";
 import MiniSearch, { SearchResult } from "minisearch";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectContextProviderDescriptions } from "../redux/selectors";
-import { ideRequest } from "../util/ide";
-import { WebviewIde } from "../util/webviewIde";
+import { ideRequest } from "../shims/ide";
+import { WebviewIde } from "../shims/webviewIde";
 import { useWebviewListener } from "./useWebviewListener";
 
 const MINISEARCH_OPTIONS = {

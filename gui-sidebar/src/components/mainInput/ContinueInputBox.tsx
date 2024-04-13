@@ -1,5 +1,5 @@
 import { JSONContent } from "@tiptap/react";
-import { ContextItemWithId } from "core";
+import { ContextItemWithId } from "../../shims/typings";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
 import { defaultBorderRadius, vscBackground } from "..";

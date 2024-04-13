@@ -4,11 +4,11 @@ import {
   MessageContent,
   MessagePart,
   RangeInFile,
-} from "core";
-import { stripImages } from "core/llm/countTokens";
-import { getBasename } from "core/util";
+} from "../../shims/typings";
+import { stripImages } from "../../shims/utils";
+import { getBasename } from "../../shims/utils";
 import { ideRequest } from "../../util/ide";
-import { WebviewIde } from "../../util/webviewIde";
+import { WebviewIde } from "../../shims/webviewIde";
 
 interface MentionAttrs {
   label: string;

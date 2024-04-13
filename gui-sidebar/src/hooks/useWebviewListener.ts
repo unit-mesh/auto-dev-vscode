@@ -1,5 +1,5 @@
-import { Message } from "core/util/messenger";
-import { ReverseWebviewProtocol } from "core/web/webviewProtocol.ts";
+import { Message } from "../shims/typings";
+import { ReverseWebviewProtocol } from "../shims/webviewProtocol";
 import { useEffect } from "react";
 import { respondToIde } from "../util/ide";
 
