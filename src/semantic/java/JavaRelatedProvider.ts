@@ -1,4 +1,4 @@
-import { RelatedProvider } from "./RelatedProvider";
+import { RelatedProvider } from "../_base/RelatedProvider";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 import { CodeFileCacheManager } from "../../cache/CodeFileCacheManager";
 import { channel } from "../../channel";

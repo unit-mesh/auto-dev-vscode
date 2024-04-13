@@ -6,7 +6,7 @@ import { VSCodeAction } from "./action/VSCodeAction";
 import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { StructurerProviderManager } from "./semantic/structurer/StructurerProviderManager";
+import { StructurerProviderManager } from "./semantic/StructurerProviderManager";
 // import Parser from "web-tree-sitter";
 const Parser = require("web-tree-sitter");
 
@@ -17,7 +17,7 @@ import {
   registerQuickFixProvider
 } from "./providers/ProviderRegister";
 import { channel } from "./channel";
-import { RelatedProviderManager } from "./semantic/related/RelatedProviderManager";
+import { RelatedProviderManager } from "./semantic/RelatedProviderManager";
 import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
 
 export function activate(context: vscode.ExtensionContext) {

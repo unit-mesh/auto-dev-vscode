@@ -3,8 +3,8 @@ import { FileCacheManger } from "./FileCacheManger";
 import { CodeFile, CodeStructure } from "../codemodel/CodeFile";
 import { SupportedLanguage } from "../language/SupportedLanguage";
 import { EXT_LANGUAGE_MAP } from "../language/ExtLanguageMap";
-import { StructurerProviderManager } from "../semantic/structurer/StructurerProviderManager";
-import { Structurer } from "../semantic/structurer/Structurer";
+import { StructurerProviderManager } from "../semantic/StructurerProviderManager";
+import { Structurer } from "../semantic/_base/Structurer";
 
 export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 	private documentMap: Map<Uri, Map<number, CodeFile>>;

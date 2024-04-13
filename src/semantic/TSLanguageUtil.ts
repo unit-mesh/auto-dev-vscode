@@ -1,7 +1,7 @@
-import { TSLanguageConfig } from "./langconfig/TSLanguageConfig";
-import { JavaTSConfig } from "./langconfig/JavaTSConfig";
-import { TypeScriptTSConfig } from "./langconfig/TypeScriptTSConfig";
-import { GoTSConfig } from "./langconfig/GoTSConfig";
+import { TSLanguageConfig } from "./_base/TSLanguageConfig";
+import { JavaTSConfig } from "./java/JavaTSConfig";
+import { TypeScriptTSConfig } from "./typescript/TypeScriptTSConfig";
+import { GoTSConfig } from "./go/GoTSConfig";
 
 export const ALL_LANGUAGES: TSLanguageConfig[] = [
   JavaTSConfig,
@@ -9,7 +9,7 @@ export const ALL_LANGUAGES: TSLanguageConfig[] = [
   TypeScriptTSConfig,
 ];
 
-export class TSLanguage {
+export class TSLanguageUtil {
   static fromId(langId: string): TSLanguageConfig | undefined {
     return ALL_LANGUAGES.find((target) => {
       return target.languageIds.some(

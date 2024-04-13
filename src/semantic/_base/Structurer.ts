@@ -1,10 +1,10 @@
 import Parser, { Query } from "web-tree-sitter";
 
-import { TSLanguage } from "../TreeSitterLanguage";
+import { TSLanguageUtil } from "../TSLanguageUtil";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
-import { TSLanguageConfig } from "../langconfig/TSLanguageConfig";
+import { TSLanguageConfig } from "./TSLanguageConfig";
 
 export abstract class Structurer {
 	protected parser: Parser | undefined;
@@ -13,7 +13,7 @@ export abstract class Structurer {
 	protected config: TSLanguageConfig | undefined;
 
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
-		const tsConfig = TSLanguage.fromId(this.langId)!!;
+		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
 		const _parser = langService.getParser() ?? new Parser();
 		const language = await tsConfig.grammar(langService, this.langId);
 		_parser.setLanguage(language);

@@ -1,4 +1,4 @@
-import { MemoizedQuery, TSLanguageConfig } from "./TSLanguageConfig";
+import { MemoizedQuery, TSLanguageConfig } from "../_base/TSLanguageConfig";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 

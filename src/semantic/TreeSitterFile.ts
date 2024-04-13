@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import Parser, { Language, Tree } from "web-tree-sitter";
 
-import { TSLanguageConfig } from "./langconfig/TSLanguageConfig";
-import { TSLanguage } from "./TreeSitterLanguage";
+import { TSLanguageConfig } from "./_base/TSLanguageConfig";
+import { TSLanguageUtil } from "./TSLanguageUtil";
 import { TextRange } from "../document/TextRange";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { TreeSitterFileCacheManager } from "../cache/TreeSitterFileCacheManager";
@@ -41,7 +41,7 @@ export class TreeSitterFile {
 			return TreeSitterFileError.FileTooLarge;
 		}
 
-		const tsConfig = TSLanguage.fromId(langId);
+		const tsConfig = TSLanguageUtil.fromId(langId);
 		if (tsConfig === undefined) {
 			return TreeSitterFileError.UnsupportedLanguage;
 		}

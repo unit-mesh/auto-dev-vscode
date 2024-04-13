@@ -1,10 +1,10 @@
 import Parser from "web-tree-sitter";
 
-import { Structurer } from "./Structurer";
-import { JavaTSConfig } from "../langconfig/JavaTSConfig";
+import { Structurer } from "../_base/Structurer";
+import { JavaTSConfig } from "./JavaTSConfig";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
-import { TSLanguageConfig } from "../langconfig/TSLanguageConfig";
+import { TSLanguageConfig } from "../_base/TSLanguageConfig";
 
 export class JavaStructurer extends Structurer {
 	protected langId: SupportedLanguage = "java";

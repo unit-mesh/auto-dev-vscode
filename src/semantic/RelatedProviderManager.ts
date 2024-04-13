@@ -1,7 +1,7 @@
-import { SupportedLanguage } from "../../language/SupportedLanguage";
-import { RelatedProvider } from "./RelatedProvider";
-import { JavaRelatedProvider } from "./JavaRelatedProvider";
-import { CodeFileCacheManager } from "../../cache/CodeFileCacheManager";
+import { SupportedLanguage } from "../language/SupportedLanguage";
+import { RelatedProvider } from "./_base/RelatedProvider";
+import { JavaRelatedProvider } from "./java/JavaRelatedProvider";
+import { CodeFileCacheManager } from "../cache/CodeFileCacheManager";
 
 export class RelatedProviderManager {
 	private relatedMap: Map<SupportedLanguage, RelatedProvider> = new Map();

@@ -1,7 +1,7 @@
-import { SupportedLanguage } from "../../language/SupportedLanguage";
-import { Structurer } from "./Structurer";
-import { JavaStructurer } from "./JavaStructurer";
-import { DefaultLanguageService } from "../../language/service/DefaultLanguageService";
+import { SupportedLanguage } from "../language/SupportedLanguage";
+import { Structurer } from "./_base/Structurer";
+import { JavaStructurer } from "./java/JavaStructurer";
+import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
 
 export class StructurerProviderManager {
 	private structureMap: Map<SupportedLanguage, Structurer> = new Map();
