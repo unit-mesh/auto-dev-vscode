@@ -21,6 +21,7 @@ export const EXT_LANGUAGE_MAP: { [key: string]: string } = {
 	cts: "typescript",
 	js: "javascript",
 	jsx: "javascript",
+	tsx: "typescriptreact",
 	mjs: "javascript",
 	cjs: "javascript",
 	py: "python",

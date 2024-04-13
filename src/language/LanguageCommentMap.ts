@@ -10,5 +10,6 @@ export const LANGUAGE_COMMENT_MAP: { [key: SupportedLanguage]: string } = {
 	"rust": "//",
 	"javascript": "//",
 	"typescript": "//",
+	"typescriptreact": "//",
 };
 

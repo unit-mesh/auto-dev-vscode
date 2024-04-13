@@ -15,7 +15,7 @@ export abstract class Structurer {
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
 		const tsConfig = TSLanguage.fromId(this.langId)!!;
 		const _parser = langService.getParser() ?? new Parser();
-		const language = await tsConfig.grammar(langService);
+		const language = await tsConfig.grammar(langService, this.langId);
 		_parser.setLanguage(language);
 		this.parser = _parser;
 		this.language = language;

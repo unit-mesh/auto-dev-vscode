@@ -1,10 +1,17 @@
 import { MemoizedQuery, TSLanguageConfig } from "./TSLanguageConfig";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
+import { SupportedLanguage } from "../../language/SupportedLanguage";
 
 export const TypeScriptTSConfig: TSLanguageConfig = {
-	languageIds: ["TypeScript", "TSX"],
+	languageIds: ["typescript", "typescriptreact"],
 	fileExtensions: ["ts", "tsx"],
-	grammar: (langService: TSLanguageService) => langService.getLanguage('typescript'),
+	grammar: (langService: TSLanguageService, langId: SupportedLanguage) => {
+		if(langId === "typescriptreact") {
+			return langService.getLanguage('typescriptreact');
+		}
+
+		return langService.getLanguage('typescript');
+	},
 	scopeQuery: new MemoizedQuery(""),
 	hoverableQuery: new MemoizedQuery(`
       [(identifier)

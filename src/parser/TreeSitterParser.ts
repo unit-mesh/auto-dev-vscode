@@ -139,6 +139,11 @@ export const ParserMap: Record<
     parser.setLanguage(LanguageParserMap.get("typescript"));
     return parser.parse(source);
   },
+  typescriptreact: async (source: string) => {
+    const parser = new Parser();
+    parser.setLanguage(LanguageParserMap.get("typescriptreact"));
+    return parser.parse(source);
+  },
   python: async (source: string) => {
     const parser = new Parser();
     parser.setLanguage(LanguageParserMap.get("python"));

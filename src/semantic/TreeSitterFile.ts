@@ -49,7 +49,7 @@ export class TreeSitterFile {
 		const parser = new Parser();
 		let language: Language | undefined = undefined;
 		try {
-			language = await tsConfig.grammar(new DefaultLanguageService());
+			language = await tsConfig.grammar(new DefaultLanguageService(), langId);
 			parser.setLanguage(language);
 		} catch (error) {
 			return TreeSitterFileError.LanguageMismatch;

@@ -1,5 +1,6 @@
 import { Language } from "web-tree-sitter";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
+import { SupportedLanguage } from "../../language/SupportedLanguage";
 
 // Languages based on tree-sitter grammars
 export interface TSLanguageConfig {
@@ -11,7 +12,7 @@ export interface TSLanguageConfig {
   fileExtensions: string[];
 
   // tree-sitter grammar for this language
-  grammar: (langService: TSLanguageService) => Promise<Language | undefined>;
+  grammar: (langService: TSLanguageService, langId: SupportedLanguage) => Promise<Language | undefined>;
 
   // Compiled tree-sitter scope query for this language.
   scopeQuery: MemoizedQuery;

@@ -6,7 +6,7 @@ import { GoTSConfig } from "./langconfig/GoTSConfig";
 export const ALL_LANGUAGES: TSLanguageConfig[] = [
   JavaTSConfig,
   GoTSConfig,
-  TypeScriptTSConfig
+  TypeScriptTSConfig,
 ];
 
 export class TSLanguage {
