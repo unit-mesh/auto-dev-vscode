@@ -20,6 +20,10 @@ export const JavaLangConfig: LanguageConfig = {
       (class_declaration
         name: (identifier) @name.definition.class) @definition.class
     `),
+	blockCommentQuery: new MemoizedQuery(`
+		((block_comment) @block_comment
+			(#match? @block_comment "^\\\\/\\\\*\\\\*")) @docComment`
+	),
 	structureQuery: new MemoizedQuery(`
 			(package_declaration
 			  (scoped_identifier) @package-name)

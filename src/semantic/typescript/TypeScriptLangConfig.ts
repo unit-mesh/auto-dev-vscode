@@ -39,6 +39,10 @@ export const TypeScriptLangConfig: LanguageConfig = {
         )
       )
     `),
+	blockCommentQuery: new MemoizedQuery(`
+		((comment) @comment
+			(#match? @comment "^\\\\/\\\\*\\\\*")) @docComment
+	`),
 	structureQuery: new MemoizedQuery(`
     (import_statement
       (import_clause

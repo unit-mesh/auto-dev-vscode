@@ -26,6 +26,8 @@ export interface LanguageConfig {
   // method query
   methodQuery: MemoizedQuery;
 
+  blockCommentQuery: MemoizedQuery;
+
   // method input and output query
   methodIOQuery?: MemoizedQuery;
 
