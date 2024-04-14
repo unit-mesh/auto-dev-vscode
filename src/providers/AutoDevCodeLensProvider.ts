@@ -31,10 +31,10 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 			let lenses: vscode.CodeLens[] = [];
 
 			if (methodRanges instanceof Array) {
-				lenses = this.setupDocIfNoExist(methodRanges, document, langid);
-				lenses.concat(
-					this.setupQuickChat(methodRanges, document, langid)
-				);
+				const docLens = this.setupDocIfNoExist(methodRanges, document, langid);
+				const chatLens = this.setupQuickChat(methodRanges, document, langid);
+
+				lenses = lenses.concat(docLens, chatLens);
 			}
 
 			return lenses;
@@ -43,7 +43,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 
 	private setupDocIfNoExist(methodRanges: IdentifierBlockRange[], document: vscode.TextDocument, langid: string) {
 		return methodRanges.map((range) => {
-			const title = `生成注释`;
+			const title = range.commentRange ? "更新注释" : "生成注释";
 			const lens = new vscode.CodeLens(range.identifierRange, {
 				title,
 				command: "autodev.generateDoc",

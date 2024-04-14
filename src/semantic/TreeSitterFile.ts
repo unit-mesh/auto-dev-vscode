@@ -91,13 +91,31 @@ export class TreeSitterFile {
 
 			return (
 				matches?.flatMap((match) => {
-					const identifierNode = match.captures[0].node;
-					const blockNode = match.captures[1].node;
+					// check length if more than 2, the first one will be document
+					let idIndex = 0;
+					let blockIdentIndex = 1;
+					let commentIndex = -1;
+					let hasComment = match.captures.length > 2;
+					if (hasComment) {
+						commentIndex = 0;
+						idIndex = 1;
+						blockIdentIndex = 2;
+					}
 
-					return new IdentifierBlockRange(
+					const identifierNode = match.captures[idIndex].node;
+					const blockNode = match.captures[blockIdentIndex].node;
+
+					let blockRange = new IdentifierBlockRange(
 						TextRange.fromNode(identifierNode),
 						TextRange.fromNode(blockNode)
 					);
+
+					if (hasComment) {
+						const commentNode = match.captures[commentIndex].node;
+						blockRange.commentRange = TextRange.fromNode(commentNode);
+					}
+
+					return blockRange;
 				}) ?? []
 			);
 		} catch (error) {

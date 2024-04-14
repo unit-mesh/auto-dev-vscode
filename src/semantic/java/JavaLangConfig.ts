@@ -12,8 +12,11 @@ export const JavaLangConfig: LanguageConfig = {
        (type_identifier)] @hoverable
     `),
 	methodQuery: new MemoizedQuery(`
-      (method_declaration
-        name: (identifier) @name.definition.method) @definition.method
+			(
+	      (block_comment)? @name.definition.comment
+        (method_declaration
+          name: (identifier) @name.definition.method) 
+      ) @definition.method
     `),
 	classQuery: new MemoizedQuery(`
       (class_declaration
