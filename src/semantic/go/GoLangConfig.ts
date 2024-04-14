@@ -15,13 +15,31 @@ export const GoLangConfig: LanguageConfig = {
 	classQuery: new MemoizedQuery(`
 	    (type_declaration
 			  (type_spec 
-			    (type_identifier @name.definition.class)
-		      (struct_type)))  @definition.class
-
+			    name: (_) @type-name
+			    type: (struct_type 
+			      (field_declaration_list 
+			        (field_declaration 
+			           name: (_)? @field-name
+			           type: (_)? @field-type
+			        )
+			      )
+			    )
+			   )
+			  )
     `),
 	methodQuery: new MemoizedQuery(`
-      (function_declaration
-			  name: (identifier) @name.definition.method) @definition.method
+      (
+				(function_declaration
+			    name: (identifier) @function-name)
+		    @function-body
+	    )
+			
+		  (
+		    (method_declaration
+          receiver: (_)? @receiver-struct-name
+          name: (_)? @method-name)
+        @method-body
+      )
 
     `),
 	structureQuery: new MemoizedQuery(`
