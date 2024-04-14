@@ -18,8 +18,7 @@ import {
 import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./semantic/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
-
-let autoDevStatusBar: vscode.StatusBarItem;
+import { StatusNotification } from "./action/StatusNotification";
 
 export function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);
@@ -69,10 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   // create a new status bar item that we can now manage
-  autoDevStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-  autoDevStatusBar.command = "autodev.autodevGUIView";
-  autoDevStatusBar.text = "$(autodev-icon)";
-  autoDevStatusBar.show();
+  StatusNotification.instance.create();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
