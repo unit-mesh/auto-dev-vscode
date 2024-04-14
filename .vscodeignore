@@ -13,3 +13,5 @@ vsc-extension-quickstart.md
 **/*.ts
 pnpm-lock.yaml
 gui-sidebar/**
+semantic/**
+coverage/**
