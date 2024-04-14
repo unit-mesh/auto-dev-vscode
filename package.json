@@ -82,6 +82,42 @@
         "category": "AutoDev",
         "title": "AutoDev Quick Chat",
         "group": "AutoDev"
+      },
+      {
+        "command": "autodev.explain",
+        "category": "AutoDev",
+        "title": "AutoDev Explain this",
+        "group": "AutoDev"
+      },
+      {
+        "command": "autodev.fixThis",
+        "category": "AutoDev",
+        "title": "AutoDev Fix this",
+        "group": "AutoDev"
+      },
+      {
+        "command": "autodev.generateTests",
+        "category": "AutoDev",
+        "title": "AutoDev Generate Tests",
+        "group": "AutoDev"
+      },
+      {
+        "command": "autodev.debugRunR",
+        "category": "AutoDev",
+        "title": "Debug Run R",
+        "group": "AutoDev"
+      },
+      {
+        "command": "autodev.editor.suggestCommand",
+        "category": "AutoDev",
+        "title": "AutoDev Suggest Command",
+        "group": "AutoDev"
+      },
+      {
+        "command": "autodev.terminal.explainTerminalSelectionContextMenu",
+        "category": "AutoDev",
+        "title": "AutoDev Explain Terminal Selection",
+        "group": "AutoDev"
       }
     ],
     "keybindings": [
@@ -98,11 +134,58 @@
     ],
     "submenus": [
       {
-        "id": "autodev.autodevSubMenu",
+        "id": "autodev",
         "label": "AutoDev"
       }
     ],
     "menus": {
+      "view/title": [
+        {
+          "command": "autodev.debugRunR",
+          "when": "view == terminal",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "submenu": "autodev",
+          "when": "!editorReadonly",
+          "group": "1_autodev@0"
+        }
+      ],
+      "autodev": [
+        {
+          "command": "autodev.action.quickchat",
+          "when": "!editorReadonly",
+          "group": "autodev@1"
+        },
+        {
+          "command": "autodev.explain",
+          "when": "!editorReadonly",
+          "group": "autodevAction@1"
+        },
+        {
+          "command": "autodev.fixThis",
+          "when": "!editorReadonly",
+          "group": "autodevAction@2"
+        },
+        {
+          "command": "autodev.generateDoc",
+          "when": "!editorReadonly",
+          "group": "autodevAction@3"
+        },
+        {
+          "command": "autodev.generateTests",
+          "when": "!editorReadonly",
+          "group": "autodevAction@4"
+        }
+      ],
+      "terminal/context": [
+        {
+          "command": "autodev.terminal.explainTerminalSelectionContextMenu",
+          "group": "1_autodev@0"
+        }
+      ],
       "commandPalette": [
         {
           "command": "autodev.debugTerminal"

@@ -48,6 +48,10 @@ const commandsMap: (
     selectCodeInRange(range.blockRange.start, range.blockRange.end);
     insertCodeByRange(range.blockRange.start, doc);
   },
+  "autodev.explain": async () => {},
+  "autodev.fixThis": async () => {},
+  "autodev.generateTests": async () => {},
+  "autodev.terminal.explainTerminalSelectionContextMenu": async () => {},
   "autodev.action.quickchat": async (
     document: vscode.TextDocument,
     range: IdentifierBlockRange,
