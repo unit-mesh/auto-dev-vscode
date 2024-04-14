@@ -36,6 +36,7 @@
     "onLanguage:javascript",
     "onLanguage:kotlin",
     "onLanguage:typescript",
+    "onLanguage:typescriptreact",
     "onLanguage:python",
     "onLanguage:rust",
     "onStartupFinished",
