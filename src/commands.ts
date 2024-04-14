@@ -6,6 +6,8 @@ import { DefaultLanguageService } from "./language/service/DefaultLanguageServic
 
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./codemodel/presenter/PlantUMLPresenter";
+import { window } from "vscode";
+import { showQuickPick, showInputBox } from "./action/QuickInput";
 
 const commandsMap: (
   extension: AutoDevExtension
@@ -45,6 +47,27 @@ const commandsMap: (
     const doc: string = generateDocumentation(document.getText());
     selectCodeInRange(range.blockRange.start, range.blockRange.end);
     insertCodeByRange(range.blockRange.start, doc);
+  },
+  "autodev.action.quickchat": async (
+    document: vscode.TextDocument,
+    range: IdentifierBlockRange,
+    edit: vscode.WorkspaceEdit
+  ) => {
+    // const options: { [key: string]: (context: vscode.ExtensionContext) => Promise<void> } = {
+    //   showQuickPick: showQuickPick,
+    //   showInputBox: showInputBox
+    // };
+    // const quickPick = window.createQuickPick();
+    // quickPick.items = Object.keys(options).map(label => ({ label }));
+    // quickPick.onDidChangeSelection(selection => {
+    //   if (selection[0]) {
+    //     options[selection[0].label](extension.extensionContext)
+    //       .catch(console.error);
+    //   }
+    // });
+    // quickPick.onDidHide(() => quickPick.dispose());
+    // quickPick.show();
+    showQuickPick();
   },
   "autodev.genApiData": async (
     document: vscode.TextDocument,
