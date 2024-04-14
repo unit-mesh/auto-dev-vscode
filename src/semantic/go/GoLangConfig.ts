@@ -1,11 +1,12 @@
 import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
+import goscm from '../../../semantic/src/schemas/indexes/go.scm?raw';
 
 export const GoLangConfig: LanguageConfig = {
 	languageIds: ["Go"],
 	fileExtensions: ["go"],
 	grammar: (langService: TSLanguageService) => langService.getLanguage('go'),
-	scopeQuery: new MemoizedQuery(""),
+	scopeQuery: new MemoizedQuery(goscm),
 	hoverableQuery: new MemoizedQuery(`
      [(identifier)
        (type_identifier)

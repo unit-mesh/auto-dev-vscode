@@ -1,12 +1,13 @@
 import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
+import javascm from '../../../semantic/src/schemas/indexes/java.scm?raw';
 
 export const JavaLangConfig: LanguageConfig = {
 	languageIds: ['java'],
 	fileExtensions: ['java'],
 	grammar: (langService: TSLanguageService) => langService.getLanguage('java'),
 	// todo: load from `.scm` file
-	scopeQuery: new MemoizedQuery(""),
+	scopeQuery: new MemoizedQuery(javascm),
 	hoverableQuery: new MemoizedQuery(`
       [(identifier)
        (type_identifier)] @hoverable

@@ -1,6 +1,7 @@
 import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
+import tsscm from '../../../semantic/src/schemas/indexes/typescript.scm?raw';
 
 export const TypeScriptLangConfig: LanguageConfig = {
 	languageIds: ["typescript", "typescriptreact"],
@@ -12,7 +13,7 @@ export const TypeScriptLangConfig: LanguageConfig = {
 
 		return langService.getLanguage('typescript');
 	},
-	scopeQuery: new MemoizedQuery(""),
+	scopeQuery: new MemoizedQuery(tsscm),
 	hoverableQuery: new MemoizedQuery(`
       [(identifier)
         (property_identifier)
