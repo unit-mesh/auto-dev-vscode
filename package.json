@@ -16,7 +16,7 @@
   "qna": "https://github.com/unit-mesh/auto-dev-vscode/issues/new/choose",
   "license": "Apache-2.0",
   "pricing": "Free",
-  "icon": "images/pluginIcon.png",
+  "icon": "media/pluginIcon.png",
   "engines": {
     "vscode": "^1.77.0"
   },
@@ -197,7 +197,7 @@
         {
           "id": "autodev",
           "title": "AutoDev",
-          "icon": "images/autodev-dark.svg"
+          "icon": "media/autodev-dark.svg"
         }
       ]
     },
