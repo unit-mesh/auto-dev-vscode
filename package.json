@@ -80,7 +80,7 @@
       {
         "command": "autodev.action.quickchat",
         "category": "AutoDev",
-        "title": "Generate API Data",
+        "title": "AutoDev Quick Chat",
         "group": "AutoDev"
       }
     ],

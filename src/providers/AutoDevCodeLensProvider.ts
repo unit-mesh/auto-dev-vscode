@@ -7,45 +7,62 @@ import { TreeSitterFile, TreeSitterFileError } from "../semantic/TreeSitterFile"
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
-  constructor(private readonly context: AutoDevExtension) {}
+	constructor(private readonly context: AutoDevExtension) {
+	}
 
-  onDidChangeCodeLenses: vscode.Event<void> | undefined;
-  provideCodeLenses(
-    document: vscode.TextDocument,
-    token: vscode.CancellationToken
-  ): vscode.ProviderResult<vscode.CodeLens[]> {
-    return (async () => {
-      const langid = document.languageId as SupportedLanguage;
-      if (!SUPPORTED_LANGUAGES.includes(langid)) {
-        return [];
-      }
+	onDidChangeCodeLenses: vscode.Event<void> | undefined;
 
-      const file = await documentToTreeSitterFile(document);
-      if (!(file instanceof TreeSitterFile)) {
-        return;
-      }
+	provideCodeLenses(
+		document: vscode.TextDocument,
+		token: vscode.CancellationToken
+	): vscode.ProviderResult<vscode.CodeLens[]> {
+		return (async () => {
+			const langid = document.languageId as SupportedLanguage;
+			if (!SUPPORTED_LANGUAGES.includes(langid)) {
+				return [];
+			}
 
-      const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
-      let lenses: vscode.CodeLens[] = [];
+			const file = await documentToTreeSitterFile(document);
+			if (!(file instanceof TreeSitterFile)) {
+				return;
+			}
 
-      if (methodRanges instanceof Array) {
-        lenses = this.setupDocIfNoExist(methodRanges, document, langid);
-      }
+			const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
+			let lenses: vscode.CodeLens[] = [];
 
-      return lenses;
-    })();
-  }
+			if (methodRanges instanceof Array) {
+				lenses = this.setupDocIfNoExist(methodRanges, document, langid);
+				lenses.concat(
+					this.setupQuickChat(methodRanges, document, langid)
+				);
+			}
 
-  private setupDocIfNoExist(methodRanges: IdentifierBlockRange[], document: vscode.TextDocument, langid: string) {
-    return methodRanges.map((result) => {
-      const title = `生成注释`;
-      const lens = new vscode.CodeLens(result.identifierRange, {
-        title,
-        command: "autodev.generateDoc",
-        arguments: [document, result],
-      });
-      return lens;
-    });
-  }
+			return lenses;
+		})();
+	}
+
+	private setupDocIfNoExist(methodRanges: IdentifierBlockRange[], document: vscode.TextDocument, langid: string) {
+		return methodRanges.map((range) => {
+			const title = `生成注释`;
+			const lens = new vscode.CodeLens(range.identifierRange, {
+				title,
+				command: "autodev.generateDoc",
+				arguments: [document, range],
+			});
+			return lens;
+		});
+	}
+
+	private setupQuickChat(methodRanges: IdentifierBlockRange[], document: vscode.TextDocument, langid: string) {
+		return methodRanges.map((range) => {
+			const title = `AutoDev$(chevron-down)`;
+			const lens = new vscode.CodeLens(range.identifierRange, {
+				title,
+				command: "autodev.action.quickchat",
+				arguments: [document, range],
+			});
+			return lens;
+		});
+	}
 }
 
