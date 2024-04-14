@@ -30,9 +30,6 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		}
 
 		const file = await documentToTreeSitterFile(document);
-		if (!(file instanceof TreeSitterFile)) {
-			return;
-		}
 
 		const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
 		let actions: vscode.CodeAction[] = [];
