@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/pluginIcon.png" width="160px" height="160px"  alt="logo" />
+  <img src="media/pluginIcon.png" width="160px" height="160px"  alt="logo" />
 </p>
 <h1 align="center">AutoDev VSCode</h1>
 <p align="center">

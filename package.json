@@ -127,6 +127,36 @@
           "visibility": "visible"
         }
       ]
+    },
+    "icons": {
+      "autodev-icon": {
+        "description": "autodev icon",
+        "default": {
+          "fontPath": "media/autodev.woff",
+          "fontCharacter": "\\E900"
+        }
+      },
+      "autodev-dark": {
+        "description": "autodev-drak",
+        "default": {
+          "fontPath": "media/autodev.woff",
+          "fontCharacter": "\\E902"
+        }
+      },
+      "autodev-error": {
+        "description": "AutoDev Error",
+        "default": {
+          "fontPath": "media/autodev.woff",
+          "fontCharacter": "\\E904"
+        }
+      },
+      "autodev-pair": {
+        "description": "AutoDev Pair",
+        "default": {
+          "fontPath": "media/autodev.woff",
+          "fontCharacter": "\\E906"
+        }
+      }
     }
   },
   "scripts": {

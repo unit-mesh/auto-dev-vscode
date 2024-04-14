@@ -55,7 +55,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 
 	private setupQuickChat(methodRanges: IdentifierBlockRange[], document: vscode.TextDocument, langid: string) {
 		return methodRanges.map((range) => {
-			const title = `AutoDev$(chevron-down)`;
+			const title = `$(autodev-icon)$(chevron-down)`;
 			const lens = new vscode.CodeLens(range.identifierRange, {
 				title,
 				command: "autodev.action.quickchat",

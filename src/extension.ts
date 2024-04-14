@@ -71,7 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
   // create a new status bar item that we can now manage
   autoDevStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   autoDevStatusBar.command = "autodev.autodevGUIView";
-  autoDevStatusBar.text = "AutoDev";
+  autoDevStatusBar.text = "$(autodev-icon)";
   autoDevStatusBar.show();
 }
 
