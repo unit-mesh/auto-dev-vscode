@@ -31,6 +31,9 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] Chat UI
     - [ ] Chat with selection
     - [ ] Chat with code
+- [ ] Touch Poing
+    - [ ] createQuickPick 
+    - [ ] ContextMenu 
 - [ ] Semantic Analysis for multiple languages
     - [x] TreeSitter
         - [x] Class level

@@ -76,6 +76,12 @@
         "category": "AutoDev",
         "title": "Generate API Data",
         "group": "AutoDev"
+      },
+      {
+        "command": "autodev.action.quickchat",
+        "category": "AutoDev",
+        "title": "Generate API Data",
+        "group": "AutoDev"
       }
     ],
     "keybindings": [
@@ -83,6 +89,11 @@
         "command": "autodev.debugTerminal",
         "mac": "cmd+shift+r",
         "key": "ctrl+shift+r"
+      },
+      {
+        "command": "autodev.editor.suggestCommand",
+        "mac": "cmd+shift+j",
+        "key": "ctrl+shift+j"
       }
     ],
     "submenus": [

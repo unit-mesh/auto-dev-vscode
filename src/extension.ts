@@ -7,7 +7,6 @@ import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
 import { DiffManager } from "./diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
 import { StructurerProviderManager } from "./semantic/StructurerProviderManager";
-// import Parser from "web-tree-sitter";
 const Parser = require("web-tree-sitter");
 
 import { removeExtensionContext, setExtensionContext } from './context';

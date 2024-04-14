@@ -2,6 +2,9 @@ import * as vscode from "vscode";
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../language/SupportedLanguage";
 import { parse } from '../parser/TreeSitterParser';
 import { AutoDevExtension } from "../AutoDevExtension";
+import { documentToTreeSitterFile } from "../semantic/TreeSitterFileUtil";
+import { TreeSitterFile, TreeSitterFileError } from "../semantic/TreeSitterFile";
+import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
   constructor(private readonly context: AutoDevExtension) {}
@@ -17,24 +20,32 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
         return [];
       }
 
-      try {
-        const parsed = await parse(
-          this.context.extensionContext.extensionUri,
-          langid,
-          document.getText()
-        );
-        console.log(parsed);
-      } catch (e) {
-        console.log(e);
+      const file = await documentToTreeSitterFile(document);
+      if (!(file instanceof TreeSitterFile)) {
+        return;
       }
-      throw new Error("Method not implemented.");
+
+      const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
+      let lenses: vscode.CodeLens[] = [];
+
+      if (methodRanges instanceof Array) {
+        lenses = this.setupDocIfNoExist(methodRanges, document, langid);
+      }
+
+      return lenses;
     })();
   }
-  resolveCodeLens?(
-    codeLens: vscode.CodeLens,
-    token: vscode.CancellationToken
-  ): vscode.ProviderResult<vscode.CodeLens> {
-    throw new Error("Method not implemented.");
+
+  private setupDocIfNoExist(methodRanges: IdentifierBlockRange[], document: vscode.TextDocument, langid: string) {
+    return methodRanges.map((result) => {
+      const title = `生成注释`;
+      const lens = new vscode.CodeLens(result.identifierRange, {
+        title,
+        command: "autodev.generateDoc",
+        arguments: [document, result],
+      });
+      return lens;
+    });
   }
 }
 
