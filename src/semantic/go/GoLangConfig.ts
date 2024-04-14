@@ -27,21 +27,42 @@ export const GoLangConfig: LanguageConfig = {
 	structureQuery: new MemoizedQuery(`
 			(package_clause
 			  (package_identifier) @package-name)
-			
+
 			(import_declaration
 			  (import_spec
-			    (import_path
-			      (string_literal) @import-name))) @import-name
+			    path: (_) @import-name))
+			                  
+      (import_declaration
+        (import_spec_list
+	  		  (import_spec
+				    path: (_) @import-name)))
+
+			(
+				(function_declaration
+			    name: (identifier) @function-name)
+		    @function-body
+	    )
 			
-			(function_declaration
-			  name: (identifier) @function-name)
-			
-			(method_declaration
-			  name: (identifier) @method-name)
-			
+		  (
+		    (method_declaration
+          receiver: (_)? @receiver-struct-name
+          name: (_)? @method-name)
+        @method-body
+      )
+            
 			(type_declaration
 			  (type_spec 
-			    (type_identifier) @type-name))
+			    name: (_) @type-name
+			    type: (struct_type 
+			      (field_declaration_list 
+			        (field_declaration 
+			           name: (_)? @field-name
+			           type: (_)? @field-type
+			        )
+			      )
+			    )
+			   )
+			  )
 			`),
 	namespaces: [
 		// variables
