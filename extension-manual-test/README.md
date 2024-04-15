@@ -1,0 +1,1 @@
+This folder is solely for manual testing of the extension. It contains every language feature that the extension supports. The purpose of this folder is to ensure that the extension works as expected and to provide a reference for the supported features.
