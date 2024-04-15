@@ -42,6 +42,7 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] Language Server Protocol
         - [ ] Java
         - [ ] Python
+    - [ ] Worker for TreeSitter analysis
 - [ ] DevIns language support
     - [ ] Syntax Highlight
     - [ ] Custom command
@@ -64,7 +65,7 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
         - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike
             - [vectordb](https://www.npmjs.com/package/vectordb)
         - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike
-- [ ] i18n
+- [ ] l18n
 
 ## Resources
 
