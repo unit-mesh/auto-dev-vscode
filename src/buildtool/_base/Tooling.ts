@@ -8,8 +8,8 @@ import { PackageDependencies } from "./Dependence";
  * @property {string} getToolingVersion - Returns the version of the tooling.
  * @property {PackageDependencies} getDependencies - Returns an object representing the tooling's dependencies.
  */
-export interface Tooling {
-	moduleTarget: string;
+export class Tooling {
+	moduleTarget: string = "";
 
 	/**
 	 * According to the given file path, find the tooling directory. For example, our project structure is:
@@ -25,25 +25,35 @@ export interface Tooling {
 	 *
 	 * if the given file path is `src/components/archive/EditableDiv.tsx`, the method should return the path to the tooling directory.
 	 */
-	lookupRelativeTooling(filepath: String): string;
+	lookupRelativeTooling(filepath: String): string {
+		return "";
+	}
 
 	/**
 	 * Returns the name of the tooling.
 	 */
-	getToolingName(): string;
+	getToolingName(): string {
+		return "";
+	}
 
 	/**
 	 * Returns the version of the tooling.
 	 */
-	getToolingVersion(): string;
+	getToolingVersion(): string {
+		return "";
+	}
 
 	/**
 	 * Returns an object representing the tooling's dependencies.
 	 */
-	getDependencies(): PackageDependencies;
+	async getDependencies(): Promise<PackageDependencies> {
+		return Promise.reject("Not implemented");
+	}
 
 	/**
 	 * Searches for dependencies in the tooling.
 	 */
-	getTasks(): string[];
+	async getTasks(): Promise<string[]> {
+		return [];
+	}
 }

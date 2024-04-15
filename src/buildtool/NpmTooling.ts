@@ -12,7 +12,7 @@ export class NpmTooling implements Tooling {
 		'devDependencies': DEP_SCOPE.DEV
 	};
 
-	getDependencies(): PackageDependencies {
+	async getDependencies(): Promise<PackageDependencies> {
 		return this.lookupSource(this.moduleTarget);
 	}
 
@@ -90,7 +90,7 @@ export class NpmTooling implements Tooling {
 		return toolingPath;
 	}
 
-	getTasks(): string[] {
+	async getTasks(): Promise<string[]> {
 		return [];
 	}
 }

@@ -1,27 +1,45 @@
-import { extensions } from "vscode";
+import vscode from "vscode";
+import * as util from "util";
+import { ExtensionApi as GradleApi, RunTaskOpts, Output } from "vscode-gradle";
+
 import { PackageDependencies } from "./_base/Dependence";
 import { Tooling } from "./_base/Tooling";
 import { PackageManger } from "./_base/PackageManger";
+import { VSCodeAction } from "../action/VSCodeAction";
 
 export class GradleTooling implements Tooling {
 	moduleTarget = "build.gradle";
 
-	// TODO: the old code uses the `findDeps` method to find dependencies, but it's not implemented here
-	findDeps(): PackageDependencies[] {
-		let java = extensions.getExtension("redhat.java");
-		if (!java?.activate()) {
+	async findDeps(): Promise<PackageDependencies[]> {
+		let extension = vscode.extensions.getExtension("vscjava.vscode-extension");
+		if (!extension?.activate()) {
 			return [];
 		}
+
+		const action = new VSCodeAction();
+		const gradleApi = extension!.exports as GradleApi;
+		const runTaskOpts: RunTaskOpts = {
+			projectFolder: action.getWorkspaceDirectories()[0],
+			taskName: "help",
+			showOutputColors: false,
+			onOutput: (output: Output): void => {
+				const message = new util.TextDecoder("utf-8").decode(
+					output.getOutputBytes_asU8()
+				);
+				console.log(output.getOutputType(), message);
+			},
+		};
+		await gradleApi.runTask(runTaskOpts);
 
 		return [];
 	}
 
-	getDependencies(): PackageDependencies {
+	async getDependencies(): Promise<PackageDependencies> {
 		return {
 			name: this.getToolingName(),
 			version: this.getToolingVersion(),
 			path: "",
-			dependencies: this.findDeps(),
+			dependencies: await this.findDeps(),
 			packageManager: PackageManger.GRADLE
 		};
 	}
@@ -38,7 +56,7 @@ export class GradleTooling implements Tooling {
 		return "";
 	}
 
-	getTasks(): string[] {
+	async getTasks(): Promise<string[]> {
 		return [];
 	}
 }
