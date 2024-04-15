@@ -263,7 +263,6 @@
     "@vscode/l10n": "^0.0.18",
     "node-fetch": "^3.3.2",
     "velocityjs": "^2.0.6",
-    "vscode-gradle": "^3.10.1",
     "vscode-languageclient": "^9.0.1",
     "web-tree-sitter": "^0.22.2"
   },

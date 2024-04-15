@@ -19,8 +19,9 @@ import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./semantic/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
 import { StatusNotification } from "./action/StatusNotification";
+import { ToolingDetector } from "./buildtool/ToolingDetector";
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);
 
   channel.show();
@@ -36,6 +37,9 @@ export function activate(context: vscode.ExtensionContext) {
   const extension = new AutoDevExtension(
     sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
   );
+  // new ToolingDetector().execute().then((deps) => {
+  // });
+
   Parser.init().then(async () => {
       await structureProvider.init();
       extension.setStructureProvider(structureProvider);
