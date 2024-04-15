@@ -2,10 +2,10 @@ import Parser, { Language, Tree } from "web-tree-sitter";
 
 import { LanguageConfig } from "./_base/LanguageConfig";
 import { TSLanguageUtil } from "./TSLanguageUtil";
+import { TextRange } from "../document/TextRange";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { TreeSitterFileCacheManager } from "../cache/TreeSitterFileCacheManager";
 import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
-import { TextRangeUtil } from "../document/TextRangeUtil";
 
 export class TreeSitterFile {
 	private sourcecode: string;
@@ -106,13 +106,13 @@ export class TreeSitterFile {
 					const blockNode = match.captures[blockIdentIndex].node;
 
 					let blockRange = new IdentifierBlockRange(
-						TextRangeUtil.fromNode(identifierNode),
-						TextRangeUtil.fromNode(blockNode)
+						TextRange.fromNode(identifierNode),
+						TextRange.fromNode(blockNode)
 					);
 
 					if (hasComment) {
 						const commentNode = match.captures[commentIndex].node;
-						blockRange.commentRange = TextRangeUtil.fromNode(commentNode);
+						blockRange.commentRange = TextRange.fromNode(commentNode);
 					}
 
 					return blockRange;
