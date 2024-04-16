@@ -1,4 +1,7 @@
 import * as vscode from "vscode";
+import { getExtensionUri, getNonce, getUniqueId } from "../util/vscode";
+import { getTheme } from "../util/getTheme";
+
 import { AutoDevWebviewProtocol } from "./AutoDevWebviewProtocol";
 
 export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
@@ -6,7 +9,10 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
 
   public webviewProtocol!: AutoDevWebviewProtocol;
 
-  constructor(private readonly _context: vscode.ExtensionContext) {}
+  constructor(
+    private readonly _context: vscode.ExtensionContext,
+    private readonly windowId: string = '',
+  ) {}
 
   get webview() {
     return this._webview;
@@ -21,14 +27,42 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
     this._webview = webviewView.webview;
     this.webviewProtocol = new AutoDevWebviewProtocol(this._webview);
 
-    webviewView.webview.html = await this.getSidebarContent(webviewView);
+    webviewView.webview.html = await this.getSidebarContent(this._context, webviewView);
   }
 
-  async getSidebarContent(panel: vscode.WebviewPanel | vscode.WebviewView): Promise<string> {
+  async getSidebarContent(
+    context: vscode.ExtensionContext | undefined,
+    panel: vscode.WebviewPanel | vscode.WebviewView,
+    page: string | undefined = undefined,
+    edits: any[] | undefined = undefined,
+    isFullScreen: boolean = false,
+  ): Promise<string> {
+    let extensionUri = getExtensionUri();
+    let scriptUri: string;
+    let styleMainUri: string;
+    let vscMediaUrl: string = panel.webview
+      .asWebviewUri(vscode.Uri.joinPath(extensionUri, "gui"))
+      .toString();
+
+    const inDevelopmentMode =
+      context?.extensionMode === vscode.ExtensionMode.Development;
+    if (!inDevelopmentMode) {
+      scriptUri = panel.webview
+        .asWebviewUri(vscode.Uri.joinPath(extensionUri, "gui-sidebar/dist/assets/index.js"))
+        .toString();
+      styleMainUri = panel.webview
+        .asWebviewUri(vscode.Uri.joinPath(extensionUri, "gui-sidebar/dist/assets/index.css"))
+        .toString();
+    } else {
+      scriptUri = "http://localhost:5173/src/main.tsx";
+      styleMainUri = "http://localhost:5173/src/index.css";
+    }
+
     panel.webview.options = {
       enableScripts: true,
       localResourceRoots: [
-        vscode.Uri.joinPath(this._context.extensionUri, "dist/renderer")
+        vscode.Uri.joinPath(extensionUri, "gui-sidebar"),
+        vscode.Uri.joinPath(extensionUri, "dist", "assets"),
       ],
       enableCommandUris: true,
       portMapping: [
@@ -36,46 +70,69 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
           webviewPort: 65433,
           extensionHostPort: 65433,
         },
-
-        // for dev HMR
-        {
-          webviewPort: 18999,
-          extensionHostPort: 18999,
-        }
       ],
     };
-    const webview = panel.webview;
-    const inDevelopmentMode =
-      this._context?.extensionMode === vscode.ExtensionMode.Development;
 
-    if (inDevelopmentMode) {
-      const nodeFetch = await import("node-fetch").then((x) => x.default);
+    const nonce = getNonce();
 
-      const csp = [
-        `default-src 'none';`,
-        `script-src 'unsafe-eval' https://* http://127.0.0.1 http://0.0.0.0:${18999}`,
-        `style-src ${webview.cspSource} 'self' 'unsafe-inline' https://*`,
-        `font-src ${webview.cspSource}`,
-        `connect-src https://*  ws://127.0.0.1 ws://0.0.0.0:18999 http:/127.0.0.1 http://0.0.0.0:18999`,
-      ]
-
-      let x = await nodeFetch("http://localhost:18999/index.html").then(r => r.text());
-      try {
-        // scripts
-        x = x.replace(/<script.*?src="(.*)"/gm, (_, g1) => `<script type="module" src="http://127.0.0.1:18999${g1}"`)
-        // styles
-        x = x.replace(/<link rel="stylesheet" href="(.*?)"/gm, (_, g1) => `<link rel="stylesheet" href="http://127.0.0.1:18999${g1}"`)
-        // csp rules
-        x = x.replace("<!-- {csp-placeholder} -->", `<meta http-equiv="Content-Security-Policy" content="${csp.join(" ")}">`)
-      } catch(e) {
-        console.error(e)
+    const currentTheme = getTheme();
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration("workbench.colorTheme")) {
+        // Send new theme to GUI to update embedded Monaco themes
+        this.webviewProtocol?.request("setTheme", { theme: getTheme() });
       }
-      console.log(x)
-      return x;
-    }
+    });
 
-    console.log("Loading from dist folder...")
+    this.webviewProtocol._webview = panel.webview;
 
-    return ""
+    return `<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script>const vscode = acquireVsCodeApi();</script>
+        <link href="${styleMainUri}" rel="stylesheet">
+
+        <title>Continue</title>
+      </head>
+      <body>
+        <div id="root"></div>
+
+        ${
+          inDevelopmentMode
+            ? `<script type="module">
+          import RefreshRuntime from "http://localhost:5173/@react-refresh"
+          RefreshRuntime.injectIntoGlobalHook(window)
+          window.$RefreshReg$ = () => {}
+          window.$RefreshSig$ = () => (type) => type
+          window.__vite_plugin_react_preamble_installed__ = true
+          </script>`
+            : ""
+        }
+
+        <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
+
+        <script>localStorage.setItem("ide", "vscode")</script>
+        <script>window.windowId = "${this.windowId}"</script>
+        <script>window.vscMachineId = "${getUniqueId()}"</script>
+        <script>window.vscMediaUrl = "${vscMediaUrl}"</script>
+        <script>window.ide = "vscode"</script>
+        <script>window.fullColorTheme = ${JSON.stringify(currentTheme)}</script>
+        <script>window.colorThemeName = "dark-plus"</script>
+        <script>window.workspacePaths = ${JSON.stringify(
+          vscode.workspace.workspaceFolders?.map(
+            (folder) => folder.uri.fsPath,
+          ) || [],
+        )}</script>
+        <script>window.isFullScreen = ${isFullScreen}</script>
+
+        ${
+          edits
+            ? `<script>window.edits = ${JSON.stringify(edits)}</script>`
+            : ""
+        }
+        ${page ? `<script>window.location.pathname = "${page}"</script>` : ""}
+      </body>
+    </html>`;
   }
 }
