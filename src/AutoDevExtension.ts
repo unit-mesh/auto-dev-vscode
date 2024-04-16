@@ -6,7 +6,7 @@ import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManag
 import { DiffManager } from "./editor/diff/DiffManager";
 import { StructurerProviderManager } from "./codecontext/StructurerProviderManager";
 import { RelatedCodeProviderManager } from "./codecontext/RelatedCodeProviderManager";
-import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
+import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 
 export class AutoDevExtension {
 	sidebar: AutoDevWebviewViewProvider;

@@ -4,7 +4,7 @@ import { LanguageConfig } from "./_base/LanguageConfig";
 import { TSLanguageUtil } from "./TSLanguageUtil";
 import { TextRange } from "../editor/document/TextRange";
 import { IdentifierBlockRange } from "../editor/document/IdentifierBlockRange";
-import { TreeSitterFileCacheManager } from "../cache/TreeSitterFileCacheManager";
+import { TreeSitterFileCacheManager } from "../editor/cache/TreeSitterFileCacheManager";
 import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
 
 export class TreeSitterFile {

@@ -1,5 +1,5 @@
 import { TestGenContext, TestGenProvider } from "../_base/TestGenProvider";
-import { CodeFile, CodeStructure } from "../../codemodel/CodeFile";
+import { CodeFile, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 
 export class JavaTestGenProvider implements TestGenProvider {

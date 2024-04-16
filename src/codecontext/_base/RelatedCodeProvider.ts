@@ -1,4 +1,4 @@
-import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
+import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 
 /**
  * The `RelatedProvider` class provides methods for retrieving input and output structures related to a given symbol.

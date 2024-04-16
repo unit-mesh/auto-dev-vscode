@@ -2,7 +2,7 @@ import Parser, { Query } from "web-tree-sitter";
 
 import { TSLanguageUtil } from "../TSLanguageUtil";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
-import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
+import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../language/service/TSLanguageService";
 import { LanguageConfig } from "./LanguageConfig";
 

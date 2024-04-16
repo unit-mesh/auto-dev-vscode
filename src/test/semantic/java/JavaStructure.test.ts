@@ -1,6 +1,6 @@
 import { JavaStructurer } from "../../../codecontext/java/JavaStructurer";
 import { TestLanguageService } from "../../TestLanguageService";
-import { CodeFile } from "../../../codemodel/CodeFile";
+import { CodeFile } from "../../../editor/codemodel/CodeFile";
 
 const Parser = require("web-tree-sitter");
 

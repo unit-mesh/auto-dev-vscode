@@ -1,4 +1,4 @@
-import { CodeFile, CodeStructure } from "../../codemodel/CodeFile";
+import { CodeFile, CodeStructure } from "../../editor/codemodel/CodeFile";
 
 export interface TestGenContext {
 	isNewFile?: boolean,

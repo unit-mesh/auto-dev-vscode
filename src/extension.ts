@@ -17,7 +17,7 @@ import {
 } from "./editor/providers/ProviderRegister";
 import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./codecontext/RelatedCodeProviderManager";
-import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
+import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { StatusNotification } from "./editor/action/StatusNotification";
 import { ToolingDetector } from "./chatcontext/tooling/ToolingDetector";
 

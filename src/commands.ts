@@ -5,7 +5,7 @@ import { insertCodeByRange, selectCodeInRange } from "./editor/editor";
 import { DefaultLanguageService } from "./language/service/DefaultLanguageService";
 
 import { channel } from "./channel";
-import { PlantUMLPresenter } from "./codemodel/presenter/PlantUMLPresenter";
+import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
 import { window } from "vscode";
 import { showQuickPick, showInputBox } from "./editor/action/QuickInput";
 

@@ -1,6 +1,6 @@
 import { RelatedCodeProvider } from "../_base/RelatedCodeProvider";
-import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
-import { CodeFileCacheManager } from "../../cache/CodeFileCacheManager";
+import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
+import { CodeFileCacheManager } from "../../editor/cache/CodeFileCacheManager";
 import { channel } from "../../channel";
 
 const JAVA_BUILTIN_TYPES = new Set([

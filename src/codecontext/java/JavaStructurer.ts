@@ -3,7 +3,7 @@ import Parser from "web-tree-sitter";
 import { Structurer } from "../_base/Structurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../language/SupportedLanguage";
-import { CodeFile, CodeFunction, CodeStructure } from "../../codemodel/CodeFile";
+import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { LanguageConfig } from "../_base/LanguageConfig";
 
 export class JavaStructurer extends Structurer {
