@@ -70,11 +70,11 @@ export class TreeSitterFile {
 	}
 
 	methodRanges(): IdentifierBlockRange[] | TreeSitterFileError {
-		return !this.parser ? TreeSitterFileError.QueryError : this.buildBlock(this.langConfig.methodQuery.scopeQuery);
+		return !this.parser ? TreeSitterFileError.QueryError : this.buildBlock(this.langConfig.methodQuery.queryStr);
 	}
 
 	classRanges(): IdentifierBlockRange[] | TreeSitterFileError {
-		return !this.parser ? TreeSitterFileError.QueryError : this.buildBlock(this.langConfig.classQuery.scopeQuery);
+		return !this.parser ? TreeSitterFileError.QueryError : this.buildBlock(this.langConfig.classQuery.queryStr);
 	}
 
 	/**

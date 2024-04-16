@@ -1,5 +1,5 @@
 import { LanguageConfig } from "../codecontext/_base/LanguageConfig";
-import { Query, SyntaxNode } from "web-tree-sitter";
+import { Language, Query, SyntaxNode } from "web-tree-sitter";
 import { ALL_LANGUAGES } from "../codecontext/TSLanguageUtil";
 import { TextRange } from "./model/TextRange";
 import { LocalImport } from "./scope/LocalImport";
@@ -26,8 +26,7 @@ export interface LocalRefCapture {
 	symbol: string | undefined | null;
 }
 
-export class ScopingError extends Error {
-}
+export class ScopingError extends Error {}
 
 function parseScoping(s: string): Scoping {
 	switch (s) {
@@ -43,22 +42,21 @@ function parseScoping(s: string): Scoping {
 }
 
 export class ScopeBuilder {
-	private query: Query;
 	private rootNode: SyntaxNode;
 	private sourceCode: string;
-	private language: LanguageConfig;
+	private languageConfig: LanguageConfig;
+	private query: Query;
 
-	constructor(query: Query, rootNode: SyntaxNode, sourceCode: string, language: LanguageConfig) {
+	constructor(query: Query, rootNode: SyntaxNode, sourceCode: string, languageConfig: LanguageConfig) {
 		this.query = query;
 		this.rootNode = rootNode;
 		this.sourceCode = sourceCode;
-		this.language = language;
+		this.languageConfig = languageConfig;
 	}
 
 	async build() {
-		let namespaces = this.language.namespaces;
+		let namespaces = this.languageConfig.namespaces;
 
-		// extract supported capture groups
 		const localDefCaptures: LocalDefCapture[] = [];
 		const localRefCaptures: LocalRefCapture[] = [];
 
@@ -89,9 +87,11 @@ export class ScopeBuilder {
 			}
 		}
 
-		const captures = this.query.captures(this.rootNode)
+		const captures = this.query.captures(this.rootNode);
 
-		const langId = ALL_LANGUAGES.findIndex(l => l.languageIds === this.language.languageIds);
+		const langId = ALL_LANGUAGES.findIndex(l =>
+			l.languageIds === this.languageConfig.languageIds
+		);
 		const scopeGraph = new ScopeGraph(this.rootNode, langId);
 
 		const captureMap: { [index: number]: TextRange[] } = {};

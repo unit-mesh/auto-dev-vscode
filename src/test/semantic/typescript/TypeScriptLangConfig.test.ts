@@ -1,4 +1,5 @@
 import { SyntaxNode } from "web-tree-sitter";
+
 import { TestLanguageService } from "../../TestLanguageService";
 import { TypeScriptLangConfig } from "../../../codecontext/typescript/TypeScriptLangConfig";
 
@@ -35,7 +36,7 @@ class Greeter {
 }
 `;
 
-		const query = grammar!!.query(TypeScriptLangConfig.methodQuery.scopeQuery);
+		const query = grammar!!.query(TypeScriptLangConfig.methodQuery.queryStr);
 		const root = parser.parse(sampleCode).rootNode;
 		const matches = query!!.matches(root);
 

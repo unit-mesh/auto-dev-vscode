@@ -1,4 +1,5 @@
 import { Language, Query } from "web-tree-sitter";
+
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NameSpaces } from "../../codesearch/model/Namespace";
@@ -41,13 +42,13 @@ export interface LanguageConfig {
 }
 
 export class MemoizedQuery {
-  scopeQuery: string;
+  queryStr: string;
 
   constructor(scopeQuery: string) {
-    this.scopeQuery = scopeQuery;
+    this.queryStr = scopeQuery;
   }
 
   query(language: Language) : Query {
-    return language.query(this.scopeQuery);
+    return language.query(this.queryStr);
   }
 }

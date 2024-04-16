@@ -25,7 +25,7 @@ export abstract class Structurer {
 		_parser.setLanguage(language);
 		this.parser = _parser;
 		this.language = language;
-		return language?.query(tsConfig.structureQuery.scopeQuery);
+		return language?.query(tsConfig.structureQuery.queryStr);
 	}
 
 	async parseFile(code: string): Promise<CodeFile | undefined> {
