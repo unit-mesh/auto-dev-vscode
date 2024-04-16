@@ -14,7 +14,7 @@ import {
   registerAutoDevProviders,
   registerCodeLensProviders,
   registerQuickFixProvider, registerWebViewProvider
-} from "./providers/ProviderRegister";
+} from "./editor/providers/ProviderRegister";
 import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./codecontext/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";

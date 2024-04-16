@@ -1,5 +1,5 @@
-import { AutoDevExtension } from "../AutoDevExtension";
-import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
+import { AutoDevExtension } from "../../AutoDevExtension";
+import { SUPPORTED_LANGUAGES } from "../../language/SupportedLanguage";
 import vscode from "vscode";
 import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider";
 import { AutoDevActionProvider } from "./AutoDevActionProvider";
