@@ -1,7 +1,7 @@
 import { SyntaxNode } from "web-tree-sitter";
 import { Position, Range } from "vscode";
 
-export class TextRange extends Range {
+export class BlockRange extends Range {
 	text: string;
 
 	constructor(
@@ -17,6 +17,6 @@ export class TextRange extends Range {
 		const startPosition = new Position(id.startPosition.row, id.startPosition.column);
 		const endPosition = new Position(id.endPosition.row, id.endPosition.column);
 
-		return new TextRange(id.text, startPosition, endPosition);
+		return new BlockRange(id.text, startPosition, endPosition);
 	}
 }

@@ -1,11 +1,11 @@
 import { SymbolId } from "../Namespace";
-import { TextRange } from "../../editor/document/TextRange";
+import { BlockRange } from "../../editor/document/BlockRange";
 
 class LocalDef {
-	range: TextRange;
+	range: BlockRange;
 	symbolId: SymbolId | null;
 
-	constructor(range: TextRange, symbolId: SymbolId | null) {
+	constructor(range: BlockRange, symbolId: SymbolId | null) {
 		this.range = range;
 		this.symbolId = symbolId;
 	}

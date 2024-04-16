@@ -1,14 +1,14 @@
-import { TextRange } from "./TextRange";
+import { BlockRange } from "./BlockRange";
 
 export class IdentifierBlockRange {
-	commentRange: TextRange | undefined;
-	blockRange: TextRange;
-	identifierRange: TextRange;
+	commentRange: BlockRange | undefined;
+	blockRange: BlockRange;
+	identifierRange: BlockRange;
 
 	constructor(
-		blockRange: TextRange,
-		identifierRange: TextRange,
-		commentRange?: TextRange
+		blockRange: BlockRange,
+		identifierRange: BlockRange,
+		commentRange?: BlockRange
 	) {
 		this.blockRange = blockRange;
 		this.identifierRange = identifierRange;
