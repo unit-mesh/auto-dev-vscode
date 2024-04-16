@@ -2,7 +2,7 @@ import Parser from "web-tree-sitter";
 
 import { Structurer } from "../_base/Structurer";
 import { JavaLangConfig } from "./JavaLangConfig";
-import { SupportedLanguage } from "../../language/SupportedLanguage";
+import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { LanguageConfig } from "../_base/LanguageConfig";
 

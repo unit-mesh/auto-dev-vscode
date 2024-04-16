@@ -1,5 +1,5 @@
 import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
-import { TSLanguageService } from "../../language/service/TSLanguageService";
+import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import javascm from '../../../semantic/src/schemas/indexes/java.scm?raw';
 
 export const JavaLangConfig: LanguageConfig = {

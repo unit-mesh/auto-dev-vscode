@@ -4,7 +4,7 @@ import { type SupportedLanguage } from "../SupportedLanguage";
 import Parser, { Language } from "web-tree-sitter";
 import path from "path";
 
-import { getExtensionUri } from '../../context';
+import { getExtensionUri } from '../../../context';
 import { EXT_LANGUAGE_MAP } from "../ExtLanguageMap";
 
 const LanguageParserMap: Map<SupportedLanguage, Parser.Language> = new Map();

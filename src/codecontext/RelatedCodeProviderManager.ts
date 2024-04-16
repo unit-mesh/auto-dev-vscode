@@ -1,4 +1,4 @@
-import { SupportedLanguage } from "../language/SupportedLanguage";
+import { SupportedLanguage } from "../editor/language/SupportedLanguage";
 import { RelatedCodeProvider } from "./_base/RelatedCodeProvider";
 import { JavaRelatedProvider } from "./java/JavaRelatedProvider";
 import { CodeFileCacheManager } from "../editor/cache/CodeFileCacheManager";

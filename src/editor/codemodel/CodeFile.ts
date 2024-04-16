@@ -1,5 +1,5 @@
 import { PositionElement } from "./PositionElement";
-import { SupportedLanguage } from "../../language/SupportedLanguage";
+import { SupportedLanguage } from "../language/SupportedLanguage";
 
 export interface CodeFile {
 	fileName: string;

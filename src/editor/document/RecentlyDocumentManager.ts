@@ -1,5 +1,5 @@
 import { TextDocument } from "vscode";
-import { SupportedLanguage } from "../../language/SupportedLanguage";
+import { SupportedLanguage } from "../language/SupportedLanguage";
 
 export class RecentlyDocumentManager {
 	private openTextDocuments: TextDocument[] = [];

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../../language/SupportedLanguage";
-import { parse } from '../../language/parser/TreeSitterParser';
+import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../language/SupportedLanguage";
+import { parse } from '../language/parser/TreeSitterParser';
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { documentToTreeSitterFile } from "../../codecontext/TreeSitterFileUtil";
 import { TreeSitterFile, TreeSitterFileError } from "../../codecontext/TreeSitterFile";

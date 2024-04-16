@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { AutoDevExtension } from "./AutoDevExtension";
 import { IdentifierBlockRange } from "./editor/document/IdentifierBlockRange";
 import { insertCodeByRange, selectCodeInRange } from "./editor/editor";
-import { DefaultLanguageService } from "./language/service/DefaultLanguageService";
+import { DefaultLanguageService } from "./editor/language/service/DefaultLanguageService";
 
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";

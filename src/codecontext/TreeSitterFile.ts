@@ -5,7 +5,7 @@ import { TSLanguageUtil } from "./TSLanguageUtil";
 import { TextRange } from "../editor/document/TextRange";
 import { IdentifierBlockRange } from "../editor/document/IdentifierBlockRange";
 import { TreeSitterFileCacheManager } from "../editor/cache/TreeSitterFileCacheManager";
-import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
+import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
 
 export class TreeSitterFile {
 	private sourcecode: string;

@@ -1,6 +1,6 @@
 import { TestGenProvider } from "./_base/TestGenProvider";
-import { SupportedLanguage } from "../language/SupportedLanguage";
-import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
+import { SupportedLanguage } from "../editor/language/SupportedLanguage";
+import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
 import { JavaTestGenProvider } from "./java/JavaTestGenProvider";
 
 export class TestGenProviderManager {

@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 
 import { AutoDevExtension } from "../../AutoDevExtension";
-import { SUPPORTED_LANGUAGES } from "../../language/SupportedLanguage";
+import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import { TreeSitterFile, TreeSitterFileError, } from "../../codecontext/TreeSitterFile";
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
-import { JavaSemanticLsp } from "../../language/semantic-lsp/java/JavaSemanticLsp";
+import { JavaSemanticLsp } from "../language/semantic-lsp/java/JavaSemanticLsp";
 import { documentToTreeSitterFile } from "../../codecontext/TreeSitterFileUtil";
 
 export class AutoDevActionProvider implements vscode.CodeActionProvider {

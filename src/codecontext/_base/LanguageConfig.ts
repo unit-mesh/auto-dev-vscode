@@ -1,6 +1,6 @@
 import { Language, Query } from "web-tree-sitter";
-import { TSLanguageService } from "../../language/service/TSLanguageService";
-import { SupportedLanguage } from "../../language/SupportedLanguage";
+import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
+import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 
 // Languages based on tree-sitter grammars
 export interface LanguageConfig {
