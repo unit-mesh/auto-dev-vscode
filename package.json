@@ -264,6 +264,7 @@
     "@unit-mesh/treesitter-artifacts": "^1.5.0",
     "@vitest/coverage-v8": "^1.4.0",
     "@vscode/l10n": "^0.0.18",
+    "graphology": "^0.25.4",
     "monaco-vscode-textmate-theme-converter": "^0.1.7",
     "node-fetch": "^3.3.2",
     "node-machine-id": "^1.1.12",
