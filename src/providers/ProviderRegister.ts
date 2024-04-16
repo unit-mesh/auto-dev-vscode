@@ -37,3 +37,10 @@ export function registerQuickFixProvider(context: AutoDevExtension) {
 		);
 	});
 }
+
+export function registerWebViewProvider(extension: AutoDevExtension) {
+	extension.extensionContext.subscriptions.push(vscode.window.registerWebviewViewProvider("autodev.autodevGUIView",
+			extension.sidebar, { webviewOptions: { retainContextWhenHidden: true }, }
+		)
+	);
+}

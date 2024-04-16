@@ -13,7 +13,7 @@ import { removeExtensionContext, setExtensionContext } from './context';
 import {
   registerAutoDevProviders,
   registerCodeLensProviders,
-  registerQuickFixProvider
+  registerQuickFixProvider, registerWebViewProvider
 } from "./providers/ProviderRegister";
 import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./semantic/RelatedCodeProviderManager";
@@ -51,6 +51,7 @@ export async function activate(context: vscode.ExtensionContext) {
   registerCodeLensProviders(extension);
   registerAutoDevProviders(extension);
   registerQuickFixProvider(extension);
+  registerWebViewProvider(extension);
 
   vscode.window.onDidChangeActiveTextEditor(
     async (editor: vscode.TextEditor | undefined) => {
@@ -62,14 +63,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  // Sidebar commands
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      "autodev.autodevGUIView",
-      sidebar,
-      { webviewOptions: { retainContextWhenHidden: true }, }
-    )
-  );
+  // on closed editor
 
   // create a new status bar item that we can now manage
   StatusNotification.instance.create();
