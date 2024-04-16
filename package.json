@@ -261,7 +261,7 @@
     "pa": "vsce package -o ./auto-dev-vscode.vsix"
   },
   "dependencies": {
-    "@unit-mesh/treesitter-artifacts": "^1.5.0",
+    "@unit-mesh/treesitter-artifacts": "^1.5.1",
     "@vitest/coverage-v8": "^1.4.0",
     "@vscode/l10n": "^0.0.18",
     "graphology": "^0.25.4",
