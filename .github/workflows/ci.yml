@@ -37,12 +37,6 @@ jobs:
       - name: Run unit tests
         run: npm run test --coverage.enabled true
 
-      - name: 'Report Coverage'
-        # Set if: always() to also generate the report if tests are failing
-        # Only works if you set `reportOnFailure: true` in your vite config as specified above
-        if: always()
-        uses:  davelosert/vitest-coverage-report-action@v2
-
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
