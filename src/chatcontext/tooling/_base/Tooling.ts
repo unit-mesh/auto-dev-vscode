@@ -1,5 +1,4 @@
 import { PackageDependencies } from "./Dependence";
-import { GradleTooling } from "../GradleTooling";
 
 /**
  * The `Tooling` interface defines a set of methods for tooling-related operations.

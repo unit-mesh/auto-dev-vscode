@@ -2,8 +2,8 @@ import Parser, { Language, Tree } from "web-tree-sitter";
 
 import { LanguageConfig } from "./_base/LanguageConfig";
 import { TSLanguageUtil } from "./TSLanguageUtil";
-import { TextRange } from "../document/TextRange";
-import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
+import { TextRange } from "../editor/document/TextRange";
+import { IdentifierBlockRange } from "../editor/document/IdentifierBlockRange";
 import { TreeSitterFileCacheManager } from "../cache/TreeSitterFileCacheManager";
 import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
 

@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
 
-import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
-import { VSCodeAction } from "./action/VSCodeAction";
-import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
-import { DiffManager } from "./diff/DiffManager";
-import { StructurerProviderManager } from "./semantic/StructurerProviderManager";
-import { RelatedCodeProviderManager } from "./semantic/RelatedCodeProviderManager";
+import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
+import { VSCodeAction } from "./editor/action/VSCodeAction";
+import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
+import { DiffManager } from "./editor/diff/DiffManager";
+import { StructurerProviderManager } from "./codecontext/StructurerProviderManager";
+import { RelatedCodeProviderManager } from "./codecontext/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
 
 export class AutoDevExtension {

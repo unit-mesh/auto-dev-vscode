@@ -1,5 +1,5 @@
 import { GradleTooling } from "./GradleTooling";
-import { channel } from "../channel";
+import { channel } from "../../channel";
 
 export class ToolingDetector {
 	async execute() {

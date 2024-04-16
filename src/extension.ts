@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 
 import { registerCommands } from "./commands";
-import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
-import { VSCodeAction } from "./action/VSCodeAction";
-import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
-import { DiffManager } from "./diff/DiffManager";
+import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
+import { VSCodeAction } from "./editor/action/VSCodeAction";
+import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
+import { DiffManager } from "./editor/diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { StructurerProviderManager } from "./semantic/StructurerProviderManager";
+import { StructurerProviderManager } from "./codecontext/StructurerProviderManager";
 const Parser = require("web-tree-sitter");
 
 import { removeExtensionContext, setExtensionContext } from './context';
@@ -16,10 +16,10 @@ import {
   registerQuickFixProvider, registerWebViewProvider
 } from "./providers/ProviderRegister";
 import { channel } from "./channel";
-import { RelatedCodeProviderManager } from "./semantic/RelatedCodeProviderManager";
+import { RelatedCodeProviderManager } from "./codecontext/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
-import { StatusNotification } from "./action/StatusNotification";
-import { ToolingDetector } from "./buildtool/ToolingDetector";
+import { StatusNotification } from "./editor/action/StatusNotification";
+import { ToolingDetector } from "./chatcontext/tooling/ToolingDetector";
 
 export async function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);
@@ -46,6 +46,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  // TODO: split different type commands
   registerCommands(extension);
 
   registerCodeLensProviders(extension);

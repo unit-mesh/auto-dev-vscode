@@ -5,7 +5,7 @@ import { ExtensionApi as GradleApi, RunTaskOpts, Output } from "vscode-gradle";
 import { DependencyEntry, PackageDependencies } from "./_base/Dependence";
 import { Tooling } from "./_base/Tooling";
 import { PackageManger } from "./_base/PackageManger";
-import { VSCodeAction } from "../action/VSCodeAction";
+import { VSCodeAction } from "../../editor/action/VSCodeAction";
 
 export class GradleTooling implements Tooling {
 	moduleTarget = "build.gradle";

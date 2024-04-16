@@ -1,4 +1,4 @@
-import { JavaStructurer } from "../../../semantic/java/JavaStructurer";
+import { JavaStructurer } from "../../../codecontext/java/JavaStructurer";
 import { TestLanguageService } from "../../TestLanguageService";
 import { CodeFile } from "../../../codemodel/CodeFile";
 

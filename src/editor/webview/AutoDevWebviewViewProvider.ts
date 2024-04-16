@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { AutoDevWebviewProtocol } from "./AutoDevWebviewProtocol.js";
+import { AutoDevWebviewProtocol } from "./AutoDevWebviewProtocol";
 
 export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
   private _webview?: vscode.Webview;

@@ -1,5 +1,5 @@
 import { SymbolId } from "../Namespace";
-import { TextRange } from "../../document/TextRange";
+import { TextRange } from "../../editor/document/TextRange";
 
 class LocalDef {
 	range: TextRange;

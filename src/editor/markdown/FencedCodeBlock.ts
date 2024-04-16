@@ -1,4 +1,4 @@
-import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
+import { SUPPORTED_LANGUAGES } from "../../language/SupportedLanguage";
 
 /**
  * FencedCodeBlock class represents a block of code that is delimited by triple backticks (```) and can optionally have a

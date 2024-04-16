@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../language/SupportedLanguage";
-import { parse } from '../parser/TreeSitterParser';
+import { parse } from '../language/parser/TreeSitterParser';
 import { AutoDevExtension } from "../AutoDevExtension";
-import { documentToTreeSitterFile } from "../semantic/TreeSitterFileUtil";
-import { TreeSitterFile, TreeSitterFileError } from "../semantic/TreeSitterFile";
-import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
+import { documentToTreeSitterFile } from "../codecontext/TreeSitterFileUtil";
+import { TreeSitterFile, TreeSitterFileError } from "../codecontext/TreeSitterFile";
+import { IdentifierBlockRange } from "../editor/document/IdentifierBlockRange";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 	constructor(private readonly context: AutoDevExtension) {
