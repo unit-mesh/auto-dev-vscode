@@ -20,6 +20,9 @@
   "engines": {
     "vscode": "^1.77.0"
   },
+  "vsce": {
+    "dependencies": true
+  },
   "categories": [
     "Programming Languages",
     "Education",
@@ -244,7 +247,7 @@
     }
   },
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
+    "preinstall": "npx only-allow npm",
     "watch": "vite build --watch --mode=development",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx",
@@ -254,9 +257,9 @@
     "integration-test:watch": "tsc -p . -w --outDir out",
     "test": "vitest --run",
     "test:watch": "vitest --silent=false",
-    "vscode:prepublish": "pnpm run build"
+    "vscode:prepublish": "npm run build",
+    "pa": "vsce package -o ./auto-dev-vscode.vsix"
   },
-  "packageManager": "pnpm@8.15.5",
   "dependencies": {
     "@unit-mesh/treesitter-artifacts": "^1.5.0",
     "@vitest/coverage-v8": "^1.4.0",
@@ -276,6 +279,7 @@
     "@typescript-eslint/parser": "^7.6.0",
     "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.3.9",
+    "@vscode/vsce": "^2.25.0",
     "chai": "^5.1.0",
     "eslint": "^8.56.0",
     "mocha": "^10.0.1",
