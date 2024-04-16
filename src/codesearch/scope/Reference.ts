@@ -1,7 +1,7 @@
-import { SymbolId } from "../model/Namespace";
 import { TextRange } from "../model/TextRange";
+import { SymbolId } from "../model/Namespace";
 
-export class LocalDef {
+export class Reference {
 	range: TextRange;
 	symbolId: SymbolId | null;
 

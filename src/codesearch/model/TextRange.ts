@@ -1,3 +1,5 @@
+import { SyntaxNode } from "web-tree-sitter";
+
 export class Point {
 	line: number;
 	column: number;
@@ -9,15 +11,24 @@ export class Point {
 }
 
 export class TextRange {
-	start: number;
-	end: number;
+	start: Point;
+	end: Point;
 
-	constructor(start: number, end: number) {
+	constructor(start: Point, end: Point) {
 		this.start = start;
 		this.end = end;
 	}
 
-	get length(): number {
-		return this.end - this.start;
+	static from(node: SyntaxNode) {
+		return {
+			start: {
+				line: node.startPosition.row,
+				column: node.startPosition.column,
+			},
+			end: {
+				line: node.endPosition.row,
+				column: node.endPosition.column,
+			},
+		};
 	}
 }
