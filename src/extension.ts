@@ -1,26 +1,27 @@
 import * as vscode from "vscode";
 
 import { registerCommands } from "./commands";
-import { AutoDevWebviewViewProvider } from "./webview/AutoDevWebviewViewProvider";
-import { VSCodeAction } from "./action/VSCodeAction";
-import { RecentlyDocumentManager } from "./document/RecentlyDocumentManager";
-import { DiffManager } from "./diff/DiffManager";
+import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
+import { VSCodeAction } from "./editor/action/VSCodeAction";
+import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
+import { DiffManager } from "./editor/diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { StructurerProviderManager } from "./semantic/StructurerProviderManager";
+import { StructurerProviderManager } from "./codecontext/StructurerProviderManager";
 const Parser = require("web-tree-sitter");
 
 import { removeExtensionContext, setExtensionContext } from './context';
 import {
   registerAutoDevProviders,
   registerCodeLensProviders,
-  registerQuickFixProvider
-} from "./providers/ProviderRegister";
+  registerQuickFixProvider, registerWebViewProvider
+} from "./editor/providers/ProviderRegister";
 import { channel } from "./channel";
-import { RelatedCodeProviderManager } from "./semantic/RelatedCodeProviderManager";
-import { CodeFileCacheManager } from "./cache/CodeFileCacheManager";
-import { StatusNotification } from "./action/StatusNotification";
+import { RelatedCodeProviderManager } from "./codecontext/RelatedCodeProviderManager";
+import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
+import { StatusNotification } from "./editor/action/StatusNotification";
+import { ToolingDetector } from "./chatcontext/tooling/ToolingDetector";
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);
 
   channel.show();
@@ -36,17 +37,22 @@ export function activate(context: vscode.ExtensionContext) {
   const extension = new AutoDevExtension(
     sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
   );
+  // new ToolingDetector().execute().then((deps) => {
+  // });
+
   Parser.init().then(async () => {
       await structureProvider.init();
       extension.setStructureProvider(structureProvider);
     }
   );
 
+  // TODO: split different type commands
   registerCommands(extension);
 
   registerCodeLensProviders(extension);
   registerAutoDevProviders(extension);
   registerQuickFixProvider(extension);
+  registerWebViewProvider(extension);
 
   vscode.window.onDidChangeActiveTextEditor(
     async (editor: vscode.TextEditor | undefined) => {
@@ -58,14 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  // Sidebar commands
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      "autodev.autodevGUIView",
-      sidebar,
-      { webviewOptions: { retainContextWhenHidden: true }, }
-    )
-  );
+  // on closed editor
 
   // create a new status bar item that we can now manage
   StatusNotification.instance.create();

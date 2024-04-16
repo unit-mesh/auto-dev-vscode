@@ -1,13 +1,13 @@
 import * as vscode from "vscode";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { IdentifierBlockRange } from "./document/IdentifierBlockRange";
-import { insertCodeByRange, selectCodeInRange } from "./commands/editor";
-import { DefaultLanguageService } from "./language/service/DefaultLanguageService";
+import { IdentifierBlockRange } from "./editor/document/IdentifierBlockRange";
+import { insertCodeByRange, selectCodeInRange } from "./editor/editor";
+import { DefaultLanguageService } from "./editor/language/service/DefaultLanguageService";
 
 import { channel } from "./channel";
-import { PlantUMLPresenter } from "./codemodel/presenter/PlantUMLPresenter";
+import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
 import { window } from "vscode";
-import { showQuickPick, showInputBox } from "./action/QuickInput";
+import { showQuickPick, showInputBox } from "./editor/action/QuickInput";
 
 const commandsMap: (
   extension: AutoDevExtension

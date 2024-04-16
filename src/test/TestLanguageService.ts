@@ -4,7 +4,7 @@ import { Language } from "web-tree-sitter";
 // In the test, we need to import Parser from "web-tree-sitter" as a const.
 const Parser = require("web-tree-sitter");
 
-import { TSLanguageService } from "../language/service/TSLanguageService";
+import { TSLanguageService } from "../editor/language/service/TSLanguageService";
 import { ROOT_DIR } from "./TestUtil";
 
 export class TestLanguageService extends TSLanguageService {
