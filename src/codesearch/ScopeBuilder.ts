@@ -1,5 +1,5 @@
 import { LanguageConfig } from "../codecontext/_base/LanguageConfig";
-import { Language, Query, SyntaxNode } from "web-tree-sitter";
+import { Query, SyntaxNode } from "web-tree-sitter";
 import { ALL_LANGUAGES } from "../codecontext/TSLanguageUtil";
 import { TextRange } from "./model/TextRange";
 import { LocalImport } from "./scope/LocalImport";
@@ -10,9 +10,9 @@ import { symbolIdOf } from "./model/Namespace";
 import { ScopeGraph } from "./ScopeGraph";
 
 export enum Scoping {
-	Global,
-	Hoisted,
-	Local,
+	Global = "Global",
+	Hoisted = "Hoisted",
+	Local = "Local"
 }
 
 export interface LocalDefCapture {
@@ -26,7 +26,8 @@ export interface LocalRefCapture {
 	symbol: string | undefined | null;
 }
 
-export class ScopingError extends Error {}
+export class ScopingError extends Error {
+}
 
 function parseScoping(s: string): Scoping {
 	switch (s) {
@@ -59,43 +60,75 @@ export class ScopeBuilder {
 
 		const localDefCaptures: LocalDefCapture[] = [];
 		const localRefCaptures: LocalRefCapture[] = [];
+		let localScopeCaptureIndex: number | null = null;
+		let localImportCaptureIndex: number | null = null;
 
-		const parts = this.query.captureNames.map(name => name.split('.'));
+		for (let i = 0; i < this.query.captureNames.length; i++) {
+			const name = this.query.captureNames[i];
+			const parts = name.split('.');
+			const partLength = parts.length;
+			console.log(parts)
+			switch (parts[0]) {
+				case "local":
+					switch (partLength) {
+						case 2:
+							switch (parts[1]) {
+								case "reference":
+									localRefCaptures.push({ index: i, symbol: undefined });
+									break;
+								case "scope":
+									localScopeCaptureIndex = i;
+									break;
+								case "import":
+									localImportCaptureIndex = i;
+									break;
+							}
 
-		for (let i = 0; i < parts.length; i++) {
-			const [scoping, action, sym] = parts[i];
-			console.log(scoping, action, sym)
-			// todo update to latest code
-			// 这里的代码不是最新的，需要更新
-			switch (action) {
-				case "definition": {
-					const index = i;
-					const symbol = sym ? sym : undefined;
-					const scopingEnum = parseScoping(scoping);
-					if (scopingEnum) {
-						const l: LocalDefCapture = { index, symbol, scoping: scopingEnum };
-						localDefCaptures.push(l);
+							break;
+						case 3:
+							if (parts[1] === "reference") {
+								localRefCaptures.push({ index: i, symbol: parts[2] });
+							}
+							break;
 					}
 					break;
-				}
-				case "reference": {
-					const index = i;
-					const symbol = sym ? sym : undefined;
-					const l: LocalRefCapture = { index, symbol };
-					localRefCaptures.push(l);
-					break;
-				}
 				default:
+					switch (parts[1]) {
+						case "definition":
+							if (partLength === 2) {
+								localDefCaptures.push({
+									index: i,
+									symbol: undefined,
+									scoping: parseScoping(parts[0]),
+								});
+							} else if (partLength === 3) {
+								localDefCaptures.push({
+									index: i,
+									symbol: parts[2],
+									scoping: parseScoping(parts[0]),
+								});
+							}
+
+							break;
+						default:
+							if (!name.startsWith("_")) {
+								console.warn(`Unknown capture name: ${name}`);
+							}
+					}
 					break;
 			}
 		}
 
-		const captures = this.query.captures(this.rootNode);
+		console.log(localDefCaptures);
+		console.log(localRefCaptures);
+
 
 		const langId = ALL_LANGUAGES.findIndex(l =>
 			l.languageIds === this.languageConfig.languageIds
 		);
 		const scopeGraph = new ScopeGraph(this.rootNode, langId);
+
+		const captures = this.query.captures(this.rootNode);
 
 		const captureMap: { [index: number]: TextRange[] } = {};
 		for (let index = 0; index < captures.length; index++) {
@@ -108,16 +141,16 @@ export class ScopeBuilder {
 			captureMap[index].push(range);
 		}
 
-		const localScopeCaptureIndex = parts.findIndex(([action]) => action === "scope");
-		if (localScopeCaptureIndex !== -1 && captureMap[localScopeCaptureIndex]) {
+		console.log(JSON.stringify(captureMap));
+		if (localScopeCaptureIndex !== null && captureMap[localScopeCaptureIndex]) {
 			captureMap[localScopeCaptureIndex].forEach(range => {
 				const scope = new LocalScope(range);
 				scopeGraph.insertLocalScope(scope);
 			});
 		}
 
-		const localImportCaptureIndex = parts.findIndex(([action]) => action === "import");
-		if (localImportCaptureIndex !== -1 && captureMap[localImportCaptureIndex]) {
+		console.log(localImportCaptureIndex);
+		if (localImportCaptureIndex !== null && captureMap[localImportCaptureIndex]) {
 			captureMap[localImportCaptureIndex].forEach(range => {
 				const import_ = new LocalImport(range);
 				scopeGraph.insertLocalImport(import_);
@@ -130,6 +163,7 @@ export class ScopeBuilder {
 				ranges.forEach(range => {
 					const symbolId = symbol ? symbolIdOf(namespaces, symbol) : undefined;
 					const localDef = new LocalDef(range, symbolId!!);
+					console.log(`localDef: ${JSON.stringify(localDef)}`);
 
 					switch (scoping) {
 						case Scoping.Hoisted:

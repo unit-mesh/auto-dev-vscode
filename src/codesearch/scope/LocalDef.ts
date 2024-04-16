@@ -10,4 +10,8 @@ export class LocalDef implements NodeKind {
 		this.range = range;
 		this.symbolId = symbolId;
 	}
+
+	// name(sourceCode: String) {
+	// 	return sourceCode.substring(this.range.start, this.range.end);
+	// }
 }
