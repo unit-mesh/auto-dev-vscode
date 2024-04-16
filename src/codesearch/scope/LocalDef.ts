@@ -1,4 +1,4 @@
-import { SymbolId } from "../Namespace";
+import { SymbolId } from "../model/Namespace";
 import { BlockRange } from "../../editor/document/BlockRange";
 
 class LocalDef {

@@ -1,6 +1,7 @@
 import { Language, Query } from "web-tree-sitter";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
+import { NameSpaces } from "../../codesearch/model/Namespace";
 
 // Languages based on tree-sitter grammars
 export interface LanguageConfig {
@@ -50,10 +51,3 @@ export class MemoizedQuery {
     return language.query(this.scopeQuery);
   }
 }
-
-// A grouping of symbol kinds that allow references among them.
-// A variable can refer only to other variables, and not types, for example.
-export type NameSpace = string[];
-
-// A collection of namespaces
-export type NameSpaces = NameSpace[];
