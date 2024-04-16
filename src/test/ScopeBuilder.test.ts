@@ -3,7 +3,6 @@ const Parser = require("web-tree-sitter");
 import { ScopeBuilder } from "../codesearch/ScopeBuilder";
 import { JavaLangConfig } from "../codecontext/java/JavaLangConfig";
 import { TestLanguageService } from "./TestLanguageService";
-import { TypeScriptLangConfig } from "../codecontext/typescript/TypeScriptLangConfig";
 
 describe('ScopeBuilder', () => {
 	let parser: any;
@@ -35,6 +34,6 @@ public class HelloWorld {
 		const query = grammar.query(JavaLangConfig.scopeQuery.queryStr);
 		let scopeBuilder = new ScopeBuilder(query!!, rootNode, javaHelloWorld, JavaLangConfig);
 		let output = await scopeBuilder.build();
-		console.log(output);
+		// console.log(output);
 	});
 });

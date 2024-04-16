@@ -24,8 +24,7 @@ export enum EdgeKind {
 	RefToImport = 'RefToImport',
 }
 
-
-type NodeIndex = number;
+export type NodeIndex = { [name: string]: any };
 
 export class ScopeGraph {
 	private startPosition: Point;
@@ -35,8 +34,14 @@ export class ScopeGraph {
 
 	constructor(rootNode: SyntaxNode, langIndex: number) {
 		this.graph = new Graph();
-		// let root_idx = graph.add_node(NodeKind::scope(range));
-		// this.graph.addNode(LocalScope());
+		const range = TextRange.from(rootNode)
+		const rootIndex = this.graph.addNode(new LocalScope(range).name);
+		console.log(JSON.stringify(rootIndex));
+
+		this.graph.forEachNode(node => {
+			console.log(node);
+		});
+
 		this.startPosition = {
 			line: rootNode.startPosition.row,
 			column: rootNode.startPosition.column,

@@ -64,6 +64,9 @@ export class ScopeBuilder {
 
 		for (let i = 0; i < parts.length; i++) {
 			const [scoping, action, sym] = parts[i];
+			console.log(scoping, action, sym)
+			// todo update to latest code
+			// 这里的代码不是最新的，需要更新
 			switch (action) {
 				case "definition": {
 					const index = i;
