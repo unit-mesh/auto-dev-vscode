@@ -13,13 +13,13 @@ import { removeExtensionContext, setExtensionContext } from './context';
 import {
   registerAutoDevProviders,
   registerCodeLensProviders,
-  registerQuickFixProvider, registerWebViewProvider
+  registerQuickFixProvider,
+  registerWebViewProvider
 } from "./editor/providers/ProviderRegister";
 import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./codecontext/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { StatusNotification } from "./editor/action/StatusNotification";
-import { ToolingDetector } from "./chatcontext/tooling/ToolingDetector";
 
 export async function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);

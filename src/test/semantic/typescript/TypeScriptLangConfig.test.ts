@@ -13,7 +13,6 @@ describe('TypeScriptLangConfig', () => {
 		await Parser.init();
 		parser = new Parser();
 		const languageService = new TestLanguageService(parser);
-
 		grammar = await TypeScriptLangConfig.grammar(languageService, "typescript")!!;
 		parser.setLanguage(grammar);
 	});

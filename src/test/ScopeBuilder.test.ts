@@ -14,8 +14,9 @@ describe('ScopeBuilder', () => {
 		parser = new Parser();
 		const languageService = new TestLanguageService(parser);
 
-		grammar = await TypeScriptLangConfig.grammar(languageService, "java")!!;
+		grammar = await JavaLangConfig.grammar(languageService, "java")!!;
 		parser.setLanguage(grammar);
+		parser.setLogger(null);
 	});
 
 	it('build for scope', async () => {
@@ -29,11 +30,11 @@ public class HelloWorld {
 }
 `;
 
+		parser.setTimeoutMicros(10 ** 6);
 		const rootNode = parser.parse(javaHelloWorld).rootNode;
-
-		// const query = grammar.query(JavaLangConfig.scopeQuery.queryStr);
-		// let scopeBuilder = new ScopeBuilder(query!!, rootNode, javaHelloWorld, JavaLangConfig);
-		// let output = await scopeBuilder.build();
-		// console.log(output);
+		const query = grammar.query(JavaLangConfig.scopeQuery.queryStr);
+		let scopeBuilder = new ScopeBuilder(query!!, rootNode, javaHelloWorld, JavaLangConfig);
+		let output = await scopeBuilder.build();
+		console.log(output);
 	});
 });
