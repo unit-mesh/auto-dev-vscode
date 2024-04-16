@@ -12,6 +12,9 @@ export default defineConfig((api) => {
     plugins: [
       externalizeDeps({
         include: ["vscode"],
+        except: [
+          "web-tree-sitter",
+        ]
       }),
       isDev && dts(),
       viteStaticCopy({

@@ -2,7 +2,6 @@
 .vscode-test/**
 out/**
 node_modules/**
-!node_modules/web-tree-sitter/**
 src/**
 .gitignore
 .yarnrc
