@@ -1,5 +1,6 @@
-import { LanguageConfig } from "../codecontext/_base/LanguageConfig";
 import { Query, SyntaxNode } from "web-tree-sitter";
+
+import { LanguageConfig } from "../codecontext/_base/LanguageConfig";
 import { ALL_LANGUAGES } from "../codecontext/TSLanguageUtil";
 import { TextRange } from "./model/TextRange";
 import { LocalImport } from "./scope/LocalImport";
@@ -10,9 +11,9 @@ import { symbolIdOf } from "./model/Namespace";
 import { ScopeGraph } from "./ScopeGraph";
 
 export enum Scoping {
-	Global = "Global",
-	Hoisted = "Hoisted",
-	Local = "Local"
+	global = "global",
+	hoisted = "hoisted",
+	local = "local"
 }
 
 export interface LocalDefCapture {
@@ -32,11 +33,11 @@ export class ScopingError extends Error {
 function parseScoping(s: string): Scoping {
 	switch (s) {
 		case "hoist":
-			return Scoping.Hoisted;
+			return Scoping.hoisted;
 		case "global":
-			return Scoping.Global;
+			return Scoping.global;
 		case "local":
-			return Scoping.Local;
+			return Scoping.local;
 		default:
 			throw new ScopingError(s);
 	}
@@ -94,7 +95,7 @@ export class ScopeBuilder {
 									localDefCaptures.push({
 										index: i,
 										symbol: parts[2],
-										scoping: Scoping.Local,
+										scoping: Scoping.local,
 									});
 									break;
 								default:
@@ -169,13 +170,13 @@ export class ScopeBuilder {
 					const localDef = new LocalDef(range, symbolId!!);
 
 					switch (scoping) {
-						case Scoping.Hoisted:
+						case Scoping.hoisted:
 							scopeGraph.insertHoistedDef(localDef);
 							break;
-						case Scoping.Global:
+						case Scoping.global:
 							scopeGraph.insertGlobalDef(localDef);
 							break;
-						case Scoping.Local:
+						case Scoping.local:
 							scopeGraph.insertLocalDef(localDef);
 							break;
 					}

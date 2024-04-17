@@ -1,33 +1,13 @@
 import Graph from "graphology";
 import { SyntaxNode } from "web-tree-sitter";
 
-import { Point, TextRange } from "./model/TextRange";
+import { TextRange } from "./model/TextRange";
 import { LocalScope, ScopeStack } from "./scope/LocalScope";
 import { LocalImport } from "./scope/LocalImport";
 import { LocalDef } from "./scope/LocalDef";
 import { Reference } from "./scope/Reference";
 import { NodeKind } from "./scope/NodeKind";
-import { ScopeBuilder } from "./ScopeBuilder";
-import { selectBottomMessage } from "../../gui-sidebar/src/redux/selectors/uiStateSelectors";
 
-// type Attributes = {[name: string]: any};
-// // Describes the relation between two nodes in the ScopeGraph
-// export enum EdgeKind {
-// 	// The edge weight from a nested scope to its parent scope
-// 	ScopeToScope = ScopeToScope,
-//
-// 	// The edge weight from a definition to its definition scope
-// 	DefToScope = 'DefToScope',
-//
-// 	// The edge weight from an import to its definition scope
-// 	ImportToScope = 'ImportToScope',
-//
-// 	// The edge weight from a reference to its definition
-// 	RefToDef = 'RefToDef',
-//
-// 	// The edge weight from a reference to its import
-// 	RefToImport = 'RefToImport',
-// }
 export interface EdgeKind {
 }
 
