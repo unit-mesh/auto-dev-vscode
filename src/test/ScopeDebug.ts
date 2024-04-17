@@ -157,9 +157,9 @@ export class ScopeDebug {
 
 	toString(): string {
 		if (this.imports.length === 0) {
-			return `ScopeDebug { definitions: ${this.defs.map(s => s.toString())}, child scopes: ${this.scopes.map(s => s.toString())} }`;
+			return `scope { definitions: ${this.defs.map(s => s.toString())}, child scopes: ${this.scopes.map(s => s.toString())} }`;
 		} else {
-			return `ScopeDebug { definitions: ${this.defs.map(s => s.toString())}, imports: ${this.imports.map(s => s.toString())}, child scopes: ${this.scopes.map(s => s.toString())} }`;
+			return `scope { definitions: ${this.defs.map(s => s.toString())}, imports: ${this.imports.map(s => s.toString())}, child scopes: ${this.scopes} }`;
 		}
 	}
 }

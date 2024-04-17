@@ -36,7 +36,7 @@ class HelloWorld {
 		const hoverRanges = output.hoverableRanges();
 		expect(hoverRanges.length).toBe(3);
 
-		const allText = hoverRanges.map((range) => range.text).join(", ");
+		const allText = hoverRanges.map((range) => range.getText()).join(", ");
 		expect(allText).toBe("args, HelloWorld, main");
 	});
 });
