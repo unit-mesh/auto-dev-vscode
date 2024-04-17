@@ -1,12 +1,14 @@
 import { SyntaxNode } from "web-tree-sitter";
 
 export class Point {
+	byte: number;
 	line: number;
 	column: number;
 
-	constructor(line: number, column: number) {
+	constructor(line: number, column: number, byte: number) {
 		this.line = line;
 		this.column = column;
+		this.byte = byte;
 	}
 }
 
@@ -24,15 +26,17 @@ export class TextRange {
 	static from(node: SyntaxNode): TextRange {
 		return new TextRange(
 			{
+				byte: node.startIndex,
 				line: node.startPosition.row,
-				column: node.startPosition.column,
+				column: node.startPosition.column
 			},
 			{
+				byte: node.endIndex,
 				line: node.endPosition.row,
-				column: node.endPosition.column,
+				column: node.endPosition.column
 			},
 			node.text,
-		)
+		);
 	}
 
 

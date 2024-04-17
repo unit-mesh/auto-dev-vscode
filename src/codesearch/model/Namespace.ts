@@ -2,12 +2,12 @@ export type NameSpace = Array<string>;
 export type NameSpaces = Array<NameSpace>;
 
 export interface SymbolId {
-	nameSpaceIndex: number;
+	namespaceIndex: number;
 	symbolIndex: number;
 }
 
 export function name(symbolId: SymbolId, namespaces: NameSpaces): string {
-	return namespaces[symbolId.nameSpaceIndex][symbolId.symbolIndex];
+	return namespaces[symbolId.namespaceIndex][symbolId.symbolIndex];
 }
 
 export function allSymbols(namespaces: NameSpaces): string[] {
@@ -21,7 +21,7 @@ export function symbolIdOf(namespaces: NameSpaces, symbol: string): SymbolId | u
 		const symbolIdx = namespaces[namespaceIdx].indexOf(symbol);
 		if (symbolIdx !== -1) {
 			return {
-				nameSpaceIndex: namespaceIdx,
+				namespaceIndex: namespaceIdx,
 				symbolIndex: symbolIdx
 			};
 		}

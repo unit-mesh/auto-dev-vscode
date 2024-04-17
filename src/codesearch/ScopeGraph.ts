@@ -2,7 +2,7 @@ import Graph from "graphology";
 import { SyntaxNode } from "web-tree-sitter";
 
 import { Point, TextRange } from "./model/TextRange";
-import { LocalScope } from "./scope/LocalScope";
+import { LocalScope, ScopeStack } from "./scope/LocalScope";
 import { LocalImport } from "./scope/LocalImport";
 import { LocalDef } from "./scope/LocalDef";
 import { Reference } from "./scope/Reference";
@@ -27,18 +27,25 @@ import { ScopeBuilder } from "./ScopeBuilder";
 // 	// The edge weight from a reference to its import
 // 	RefToImport = 'RefToImport',
 // }
-export interface EdgeKind {}
-export class ScopeToScope implements EdgeKind {}
-export class DefToScope implements EdgeKind {}
-export class ImportToScope implements EdgeKind {}
-export class RefToDef implements EdgeKind {}
+export interface EdgeKind {
+}
+
+export class ScopeToScope implements EdgeKind {
+}
+
+export class DefToScope implements EdgeKind {
+}
+
+export class ImportToScope implements EdgeKind {
+}
+
+export class RefToDef implements EdgeKind {
+}
 
 export class ScopeGraph {
-	private startPosition: Point;
-	private endPosition: Point;
 	private langIndex: number;
-	private graph: Graph<NodeKind>;
-	private currentIndex : string;
+	graph: Graph<NodeKind>;
+	private currentIndex: string;
 
 	constructor(rootNode: SyntaxNode, langIndex: number) {
 		this.graph = new Graph();
@@ -48,14 +55,6 @@ export class ScopeGraph {
 		this.graph.addNode(index, localScope);
 		this.currentIndex = index.toString();
 
-		this.startPosition = {
-			line: rootNode.startPosition.row,
-			column: rootNode.startPosition.column,
-		};
-		this.endPosition = {
-			line: rootNode.endPosition.row,
-			column: rootNode.endPosition.column,
-		};
 		this.langIndex = langIndex;
 	}
 
@@ -103,7 +102,49 @@ export class ScopeGraph {
 	}
 
 	insertRef(ref_: Reference, sourceCode: string) {
+		let possibleDefs = [];
+		let possibleImports = [];
+		const localScopeIndex = this.scopeByRange(ref_.range, this.currentIndex);
+		if (localScopeIndex) {
+			for (const scope of this.scopeStack(localScopeIndex)) {
+				for (const localDef of this.graph.inNeighbors(scope)) {
+					if (this.graph.getEdgeAttributes(localDef, scope) === DefToScope) {
+						const def = this.graph.getNodeAttributes(localDef) as LocalDef;
+						if (ref_.name(sourceCode) === def.name(sourceCode)) {
+							if (def.symbolId && ref_.symbolId && def.symbolId.namespaceIndex !== ref_.symbolId.namespaceIndex) {
+								// both contain symbols, but they don't belong to the same namepspace
+							} else {
+								possibleDefs.push(localDef);
+							}
+						}
+					}
+				}
 
+				for (const localImport of this.graph.inNeighbors(scope)) {
+					if (this.graph.getEdgeAttributes(localImport, scope) === ImportToScope) {
+						const import_ = this.graph.getNodeAttributes(localImport);
+						if (ref_.name(sourceCode) === import_.name(sourceCode)) {
+							possibleImports.push(localImport);
+						}
+					}
+				}
+			}
+		}
+
+		if (possibleDefs.length > 0 || possibleImports.length > 0) {
+			const refIndex = this.graph.nodes().length + 1;
+			this.graph.addNode(refIndex, ref_);
+			for (const defIndex of possibleDefs) {
+				this.graph.addEdge(refIndex, defIndex, new RefToDef);
+			}
+			for (const impIndex of possibleImports) {
+				this.graph.addEdge(refIndex, impIndex, new RefToDef);
+			}
+		}
+	}
+
+	scopeStack(start: string): ScopeStack {
+		return new ScopeStack(this.graph, start);
 	}
 
 	private scopeByRange(range: TextRange, start: string): string | null {
