@@ -20,9 +20,9 @@ export class RefDebug {
 }
 
 export class DefDebug {
+	private context: string;
 	name: string;
 	range: TextRange;
-	private context: string;
 	refs: RefDebug[];
 	symbol: string;
 
@@ -62,13 +62,10 @@ export class ImportDebug {
 
 	toString(): string {
 		let result = `${this.name} { context: ${this.context}`;
-
 		if (this.refs.length > 0) {
 			result += `, referenced in (${this.refs.length}) { ${this.refs.join(', ')} }`;
 		}
-
 		result += " }";
-
 		return result;
 	}
 }
@@ -107,11 +104,12 @@ export class ScopeDebug {
 				const defNode = graph.source(edge);
 				const range = graph.getNodeAttributes(defNode).range;
 				const text = src.slice(range.start.byte, range.end.byte);
+
 				const refs = graph
 					.inEdges(defNode)
-					.filter(edge => graph.getEdgeAttributes(edge) === RefToDef)
+					.filter(edge => graph.getEdgeAttributes(edge) instanceof RefToDef)
 					.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
-					.sort((a, b) => a.start.byte - b.start.byte);
+					.sort();
 
 				let localDef = graph.getNodeAttributes(defNode) as LocalDef;
 				let symbol;
@@ -156,29 +154,61 @@ export class ScopeDebug {
 	}
 
 	toString(): string {
-		if (this.imports.length === 0) {
-			return `scope {\n definitions: ${this.defs.map(s => s.toString())},\n child scopes: ${this.scopes.map(s => s.toString())}\n }`;
+		const scopes = this.scopes.map(s => s.toString());
+		let scopeString = "";
+		if (scopes.length === 0) {
+			scopeString = "[]";
 		} else {
-			return `scope {\n definitions: ${this.defs.map(s => s.toString())},\n imports: ${this.imports.map(s => s.toString())},\n child scopes: ${this.scopes}\n }`;
+			scopeString = scopes.join(", ");
+		}
+
+		const defs = this.defs.map(s => s.toString());
+		let defString = "";
+		if (defs.length === 0) {
+			defString = "[]";
+		} else {
+			defString = defs.join(", ");
+		}
+
+		if (this.imports.length === 0) {
+			return `scope {
+	 definitions: ${defString} 
+	 child scopes: ${scopeString}
+}`;
+		} else {
+			return `scope {
+	 definitions: ${defString} 
+	 imports: ${this.imports.map(s => s.toString())},
+	 child scopes: ${scopeString}
+ }`;
 		}
 	}
 }
 
 export function context(range: TextRange, src: string): string {
-	const contextStart = src
-		.split("")
-		.slice(0, range.start.byte)
-		.reverse()
-		.findIndex(c => c === "\n");
+	const contextStart = (() => {
+		for (let i = range.start.byte - 1; i >= 0; i--) {
+			if (src[i] === "\n") {
+				return i + 1;
+			}
+		}
+		return 0;
+	})();
 
-	const contentEnd = src
-		.split("")
-		.slice(range.end.byte)
-		.findIndex(c => c === "\n");
+	// first new line after end
+	const contextEnd = (() => {
+		for (let i = range.end.byte; i < src.length; i++) {
+			if (src[i] === "\n") {
+				return i;
+			}
+		}
+		return src.length;
+	})();
+
 
 	return [
-		src.slice(contextStart + 1, range.start.byte).trimStart(),
+		src.slice(contextStart, range.start.byte).trimStart(),
 		src.slice(range.start.byte, range.end.byte),
-		src.slice(range.end.byte, contentEnd).trimEnd(),
+		src.slice(range.end.byte, contextEnd).trimEnd(),
 	].join("§");
 }
