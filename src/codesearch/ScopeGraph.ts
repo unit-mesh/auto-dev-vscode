@@ -8,6 +8,7 @@ import { LocalDef } from "./scope/LocalDef";
 import { Reference } from "./scope/Reference";
 import { NodeKind } from "./scope/NodeKind";
 import { LanguageConfig } from "../codecontext/_base/LanguageConfig";
+import { ScopeDebug } from "../test/ScopeDebug";
 
 export interface EdgeKind {
 }
@@ -205,10 +206,10 @@ export class ScopeGraph {
 				return nodeKind.range.start.byte >= startByte && nodeKind.range.end.byte <= endByte;
 			});
 	}
-	//
-	// debug(src: string, language: LanguageConfig) {
-	// 	var graph = this.graph;
-	// 	var start = this.rootIndex;
-	// 	new ScopeDebug(graph, start, src, language);
-	// }
+
+	debug(src: string, language: LanguageConfig) {
+		const graph = this.graph;
+		const start = this.rootIndex;
+		return ScopeDebug.new(graph, start, src, language);
+	}
 }

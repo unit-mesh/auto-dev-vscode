@@ -7,7 +7,7 @@ import { DefToScope, EdgeKind, ImportToScope, RefToDef, RefToImport, ScopeToScop
 import { LocalDef } from "../codesearch/scope/LocalDef";
 import { nameOfSymbol } from "../codesearch/model/Namespace";
 
-class RefDebug {
+export class RefDebug {
 	context: string;
 
 	constructor(context: string) {
@@ -19,7 +19,7 @@ class RefDebug {
 	}
 }
 
-class DefDebug {
+export class DefDebug {
 	name: string;
 	range: TextRange;
 	context: string;
@@ -47,7 +47,7 @@ class DefDebug {
 	}
 }
 
-class ImportDebug {
+export class ImportDebug {
 	name: string;
 	range: TextRange;
 	context: string;
@@ -73,7 +73,7 @@ class ImportDebug {
 	}
 }
 
-class ScopeDebug {
+export class ScopeDebug {
 	range: TextRange;
 	defs: DefDebug[];
 	imports: ImportDebug[];
