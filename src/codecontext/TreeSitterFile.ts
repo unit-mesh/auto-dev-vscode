@@ -6,6 +6,8 @@ import { BlockRange } from "../editor/document/BlockRange";
 import { IdentifierBlockRange } from "../editor/document/IdentifierBlockRange";
 import { TreeSitterFileCacheManager } from "../editor/cache/TreeSitterFileCacheManager";
 import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
+import { ScopeBuilder } from "../codesearch/ScopeBuilder";
+import { ScopeGraph } from "../codesearch/ScopeGraph";
 
 export class TreeSitterFile {
 	private sourcecode: string;
@@ -124,6 +126,14 @@ export class TreeSitterFile {
 	}
 
 	static cache: TreeSitterFileCacheManager = new TreeSitterFileCacheManager();
+
+	scopeGraph() : Promise<ScopeGraph> {
+		let query = this.language.query(this.langConfig.scopeQuery.queryStr);
+		let rootNode = this.tree.rootNode;
+
+		let scopeBuilder = new ScopeBuilder(query, rootNode, this.sourcecode, this.langConfig);
+		return scopeBuilder.build();
+	}
 }
 
 export enum TreeSitterFileError {

@@ -56,7 +56,7 @@ export class ScopeBuilder {
 		this.languageConfig = languageConfig;
 	}
 
-	async build() {
+	async build() : Promise<ScopeGraph> {
 		let namespaces = this.languageConfig.namespaces;
 
 		const localDefCaptures: LocalDefCapture[] = [];
