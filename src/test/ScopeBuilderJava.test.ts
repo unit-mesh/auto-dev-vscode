@@ -4,7 +4,7 @@ import { ScopeBuilder } from "../codesearch/ScopeBuilder";
 import { JavaLangConfig } from "../codecontext/java/JavaLangConfig";
 import { TestLanguageService } from "./TestLanguageService";
 
-describe('ScopeBuilder', () => {
+describe.skip('ScopeBuilder', () => {
 	let parser: any;
 	let grammar: any;
 

@@ -67,7 +67,7 @@ export class ScopeBuilder {
 			const name = this.query.captureNames[i];
 			const parts = name.split('.');
 			const partLength = parts.length;
-			console.log(parts)
+			console.log(parts);
 			switch (parts[0]) {
 				case "local":
 					switch (partLength) {
@@ -122,12 +122,11 @@ export class ScopeBuilder {
 		console.log(localDefCaptures);
 		console.log(localRefCaptures);
 
-
 		const langId = ALL_LANGUAGES.findIndex(l =>
 			l.languageIds === this.languageConfig.languageIds
 		);
-		const scopeGraph = new ScopeGraph(this.rootNode, langId);
 
+		const scopeGraph = new ScopeGraph(this.rootNode, langId);
 		const captures = this.query.captures(this.rootNode);
 
 		const captureMap: { [index: number]: TextRange[] } = {};
