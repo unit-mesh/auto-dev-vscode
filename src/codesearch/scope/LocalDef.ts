@@ -4,9 +4,9 @@ import { NodeKind } from "./NodeKind";
 
 export class LocalDef implements NodeKind {
 	range: TextRange;
-	symbolId: SymbolId | null;
+	symbolId?: SymbolId | null;
 
-	constructor(range: TextRange, symbolId: SymbolId | null) {
+	constructor(range: TextRange, symbolId?: SymbolId | null) {
 		this.range = range;
 		this.symbolId = symbolId;
 	}

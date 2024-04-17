@@ -62,49 +62,50 @@ export class ScopeGraph {
 	insertLocalScope(scope: LocalScope) {
 		let parentScope = this.scopeByRange(scope.range, this.currentIndex);
 		if (parentScope) {
-			const index = this.graph.nodes().length + 1;
-			this.graph.addNode(index, scope);
-			this.graph.addEdge(index, parentScope, new ScopeToScope);
+			const indexId = this.graph.nodes().length + 1;
+			this.graph.addNode(indexId, scope);
+			this.graph.addEdge(indexId, parentScope, new ScopeToScope);
 		}
 	}
 
 	insertLocalDef(localDef: LocalDef) {
-
+		const definingScope = this.scopeByRange(localDef.range, this.currentIndex);
+		if (definingScope) {
+			const indexId = this.graph.nodes().length + 1;
+			this.graph.addNode(indexId, localDef);
+			this.graph.addEdge(indexId, definingScope, new DefToScope);
+		}
 	}
 
 	insertLocalImport(import_: LocalImport) {
-
+		const definingScope = this.scopeByRange(import_.range, this.currentIndex);
+		if (definingScope) {
+			const indexId = this.graph.nodes().length + 1;
+			this.graph.addNode(indexId, import_);
+			this.graph.addEdge(indexId, definingScope, new ImportToScope);
+		}
 	}
 
 	insertHoistedDef(localDef: LocalDef) {
-
+		const definingScope = this.scopeByRange(localDef.range, this.currentIndex);
+		if (definingScope) {
+			const indexId = this.graph.nodes().length + 1;
+			this.graph.addNode(indexId, localDef);
+			const parentScope = this.scopeByRange(localDef.range, definingScope) || definingScope;
+			this.graph.addEdge(indexId, parentScope, new DefToScope);
+		}
 	}
 
 	insertGlobalDef(localDef: LocalDef) {
-
+		const indexId = this.graph.nodes().length + 1;
+		this.graph.addNode(indexId, localDef);
+		this.graph.addEdge(indexId, this.currentIndex, new DefToScope);
 	}
+
 	insertRef(ref_: Reference, sourceCode: string) {
 
 	}
 
-	// fn scope_by_range(&self, range: TextRange, start: NodeIndex) -> Option<NodeIndex> {
-	//         let target_range = self.graph[start].range();
-	//         if target_range.contains(&range) {
-	//             let child_scopes = self
-	//                 .graph
-	//                 .edges_directed(start, Direction::Incoming)
-	//                 .filter(|edge| *edge.weight() == EdgeKind::ScopeToScope)
-	//                 .map(|edge| edge.source())
-	//                 .collect::<Vec<_>>();
-	//             for child_scope in child_scopes {
-	//                 if let Some(t) = self.scope_by_range(range, child_scope) {
-	//                     return Some(t);
-	//                 }
-	//             }
-	//             return Some(start);
-	//         }
-	//         None
-	//     }
 	private scopeByRange(range: TextRange, start: string): string | null {
 		const targetRange = this.graph.getNodeAttributes(start).range;
 		if (targetRange.contains(range)) {
