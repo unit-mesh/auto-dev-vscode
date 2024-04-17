@@ -5,24 +5,28 @@ const Parser = require("web-tree-sitter");
 import { GoLangConfig } from "../codecontext/go/GoLangConfig";
 import { ScopeBuilder } from "../codesearch/ScopeBuilder";
 import { TestLanguageService } from "./TestLanguageService";
+import { testScopes } from "./ScopeTestUtil";
+import { TSLanguageService } from "../editor/language/service/TSLanguageService";
+import { TreeSitterFile } from "../codecontext/TreeSitterFile";
 
 describe('ScopeBuilderGo', () => {
 	let parser: any;
-	let grammar: any;
+	let language: any;
 	let langConfig = GoLangConfig;
+	let languageService: TSLanguageService;
 
 	beforeEach(async () => {
 		await Parser.init();
 		parser = new Parser();
-		const languageService = new TestLanguageService(parser);
+		languageService = new TestLanguageService(parser);
 
-		grammar = await langConfig.grammar(languageService, "go")!!;
-		parser.setLanguage(grammar);
+		language = await langConfig.grammar(languageService, "go")!!;
+		parser.setLanguage(language);
 		parser.setLogger(null);
 	});
 
 	it('build for scope', async () => {
-		const symbolConsts = `
+		const sourceCode = `
 package main
 
 const one uint64 = 1
@@ -48,9 +52,10 @@ type eleven interface {}
 `;
 
 		parser.setTimeoutMicros(10 ** 6);
-		const rootNode = parser.parse(symbolConsts).rootNode;
-		const query = grammar.query(langConfig.scopeQuery.queryStr);
-		let scopeBuilder = new ScopeBuilder(query!!, rootNode, symbolConsts, langConfig);
+		let tree = parser.parse(sourceCode);
+		const rootNode = tree.rootNode;
+		const query = language.query(langConfig.scopeQuery.queryStr);
+		let scopeBuilder = new ScopeBuilder(query!!, rootNode, sourceCode, langConfig);
 		let output = await scopeBuilder.build();
 
 		const hoverRanges = output.hoverableRanges();
@@ -58,5 +63,8 @@ type eleven interface {}
 
 		const allText = hoverRanges.map((range) => range.text).join(", ");
 		expect(allText).toBe("one, two, three, five, four, six, eight, eleven, nine, ten, seven");
+
+		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language);
+		await testScopes("go", sourceCode, "", tsf);
 	});
 });

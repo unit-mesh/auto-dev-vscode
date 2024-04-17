@@ -6,6 +6,7 @@ import { TreeSitterFile, TreeSitterFileError, } from "../../codecontext/TreeSitt
 import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
 import { JavaSemanticLsp } from "../language/semantic-lsp/java/JavaSemanticLsp";
 import { documentToTreeSitterFile } from "../../codecontext/TreeSitterFileUtil";
+import { BlockBuilder } from "../document/BlockBuilder";
 
 export class AutoDevActionProvider implements vscode.CodeActionProvider {
 	private context: AutoDevExtension;
@@ -30,14 +31,14 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		}
 
 		const file = await documentToTreeSitterFile(document);
-
-		const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = file.methodRanges();
+		let blockBuilder = new BlockBuilder(file);
+		const methodRanges: IdentifierBlockRange[] | TreeSitterFileError = blockBuilder.methodRanges()
 		let actions: vscode.CodeAction[] = [];
 		if (methodRanges instanceof Array) {
 			actions = this.buildMethodActions(methodRanges, range, document, lang);
 		}
 
-		const classRanges: IdentifierBlockRange[] | TreeSitterFileError = file.classRanges();
+		const classRanges: IdentifierBlockRange[] | TreeSitterFileError = blockBuilder.classRanges();
 		if (classRanges instanceof Array) {
 			let classAction = this.buildClassAction(classRanges, range, document);
 			actions = actions.concat(classAction);
