@@ -1,10 +1,12 @@
-import { Point, TextRange } from "./model/TextRange";
+import Graph from "graphology";
 import { SyntaxNode } from "web-tree-sitter";
+
+import { Point, TextRange } from "./model/TextRange";
 import { LocalScope } from "./scope/LocalScope";
 import { LocalImport } from "./scope/LocalImport";
 import { LocalDef } from "./scope/LocalDef";
 import { Reference } from "./scope/Reference";
-import Graph from "graphology";
+import { NodeKind } from "./scope/NodeKind";
 
 // Describes the relation between two nodes in the ScopeGraph
 export enum EdgeKind {
@@ -30,17 +32,16 @@ export class ScopeGraph {
 	private startPosition: Point;
 	private endPosition: Point;
 	private langIndex: number;
-	private graph: Graph;
+	private graph: Graph<NodeKind>;
+	private currentIndex : number | undefined;
 
 	constructor(rootNode: SyntaxNode, langIndex: number) {
 		this.graph = new Graph();
-		const range = TextRange.from(rootNode)
-		const rootIndex = this.graph.addNode(new LocalScope(range).name);
-		console.log(JSON.stringify(rootIndex));
-
-		this.graph.forEachNode(node => {
-			console.log(node);
-		});
+		const range = TextRange.from(rootNode);
+		let localScope = new LocalScope(range);
+		const index = this.graph.nodes().length + 1;
+		this.graph.addNode(index, localScope);
+		this.currentIndex = index;
 
 		this.startPosition = {
 			line: rootNode.startPosition.row,
