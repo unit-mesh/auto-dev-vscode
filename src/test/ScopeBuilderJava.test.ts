@@ -32,6 +32,7 @@ class HelloWorld {
 		const query = grammar.query(JavaLangConfig.scopeQuery.queryStr);
 		let scopeBuilder = new ScopeBuilder(query!!, rootNode, javaHelloWorld, JavaLangConfig);
 		let output = await scopeBuilder.build();
+
 		console.log(output);
 	});
 });

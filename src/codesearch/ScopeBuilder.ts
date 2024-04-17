@@ -124,8 +124,8 @@ export class ScopeBuilder {
 			}
 		}
 
-		console.log(localDefCaptures);
-		console.log(localRefCaptures);
+		console.debug(localDefCaptures);
+		console.debug(localRefCaptures);
 
 		const langId = ALL_LANGUAGES.findIndex(l =>
 			l.languageIds === this.languageConfig.languageIds
@@ -136,7 +136,6 @@ export class ScopeBuilder {
 
 		const captureMap: { [index: number]: TextRange[] } = captures.reduce((map: any, capture) => {
 			const range = TextRange.from(capture.node);
-			// todo: check use name as idnex
 			const index = this.query.captureNames.indexOf(capture.name);
 
 			if (!map[index]) {

@@ -1,8 +1,7 @@
 import { TextRange } from "../model/TextRange";
 import { NodeKind } from "./NodeKind";
-import { ScopeGraph, ScopeToScope } from "../ScopeGraph";
+import { ScopeToScope } from "../ScopeGraph";
 import Graph from "graphology";
-import { start } from "node:repl";
 
 export class LocalScope extends NodeKind {
 	range: TextRange;
@@ -15,34 +14,34 @@ export class LocalScope extends NodeKind {
 
 export class ScopeStack implements Iterable<string> {
 	private scopeGraph: Graph<NodeKind>;
-	private start: string | null;
+	private start: string | undefined;
 
-	constructor(scopeGraph: Graph<NodeKind>, start: string | null = null) {
+	constructor(scopeGraph: Graph<NodeKind>, start: string | undefined = undefined) {
 		this.scopeGraph = scopeGraph;
 		this.start = start;
 	}
 
 	[Symbol.iterator](): Iterator<string> {
-		// @ts-ignore
-		return undefined;
-	}
+		return {
+			next: () => {
+				if (this.start) {
+					let parentId;
+					this.scopeGraph.forEachOutboundEdge(this.start, (edge, target: any) => {
+						if (target instanceof ScopeToScope) {
+							parentId = edge;
+						}
+					});
 
-	// public next(): string | undefined {
-	// 	console.log(this.start);
-	// 	if (this.start) {
-	// 		const parent = this.scopeGraph.directedEdges(
-	// 			this.start, ScopeToScope
-	// 		);
-	//
-	// 		if (parent) {
-	// 			const original = this.start;
-	// 			this.start = parent[0];
-	// 			return original;
-	// 		}
-	//
-	// 		return undefined;
-	// 	} else {
-	// 		return undefined;
-	// 	}
-	// }
+					if (parentId) {
+						this.start = parentId;
+						return { value: parentId, done: true };
+					}
+
+					return { value: undefined, done: true };
+				} else {
+					return { value: undefined, done: true };
+				}
+			}
+		};
+	}
 }
