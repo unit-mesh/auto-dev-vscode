@@ -39,12 +39,12 @@ export class TreeSitterFile {
 	): Promise<TreeSitterFile> {
 		// no scope-res for files larger than 500kb
 		if (src.length > 500 * Math.pow(10, 3)) {
-			return Promise.reject(TreeSitterFileError.FileTooLarge);
+			return Promise.reject(TreeSitterFileError.fileTooLarge);
 		}
 
 		const tsConfig = TSLanguageUtil.fromId(langId);
 		if (tsConfig === undefined) {
-			return Promise.reject(TreeSitterFileError.UnsupportedLanguage);
+			return Promise.reject(TreeSitterFileError.unsupportedLanguage);
 		}
 
 		const parser = new Parser();
@@ -53,11 +53,11 @@ export class TreeSitterFile {
 			language = await tsConfig.grammar(new DefaultLanguageService(), langId);
 			parser.setLanguage(language);
 		} catch (error) {
-			return Promise.reject(TreeSitterFileError.LanguageMismatch);
+			return Promise.reject(TreeSitterFileError.languageMismatch);
 		}
 
 		if (!language) {
-			return Promise.reject(TreeSitterFileError.LanguageMismatch);
+			return Promise.reject(TreeSitterFileError.languageMismatch);
 		}
 
 		// do not permit files that take >1s to parse
@@ -65,18 +65,18 @@ export class TreeSitterFile {
 
 		const tree = parser.parse(src);
 		if (!tree) {
-			return Promise.reject(TreeSitterFileError.ParseTimeout);
+			return Promise.reject(TreeSitterFileError.parseTimeout);
 		}
 
 		return new TreeSitterFile(src, tree, tsConfig, parser, language);
 	}
 
 	methodRanges(): IdentifierBlockRange[] | TreeSitterFileError {
-		return !this.parser ? TreeSitterFileError.QueryError : this.buildBlock(this.langConfig.methodQuery.queryStr);
+		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.methodQuery.queryStr);
 	}
 
 	classRanges(): IdentifierBlockRange[] | TreeSitterFileError {
-		return !this.parser ? TreeSitterFileError.QueryError : this.buildBlock(this.langConfig.classQuery.queryStr);
+		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.classQuery.queryStr);
 	}
 
 	/**
@@ -121,7 +121,7 @@ export class TreeSitterFile {
 				}) ?? []
 			);
 		} catch (error) {
-			return TreeSitterFileError.QueryError;
+			return TreeSitterFileError.queryError;
 		}
 	}
 
@@ -137,9 +137,9 @@ export class TreeSitterFile {
 }
 
 export enum TreeSitterFileError {
-	UnsupportedLanguage,
-	ParseTimeout,
-	LanguageMismatch,
-	QueryError,
-	FileTooLarge,
+	unsupportedLanguage,
+	parseTimeout,
+	languageMismatch,
+	queryError,
+	fileTooLarge,
 }
