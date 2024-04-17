@@ -47,12 +47,23 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "title": "AutoDev",
-    "properties": {
-      "autodev.remoteConfigServerUrl": {
-        "type": "string",
-        "default": null,
-        "markdownDescription": "If your team is set up to use shared configuration, enter the server URL here and your user token below to enable automatic syncing."
+    "configuration": {
+      "title": "AutoDev",
+      "properties": {
+        "autodev.openaiCompatibleConfig": {
+          "type": "object",
+          "default": {
+            "server": "https://api.openai.com/v1/",
+            "apiKey": "",
+            "model": "gpt-3.5-turbo"
+          },
+          "markdownDescription": "For LLM compatible with OpenAI, set the API key here."
+        },
+        "autodev.remoteConfigServerUrl": {
+          "type": "string",
+          "default": null,
+          "markdownDescription": "If your team is set up to use shared configuration, enter the server URL here and your user token below to enable automatic syncing."
+        }
       }
     },
     "commands": [
@@ -268,6 +279,7 @@
     "monaco-vscode-textmate-theme-converter": "^0.1.7",
     "node-fetch": "^3.3.2",
     "node-machine-id": "^1.1.12",
+    "openai": "^4.36.0",
     "velocityjs": "^2.0.6",
     "vscode-gradle": "^3.10.1",
     "vscode-languageclient": "^9.0.1",

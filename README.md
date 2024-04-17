@@ -76,9 +76,9 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
 
 Inspired and based on：
 
-- AI-based Coding Editor [Continue](https://github.com/continuedev/continue)
-- AI-based conversational search [Bloop](https://github.com/BloopAI/bloop)
-- AI-powered coding wizard [AutoDev](https://github.com/unit-mesh/auto-dev)
+- AI-based Coding Editor [Continue](https://github.com/continuedev/continue) for LLM provider and CodeCompletion.
+- AI-based conversational search [Bloop](https://github.com/BloopAI/bloop) for indexes and code search.
+- AI-powered coding wizard [AutoDev](https://github.com/unit-mesh/auto-dev) for AutoTasking.
 - TreeSitter-based architecture analysis: [Guarding](https://github.com/modernizing/guarding)
 
 AutoDev VSCode is licensed under the `Apache 2.0` license as defined in [LICENSE](./LICENSE).
