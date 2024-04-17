@@ -73,6 +73,7 @@ export class ScopeBuilder {
 					switch (partLength) {
 						case 2:
 							switch (parts[1]) {
+								// like: @local.reference
 								case "reference":
 									localRefCaptures.push({ index: i, symbol: undefined });
 									break;
@@ -83,9 +84,9 @@ export class ScopeBuilder {
 									localImportCaptureIndex = i;
 									break;
 							}
-
 							break;
 						case 3:
+							// like: @local.reference.import
 							switch (parts[1]) {
 								case "reference":
 									localRefCaptures.push({ index: i, symbol: parts[2] });
@@ -106,22 +107,14 @@ export class ScopeBuilder {
 					}
 					break;
 				default:
+					// for Hoisted and Global
 					switch (parts[1]) {
 						case "definition":
-							if (partLength === 2) {
-								localDefCaptures.push({
-									index: i,
-									symbol: undefined,
-									scoping: parseScoping(parts[0]),
-								});
-							} else if (partLength === 3) {
-								localDefCaptures.push({
-									index: i,
-									symbol: parts[2],
-									scoping: parseScoping(parts[0]),
-								});
-							}
-
+							localDefCaptures.push({
+								index: i,
+								symbol: parts[2] || undefined,
+								scoping: parseScoping(parts[0]),
+							});
 							break;
 						default:
 							if (!name.startsWith("_")) {
