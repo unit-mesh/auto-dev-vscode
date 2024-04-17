@@ -6,7 +6,7 @@ export interface SymbolId {
 	symbolIndex: number;
 }
 
-export function name(symbolId: SymbolId, namespaces: NameSpaces): string {
+export function nameOfSymbol(symbolId: SymbolId, namespaces: NameSpaces): string {
 	return namespaces[symbolId.namespaceIndex][symbolId.symbolIndex];
 }
 
