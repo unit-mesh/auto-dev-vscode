@@ -33,6 +33,10 @@ class HelloWorld {
 		let scopeBuilder = new ScopeBuilder(query!!, rootNode, javaHelloWorld, JavaLangConfig);
 		let output = await scopeBuilder.build();
 
-		console.log(output);
+		const hoverRanges = output.hoverableRanges();
+		expect(hoverRanges.length).toBe(3);
+
+		const allText = hoverRanges.map((range) => range.text).join(", ");
+		expect(allText).toBe("args, HelloWorld, main");
 	});
 });

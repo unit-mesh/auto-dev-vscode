@@ -1,3 +1,5 @@
+import { expect } from "vitest";
+
 const Parser = require("web-tree-sitter");
 
 import { GoLangConfig } from "../codecontext/go/GoLangConfig";
@@ -50,6 +52,11 @@ type eleven interface {}
 		const query = grammar.query(langConfig.scopeQuery.queryStr);
 		let scopeBuilder = new ScopeBuilder(query!!, rootNode, symbolConsts, langConfig);
 		let output = await scopeBuilder.build();
-		console.log(output);
+
+		const hoverRanges = output.hoverableRanges();
+		expect(hoverRanges.length).toBe(11);
+
+		const allText = hoverRanges.map((range) => range.text).join(", ");
+		expect(allText).toBe("one, two, three, five, four, six, eight, eleven, nine, ten, seven");
 	});
 });

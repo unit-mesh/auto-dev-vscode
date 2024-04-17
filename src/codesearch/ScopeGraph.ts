@@ -8,6 +8,7 @@ import { LocalDef } from "./scope/LocalDef";
 import { Reference } from "./scope/Reference";
 import { NodeKind } from "./scope/NodeKind";
 import { ScopeBuilder } from "./ScopeBuilder";
+import { selectBottomMessage } from "../../gui-sidebar/src/redux/selectors/uiStateSelectors";
 
 // type Attributes = {[name: string]: any};
 // // Describes the relation between two nodes in the ScopeGraph
@@ -42,6 +43,9 @@ export class ImportToScope implements EdgeKind {
 export class RefToDef implements EdgeKind {
 }
 
+export class RefToImport implements EdgeKind {
+}
+
 export class ScopeGraph {
 	private langIndex: number;
 	graph: Graph<NodeKind>;
@@ -56,6 +60,10 @@ export class ScopeGraph {
 		this.rootIndex = index.toString();
 
 		this.langIndex = langIndex;
+	}
+
+	getNode(node: string): NodeKind {
+		return this.graph.getNodeAttributes(node);
 	}
 
 	insertLocalScope(scope: LocalScope) {
@@ -79,10 +87,10 @@ export class ScopeGraph {
 	insertHoistedDef(localDef: LocalDef) {
 		const definingScope = this.scopeByRange(localDef.range, this.rootIndex);
 		if (definingScope) {
-			const indexId = this.graph.nodes().length + 1;
-			this.graph.addNode(indexId, localDef);
-			const parentScope = this.scopeByRange(localDef.range, definingScope) || definingScope;
-			this.graph.addEdge(indexId, parentScope, new DefToScope);
+			const newIndexId = this.graph.nodes().length + 1;
+			this.graph.addNode(newIndexId, localDef);
+			const targetScope = this.parentScope(definingScope) || definingScope;
+			this.graph.addEdge(newIndexId, targetScope, new DefToScope);
 		}
 	}
 
@@ -138,7 +146,7 @@ export class ScopeGraph {
 				this.graph.addEdge(refIndex, defIndex, new RefToDef);
 			}
 			for (const impIndex of possibleImports) {
-				this.graph.addEdge(refIndex, impIndex, new RefToDef);
+				this.graph.addEdge(refIndex, impIndex, new RefToImport);
 			}
 		}
 	}
@@ -161,5 +169,59 @@ export class ScopeGraph {
 			return start;
 		}
 		return null;
+	}
+
+	private parentScope(start: string): string | null {
+		const node = this.graph.getNodeAttributes(start);
+		if (node instanceof LocalScope) {
+			const edges = this.graph.outEdges(start);
+			for (const edge of edges) {
+				// get target node
+				const target = this.graph.target(edge);
+				if (this.graph.getEdgeAttributes(edge) === ScopeToScope) {
+					return target;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public hoverableRanges(): TextRange[] {
+		const iterator = this.graph.nodes();
+		return iterator.filter(node => {
+			const nodeKind = this.graph.getNodeAttributes(node);
+			return nodeKind instanceof LocalDef || nodeKind instanceof Reference || nodeKind instanceof LocalImport;
+		}).map(node => {
+			const nodeKind = this.graph.getNodeAttributes(node);
+			return nodeKind.range;
+		});
+	}
+
+	public definitions(referenceNode: string): Iterable<string> {
+		const iterator = this.graph.outEdges(referenceNode);
+		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) === RefToDef);
+	}
+
+	public imports(referenceNode: string): Iterable<string> {
+		const iterator = this.graph.outEdges(referenceNode);
+		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) === RefToImport);
+	}
+
+	public references(definitionNode: string): Iterable<string> {
+		const iterator = this.graph.inEdges(definitionNode);
+		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) === RefToDef || this.graph.getEdgeAttributes(edge) === RefToImport);
+	}
+
+	public nodeByRange(startByte: number, endByte: number): string | undefined {
+		return this.graph.nodes()
+			.filter(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				return nodeKind instanceof LocalDef || nodeKind instanceof Reference || nodeKind instanceof LocalImport;
+			})
+			.find(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				return nodeKind.range.start.byte >= startByte && nodeKind.range.end.byte <= endByte;
+			});
 	}
 }
