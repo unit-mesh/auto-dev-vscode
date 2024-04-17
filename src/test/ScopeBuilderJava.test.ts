@@ -4,7 +4,7 @@ import { ScopeBuilder } from "../codesearch/ScopeBuilder";
 import { JavaLangConfig } from "../codecontext/java/JavaLangConfig";
 import { TestLanguageService } from "./TestLanguageService";
 
-describe.skip('ScopeBuilder', () => {
+describe('ScopeBuilder for Java', () => {
 	let parser: any;
 	let grammar: any;
 
@@ -20,14 +20,10 @@ describe.skip('ScopeBuilder', () => {
 
 	it('build for scope', async () => {
 		const javaHelloWorld = `
-package com.example;
-
-import java.util.*;
-
-public class HelloWorld {
-	public static void main(String[] args) {
-		System.out.println("Hello, World!");
-	}
+class HelloWorld {
+    public static void main(string[] args) {
+        System.Out.Println("Hello " + args[0]);
+    }
 }
 `;
 

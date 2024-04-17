@@ -67,7 +67,6 @@ export class ScopeBuilder {
 			const name = this.query.captureNames[i];
 			const parts = name.split('.');
 			const partLength = parts.length;
-			console.log(parts);
 			switch (parts[0]) {
 				case "local":
 					switch (partLength) {
@@ -135,16 +134,20 @@ export class ScopeBuilder {
 		const scopeGraph = new ScopeGraph(this.rootNode, langId);
 		const captures = this.query.captures(this.rootNode);
 
-		const captureMap: { [index: number]: TextRange[] } = {};
-		for (let index = 0; index < captures.length; index++) {
-			const capture = captures[index];
-			const range: TextRange = TextRange.from(capture.node);
-			if (!captureMap[index]) {
-				captureMap[index] = [];
+		let captureMap: { [index: number]: TextRange[] } = {};
+		captureMap = captures.reduce((map: any, capture) => {
+			const range = TextRange.from(capture.node);
+			// todo: check use name as idnex
+			const index = this.query.captureNames.indexOf(capture.name);
+
+			if (!map[index]) {
+				map[index] = [];
 			}
 
-			captureMap[index].push(range);
-		}
+			map[index].push(range);
+
+			return map;
+		}, {});
 
 		console.log(JSON.stringify(captureMap));
 		if (localScopeCaptureIndex !== null && captureMap[localScopeCaptureIndex]) {
@@ -154,7 +157,6 @@ export class ScopeBuilder {
 			});
 		}
 
-		console.log(localImportCaptureIndex);
 		if (localImportCaptureIndex !== null && captureMap[localImportCaptureIndex]) {
 			captureMap[localImportCaptureIndex].forEach(range => {
 				const import_ = new LocalImport(range);
@@ -168,7 +170,7 @@ export class ScopeBuilder {
 				ranges.forEach(range => {
 					const symbolId = symbol ? symbolIdOf(namespaces, symbol) : undefined;
 					const localDef = new LocalDef(range, symbolId!!);
-					console.log(`localDef: ${JSON.stringify(localDef)}`);
+					console.log(`localDef: ${scoping}, ${symbol}, ${JSON.stringify(localDef)}`);
 
 					switch (scoping) {
 						case Scoping.Hoisted:

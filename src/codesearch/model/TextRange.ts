@@ -13,14 +13,17 @@ export class Point {
 export class TextRange {
 	start: Point;
 	end: Point;
+	text: string;
 
-	constructor(start: Point, end: Point) {
+	constructor(start: Point, end: Point, text: string) {
 		this.start = start;
 		this.end = end;
+		this.text = text;
 	}
 
-	static from(node: SyntaxNode) {
+	static from(node: SyntaxNode): TextRange {
 		return {
+			text: node.text,
 			start: {
 				line: node.startPosition.row,
 				column: node.startPosition.column,
