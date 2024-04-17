@@ -150,16 +150,16 @@ export class ScopeDebug {
 				return scopeDebug;
 			});
 
-		this.defs = defs.sort((a, b) => a.range.start.byte - b.range.start.byte);
-		this.imports = imports.sort((a, b) => a.range.start.byte - b.range.start.byte);
-		this.scopes = scopes.sort((a, b) => a.range.start.byte - b.range.start.byte);
+		this.defs = defs.sort((a, b) => a.range.compare(b.range));
+		this.imports = imports.sort((a, b) => a.range.compare(b.range));
+		this.scopes = scopes.sort((a, b) => a.range.compare(b.range));
 	}
 
 	toString(): string {
 		if (this.imports.length === 0) {
-			return `scope { definitions: ${this.defs.map(s => s.toString())}, child scopes: ${this.scopes.map(s => s.toString())} }`;
+			return `scope {\n definitions: ${this.defs.map(s => s.toString())},\n child scopes: ${this.scopes.map(s => s.toString())}\n }`;
 		} else {
-			return `scope { definitions: ${this.defs.map(s => s.toString())}, imports: ${this.imports.map(s => s.toString())}, child scopes: ${this.scopes} }`;
+			return `scope {\n definitions: ${this.defs.map(s => s.toString())},\n imports: ${this.imports.map(s => s.toString())},\n child scopes: ${this.scopes}\n }`;
 		}
 	}
 }
