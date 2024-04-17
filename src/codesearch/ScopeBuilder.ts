@@ -86,8 +86,21 @@ export class ScopeBuilder {
 
 							break;
 						case 3:
-							if (parts[1] === "reference") {
-								localRefCaptures.push({ index: i, symbol: parts[2] });
+							switch (parts[1]) {
+								case "reference":
+									localRefCaptures.push({ index: i, symbol: parts[2] });
+									break;
+								case "definition":
+									localDefCaptures.push({
+										index: i,
+										symbol: parts[2],
+										scoping: Scoping.Local,
+									});
+									break;
+								default:
+									if (!name.startsWith("_")) {
+										console.warn(`Unknown capture name: ${name}`);
+									}
 							}
 							break;
 					}
