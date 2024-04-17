@@ -22,16 +22,27 @@ export class TextRange {
 	}
 
 	static from(node: SyntaxNode): TextRange {
-		return {
-			text: node.text,
-			start: {
+		return new TextRange(
+			{
 				line: node.startPosition.row,
 				column: node.startPosition.column,
 			},
-			end: {
+			{
 				line: node.endPosition.row,
 				column: node.endPosition.column,
 			},
-		};
+			node.text,
+		)
+	}
+
+
+	/**
+	 * Checks if the current text range contains the specified text range.
+	 *
+	 * @param other The text range to check for containment.
+	 * @returns `true` if the current text range contains the specified text range; otherwise, `false`.
+	 */
+	public contains(other: TextRange): boolean {
+		return this.start.line <= other.start.line && other.end.line <= this.end.line;
 	}
 }

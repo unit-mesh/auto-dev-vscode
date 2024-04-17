@@ -50,6 +50,6 @@ type eleven interface {}
 		const query = grammar.query(langConfig.scopeQuery.queryStr);
 		let scopeBuilder = new ScopeBuilder(query!!, rootNode, symbolConsts, langConfig);
 		let output = await scopeBuilder.build();
-		// console.log(output);
+		console.log(output);
 	});
 });

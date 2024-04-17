@@ -134,8 +134,7 @@ export class ScopeBuilder {
 		const scopeGraph = new ScopeGraph(this.rootNode, langId);
 		const captures = this.query.captures(this.rootNode);
 
-		let captureMap: { [index: number]: TextRange[] } = {};
-		captureMap = captures.reduce((map: any, capture) => {
+		const captureMap: { [index: number]: TextRange[] } = captures.reduce((map: any, capture) => {
 			const range = TextRange.from(capture.node);
 			// todo: check use name as idnex
 			const index = this.query.captureNames.indexOf(capture.name);
@@ -149,7 +148,6 @@ export class ScopeBuilder {
 			return map;
 		}, {});
 
-		console.log(JSON.stringify(captureMap));
 		if (localScopeCaptureIndex !== null && captureMap[localScopeCaptureIndex]) {
 			captureMap[localScopeCaptureIndex].forEach(range => {
 				const scope = new LocalScope(range);
@@ -170,7 +168,6 @@ export class ScopeBuilder {
 				ranges.forEach(range => {
 					const symbolId = symbol ? symbolIdOf(namespaces, symbol) : undefined;
 					const localDef = new LocalDef(range, symbolId!!);
-					console.log(`localDef: ${scoping}, ${symbol}, ${JSON.stringify(localDef)}`);
 
 					switch (scoping) {
 						case Scoping.Hoisted:
