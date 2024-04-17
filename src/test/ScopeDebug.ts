@@ -22,7 +22,7 @@ export class RefDebug {
 export class DefDebug {
 	name: string;
 	range: TextRange;
-	context: string;
+	private context: string;
 	refs: RefDebug[];
 	symbol: string;
 
@@ -78,7 +78,7 @@ export class ScopeDebug {
 	defs: DefDebug[];
 	imports: ImportDebug[];
 	scopes: ScopeDebug[];
-	language: LanguageConfig;
+	private language: LanguageConfig;
 
 	constructor(range: TextRange, language: LanguageConfig) {
 		this.range = range;
@@ -102,7 +102,7 @@ export class ScopeDebug {
 	build(graph: Graph<NodeKind>, start: any, src: string) {
 		const defs = graph
 			.inEdges(start)
-			.filter(edge => graph.getEdgeAttributes(edge) === DefToScope)
+			.filter(edge => graph.getEdgeAttributes(edge) instanceof DefToScope)
 			.map(edge => {
 				const defNode = graph.source(edge);
 				const range = graph.getNodeAttributes(defNode).range;
@@ -126,14 +126,14 @@ export class ScopeDebug {
 
 		const imports = graph
 			.inEdges(start)
-			.filter(edge => graph.getEdgeAttributes(edge) === ImportToScope)
+			.filter(edge => graph.getEdgeAttributes(edge) instanceof ImportToScope)
 			.map(edge => {
 				const impNode = graph.source(edge);
 				const range = graph.getNodeAttributes(impNode).range;
 				const text = src.slice(range.start.byte, range.end.byte);
 				const refs = graph
 					.inEdges(impNode)
-					.filter(edge => graph.getEdgeAttributes(edge) === RefToImport)
+					.filter(edge => graph.getEdgeAttributes(edge) instanceof RefToImport)
 					.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
 					.sort((a, b) => a.start.byte - b.start.byte);
 
@@ -142,7 +142,7 @@ export class ScopeDebug {
 
 		const scopes = graph
 			.inEdges(start)
-			.filter(edge => graph.getEdgeAttributes(edge) === ScopeToScope)
+			.filter(edge => graph.getEdgeAttributes(edge) instanceof ScopeToScope)
 			.map(edge => {
 				const sourceScope = graph.source(edge);
 				const scopeDebug = new ScopeDebug(graph.getNodeAttributes(sourceScope).range, this.language);
@@ -157,9 +157,9 @@ export class ScopeDebug {
 
 	toString(): string {
 		if (this.imports.length === 0) {
-			return `ScopeDebug { definitions: ${JSON.stringify(this.defs)}, child scopes: ${JSON.stringify(this.scopes)} }`;
+			return `ScopeDebug { definitions: ${this.defs.map(s => s.toString())}, child scopes: ${this.scopes.map(s => s.toString())} }`;
 		} else {
-			return `ScopeDebug { definitions: ${JSON.stringify(this.defs)}, imports: ${JSON.stringify(this.imports)}, child scopes: ${JSON.stringify(this.scopes)} }`;
+			return `ScopeDebug { definitions: ${this.defs.map(s => s.toString())}, imports: ${this.imports.map(s => s.toString())}, child scopes: ${this.scopes.map(s => s.toString())} }`;
 		}
 	}
 }

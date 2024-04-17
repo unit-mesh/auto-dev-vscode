@@ -15,12 +15,16 @@ export class Point {
 export class TextRange {
 	start: Point;
 	end: Point;
-	text: string;
+	private text: string;
 
 	constructor(start: Point, end: Point, text: string) {
 		this.start = start;
 		this.end = end;
 		this.text = text;
+	}
+
+	getText(): string {
+		return this.text;
 	}
 
 	static from(node: SyntaxNode): TextRange {
@@ -38,7 +42,6 @@ export class TextRange {
 			node.text,
 		);
 	}
-
 
 	/**
 	 * Checks if the current text range contains the specified text range.

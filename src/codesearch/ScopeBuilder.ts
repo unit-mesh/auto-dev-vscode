@@ -125,8 +125,8 @@ export class ScopeBuilder {
 			}
 		}
 
-		console.debug(localDefCaptures);
-		console.debug(localRefCaptures);
+		// console.debug(localDefCaptures);
+		// console.debug(localRefCaptures);
 
 		const langId = ALL_LANGUAGES.findIndex(l =>
 			l.languageIds === this.languageConfig.languageIds

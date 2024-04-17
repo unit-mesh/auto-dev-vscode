@@ -61,10 +61,11 @@ type eleven interface {}
 		const hoverRanges = output.hoverableRanges();
 		expect(hoverRanges.length).toBe(11);
 
-		const allText = hoverRanges.map((range) => range.text).join(", ");
+		const allText = hoverRanges.map((range) => range.getText()).join(", ");
 		expect(allText).toBe("one, two, three, five, four, six, eight, eleven, nine, ten, seven");
 
 		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language);
+
 		await testScopes("go", sourceCode, "", tsf);
 	});
 });
