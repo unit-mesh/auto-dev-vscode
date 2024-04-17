@@ -5,5 +5,5 @@ export async function testScopes(langId: string, src: string, expected: string, 
 	const graph = await tsfFile.scopeGraph();
 	const language = TSLanguageUtil.fromId(langId)!!;
 	const observed = graph.debug(src, language);
-	console.log(observed.toString());
+	return observed.toString();
 }

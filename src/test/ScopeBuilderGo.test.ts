@@ -73,7 +73,6 @@ func main() {
     fmt.Printf("%d", l);
 }
 `;
-
 		let tree = parser.parse(sourceCode);
 		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language);
 		await testScopes("go", sourceCode, "", tsf);

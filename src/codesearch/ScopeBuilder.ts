@@ -190,7 +190,6 @@ export class ScopeBuilder {
 				ranges.forEach(range => {
 					const symbolId = symbol ? symbolIdOf(namespaces, symbol) : undefined;
 					const ref_ = new Reference(range, symbolId!!);
-
 					scopeGraph.insertRef(ref_, this.sourceCode);
 				});
 			}

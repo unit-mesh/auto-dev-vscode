@@ -15,7 +15,7 @@ export class RefDebug {
 	}
 
 	toString(): string {
-		return `\`${this.context}\``;
+		return this.context;
 	}
 }
 
@@ -35,15 +35,12 @@ export class DefDebug {
 	}
 
 	toString(): string {
-		let result = `${this.name} { kind: ${this.symbol}, context: ${this.context}`;
-
-		if (this.refs.length > 0) {
-			result += `, referenced in (${this.refs.length}) { ${this.refs.join(', ')} }`;
-		}
-
-		result += " }";
-
-		return result;
+		return JSON.stringify({
+			name: this.name,
+			kind: this.symbol,
+			context: this.context,
+			references: this.refs
+		});
 	}
 }
 
@@ -61,12 +58,11 @@ export class ImportDebug {
 	}
 
 	toString(): string {
-		let result = `${this.name} { context: ${this.context}`;
-		if (this.refs.length > 0) {
-			result += `, referenced in (${this.refs.length}) { ${this.refs.join(', ')} }`;
-		}
-		result += " }";
-		return result;
+		return JSON.stringify({
+			name: this.name,
+			context: this.context,
+			references: this.refs
+		});
 	}
 }
 
@@ -154,34 +150,12 @@ export class ScopeDebug {
 	}
 
 	toString(): string {
-		const scopes = this.scopes.map(s => s.toString());
-		let scopeString = "";
-		if (scopes.length === 0) {
-			scopeString = "[]";
-		} else {
-			scopeString = scopes.join(", ");
-		}
-
-		const defs = this.defs.map(s => s.toString());
-		let defString = "";
-		if (defs.length === 0) {
-			defString = "[]";
-		} else {
-			defString = defs.join(", ");
-		}
-
-		if (this.imports.length === 0) {
-			return `scope {
-	 definitions: ${defString} 
-	 child scopes: ${scopeString}
-}`;
-		} else {
-			return `scope {
-	 definitions: ${defString} 
-	 imports: ${this.imports.map(s => s.toString())},
-	 child scopes: ${scopeString}
- }`;
-		}
+		const scopes = '[' + this.scopes.map(s => s.toString()).join(", ")  + ']';
+		return JSON.stringify({
+			definitions: this.defs,
+			imports: this.imports,
+			scopes: JSON.parse(scopes)
+		});
 	}
 }
 

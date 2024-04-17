@@ -23,7 +23,6 @@ export class JavaSemanticLsp extends SemanticLsp {
       return undefined;
     }
 
-    console.log(java);
     // todo: spike integration with java language server;
     return java.exports;
   }
