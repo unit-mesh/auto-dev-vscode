@@ -1,6 +1,6 @@
 import { TextRange } from "../model/TextRange";
 import { NodeKind } from "./NodeKind";
-import { ScopeToScope } from "../ScopeGraph";
+import { ScopeGraph, ScopeToScope } from "../ScopeGraph";
 import Graph from "graphology";
 
 export class LocalScope extends NodeKind {
@@ -21,23 +21,20 @@ export class ScopeStack implements Iterable<string> {
 		this.start = start;
 	}
 
+
 	[Symbol.iterator](): Iterator<string> {
+		let current = this.start;
+
 		return {
 			next: () => {
-				if (this.start) {
-					let parentId;
-					this.scopeGraph.forEachOutboundEdge(this.start, (edge, target: any) => {
-						if (target instanceof ScopeToScope) {
-							parentId = edge;
-						}
-					});
+				if (current) {
+					const parentId = this.scopeGraph.outEdges(current)
+						.filter(edge => this.scopeGraph.getEdgeAttributes(edge) instanceof ScopeToScope)
+						.map(edge => this.scopeGraph.target(edge))[0];
 
-					if (parentId) {
-						this.start = parentId;
-						return { value: parentId, done: true };
-					}
-
-					return { value: undefined, done: true };
+					const original = current;
+					current = parentId;
+					return { value: original, done: false };
 				} else {
 					return { value: undefined, done: true };
 				}
