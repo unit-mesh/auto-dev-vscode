@@ -70,8 +70,6 @@ export async function activate(context: vscode.ExtensionContext) {
   StatusNotification.instance.create();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-// @ts-ignore
 export function deactivate() {
   removeExtensionContext();
 }
