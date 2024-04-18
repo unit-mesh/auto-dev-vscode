@@ -43,7 +43,8 @@ const commandsMap: (
     range: IdentifierBlockRange,
     edit: vscode.WorkspaceEdit
   ) => {
-    new AutoDocAction(document, range, edit).execute();
+    let autoDocAction = new AutoDocAction(document, range, edit);
+    await autoDocAction.execute();
   },
   "autodev.explain": async () => {},
   "autodev.fixThis": async () => {},

@@ -1,4 +1,3 @@
-```system```
 Write documentation for user's given ${context.language} code.
 - User rules: ${context.forbiddenRules}
 - Start your documentation with ${context.startSymbol} here, and ends with `${context.endSymbol}`.
@@ -9,5 +8,6 @@ For example, if user asks for documentation for the java code, you should return
 * // Write documentation here
 */
 ```
-```user```
+
+User's code:
 ${context.code}
