@@ -24,7 +24,7 @@ const commandsMap: (
       vscode.commands.executeCommand("autodev.autodevGUIView.focus");
     }
   },
-
+  "autodev.autodevGUIView": async () => {},
   "autodev.sendToTerminal": (text: string) => {
     extension.action.runCommand(text).then(
       () => {},

@@ -39,19 +39,21 @@ export async function activate(context: vscode.ExtensionContext) {
   );
   // new ToolingDetector().execute().then((deps) => {
   // });
+  //
 
   Parser.init().then(async () => {
+      registerCodeLensProviders(extension);
+      registerAutoDevProviders(extension);
+      registerQuickFixProvider(extension);
+
       await structureProvider.init();
       extension.setStructureProvider(structureProvider);
     }
   );
 
+
   // TODO: split different type commands
   registerCommands(extension);
-
-  registerCodeLensProviders(extension);
-  registerAutoDevProviders(extension);
-  registerQuickFixProvider(extension);
   registerWebViewProvider(extension);
 
   vscode.window.onDidChangeActiveTextEditor(

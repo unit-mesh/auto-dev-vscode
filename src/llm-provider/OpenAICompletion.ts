@@ -31,7 +31,9 @@ export class OpenAICompletion {
 			...m,
 			content: m.content === "" ? " " : m.content,
 		})) as any;
-		const response = await this.fetch(this._getEndpoint("chat/completions"), {
+		let url = this._getEndpoint("v1/chat/completions");
+
+		const response = await this.fetch(url, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -64,7 +66,7 @@ export class OpenAICompletion {
 	}
 
 	private _getEndpoint(
-		endpoint: "chat/completions" | "completions" | "models",
+		endpoint: "v1/chat/completions" | "completions" | "models",
 	) {
 		if (this.apiType === "azure") {
 			return new URL(

@@ -27,7 +27,7 @@ export class SettingService {
 		const settings = vscode.workspace.getConfiguration('autodev.openaiCompatibleConfig', this.projectUri);
 		return {
 			apiType: settings.get('apiType') || '',
-			apiBase: settings.get('server') || '',
+			apiBase: settings.get('apiBase') || '',
 			apiKey: settings.get('apiKey') || '',
 			model: settings.get('model') || ''
 		};

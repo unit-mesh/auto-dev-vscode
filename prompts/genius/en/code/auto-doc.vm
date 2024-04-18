@@ -1,13 +1,9 @@
 Write documentation for user's given ${context.language} code.
+
 - User rules: ${context.forbiddenRules}
 - Start your documentation with ${context.startSymbol} here, and ends with `${context.endSymbol}`.
 
-For example, if user asks for documentation for the java code, you should return the following format only:
-```java
-/**
-* // Write documentation here
-*/
-```
-
-User's code:
+Here is User's code:
+```${context.language}
 ${context.code}
+```
