@@ -1,17 +1,15 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+
 import { CustomActionPrompt } from './CustomActionPrompt';
 import { TeamPromptAction } from "./TeamPromptAction";
+import { SettingService } from "../../settings/SettingService";
 
 class TeamPromptsBuilder {
-	private project: vscode.WorkspaceFolder;
-	private settings: any;
 	private baseDir: string;
 
-	constructor(project: vscode.WorkspaceFolder) {
-		this.project = project;
-		this.settings = vscode.workspace.getConfiguration('prompts', this.project.uri);
-		this.baseDir = this.settings.get('prompts') || '';
+	constructor() {
+		this.baseDir = SettingService.instance().teamPromptsBaseDir()
 	}
 
 	default(): TeamPromptAction[] {
