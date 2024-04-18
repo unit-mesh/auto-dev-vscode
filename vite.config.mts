@@ -37,6 +37,7 @@ export default defineConfig((api) => {
     build: {
       minify: !isDev,
       sourcemap: isDev,
+      copyPublicDir: false,
       lib: {
         entry: "src/extension.ts",
         formats: ["cjs"],
