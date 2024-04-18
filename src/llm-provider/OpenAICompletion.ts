@@ -6,13 +6,13 @@ import { LlmConfig } from "../settings/LlmConfig";
 type RequestInfo = Request | string;
 
 export class OpenAICompletion {
-	engine?: string;
-	apiKey?: string;
-	apiBase?: string;
-	apiType?: "openai" | "azure";
-	apiVersion?: string;
-	requestOptions?: RequestOptions;
-	model?: string;
+	private engine?: string;
+	private apiKey?: string;
+	private apiBase?: string;
+	private apiType?: "openai" | "azure";
+	private apiVersion?: string;
+	private requestOptions?: RequestOptions;
+	private model?: string;
 
 	constructor(llmConfig: LlmConfig) {
 		this.apiKey = llmConfig.apiKey;
@@ -21,7 +21,7 @@ export class OpenAICompletion {
 		this.model = llmConfig.model;
 	}
 
-	protected async* _streamChat(messages: ChatMessage[]): AsyncGenerator<ChatMessage> {
+	async* streamChat(messages: ChatMessage[]): AsyncGenerator<ChatMessage> {
 		let body = {
 			...this._convertArgs({}, messages),
 			stream: true,

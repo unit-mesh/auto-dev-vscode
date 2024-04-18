@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 import { AutoDevExtension } from "./AutoDevExtension";
 import { IdentifierBlockRange } from "./editor/document/IdentifierBlockRange";
-import { insertCodeByRange, selectCodeInRange } from "./editor/editor";
 import { DefaultLanguageService } from "./editor/language/service/DefaultLanguageService";
 
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
-import { showQuickPick } from "./editor/action/QuickInput";
+import { showQuickPick } from "./editor/editor-api/QuickInput";
+import { AutoDocAction } from "./editor/action/AutoDocAction";
 
 const commandsMap: (
   extension: AutoDevExtension
@@ -43,9 +43,7 @@ const commandsMap: (
     range: IdentifierBlockRange,
     edit: vscode.WorkspaceEdit
   ) => {
-    const doc: string = generateDocumentation(document.getText());
-    selectCodeInRange(range.blockRange.start, range.blockRange.end);
-    insertCodeByRange(range.blockRange.start, doc);
+    new AutoDocAction(document, range, edit).execute();
   },
   "autodev.explain": async () => {},
   "autodev.fixThis": async () => {},

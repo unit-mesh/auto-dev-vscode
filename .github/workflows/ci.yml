@@ -38,7 +38,7 @@ jobs:
         run: npm run test --coverage.enabled true
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
+        uses: codecov/codecov-editor-api@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: unit-mesh/auto-dev-vscode

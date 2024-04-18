@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { registerCommands } from "./commands";
 import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
-import { VSCodeAction } from "./editor/action/VSCodeAction";
+import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
 import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
@@ -19,7 +19,7 @@ import {
 import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
-import { StatusNotification } from "./editor/action/StatusNotification";
+import { StatusNotification } from "./editor/editor-api/StatusNotification";
 
 export async function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);

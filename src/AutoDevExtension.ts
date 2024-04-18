@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
-import { VSCodeAction } from "./editor/action/VSCodeAction";
+import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
 import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { StructurerProviderManager } from "./code-context/StructurerProviderManager";
