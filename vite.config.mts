@@ -11,6 +11,7 @@ export default defineConfig((api) => {
   return {
     plugins: [
       externalizeDeps({
+        deps: false,
         include: ["vscode"],
         except: [
           "web-tree-sitter",
