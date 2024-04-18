@@ -11,6 +11,7 @@ export default defineConfig((api) => {
   return {
     plugins: [
       externalizeDeps({
+        deps: false,
         include: ["vscode"],
         except: [
           "web-tree-sitter",
@@ -37,6 +38,7 @@ export default defineConfig((api) => {
     build: {
       minify: !isDev,
       sourcemap: isDev,
+      copyPublicDir: false,
       lib: {
         entry: "src/extension.ts",
         formats: ["cjs"],
