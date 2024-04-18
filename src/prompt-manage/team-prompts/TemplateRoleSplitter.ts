@@ -42,7 +42,6 @@ export class TemplateRoleSplitter {
 			}
 		}
 
-		// Add the last section if it exists
 		if (currentSection !== '') {
 			sections[currentSection] = contentBuilder;
 		}
