@@ -1,9 +1,9 @@
 export class ActionVariable {
-	variable: string;
+	name: string;
 	description: string;
 
 	constructor(variable: string, description: string) {
-		this.variable = variable;
+		this.name = variable;
 		this.description = description;
 	}
 }
