@@ -1,4 +1,4 @@
-import { ChatMessage, ChatRole } from "../../llm-provider/LlmMsg";
+import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
 import { TeamPromptAction } from "./TeamPromptAction";
 import vscode from "vscode";
 import { InteractionType } from "../../custom-action/InteractionType";

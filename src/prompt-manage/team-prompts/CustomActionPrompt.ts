@@ -1,6 +1,6 @@
 import { InteractionType } from "../../custom-action/InteractionType";
 import { TemplateRoleSplitter } from "./TemplateRoleSplitter";
-import { ChatMessage, ChatRole } from "../../llm-provider/LlmMsg";
+import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
 
 export enum CustomActionType {
 	Default,
