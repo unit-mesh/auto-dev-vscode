@@ -53,7 +53,8 @@
         "autodev.openaiCompatibleConfig": {
           "type": "object",
           "default": {
-            "server": "https://api.openai.com/v1/",
+            "apiType": "openai",
+            "apiBase": "https://api.openai.com/v1/",
             "apiKey": "",
             "model": "gpt-3.5-turbo"
           },

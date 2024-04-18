@@ -7,7 +7,7 @@ export class SettingService {
 	private projectUri: Uri | undefined;
 
 	private constructor() {
-		this.projectUri = getExtensionUri()
+		this.projectUri = getExtensionUri();
 	}
 
 	public static instance(): SettingService {
@@ -26,6 +26,7 @@ export class SettingService {
 	llmConfig(): LlmConfig {
 		const settings = vscode.workspace.getConfiguration('autodev.openaiCompatibleConfig', this.projectUri);
 		return {
+			apiType: settings.get('apiType') || '',
 			apiBase: settings.get('server') || '',
 			apiKey: settings.get('apiKey') || '',
 			model: settings.get('model') || ''

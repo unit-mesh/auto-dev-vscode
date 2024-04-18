@@ -6,8 +6,7 @@ import { DefaultLanguageService } from "./editor/language/service/DefaultLanguag
 
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
-import { window } from "vscode";
-import { showQuickPick, showInputBox } from "./editor/action/QuickInput";
+import { showQuickPick } from "./editor/action/QuickInput";
 
 const commandsMap: (
   extension: AutoDevExtension

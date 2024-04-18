@@ -1,12 +1,11 @@
 import { ChatMessage } from "./ChatMessage";
-import { CompletionOptions } from "vscode-languageclient";
 import { streamSse } from "./stream";
 import { RequestOptions } from "node:http";
 import { LlmConfig } from "../settings/LlmConfig";
 
 type RequestInfo = Request | string;
 
-class OpenAI {
+export class OpenAICompletion {
 	engine?: string;
 	apiKey?: string;
 	apiBase?: string;
