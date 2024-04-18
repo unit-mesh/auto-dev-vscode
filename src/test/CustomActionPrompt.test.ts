@@ -1,5 +1,4 @@
 import { CustomActionPrompt, CustomActionType } from '../prompt-manage/team-prompts/CustomActionPrompt';
-import { TemplateRoleSplitter } from '../prompt-manage/team-prompts/TemplateRoleSplitter';
 import { InteractionType } from "../custom-action/InteractionType";
 import { ChatRole } from "../llm-provider/LlmMsg";
 
