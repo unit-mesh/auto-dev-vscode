@@ -19,7 +19,7 @@ import {
 import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
-import { StatusNotification } from "./editor/editor-api/StatusNotification";
+import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 
 export async function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);
@@ -51,7 +51,6 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
-
   // TODO: split different type commands
   registerCommands(extension);
   registerWebViewProvider(extension);
@@ -68,8 +67,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // on closed editor
 
-  // create a new status bar item that we can now manage
-  StatusNotification.instance.create();
+  AutoDevStatusManager.instance.create();
 }
 
 export function deactivate() {

@@ -6,6 +6,7 @@ import { ActionType, PromptManager } from "../../prompt-manage/PromptManager";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
 import { insertCodeByRange, selectCodeInRange } from "../editor";
+import { AutoDevStatus, AutoDevStatusManager } from "../editor-api/AutoDevStatusManager";
 
 export interface AutoDocContext extends TemplateContext {
 	language: string;
@@ -41,21 +42,30 @@ export class AutoDocAction {
 		};
 
 		let content = await PromptManager.getInstance().build(ActionType.AutoDoc, context);
-		console.log(`request: ${content}`);
+
+		console.info(`request: ${content}`);
 		let msg: ChatMessage = {
 			role: ChatRole.User,
 			content: content
 		};
 
+		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
 		let llm = LlmProvider.instance();
 		let doc: string = "";
-		for await (const chunk of llm._streamChat(
-			[msg]
-		)) {
-			doc += chunk.content;
+
+		try {
+			for await (const chunk of llm._streamChat([msg])) {
+				doc += chunk.content;
+			}
+		} catch (e) {
+			console.error(e);
+			AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Error);
+			return;
 		}
 
-		console.log(`result: ${doc}`);
+		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
+		console.info(`result: ${doc}`);
+
 		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
 		insertCodeByRange(this.range.blockRange.start, doc);
 	}
