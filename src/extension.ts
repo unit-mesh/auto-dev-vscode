@@ -6,7 +6,7 @@ import { VSCodeAction } from "./editor/action/VSCodeAction";
 import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { StructurerProviderManager } from "./codecontext/StructurerProviderManager";
+import { StructurerProviderManager } from "./code-context/StructurerProviderManager";
 import Parser from "web-tree-sitter";
 
 import { removeExtensionContext, setExtensionContext } from './context';
@@ -17,7 +17,7 @@ import {
   registerWebViewProvider
 } from "./editor/providers/ProviderRegister";
 import { channel } from "./channel";
-import { RelatedCodeProviderManager } from "./codecontext/RelatedCodeProviderManager";
+import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { StatusNotification } from "./editor/action/StatusNotification";
 

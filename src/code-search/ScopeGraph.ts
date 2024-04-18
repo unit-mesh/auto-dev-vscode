@@ -7,7 +7,7 @@ import { LocalImport } from "./scope/LocalImport";
 import { LocalDef } from "./scope/LocalDef";
 import { Reference } from "./scope/Reference";
 import { NodeKind } from "./scope/NodeKind";
-import { LanguageConfig } from "../codecontext/_base/LanguageConfig";
+import { LanguageConfig } from "../code-context/_base/LanguageConfig";
 import { ScopeDebug } from "../test/ScopeDebug";
 
 export interface EdgeKind {

@@ -1,7 +1,7 @@
 import { IdentifierBlockRange } from "./IdentifierBlockRange";
 import { BlockRange } from "./BlockRange";
-import { TreeSitterFile, TreeSitterFileError } from "../../codecontext/TreeSitterFile";
-import { LanguageConfig } from "../../codecontext/_base/LanguageConfig";
+import { TreeSitterFile, TreeSitterFileError } from "../../code-context/TreeSitterFile";
+import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import Parser from "web-tree-sitter";
 
 export class BlockBuilder {

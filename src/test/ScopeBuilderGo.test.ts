@@ -2,12 +2,12 @@ import { expect } from "vitest";
 
 const Parser = require("web-tree-sitter");
 
-import { GoLangConfig } from "../codecontext/go/GoLangConfig";
-import { ScopeBuilder } from "../codesearch/ScopeBuilder";
+import { GoLangConfig } from "../code-context/go/GoLangConfig";
+import { ScopeBuilder } from "../code-search/ScopeBuilder";
 import { TestLanguageService } from "./TestLanguageService";
 import { testScopes } from "./ScopeTestUtil";
 import { TSLanguageService } from "../editor/language/service/TSLanguageService";
-import { TreeSitterFile } from "../codecontext/TreeSitterFile";
+import { TreeSitterFile } from "../code-context/TreeSitterFile";
 
 describe('ScopeBuilderGo', () => {
 	let parser: any;

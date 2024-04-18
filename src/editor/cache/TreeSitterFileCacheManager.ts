@@ -1,6 +1,6 @@
 import { Uri } from "vscode";
 
-import { TreeSitterFile } from "../../codecontext/TreeSitterFile";
+import { TreeSitterFile } from "../../code-context/TreeSitterFile";
 import { FileCacheManger } from "./FileCacheManger";
 
 export class TreeSitterFileCacheManager implements FileCacheManger<TreeSitterFile> {

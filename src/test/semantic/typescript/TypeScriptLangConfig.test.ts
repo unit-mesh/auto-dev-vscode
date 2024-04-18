@@ -1,7 +1,7 @@
 import { SyntaxNode } from "web-tree-sitter";
 
 import { TestLanguageService } from "../../TestLanguageService";
-import { TypeScriptLangConfig } from "../../../codecontext/typescript/TypeScriptLangConfig";
+import { TypeScriptLangConfig } from "../../../code-context/typescript/TypeScriptLangConfig";
 
 const Parser = require("web-tree-sitter");
 

@@ -1,4 +1,4 @@
-import { InteractionType } from "../../customprompt/InteractionType";
+import { InteractionType } from "../../custom-action/InteractionType";
 import { CustomAgentResponseAction } from "./CustomAgentResponseAction";
 
 export class CustomFlowTransition {
