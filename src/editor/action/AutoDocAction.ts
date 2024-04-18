@@ -41,6 +41,7 @@ export class AutoDocAction {
 		};
 
 		let content = await PromptManager.getInstance().build(ActionType.AutoDoc, context);
+		console.log(`request: ${content}`);
 		let msg: ChatMessage = {
 			role: ChatRole.User,
 			content: content
@@ -51,11 +52,10 @@ export class AutoDocAction {
 		for await (const chunk of llm._streamChat(
 			[msg]
 		)) {
-			// console.log(chunk);
 			doc += chunk.content;
 		}
 
-		// const doc: string = generateDocumentation(document.getText());
+		console.log(`result: ${doc}`);
 		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
 		insertCodeByRange(this.range.blockRange.start, doc);
 	}

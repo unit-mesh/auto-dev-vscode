@@ -45,6 +45,8 @@ export class TemplateRender {
 	}
 
 	public render(template: string, context: TemplateContext): string {
-		return Velocity.render(template, context);
+		return Velocity.render(template, {
+			context
+		});
 	}
 }
