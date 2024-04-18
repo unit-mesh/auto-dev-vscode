@@ -1,8 +1,8 @@
 {
-  "name": "autodev",
-  "displayName": "AutoDev - ",
+  "name": "auto-dev-vscode",
+  "displayName": "AutoDev - \uD83E\uDDD9 The AI-powered coding wizard.",
   "description": " 🧙‍AutoDev: The AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀 ",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": "https://github.com/unit-mesh/auto-dev-vscode",
   "publisher": "Phodal",
   "extensionKind": [
@@ -270,11 +270,10 @@
     "test": "vitest --run",
     "test:watch": "vitest --silent=false",
     "vscode:prepublish": "npm run build",
-    "pa": "vsce package -o ./auto-dev-vscode.vsix"
+    "pa": "vsce package"
   },
   "dependencies": {
     "@unit-mesh/treesitter-artifacts": "^1.5.3",
-    "@vitest/coverage-v8": "^1.4.0",
     "@vscode/l10n": "^0.0.18",
     "graphology": "^0.25.4",
     "monaco-vscode-textmate-theme-converter": "^0.1.7",
@@ -287,6 +286,7 @@
     "web-tree-sitter": "^0.22.2"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^1.4.0",
     "@types/chai": "^4.3.14",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.x",
