@@ -1,13 +1,13 @@
 import { ActionVariable } from "./ActionVariable";
 
-export class VariableProvider {
-	type: ActionVariable = new ActionVariable("DEFAULT", "DEFAULT");
+export abstract class VariableProvider {
+	abstract get type(): ActionVariable;
 
 	async resolve(): Promise<string> {
 		return Promise.reject("Not implemented");
 	}
 
-	variableName(): string {
-		return this.type.name;
+	public variableName(): string {
+		return this.type!!.name;
 	}
 }
