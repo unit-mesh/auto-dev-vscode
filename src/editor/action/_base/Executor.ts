@@ -1,3 +1,3 @@
-export interface Action {
+export interface Executor {
 	execute(): Promise<void>;
 }

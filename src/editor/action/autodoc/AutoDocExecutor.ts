@@ -1,4 +1,5 @@
 import vscode from "vscode";
+
 import { NamedElementBlock } from "../../document/NamedElementBlock";
 import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../language/LanguageCommentMap";
 import { ActionType, PromptManager } from "../../../prompt-manage/PromptManager";
@@ -8,10 +9,10 @@ import { insertCodeByRange, selectCodeInRange } from "../../editor";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
 import { ChatCreationContext } from "../../../chat-context/ChatContextProvider";
-import { Action } from "../_base/Action";
+import { Executor } from "../_base/Executor";
 import { AutoDocContext } from "./AutoDocContext";
 
-export class AutoDocAction implements Action {
+export class AutoDocExecutor implements Executor {
 	private document: vscode.TextDocument;
 	private range: NamedElementBlock;
 	private edit: vscode.WorkspaceEdit;
