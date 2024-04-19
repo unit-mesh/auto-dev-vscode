@@ -22,36 +22,38 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
 ## Todos
 
 - [ ] Custom LLM config
-- [ ] Context Provider
-    - [ ] Structurer
-        - [ ] UML Render
+    - [x] OpenAI Compatible
+- [ ] Provider API design
+    - [x] ChatContext
+    - [x] Structurer
     - [ ] RelatedCode
     - [ ] SimilarChunk?
 - [ ] Chat mode
     - [ ] Chat UI
     - [ ] Chat with selection
     - [ ] Chat with code
-- [ ] Touch Poing
-    - [ ] createQuickPick 
-    - [ ] ContextMenu 
+- [ ] Touch Point
+    - [X] QuickPick
+    - [x] ContextMenu
+    - [x] QuickFix
+    - [ ] Terminal
+    - [ ] Commit Message
+    - [x] CodeLens
 - [ ] Semantic Analysis for multiple languages
     - [x] TreeSitter
         - [x] Class level
         - [x] Method level
-        - spike for Variable level, since is not easy to implement
+        - [x] spike for Variable level, since is not easy to implement
     - [ ] Language Server Protocol
         - [ ] Java
         - [ ] Python
-    - [ ] Worker for TreeSitter analysis
+    - [ ] Backend Worker for TreeSitter analysis
 - [ ] DevIns language support
     - [ ] Syntax Highlight
     - [ ] Custom command
 - [ ] Custom prompt
     - [ ] Json Schema validation
     - [ ] Custom prompt settings
-- [ ] Real-time Assistant
-    - [X] QuickFix: Alt + Enter
-    - [ ] Hover to show
 - [ ] Custom Agent
     - [ ] Custom Agent
     - [ ] Custom Agent API
@@ -60,12 +62,15 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] Terminal
     - [ ] UI
 - [ ] Local embedding
+    - [ ] TF-IDF
+    - [ ] Simple Text Embedding
     - [ ] ONNX Runtime
     - [ ] Embedding Database
         - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike
             - [vectordb](https://www.npmjs.com/package/vectordb)
         - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike
 - [ ] l18n
+    -  [x] init
 
 ## Resources
 
