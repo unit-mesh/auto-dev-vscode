@@ -1,4 +1,6 @@
 import * as vscode from "vscode";
+// FOR Dependency Injection with Inversify
+import "reflect-metadata";
 
 import { registerCommands } from "./commands";
 import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
@@ -20,7 +22,7 @@ import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
-import { ToolingDetector } from "./chat-context/tooling/ToolingDetector";
+import { BuildToolSync } from "./chat-context/tooling/BuildToolSync";
 
 export async function activate(context: vscode.ExtensionContext) {
 	setExtensionContext(context);
@@ -44,14 +46,13 @@ export async function activate(context: vscode.ExtensionContext) {
 			registerAutoDevProviders(extension);
 			registerQuickFixProvider(extension);
 
-			await new ToolingDetector().startWatch();
+			await new BuildToolSync().startWatch();
 
 			await structureProvider.init();
 			extension.setStructureProvider(structureProvider);
 		}
 	);
 
-	// TODO: split different type commands
 	registerCommands(extension);
 	registerWebViewProvider(extension);
 
@@ -65,9 +66,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	);
 
-	vscode.workspace.onDidCloseTextDocument(
-		async (document: vscode.TextDocument) => {
-
+	vscode.workspace.onDidCloseTextDocument(async (document: vscode.TextDocument) => {
 		}
 	);
 

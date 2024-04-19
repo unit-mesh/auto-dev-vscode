@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "./ChatContextProvider";
 import { providerContainer } from "../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../ProviderTypes";
