@@ -3,7 +3,7 @@ import { NamedElementBlock } from "../../document/NamedElementBlock";
 import { AutoDevExtension } from "../../../AutoDevExtension";
 
 export interface ActionCreatorContext {
-	methodRanges: NamedElementBlock[],
+	ranges: NamedElementBlock[],
 	range: vscode.Range | vscode.Selection,
 	document: vscode.TextDocument,
 	lang: string

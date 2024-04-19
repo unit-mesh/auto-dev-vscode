@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
+import vscode from "vscode";
 
 import { ActionCreator, ActionCreatorContext } from "../_base/ActionCreator";
-import vscode from "vscode";
 import { AutoDevExtension } from "../../../AutoDevExtension";
 
 @injectable()

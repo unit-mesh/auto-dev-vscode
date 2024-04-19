@@ -4,7 +4,6 @@ import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import { TreeSitterFileError, } from "../../code-context/ast/TreeSitterFile";
 import { NamedElementBlock } from "../document/NamedElementBlock";
-import { JavaSemanticLsp } from "../language/semantic-lsp/java/JavaSemanticLsp";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { BlockBuilder } from "../document/BlockBuilder";
 
@@ -39,7 +38,8 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 		let actions: vscode.CodeAction[] = [];
 
 		if (methodRanges instanceof Array) {
-			actions = this.buildMethodActions(methodRanges, range, document, lang);
+			let methodActions = this.buildMethodActions(methodRanges, range, document, lang);
+			actions = actions.concat(methodActions);
 		} else if (classRanges instanceof Array) {
 			let classAction = this.buildClassAction(classRanges, range, document);
 			actions = actions.concat(classAction);
@@ -56,7 +56,6 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 				const title = `AutoDoc for method \`${result.identifierRange.text}\` (AutoDev)`;
 				return AutoDevCodeActionProvider.createDocAction(title, document, result);
 			});
-
 
 		let apisDocActions: vscode.CodeAction[] = [];
 		if (this.context.structureProvider?.getStructurer(lang)) {
