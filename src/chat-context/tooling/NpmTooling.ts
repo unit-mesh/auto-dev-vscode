@@ -58,7 +58,7 @@ export class NpmTooling implements Tooling {
 		return "npm";
 	}
 
-	getToolingVersion(): string {
+	async getToolingVersion(): Promise<string> {
 		return "";
 	}
 

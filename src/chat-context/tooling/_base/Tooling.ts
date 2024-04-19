@@ -39,7 +39,7 @@ export class Tooling {
 	/**
 	 * Returns the version of the tooling.
 	 */
-	getToolingVersion(): string {
+	async getToolingVersion(): Promise<string> {
 		return "";
 	}
 

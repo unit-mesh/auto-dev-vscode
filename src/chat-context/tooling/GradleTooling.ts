@@ -12,7 +12,25 @@ export class GradleTooling implements Tooling {
 
 	gradleDepRegex: RegExp = /^([^:]+):([^:]+):(.+)$/;
 
-	async findDeps(): Promise<PackageDependencies[]> {
+	async getDependencies(): Promise<PackageDependencies> {
+		return {
+			name: this.getToolingName(),
+			version: await this.getToolingVersion(),
+			path: "",
+			dependencies: await this.findDeps(),
+			packageManager: PackageManger.GRADLE
+		};
+	}
+
+	getToolingName(): string {
+		return "gradle";
+	}
+
+	async getToolingVersion(): Promise<string> {
+		return "";
+	}
+
+	private async findDeps(): Promise<PackageDependencies[]> {
 		let extension = vscode.extensions.getExtension("vscjava.vscode-gradle");
 		return await extension?.activate().then(async () => {
 			const action = new VSCodeAction();
@@ -47,30 +65,12 @@ export class GradleTooling implements Tooling {
 
 			return [{
 				name: this.getToolingName(),
-				version: this.getToolingVersion(),
+				version: await this.getToolingVersion(),
 				path: "",
 				dependencies: results,
 				packageManager: PackageManger.GRADLE
 			}];
 		}) ?? [];
-	}
-
-	async getDependencies(): Promise<PackageDependencies> {
-		return {
-			name: this.getToolingName(),
-			version: this.getToolingVersion(),
-			path: "",
-			dependencies: await this.findDeps(),
-			packageManager: PackageManger.GRADLE
-		};
-	}
-
-	getToolingName(): string {
-		return "gradle";
-	}
-
-	getToolingVersion(): string {
-		return "";
 	}
 
 	lookupRelativeTooling(filepath: String): string {
