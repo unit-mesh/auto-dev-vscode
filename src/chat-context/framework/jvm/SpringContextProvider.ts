@@ -3,19 +3,19 @@ import { injectable } from "inversify";
 import { TechStack } from "./TechStack";
 import { SpringLibrary } from "./SpringLibrary";
 import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
-import { GradleTooling } from "../../tooling/GradleTooling";
+import { GradleBuildToolProvider } from "../../tooling/GradleBuildToolProvider";
 import { DependencyEntry } from "../../tooling/_base/Dependence";
 
 @injectable()
 export class SpringContextProvider implements ChatContextProvider {
 	async isApplicable(context: ChatCreationContext): Promise<boolean> {
-		return context.language === "java" && GradleTooling.instance().isApplicable();
+		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable();
 	}
 
 	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
 		let deps;
 		try {
-			deps = await GradleTooling.instance().getDependencies();
+			deps = await GradleBuildToolProvider.instance().getDependencies();
 		} catch (e) {
 			console.error(e);
 			return [];

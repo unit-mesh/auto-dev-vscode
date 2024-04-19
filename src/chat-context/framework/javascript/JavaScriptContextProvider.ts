@@ -5,7 +5,7 @@ import { JsDependenciesSnapshot, PackageJsonDependency } from "./JsDependenciesS
 import { TechStack } from "../jvm/TechStack";
 import { getExtensionContext } from "../../../context";
 import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
-import { NpmTooling } from "../../tooling/NpmTooling";
+import { NpmBuildToolProvider } from "../../tooling/NpmBuildToolProvider";
 
 @injectable()
 export class JavaScriptContextProvider implements ChatContextProvider {
@@ -15,7 +15,7 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 
 	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
 		let results = [];
-		let snapshot = await new NpmTooling().create(getExtensionContext());
+		let snapshot = await new NpmBuildToolProvider().create(getExtensionContext());
 		let typeScriptLanguageContext = this.getTypeScriptLanguageContext(snapshot);
 		let mostPopularPackagesContext = this.getMostPopularPackagesContext(snapshot);
 

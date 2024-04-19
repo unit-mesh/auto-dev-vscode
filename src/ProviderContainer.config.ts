@@ -8,6 +8,9 @@ import { JavaScriptContextProvider } from "./chat-context/framework/javascript/J
 
 import { RelatedCodeProvider } from "./code-context/_base/RelatedCodeProvider";
 import { JavaRelatedProvider } from "./code-context/java/JavaRelatedProvider";
+import { BuildToolProvider } from "./chat-context/tooling/_base/BuildToolProvider";
+import { NpmBuildToolProvider } from "./chat-context/tooling/NpmBuildToolProvider";
+import { GradleBuildToolProvider } from "./chat-context/tooling/GradleBuildToolProvider";
 
 const providerContainer = new Container();
 
@@ -18,5 +21,10 @@ providerContainer.bind<ChatContextProvider>(PROVIDER_TYPES.ChatContextProvider).
 
 // RelatedCodeProvider
 providerContainer.bind<RelatedCodeProvider>(PROVIDER_TYPES.RelatedCodeProvider).to(JavaRelatedProvider);
+
+
+// Tooling
+providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(NpmBuildToolProvider);
+providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GradleBuildToolProvider);
 
 export { providerContainer };

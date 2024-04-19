@@ -1,4 +1,4 @@
-import { Tooling } from "./_base/Tooling";
+import { BuildToolProvider } from "./_base/BuildToolProvider";
 import { DEP_SCOPE, DependencyEntry, PackageDependencies } from "./_base/Dependence";
 import { PackageManger } from "./_base/PackageManger";
 import path from "path";
@@ -9,8 +9,10 @@ import {
 	PackageJsonDependencyEntry
 } from "../framework/javascript/JsDependenciesSnapshot";
 import { getExtensionContext } from "../../context";
+import { injectable } from "inversify";
 
-export class NpmTooling implements Tooling {
+@injectable()
+export class NpmBuildToolProvider implements BuildToolProvider {
 	moduleTarget = ["package.json"];
 
 	depTypeMap: { [key: string]: DEP_SCOPE } = {

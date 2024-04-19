@@ -1,32 +1,32 @@
 import vscode, { Extension } from "vscode";
 import * as util from "util";
 import { ExtensionApi as GradleApi, RunTaskOpts, Output } from "vscode-gradle";
+import { injectable } from "inversify";
 
 import { DependencyEntry, PackageDependencies } from "./_base/Dependence";
-import { Tooling } from "./_base/Tooling";
+import { BuildToolProvider } from "./_base/BuildToolProvider";
 import { PackageManger } from "./_base/PackageManger";
 import { VSCodeAction } from "../../editor/editor-api/VSCodeAction";
 import { GradleVersionInfo, parseGradleVersionInfo } from "./gradle/GradleVersionInfo";
 import { channel } from "../../channel";
 
-export class GradleTooling implements Tooling {
+@injectable()
+export class GradleBuildToolProvider implements BuildToolProvider {
 	moduleTarget = ["build.gradle", "build.gradle.kts"];
 
 	private gradleDepRegex: RegExp = /^([^:]+):([^:]+):(.+)$/;
 	private gradleInfo: GradleVersionInfo | undefined;
 
 	// singleton
-	private static instance_: GradleTooling;
+	private static instance_: GradleBuildToolProvider;
 	private deps: PackageDependencies | undefined;
 
-	private constructor() {
-	}
-
-	static instance(): GradleTooling {
-		if (!GradleTooling.instance_) {
-			GradleTooling.instance_ = new GradleTooling();
+	static instance(): GradleBuildToolProvider {
+		if (!GradleBuildToolProvider.instance_) {
+			GradleBuildToolProvider.instance_ = new GradleBuildToolProvider();
 		}
-		return GradleTooling.instance_;
+
+		return GradleBuildToolProvider.instance_;
 	}
 
 	async isApplicable(): Promise<boolean> {
@@ -74,7 +74,7 @@ export class GradleTooling implements Tooling {
 	}
 
 	private async buildDeps(): Promise<PackageDependencies> {
-		let extension = GradleTooling.getExtension();
+		let extension = GradleBuildToolProvider.getExtension();
 		return await extension?.activate().then(async () => {
 			const action = new VSCodeAction();
 			const gradleApi = extension!.exports as GradleApi;
@@ -116,12 +116,12 @@ export class GradleTooling implements Tooling {
 		}) ?? await Promise.reject("Gradle not found");
 	}
 
-	static getExtension() : Extension<any> | undefined {
+	static getExtension(): Extension<any> | undefined {
 		return vscode.extensions.getExtension("vscjava.vscode-gradle");
 	}
 
 	async getGradleVersion(): Promise<GradleVersionInfo> {
-		let extension = GradleTooling.getExtension();
+		let extension = GradleBuildToolProvider.getExtension();
 		return await extension?.activate().then(async () => {
 			const gradleApi = extension!.exports as GradleApi;
 			const action = new VSCodeAction();
