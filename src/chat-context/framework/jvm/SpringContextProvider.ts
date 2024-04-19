@@ -9,7 +9,7 @@ import { DependencyEntry } from "../../tooling/_base/Dependence";
 @injectable()
 export class SpringContextProvider implements ChatContextProvider {
 	isApplicable(context: ChatCreationContext): boolean {
-		return context.language === "java";
+		return context.language === "java" && GradleTooling.getExtension() !== undefined;
 	}
 
 	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {

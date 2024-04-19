@@ -4,7 +4,7 @@ import { PackageManger } from "./_base/PackageManger";
 import path from "path";
 
 export class NpmTooling implements Tooling {
-	moduleTarget = "package.json";
+	moduleTarget = ["package.json"];
 
 	depTypeMap: { [key: string]: DEP_SCOPE } = {
 		'dependencies': DEP_SCOPE.NORMAL,
@@ -13,7 +13,7 @@ export class NpmTooling implements Tooling {
 	};
 
 	async getDependencies(): Promise<PackageDependencies> {
-		return this.lookupSource(this.moduleTarget);
+		return this.lookupSource(this.moduleTarget[0]);
 	}
 
 	lookupSource(filepath: string): PackageDependencies {

@@ -1,4 +1,5 @@
 export interface GradleVersionInfo {
+	gradleVersion?: string;
 	buildTime: string;
 	revision: string;
 	kotlinVersion: string;
@@ -29,6 +30,7 @@ export interface GradleVersionInfo {
  */
 export function parseGradleVersionInfo(info: string): GradleVersionInfo {
 	const gradleInfo: GradleVersionInfo = {
+		gradleVersion: "",
 		buildTime: "",
 		revision: "",
 		kotlinVersion: "",
@@ -39,8 +41,15 @@ export function parseGradleVersionInfo(info: string): GradleVersionInfo {
 	};
 
 	const regex = /([A-Za-z\s]+):\s+(.+)/;
+	const gradleVersionRegex = /Gradle\s+(\d+\.\d+)/;
 
 	info.split('\n').forEach(line => {
+		let gradleMatch = line.match(gradleVersionRegex);
+		if (gradleMatch) {
+			const [, version] = gradleMatch;
+			gradleInfo.gradleVersion = version;
+		}
+
 		const match = line.match(regex);
 		if (match) {
 			const [, key, value] = match;

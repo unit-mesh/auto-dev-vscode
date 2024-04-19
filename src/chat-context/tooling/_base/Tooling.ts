@@ -9,7 +9,7 @@ import { PackageDependencies } from "./Dependence";
  * @property {PackageDependencies} getDependencies - Returns an object representing the tooling's dependencies.
  */
 export class Tooling {
-	moduleTarget: string = "";
+	moduleTarget: string[] = [];
 
 	/**
 	 * According to the given file path, find the tooling directory. For example, our project structure is:
