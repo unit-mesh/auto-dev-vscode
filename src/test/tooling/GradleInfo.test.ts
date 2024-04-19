@@ -18,6 +18,7 @@ OS:           Mac OS X 14.4.1 x86_64
     `;
 
     const expectedGradleInfo = {
+      gradleVersion: '8.3',
       buildTime: '2023-08-17 07:06:47 UTC',
       revision: '8afbf24b469158b714b36e84c6f4d4976c86fcd5',
       kotlinVersion: '1.9.0',
