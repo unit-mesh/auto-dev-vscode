@@ -1,5 +1,4 @@
 import { CodeElement } from "../editor/codemodel/CodeFile";
-import { injectable } from "inversify";
 
 export interface ChatContextItem {
 	clazz: string;
