@@ -6,6 +6,9 @@ import { TreeSitterFileError, } from "../../code-context/ast/TreeSitterFile";
 import { NamedElementBlock } from "../document/NamedElementBlock";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { BlockBuilder } from "../document/BlockBuilder";
+import { providerContainer } from "../../ProviderContainer.config";
+import { PROVIDER_TYPES } from "../../ProviderTypes";
+import { ActionCreator, ActionCreatorContext } from "../action/_base/ActionCreator";
 
 export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 	private context: AutoDevExtension;
@@ -37,26 +40,35 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 
 		let actions: vscode.CodeAction[] = [];
 
+		let allRanges: NamedElementBlock[] = [];
 		if (methodRanges instanceof Array) {
 			let methodActions = this.buildMethodActions(methodRanges, range, document, lang);
 			actions = actions.concat(methodActions);
+			allRanges = allRanges.concat(methodRanges);
 		} else if (classRanges instanceof Array) {
 			let classAction = this.buildClassAction(classRanges, range, document);
 			actions = actions.concat(classAction);
+			allRanges = allRanges.concat(classRanges);
 		}
+
+		const creatorContext: ActionCreatorContext = {
+			document: document,
+			lang: lang,
+			namedElementBlocks: allRanges,
+			range: range
+		};
+
+		providerContainer.getAll<ActionCreator>(PROVIDER_TYPES.ActionCreator)
+			.map(async (it) => await it.build(creatorContext))
+			.flatMap((async items => {
+				actions = actions.concat(await items);
+			}));
 
 		return actions;
 	}
 
 	private buildMethodActions(methodRanges: NamedElementBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument, lang: string):
 		vscode.CodeAction[] {
-		let methodDocActions = methodRanges
-			.filter(result => result.blockRange.contains(range))
-			.map(result => {
-				const title = `AutoDoc for method \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevCodeActionProvider.createDocAction(title, document, result);
-			});
-
 		let apisDocActions: vscode.CodeAction[] = [];
 		if (this.context.structureProvider?.getStructurer(lang)) {
 			apisDocActions = methodRanges
@@ -67,7 +79,6 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 				});
 		}
 
-		// auto test
 		let testActions: vscode.CodeAction[] = methodRanges
 			.filter(result => result.blockRange.contains(range))
 			.map(result => {
@@ -75,17 +86,10 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 				return AutoDevCodeActionProvider.createAutoTestAction(title, document, result);
 			});
 
-		return methodDocActions.concat(apisDocActions).concat(testActions);
+		return apisDocActions.concat(testActions);
 	}
 
 	private buildClassAction(classRanges: NamedElementBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
-		const docs = classRanges
-			.filter(result => result.identifierRange.contains(range))
-			.map(result => {
-				const title = `AutoDoc for class \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevCodeActionProvider.createDocAction(title, document, result);
-			});
-
 		let testActions: vscode.CodeAction[] = classRanges
 			.filter(named => named.identifierRange.contains(range))
 			.map(result => {
@@ -93,7 +97,7 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 				return AutoDevCodeActionProvider.createAutoTestAction(title, document, result);
 			});
 
-		return docs.concat(testActions);
+		return testActions;
 	}
 
 	private static createGenApiDataAction(title: string, result: NamedElementBlock, document: vscode.TextDocument): vscode.CodeAction {
