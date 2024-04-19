@@ -35,13 +35,17 @@ export class GradleBuildToolProvider implements BuildToolProvider {
 			return false;
 		}
 		const workspace = workspaces[0];
-		var hasTarget = false;
+		let hasTarget = false;
 		for (const target of this.moduleTarget) {
 			const targetPath = vscode.Uri.joinPath(workspace.uri, target);
-			const targetFileType = await vscode.workspace.fs.stat(targetPath);
-			if (targetFileType.type === vscode.FileType.File) {
-				hasTarget = true;
-				break;
+			try {
+				const targetFileType = await vscode.workspace.fs.stat(targetPath);
+				if (targetFileType.type === vscode.FileType.File) {
+					hasTarget = true;
+					break;
+				}
+			} catch (error) {
+				// do nothing
 			}
 		}
 
