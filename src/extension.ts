@@ -11,10 +11,10 @@ import Parser from "web-tree-sitter";
 
 import { removeExtensionContext, setExtensionContext } from './context';
 import {
-  registerAutoDevProviders,
-  registerCodeLensProviders,
-  registerQuickFixProvider,
-  registerWebViewProvider
+	registerAutoDevProviders,
+	registerCodeLensProviders,
+	registerQuickFixProvider,
+	registerWebViewProvider
 } from "./editor/providers/ProviderRegister";
 import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
@@ -23,53 +23,57 @@ import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { ToolingDetector } from "./chat-context/tooling/ToolingDetector";
 
 export async function activate(context: vscode.ExtensionContext) {
-  setExtensionContext(context);
+	setExtensionContext(context);
 
-  channel.show();
+	channel.show();
 
-  const sidebar = new AutoDevWebviewViewProvider(context);
-  const action = new VSCodeAction();
-  let structureProvider = new StructurerProviderManager();
+	const sidebar = new AutoDevWebviewViewProvider(context);
+	const action = new VSCodeAction();
+	let structureProvider = new StructurerProviderManager();
 
-  const documentManager = new RecentlyDocumentManager();
-  const diffManager = new DiffManager();
-  const fileCacheManager = new CodeFileCacheManager(structureProvider);
-  const relatedManager = new RelatedCodeProviderManager(fileCacheManager);
-  const extension = new AutoDevExtension(
-    sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
-  );
+	const documentManager = new RecentlyDocumentManager();
+	const diffManager = new DiffManager();
+	const fileCacheManager = new CodeFileCacheManager(structureProvider);
+	const relatedManager = new RelatedCodeProviderManager(fileCacheManager);
+	const extension = new AutoDevExtension(
+		sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
+	);
 
-  Parser.init().then(async () => {
-      registerCodeLensProviders(extension);
-      registerAutoDevProviders(extension);
-      registerQuickFixProvider(extension);
+	Parser.init().then(async () => {
+			registerCodeLensProviders(extension);
+			registerAutoDevProviders(extension);
+			registerQuickFixProvider(extension);
 
-      await new ToolingDetector().startWatch()
+			await new ToolingDetector().startWatch();
 
-      await structureProvider.init();
-      extension.setStructureProvider(structureProvider);
-    }
-  );
+			await structureProvider.init();
+			extension.setStructureProvider(structureProvider);
+		}
+	);
 
-  // TODO: split different type commands
-  registerCommands(extension);
-  registerWebViewProvider(extension);
+	// TODO: split different type commands
+	registerCommands(extension);
+	registerWebViewProvider(extension);
 
-  vscode.window.onDidChangeActiveTextEditor(
-    async (editor: vscode.TextEditor | undefined) => {
-      if (!editor) {
-        return;
-      }
+	vscode.window.onDidChangeActiveTextEditor(
+		async (editor: vscode.TextEditor | undefined) => {
+			if (!editor) {
+				return;
+			}
 
-      documentManager.updateCurrentDocument(editor.document);
-    }
-  );
+			documentManager.updateCurrentDocument(editor.document);
+		}
+	);
 
-  // on closed editor
+	vscode.workspace.onDidCloseTextDocument(
+		async (document: vscode.TextDocument) => {
 
-  AutoDevStatusManager.instance.create();
+		}
+	);
+
+	AutoDevStatusManager.instance.create();
 }
 
 export function deactivate() {
-  removeExtensionContext();
+	removeExtensionContext();
 }
