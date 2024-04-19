@@ -18,7 +18,7 @@ export class ChatContextManager {
 
 	async collectChatContextList(context: ChatCreationContext): Promise<ChatContextItem[]> {
 		let map: Promise<ChatContextItem[]>[] = providerContainer.getAll<ChatContextProvider>(PROVIDER_TYPES.ChatContextProvider).filter(async (provider) => {
-			return provider.isApplicable(context);
+			return await provider.isApplicable(context);
 		}).map(async (provider) => {
 			return (await provider.collect(context)).flat();
 		});

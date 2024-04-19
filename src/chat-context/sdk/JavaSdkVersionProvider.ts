@@ -5,8 +5,8 @@ import { GradleTooling } from "../tooling/GradleTooling";
 
 @injectable()
 export class JavaSdkVersionProvider implements ChatContextProvider {
-	isApplicable(context: ChatCreationContext): boolean {
-		return context.language === "java" && GradleTooling.getExtension() !== undefined;
+	async isApplicable(context: ChatCreationContext): Promise<boolean> {
+		return context.language === "java" && GradleTooling.instance().isApplicable();
 	}
 
 	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {

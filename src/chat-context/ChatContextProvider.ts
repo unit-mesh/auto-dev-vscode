@@ -15,7 +15,7 @@ export interface ChatCreationContext {
 }
 
 export interface ChatContextProvider {
-	isApplicable(context: ChatCreationContext): boolean
+	isApplicable(context: ChatCreationContext): Promise<boolean>
 
 	collect(context: ChatCreationContext): Promise<ChatContextItem[]>
 }

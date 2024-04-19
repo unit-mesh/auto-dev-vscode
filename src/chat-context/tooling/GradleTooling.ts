@@ -44,11 +44,8 @@ export class GradleTooling implements Tooling {
 				break;
 			}
 		}
-		if (!hasTarget) {
-			return false;
-		}
 
-		return true;
+		return hasTarget;
 	}
 
 	async startWatch() {
