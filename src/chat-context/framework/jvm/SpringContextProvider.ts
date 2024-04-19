@@ -60,53 +60,47 @@ export class SpringContextProvider implements ChatContextProvider {
 	}
 
 	prepareLibrary(libraryDataList: DependencyEntry[]): TestStack {
-		const testStack: TestStack = new TestStack();
-		let hasMatchSpringMvc: boolean = false;
-		let hasMatchSpringData: boolean = false;
-
-		console.log(libraryDataList);
+		const techStack: TestStack = new TestStack();
 		libraryDataList?.forEach(item => {
 			const name: string = item.name;
-			console.log(name);
 
-			if (!hasMatchSpringMvc) {
-				SpringLibrary.SPRING_MVC.forEach(entry => {
-					if (name.includes(entry.coord)) {
-						testStack.coreFrameworks.set(entry.shortText, true);
-						hasMatchSpringMvc = true;
-					}
-				});
-			}
+			SpringLibrary.SPRING_MVC.forEach(entry => {
+				if (entry.coord === name) {
+					techStack.coreFrameworks.set(entry.shortText, true);
+				}
+			});
 
-			if (!hasMatchSpringData) {
-				SpringLibrary.SPRING_DATA.forEach(entry => {
-					if (entry.coords.includes(name)) {
-						testStack.coreFrameworks.set(entry.shortText, true);
-						hasMatchSpringData = true;
-					}
-				});
-			}
+			SpringLibrary.SPRING_DATA.forEach(entry => {
+				if (entry.coords.includes(name)) {
+					techStack.coreFrameworks.set(entry.shortText, true);
+				}
+			});
 
 			switch (true) {
 				case name.includes("org.springframework.boot:spring-boot-test"):
-					testStack.testFrameworks.set("Spring Boot Test", true);
+					techStack.testFrameworks.set("Spring Boot Test", true);
 					break;
 				case name.includes("org.assertj:assertj-core"):
-					testStack.testFrameworks.set("AssertJ", true);
+					techStack.testFrameworks.set("AssertJ", true);
 					break;
 				case name.includes("org.junit.jupiter:junit-jupiter"):
-					testStack.testFrameworks.set("JUnit 5", true);
+					techStack.testFrameworks.set("JUnit 5", true);
 					break;
 				case name.includes("org.mockito:mockito-core"):
-					testStack.testFrameworks.set("Mockito", true);
+					techStack.testFrameworks.set("Mockito", true);
 					break;
 				case name.includes("com.h2database:h2"):
-					testStack.testFrameworks.set("H2", true);
+					techStack.testFrameworks.set("H2", true);
 					break;
 			}
 		});
 
-		return testStack;
+		// remove duplicate in coreFrameworks
+		techStack.coreFrameworks = new Map(Array.from(techStack.coreFrameworks.keys()).map(key => [key, true]));
+		// remove duplicate in testFrameworks
+		techStack.testFrameworks = new Map(Array.from(techStack.testFrameworks.keys()).map(key => [key, true]));
+
+		return techStack;
 	}
 
 }

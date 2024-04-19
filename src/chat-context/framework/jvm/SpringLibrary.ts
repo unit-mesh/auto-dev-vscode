@@ -9,10 +9,8 @@ export interface LibraryDescriptor {
 }
 
 export class SpringLibrary {
-	// Spring Data
 	private static REACTOR_MAVEN: string = "io.projectreactor:reactor-core";
 	private static MONGO_REACTIVE_STREAMS_MAVEN: string = "org.mongodb:mongodb-driver-reactivestreams";
-	private static SPRING_DATA_COMMONS_MAVEN: string = "org.springframework.data:spring-data-commons";
 	private static JPA_MAVEN: string = "org.springframework.data:spring-data-jpa";
 	private static CASSANDRA_MAVEN: string = "org.springframework.data:spring-data-cassandra";
 	private static COUCHBASE_MAVEN: string = "org.springframework.data:spring-data-couchbase";
@@ -39,18 +37,10 @@ export class SpringLibrary {
 		{ shortText: "REDIS", coords: [SpringLibrary.REDIS_MAVEN] }
 	];
 
-	public static canApplySpringData(libName: string): boolean {
-		return libName === SpringLibrary.SPRING_DATA_COMMONS_MAVEN;
-	}
-
 	public static SPRING_MVC: LibraryDescriptor[] = [
 		{ shortText: "Spring MVC", coord: "org.springframework:spring-webmvc" },
-		{ shortText: "Spring Boot", coord: "org.springframework.boot:spring-boot-starter-web" },
-		{ shortText: "Spring Boot WebFlux", coord: "org.springframework.boot:spring-boot-starter-webflux" },
+		{ shortText: "Spring Core", coord: "org.springframework:spring-core" },
+		{ shortText: "Spring Boot", coord: "org.springframework.boot:spring-boot" },
 		{ shortText: "Spring WebFlux", coord: "org.springframework:spring-webflux" }
 	];
-
-	public static canApplySpringMvc(libName: string): boolean {
-		return libName === "org.springframework:spring-webmvc" || libName === "org.springframework:spring-webflux";
-	}
 }
