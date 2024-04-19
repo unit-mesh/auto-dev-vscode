@@ -1,4 +1,4 @@
-import { Action } from "./Action";
+import { Action } from "./_base/Action";
 import vscode from "vscode";
 
 import { NamedElementBlock } from "../document/NamedElementBlock";

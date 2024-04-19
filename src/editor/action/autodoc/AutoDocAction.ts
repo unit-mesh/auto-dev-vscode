@@ -1,24 +1,15 @@
 import vscode from "vscode";
-import { NamedElementBlock } from "../document/NamedElementBlock";
-import { LANGUAGE_BLOCK_COMMENT_MAP } from "../language/LanguageCommentMap";
-import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
-import { ActionType, PromptManager } from "../../prompt-manage/PromptManager";
-import { LlmProvider } from "../../llm-provider/LlmProvider";
-import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
-import { insertCodeByRange, selectCodeInRange } from "../editor";
-import { AutoDevStatus, AutoDevStatusManager } from "../editor-api/AutoDevStatusManager";
-import { FencedCodeBlock } from "../../markdown/FencedCodeBlock";
-import { ChatCreationContext } from "../../chat-context/ChatContextProvider";
-import { Action } from "./Action";
-import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
-
-export interface AutoDocContext extends TemplateContext {
-	language: string;
-	startSymbol: string;
-	endSymbol: string;
-	code: string;
-	forbiddenRules: string[];
-}
+import { NamedElementBlock } from "../../document/NamedElementBlock";
+import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../language/LanguageCommentMap";
+import { ActionType, PromptManager } from "../../../prompt-manage/PromptManager";
+import { LlmProvider } from "../../../llm-provider/LlmProvider";
+import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
+import { insertCodeByRange, selectCodeInRange } from "../../editor";
+import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
+import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
+import { ChatCreationContext } from "../../../chat-context/ChatContextProvider";
+import { Action } from "../_base/Action";
+import { AutoDocContext } from "./AutoDocContext";
 
 export class AutoDocAction implements Action {
 	private document: vscode.TextDocument;

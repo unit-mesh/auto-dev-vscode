@@ -5,7 +5,7 @@ import { NamedElementBlock } from "./editor/document/NamedElementBlock";
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
 import { showQuickPick } from "./editor/editor-api/QuickInput";
-import { AutoDocAction } from "./editor/action/AutoDocAction";
+import { AutoDocAction } from "./editor/action/autodoc/AutoDocAction";
 import { AutoTestAction } from "./editor/action/AutoTestAction";
 
 const commandsMap: (
