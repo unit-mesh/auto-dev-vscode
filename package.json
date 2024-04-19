@@ -97,7 +97,7 @@
       {
         "command": "autodev.action.quickchat",
         "category": "AutoDev",
-        "title": "%autodev.command.quickchat%",
+        "title": "%autodev.command.quickChat%",
         "group": "AutoDev"
       },
       {
