@@ -1,12 +1,11 @@
 import { injectable } from "inversify";
-import vscode from "vscode";
-import path from "path";
 
 import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
-import { JsDependenciesSnapshot, PackageJsonDependency, PackageJsonDependencyEntry } from "./JsDependenciesSnapshot";
+import { JsDependenciesSnapshot, PackageJsonDependency } from "./JsDependenciesSnapshot";
 import { TechStack } from "../jvm/TechStack";
 import { getExtensionContext } from "../../../context";
 import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
+import { NpmTooling } from "../../tooling/NpmTooling";
 
 @injectable()
 export class JavaScriptContextProvider implements ChatContextProvider {
@@ -16,7 +15,7 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 
 	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
 		let results = [];
-		let snapshot = await this.create(getExtensionContext());
+		let snapshot = await new NpmTooling().create(getExtensionContext());
 		let typeScriptLanguageContext = this.getTypeScriptLanguageContext(snapshot);
 		let mostPopularPackagesContext = this.getMostPopularPackagesContext(snapshot);
 
@@ -123,63 +122,5 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 			clazz: JavaScriptContextProvider.name,
 			text: `The project uses the following JavaScript packages: ${dependencies.join(', ')}`
 		};
-	}
-
-	async create(context: vscode.ExtensionContext): Promise<JsDependenciesSnapshot> {
-		let packageJsonFiles: vscode.Uri[] = [];
-		let resolvedPackageJson = false;
-
-		const activeEditor = vscode.window.activeTextEditor;
-		if (activeEditor) {
-			const workspaceFolder = vscode.workspace.getWorkspaceFolder(activeEditor.document.uri);
-			if (workspaceFolder) {
-				const packageJsonPath = vscode.Uri.file(path.join(workspaceFolder.uri.fsPath, 'package.json'));
-				let fileStat = await vscode.workspace.fs.stat(packageJsonPath);
-				if (fileStat.type === vscode.FileType.File) {
-					packageJsonFiles = [packageJsonPath];
-					resolvedPackageJson = true;
-				}
-			}
-
-			if (packageJsonFiles.length === 0) {
-				packageJsonFiles = await vscode.workspace.findFiles('**/package.json');
-			}
-
-			const tsConfigs = await this.findTsConfigs(context);
-			const packages = await this.enumerateAllPackages(packageJsonFiles);
-			return new JsDependenciesSnapshot(packageJsonFiles, resolvedPackageJson, tsConfigs, packages);
-		}
-
-		return new JsDependenciesSnapshot([], false, [], new Map());
-	}
-
-	async enumerateAllPackages(packageJsonFiles: vscode.Uri[]): Promise<Map<string, PackageJsonDependencyEntry>> {
-		const allPackages = new Map<string, PackageJsonDependencyEntry>();
-		for (const file of packageJsonFiles) {
-			const packageJson = await vscode.workspace.fs.readFile(file).then(data => JSON.parse(data.toString()));
-			for (const [name, version] of Object.entries(packageJson.dependencies || {})) {
-				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version, dependencyType: PackageJsonDependency.dependencies });
-			}
-			for (const [name, version] of Object.entries(packageJson.devDependencies || {})) {
-				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version, dependencyType: PackageJsonDependency.devDependencies });
-			}
-		}
-		return allPackages;
-	}
-
-	async findTsConfigs(context: vscode.ExtensionContext): Promise<vscode.Uri[]> {
-		const tsConfigFiles: vscode.Uri[] = [];
-		const workspaceFolders = vscode.workspace.workspaceFolders;
-		if (workspaceFolders) {
-			for (const folder of workspaceFolders) {
-				const tsConfigPath = vscode.Uri.file(path.join(folder.uri.fsPath, 'tsconfig.json'));
-				let fileStat = await vscode.workspace.fs.stat(tsConfigPath);
-				if (fileStat.type === vscode.FileType.File) {
-					tsConfigFiles.push(tsConfigPath);
-				}
-			}
-		}
-
-		return tsConfigFiles;
 	}
 }

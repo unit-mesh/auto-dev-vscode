@@ -2,6 +2,13 @@ import { Tooling } from "./_base/Tooling";
 import { DEP_SCOPE, DependencyEntry, PackageDependencies } from "./_base/Dependence";
 import { PackageManger } from "./_base/PackageManger";
 import path from "path";
+import vscode from "vscode";
+import {
+	JsDependenciesSnapshot,
+	PackageJsonDependency,
+	PackageJsonDependencyEntry
+} from "../framework/javascript/JsDependenciesSnapshot";
+import { getExtensionContext } from "../../context";
 
 export class NpmTooling implements Tooling {
 	moduleTarget = ["package.json"];
@@ -13,45 +20,24 @@ export class NpmTooling implements Tooling {
 	};
 
 	async getDependencies(): Promise<PackageDependencies> {
-		return this.lookupSource(this.moduleTarget[0]);
-	}
-
-	lookupSource(filepath: string): PackageDependencies {
-		let packageJson = JSON.parse(filepath);
-		let name = packageJson.name;
-		const version: string = packageJson.version;
-
-		const deps: DependencyEntry[] = ["dependencies", "optionalDependencies", "devDependencies"].flatMap(field =>
-			this.createDepByType(field, filepath)
-		);
-
-		return {
-			name,
-			version,
-			packageManager: PackageManger.NPM,
-			dependencies: deps,
-			path: filepath
+		let deps = await this.create(getExtensionContext());
+		let packageDependencies: PackageDependencies = {
+			name: "package.json",
+			dependencies: [],
+			version: "",
+			path: "package.json",
+			packageManager: PackageManger.NPM
 		};
-	}
 
-	private createDepByType(field: string, content: string): DependencyEntry[] {
-		const listOf: DependencyEntry[] = [];
-		const optionalDep: { [key: string]: string } | undefined = JSON.parse(content)[field];
-		if (optionalDep !== undefined) {
-			listOf.push(...this.createDependencies(optionalDep, this.depTypeMap[field]));
-		}
+		deps.packages.forEach((value, key) => {
+			packageDependencies.dependencies.push(<DependencyEntry>{
+				name: value.name,
+				version: value.version,
+				scope: this.depTypeMap[value.dependencyType]
+			});
+		});
 
-		return listOf;
-	}
-
-	private createDependencies(depMap: { [key: string]: string }, scope: DEP_SCOPE): DependencyEntry[] {
-		return Object.entries(depMap).map(([key, value]) => ({
-			name: key,
-			group: "",
-			artifact: key,
-			version: value,
-			scope: scope
-		}));
+		return packageDependencies;
 	}
 
 	getToolingName(): string {
@@ -62,32 +48,62 @@ export class NpmTooling implements Tooling {
 		return "";
 	}
 
-	/**
-	 * According to the given file path, find the tooling directory. For example, our project structure is:
-	 *
-	 * ```
-	 * ├── package.json
-	 * └── src
-	 *     ├── components
-	 *     │   ├── archive
-	 *     │   │   └── EditableDiv.tsx
-	 *     └── util
-	 * ```
-	 *
-	 * if the given file path is `src/components/archive/EditableDiv.tsx`, the method should return the path to the tooling directory.
-	 */
-	lookupRelativeTooling(filepath: String): string {
-		const segments = filepath.split(path.sep);
+	async create(context: vscode.ExtensionContext): Promise<JsDependenciesSnapshot> {
+		let packageJsonFiles: vscode.Uri[] = [];
+		let resolvedPackageJson = false;
 
-		// Find the index of the "src" directory
-		const srcIndex = segments.indexOf('src');
-		if (srcIndex === -1) {
-			return "";
+		const activeEditor = vscode.window.activeTextEditor;
+		if (activeEditor) {
+			const workspaceFolder = vscode.workspace.getWorkspaceFolder(activeEditor.document.uri);
+			if (workspaceFolder) {
+				const packageJsonPath = vscode.Uri.file(path.join(workspaceFolder.uri.fsPath, 'package.json'));
+				let fileStat = await vscode.workspace.fs.stat(packageJsonPath);
+				if (fileStat.type === vscode.FileType.File) {
+					packageJsonFiles = [packageJsonPath];
+					resolvedPackageJson = true;
+				}
+			}
+
+			if (packageJsonFiles.length === 0) {
+				packageJsonFiles = await vscode.workspace.findFiles('**/package.json');
+			}
+
+			const tsConfigs = await this.findTsConfigs(context);
+			const packages = await this.enumerateAllPackages(packageJsonFiles);
+			return new JsDependenciesSnapshot(packageJsonFiles, resolvedPackageJson, tsConfigs, packages);
 		}
 
-		const projectPath = segments.slice(0, srcIndex + 1).join(path.sep);
-		const toolingPath = `${projectPath}${path.sep}package.json`;
-		return toolingPath;
+		return new JsDependenciesSnapshot([], false, [], new Map());
+	}
+
+	async enumerateAllPackages(packageJsonFiles: vscode.Uri[]): Promise<Map<string, PackageJsonDependencyEntry>> {
+		const allPackages = new Map<string, PackageJsonDependencyEntry>();
+		for (const file of packageJsonFiles) {
+			const packageJson = await vscode.workspace.fs.readFile(file).then(data => JSON.parse(data.toString()));
+			for (const [name, version] of Object.entries(packageJson.dependencies || {})) {
+				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version, dependencyType: PackageJsonDependency.dependencies });
+			}
+			for (const [name, version] of Object.entries(packageJson.devDependencies || {})) {
+				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version, dependencyType: PackageJsonDependency.devDependencies });
+			}
+		}
+		return allPackages;
+	}
+
+	async findTsConfigs(context: vscode.ExtensionContext): Promise<vscode.Uri[]> {
+		const tsConfigFiles: vscode.Uri[] = [];
+		const workspaceFolders = vscode.workspace.workspaceFolders;
+		if (workspaceFolders) {
+			for (const folder of workspaceFolders) {
+				const tsConfigPath = vscode.Uri.file(path.join(folder.uri.fsPath, 'tsconfig.json'));
+				let fileStat = await vscode.workspace.fs.stat(tsConfigPath);
+				if (fileStat.type === vscode.FileType.File) {
+					tsConfigFiles.push(tsConfigPath);
+				}
+			}
+		}
+
+		return tsConfigFiles;
 	}
 
 	async getTasks(): Promise<string[]> {

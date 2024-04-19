@@ -113,7 +113,7 @@ export class GradleTooling implements Tooling {
 				dependencies: results,
 				packageManager: PackageManger.GRADLE
 			};
-		}) ?? Promise.reject("Gradle not found");
+		}) ?? await Promise.reject("Gradle not found");
 	}
 
 	static getExtension() : Extension<any> | undefined {
@@ -126,7 +126,7 @@ export class GradleTooling implements Tooling {
 			const gradleApi = extension!.exports as GradleApi;
 			const action = new VSCodeAction();
 			const workspace = action.getWorkspaceDirectories()[0];
-			var outputString = "";
+			let outputString = "";
 
 			const runTaskOpts: RunTaskOpts = {
 				projectFolder: workspace,
@@ -141,13 +141,9 @@ export class GradleTooling implements Tooling {
 
 			await gradleApi.runTask(runTaskOpts);
 
-			channel.append("Gradle Info:\n" + outputString)
+			channel.append("Gradle Info:\n" + outputString);
 			return parseGradleVersionInfo(outputString);
 		}) ?? await Promise.reject("Gradle not found");
-	}
-
-	lookupRelativeTooling(filepath: String): string {
-		return "";
 	}
 
 	async getTasks(): Promise<string[]> {
