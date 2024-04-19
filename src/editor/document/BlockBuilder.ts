@@ -1,8 +1,10 @@
-import { IdentifierBlockRange } from "./IdentifierBlockRange";
+import { IdentifierBlock } from "./IdentifierBlock";
 import { BlockRange } from "./BlockRange";
 import { TreeSitterFile, TreeSitterFileError } from "../../code-context/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import Parser from "web-tree-sitter";
+import { CodeElement } from "../codemodel/CodeFile";
+import { CodeElementType } from "../codemodel/CodeElementType";
 
 export class BlockBuilder {
 	langConfig: LanguageConfig;
@@ -17,22 +19,22 @@ export class BlockBuilder {
 		this.parser = treeSitterFile.parser;
 	}
 
-
-	methodRanges(): IdentifierBlockRange[] | TreeSitterFileError {
-		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.methodQuery.queryStr);
+	methodRanges(): IdentifierBlock[] | TreeSitterFileError {
+		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.methodQuery.queryStr, CodeElementType.Method);
 	}
 
-	classRanges(): IdentifierBlockRange[] | TreeSitterFileError {
-		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.classQuery.queryStr);
+	classRanges(): IdentifierBlock[] | TreeSitterFileError {
+		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
 	}
 
 	/**
 	 * Searches the syntax tree for matches to the given query string and returns a list of identifier-block ranges.
 	 *
 	 * @param queryString The query string to match against the syntax tree.
+	 * @param elementType The type of code element that the query string represents.
 	 * @returns An array of `IdentifierBlockRange` objects representing the matches, or a `TreeSitterFileError` if an error occurs.
 	 */
-	buildBlock(queryString: string): IdentifierBlockRange[] | TreeSitterFileError {
+	buildBlock(queryString: string, elementType: CodeElementType): IdentifierBlock[] | TreeSitterFileError {
 		try {
 			const query = this.language.query(queryString);
 			const root = this.tree.rootNode;
@@ -40,7 +42,6 @@ export class BlockBuilder {
 
 			return (
 				matches?.flatMap((match) => {
-					// check length if more than 2, the first one will be document
 					let idIndex = 0;
 					let blockIdentIndex = 1;
 					let commentIndex = -1;
@@ -54,9 +55,10 @@ export class BlockBuilder {
 					const identifierNode = match.captures[idIndex].node;
 					const blockNode = match.captures[blockIdentIndex].node;
 
-					let blockRange = new IdentifierBlockRange(
+					let blockRange = new IdentifierBlock(
 						BlockRange.fromNode(identifierNode),
-						BlockRange.fromNode(blockNode)
+						BlockRange.fromNode(blockNode),
+						elementType
 					);
 
 					if (hasComment) {

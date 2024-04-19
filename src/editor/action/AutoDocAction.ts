@@ -1,5 +1,5 @@
 import vscode from "vscode";
-import { IdentifierBlockRange } from "../document/IdentifierBlockRange";
+import { IdentifierBlock } from "../document/IdentifierBlock";
 import { LANGUAGE_BLOCK_COMMENT_MAP } from "../language/LanguageCommentMap";
 import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 import { ActionType, PromptManager } from "../../prompt-manage/PromptManager";
@@ -21,11 +21,11 @@ export interface AutoDocContext extends TemplateContext {
 
 export class AutoDocAction implements Action {
 	private document: vscode.TextDocument;
-	private range: IdentifierBlockRange;
+	private range: IdentifierBlock;
 	private edit: vscode.WorkspaceEdit;
 	private language: string;
 
-	constructor(document: vscode.TextDocument, range: IdentifierBlockRange, edit: vscode.WorkspaceEdit) {
+	constructor(document: vscode.TextDocument, range: IdentifierBlock, edit: vscode.WorkspaceEdit) {
 		this.document = document;
 		this.range = range;
 		this.edit = edit;
