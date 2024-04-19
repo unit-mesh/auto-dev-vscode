@@ -12,6 +12,10 @@ import { BuildToolProvider } from "./chat-context/tooling/_base/BuildToolProvide
 import { NpmBuildToolProvider } from "./chat-context/tooling/NpmBuildToolProvider";
 import { GradleBuildToolProvider } from "./chat-context/tooling/GradleBuildToolProvider";
 
+import { JavaTestGenProvider } from "./code-context/java/JavaTestGenProvider";
+import { TestGenProvider } from "./code-context/_base/test/TestGenProvider";
+import { TypeScriptTestGenProvider } from "./code-context/typescript/TypeScriptTestGenProvider";
+
 const providerContainer = new Container();
 
 // ChatContextProvider
@@ -26,5 +30,9 @@ providerContainer.bind<RelatedCodeProvider>(PROVIDER_TYPES.RelatedCodeProvider).
 // Tooling
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(NpmBuildToolProvider);
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GradleBuildToolProvider);
+
+// TestGenProvider
+providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(JavaTestGenProvider);
+providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(TypeScriptTestGenProvider);
 
 export { providerContainer };
