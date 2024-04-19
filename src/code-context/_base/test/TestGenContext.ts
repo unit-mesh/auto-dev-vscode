@@ -5,5 +5,5 @@ export interface TestGenContext {
 	relatedClasses: CodeStructure[],
 	testClassName: string,
 	language: string,
-	currentObject: CodeStructure,
+	currentObject?: CodeStructure,
 }

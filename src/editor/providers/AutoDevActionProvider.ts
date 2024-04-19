@@ -67,7 +67,15 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 				});
 		}
 
-		return methodDocActions.concat(apisDocActions);
+		// auto test
+		let testActions: vscode.CodeAction[] = methodRanges
+			.filter(result => result.blockRange.contains(range))
+			.map(result => {
+				const title = `AutoTest for method \`${result.identifierRange.text}\` (AutoDev)`;
+				return AutoDevActionProvider.createAutoTestAction(title, document, result);
+			});
+
+		return methodDocActions.concat(apisDocActions).concat(testActions);
 	}
 
 	private buildClassAction(classRanges: NamedElementBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
@@ -116,5 +124,22 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		const lsp = new JavaSemanticLsp(context);
 		const client = lsp?.getLanguageClient();
 		console.log(client);
+	}
+
+	private static createAutoTestAction(title: string, document: vscode.TextDocument, result: NamedElementBlock) {
+		const codeAction = new vscode.CodeAction(
+			title,
+			AutoDevActionProvider.providedCodeActionKinds[0]
+		);
+
+		codeAction.isPreferred = false;
+		codeAction.edit = new vscode.WorkspaceEdit();
+		codeAction.command = {
+			command: "autodev.autoTest",
+			title: title,
+			arguments: [document, result, codeAction.edit]
+		};
+
+		return codeAction;
 	}
 }

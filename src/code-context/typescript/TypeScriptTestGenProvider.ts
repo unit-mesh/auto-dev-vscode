@@ -7,6 +7,7 @@ import { TestGenProvider } from "../_base/test/TestGenProvider";
 import { CodeFile, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TestGenContext } from "../_base/test/TestGenContext";
+import { NamedElementBlock } from "../../editor/document/NamedElementBlock";
 
 
 @injectable()
@@ -25,8 +26,54 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		this.context = context;
 	}
 
-	findOrCreateTestFile(sourceFile: Uri, element: any): Promise<TestGenContext> {
-		return Promise.resolve(this.context!!);
+	async findOrCreateTestFile(sourceFile: vscode.TextDocument, block: NamedElementBlock): Promise<TestGenContext> {
+		const language = sourceFile.languageId;
+		const testFilePath: vscode.Uri | undefined = this.getTestFilePath(sourceFile);
+		if (!testFilePath) {
+			return Promise.reject(`Failed to find test file path for: ${sourceFile}`);
+		}
+
+		const elementName = block.identifierRange.text;
+
+		if (fs.existsSync(testFilePath.toString())) {
+			const context: TestGenContext = {
+				currentObject: undefined,
+				language: "",
+				relatedClasses: [],
+				testClassName: ""
+			};
+
+			return context;
+		}
+
+		// Create test file with vscode.workspace.fs.writeFile
+		await vscode.workspace.fs.writeFile(testFilePath, new Uint8Array());
+
+		// const underTestObj = ReadAction.compute<string, Throwable>(() => {
+		// 	const underTestObj = new JavaScriptClassContextBuilder().getClassContext(elementToTest, false)?.format();
+		//
+		// 	if (!underTestObj) {
+		// 		const funcObj = new JavaScriptMethodContextBuilder().getMethodContext(elementToTest, false, false)?.format();
+		// 		return funcObj ?? '';
+		// 	} else {
+		// 		return underTestObj;
+		// 	}
+		// });
+
+		// const imports: string[] = (sourceFile as any)?.getImportStatements()?.map((importStatement: any) => {
+		// 	return importStatement.text;
+		// }) ?? [];
+
+		// return new TestFileContext(true, testFile, [], elementName, language, underTestObj, imports);
+		const context: TestGenContext = {
+			currentObject: undefined,
+			isNewFile: true,
+			language: language,
+			relatedClasses: [],
+			testClassName: elementName
+		};
+
+		return context;
 	}
 
 	lookupRelevantClass(element: any): Promise<CodeStructure> {
@@ -46,7 +93,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 	}
 
 	suggestTestDirectory(element: vscode.TextDocument): vscode.Uri | undefined {
-		const project = vscode.workspace.getWorkspaceFolder(element.uri);
+		const project = vscode.workspace.workspaceFolders?.[0];
 		if (!project) {
 			return undefined;
 		}
@@ -56,6 +103,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		if (!fs.existsSync(testDir)) {
 			fs.mkdirSync(testDir);
 		}
+
 		return vscode.Uri.file(testDir);
 	}
 
@@ -67,12 +115,12 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 	): vscode.Uri {
 		const testPath = testDirectory.fsPath;
 		const prefix = elementName || path.basename(containingFile.uri.fsPath, extension);
-		let nameCandidate = `${prefix}.test.${extension}`;
+		let nameCandidate = `${prefix}.test${extension}`;
 		let testFilePath = path.join(testPath, nameCandidate);
 
 		let i = 1;
 		while (fs.existsSync(testFilePath)) {
-			nameCandidate = `${prefix}${i}.test.${extension}`;
+			nameCandidate = `${prefix}${i}.test${extension}`;
 			testFilePath = path.join(testPath, nameCandidate);
 			i++;
 		}

@@ -1,8 +1,8 @@
-import { l10n, Uri } from "vscode";
-
+import vscode, { l10n } from "vscode";
 import { injectable } from "inversify";
+
 import { TestGenProvider } from "../_base/test/TestGenProvider";
-import { CodeFile, CodeStructure } from "../../editor/codemodel/CodeFile";
+import { CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TestGenContext } from "../_base/test/TestGenContext";
 import { GradleBuildToolProvider } from "../../chat-context/tooling/GradleBuildToolProvider";
@@ -27,7 +27,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		this.context = context;
 	}
 
-	findOrCreateTestFile(sourceFile: Uri, element: any): Promise<TestGenContext> {
+	findOrCreateTestFile(sourceFile: vscode.TextDocument, element: any): Promise<TestGenContext> {
 		return Promise.resolve(this.context!!);
 	}
 
