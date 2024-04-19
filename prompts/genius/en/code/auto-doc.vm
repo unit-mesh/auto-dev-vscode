@@ -8,4 +8,4 @@ Here is User's code:
 ${context.code}
 ```
 
-Please write documentation for this code inside the code block.
+Please write documentation for this code inside the Markdown code block.

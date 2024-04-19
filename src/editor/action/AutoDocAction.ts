@@ -7,6 +7,7 @@ import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
 import { insertCodeByRange, selectCodeInRange } from "../editor";
 import { AutoDevStatus, AutoDevStatusManager } from "../editor-api/AutoDevStatusManager";
+import { FencedCodeBlock } from "../../markdown/FencedCodeBlock";
 
 export interface AutoDocContext extends TemplateContext {
 	language: string;
@@ -66,7 +67,9 @@ export class AutoDocAction {
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
 		console.info(`result: ${doc}`);
 
+		const output = FencedCodeBlock.parse(doc).text;
+
 		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
-		insertCodeByRange(this.range.blockRange.start, doc);
+		insertCodeByRange(this.range.blockRange.start, output);
 	}
 }
