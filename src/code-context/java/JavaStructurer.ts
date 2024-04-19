@@ -1,12 +1,14 @@
 import Parser from "web-tree-sitter";
 
-import { Structurer } from "../_base/Structurer";
+import { BaseStructurer } from "../_base/BaseStructurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { LanguageConfig } from "../_base/LanguageConfig";
+import { injectable } from "inversify";
 
-export class JavaStructurer extends Structurer {
+@injectable()
+export class JavaStructurer extends BaseStructurer {
 	protected langId: SupportedLanguage = "java";
 	protected config: LanguageConfig = JavaLangConfig;
 

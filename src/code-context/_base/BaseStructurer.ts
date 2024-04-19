@@ -6,13 +6,17 @@ import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/Co
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { LanguageConfig } from "./LanguageConfig";
 
+export interface Structurer {
+	parseFile(code: string, path: string): Promise<CodeFile | undefined>
+}
+
 /**
  * Abstract class for structurers that parse code and generate a code structure.
  *
- * @class Structurer
+ * @class BaseStructurer
  * @abstract
  */
-export abstract class Structurer {
+export abstract class BaseStructurer implements Structurer {
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 	protected abstract langId: SupportedLanguage;

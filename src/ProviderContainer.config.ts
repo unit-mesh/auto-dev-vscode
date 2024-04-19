@@ -15,6 +15,8 @@ import { GradleBuildToolProvider } from "./chat-context/tooling/GradleBuildToolP
 import { JavaTestGenProvider } from "./code-context/java/JavaTestGenProvider";
 import { TestGenProvider } from "./code-context/_base/test/TestGenProvider";
 import { TypeScriptTestGenProvider } from "./code-context/typescript/TypeScriptTestGenProvider";
+import { Structurer } from "./code-context/_base/BaseStructurer";
+import { JavaStructurer } from "./code-context/java/JavaStructurer";
 
 const providerContainer = new Container();
 
@@ -34,5 +36,8 @@ providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(G
 // TestGenProvider
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(JavaTestGenProvider);
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(TypeScriptTestGenProvider);
+
+// PlantUML like Structurer
+providerContainer.bind<Structurer>(PROVIDER_TYPES.Structurer).to(JavaStructurer);
 
 export { providerContainer };
