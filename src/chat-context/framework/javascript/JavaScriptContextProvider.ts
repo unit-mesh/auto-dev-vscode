@@ -6,7 +6,6 @@ import { TechStack } from "../jvm/TechStack";
 import { getExtensionContext } from "../../../context";
 import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
 import { NpmBuildToolProvider } from "../../tooling/NpmBuildToolProvider";
-import { GradleBuildToolProvider } from "../../tooling/GradleBuildToolProvider";
 
 @injectable()
 export class JavaScriptContextProvider implements ChatContextProvider {

@@ -87,7 +87,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			});
 
 		let testActions: vscode.CodeAction[] = classRanges
-			.filter(result => result.blockRange.contains(range))
+			.filter(named => named.identifierRange.contains(range))
 			.map(result => {
 				const title = `AutoTest for class \`${result.identifierRange.text}\` (AutoDev)`;
 				return AutoDevActionProvider.createAutoTestAction(title, document, result);
