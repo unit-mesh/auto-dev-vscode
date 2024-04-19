@@ -1,4 +1,4 @@
-export interface GradleInfo {
+export interface GradleVersionInfo {
 	buildTime: string;
 	revision: string;
 	kotlinVersion: string;
@@ -27,8 +27,8 @@ export interface GradleInfo {
  * OS:           Mac OS X 14.4.1 x86_64
  * ```
  */
-export function parseGradleInfo(info: string): GradleInfo {
-	const gradleInfo: GradleInfo = {
+export function parseGradleVersionInfo(info: string): GradleVersionInfo {
+	const gradleInfo: GradleVersionInfo = {
 		buildTime: "",
 		revision: "",
 		kotlinVersion: "",

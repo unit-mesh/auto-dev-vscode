@@ -1,4 +1,4 @@
-import { parseGradleInfo } from '../../chat-context/tooling/gradle/GradleInfo';
+import { parseGradleVersionInfo } from '../../chat-context/tooling/gradle/GradleVersionInfo';
 
 describe('parseGradleInfo', () => {
   it('should parse gradle info correctly', () => {
@@ -27,7 +27,7 @@ OS:           Mac OS X 14.4.1 x86_64
       os: 'Mac OS X 14.4.1 x86_64',
     };
 
-    const actualGradleInfo = parseGradleInfo(gradleInfoString);
+    const actualGradleInfo = parseGradleVersionInfo(gradleInfoString);
 
     expect(actualGradleInfo).to.deep.equal(expectedGradleInfo);
   });

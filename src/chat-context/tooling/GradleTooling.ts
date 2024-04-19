@@ -6,10 +6,13 @@ import { DependencyEntry, PackageDependencies } from "./_base/Dependence";
 import { Tooling } from "./_base/Tooling";
 import { PackageManger } from "./_base/PackageManger";
 import { VSCodeAction } from "../../editor/editor-api/VSCodeAction";
+import { GradleVersionInfo, parseGradleVersionInfo } from "./gradle/GradleVersionInfo";
 
 export class GradleTooling implements Tooling {
 	moduleTarget = "build.gradle";
-	gradleDepRegex: RegExp = /^([^:]+):([^:]+):(.+)$/;
+
+	private gradleDepRegex: RegExp = /^([^:]+):([^:]+):(.+)$/;
+	private gradleInfo: GradleVersionInfo | undefined;
 
 	// singleton
 	private static instance_: GradleTooling;
@@ -27,6 +30,7 @@ export class GradleTooling implements Tooling {
 
 	async startWatch() {
 		this.deps = await this.getDependencies();
+		this.gradleInfo = await this.getGradleVersion();
 	}
 
 	async getDependencies(): Promise<PackageDependencies> {
@@ -92,6 +96,30 @@ export class GradleTooling implements Tooling {
 				packageManager: PackageManger.GRADLE
 			}];
 		}) ?? [];
+	}
+
+	async getGradleVersion(): Promise<GradleVersionInfo> {
+		let extension = vscode.extensions.getExtension("vscjava.vscode-gradle");
+		return await extension?.activate().then(async () => {
+			const gradleApi = extension!.exports as GradleApi;
+			const action = new VSCodeAction();
+			const workspace = action.getWorkspaceDirectories()[0];
+			var outputString = "";
+
+			const runTaskOpts: RunTaskOpts = {
+				projectFolder: workspace,
+				taskName: "-version",
+				showOutputColors: false,
+				onOutput: (output: Output): void => {
+					const message = new util.TextDecoder("utf-8").decode(output.getOutputBytes_asU8());
+					outputString += message;
+				},
+			};
+
+			await gradleApi.runTask(runTaskOpts);
+
+			return parseGradleVersionInfo(outputString);
+		}) ?? await Promise.reject("Gradle not found");
 	}
 
 	lookupRelativeTooling(filepath: String): string {
