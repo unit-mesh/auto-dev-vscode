@@ -8,6 +8,7 @@ import { GradleBuildToolProvider } from "../../chat-context/tooling/GradleBuildT
 import { ChatContextItem, ChatCreationContext } from "../../chat-context/ChatContextProvider";
 import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
+import { t } from "@vscode/l10n";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
@@ -31,12 +32,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		throw new Error("Method not implemented.");
 	}
 
-	baseTestPrompt: string = `
-            |- You MUST use should_xx_xx style for test method name, You MUST use given-when-then style.
-            |- Test file should be complete and compilable, without need for further actions.
-            |- Ensure that each test focuses on a single use case to maintain clarity and readability.
-            |- Instead of using \`@BeforeEach\` methods for setup, include all necessary code initialization within each individual test method, do not write parameterized tests.
-            |`.trim();
+	baseTestPrompt: string = `${t("lang.java.prompt.basicTestTemplate")}`.trim();
 
 	// wirte a regex for java import statement
 	importRegex = /import\s+([\w.]+);/g;
@@ -58,32 +54,27 @@ export class JavaTestGenProvider implements TestGenProvider {
 		let finalPrompt: ChatContextItem;
 
 		if (this.isController(fileName) && isSpringRelated) {
-			let testControllerPrompt = prompt + `
-                        |- Use appropriate Spring test annotations such as \`@MockBean\`, \`@Autowired\`, \`@WebMvcTest\`, \`@DataJpaTest\`, \`@AutoConfigureTestDatabase\`, \`@AutoConfigureMockMvc\`, \`@SpringBootTest\` etc.
-                        |`.trim();
+			let testControllerPrompt = prompt + `\n${t("lang.java.prompt.testForController")}\n`.trim();
 
 			const lookup = testPrompt.lookup("ControllerTest.java");
 			if (lookup !== null) {
-				testControllerPrompt += `\nHere is the Test code template as example\n\`\`\`java\n${lookup}\n\`\`\`\n`;
+				testControllerPrompt += `\nTest code template:\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 
 			finalPrompt = { clazz: "JavaTestContextProvider", text: testControllerPrompt };
 		} else if (this.isService(fileName) && isSpringRelated) {
-			let testServicePrompt = prompt + `
-                        |- Follow the common Spring code style by using the AssertJ library.
-                        |- Assume that the database is empty before each test and create valid entities with consideration for data constraints (jakarta.validation.constraints).
-                        |`.trim();
+			let testServicePrompt = prompt + `\n${t("lang.java.prompt.testForService")}\n`.trim();
 
 			const lookup = testPrompt.lookup("ServiceTest.java");
 			if (lookup !== null) {
-				testServicePrompt += `\nHere is the Test code template as example\n\`\`\`java\n${lookup}\n\`\`\`\n`;
+				testServicePrompt += `\nTest code template:\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 
 			finalPrompt = { clazz: "JavaTestContextProvider", text: testServicePrompt };
 		} else {
 			const lookup = testPrompt.lookup("Test.java");
 			if (lookup !== null) {
-				prompt += `\nHere is the Test code template as example\n\`\`\`java\n${lookup}\n\`\`\`\n`;
+				prompt += `\nTest code template:\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 			finalPrompt = { clazz: "JavaTestContextProvider", text: prompt };
 		}
@@ -121,9 +112,9 @@ export class JavaTestGenProvider implements TestGenProvider {
 		}
 
 		if (hasJunit5) {
-			rule = "- This project uses JUnit 5, you should import `org.junit.jupiter.api.Test` and use `@Test` annotation.";
+			rule = t("lang.java.prompt.useJunit5");
 		} else if (hasJunit4) {
-			rule = "- This project uses JUnit 4, you should import `org.junit.Test` and use `@Test` annotation.";
+			rule = t("lang.java.prompt.useJunit4");
 		}
 
 		return rule;

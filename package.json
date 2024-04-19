@@ -5,6 +5,7 @@
   "version": "0.0.2",
   "repository": "https://github.com/unit-mesh/auto-dev-vscode",
   "publisher": "Phodal",
+  "l10n": "./l10n",
   "extensionKind": [
     "ui",
     "workspace"
