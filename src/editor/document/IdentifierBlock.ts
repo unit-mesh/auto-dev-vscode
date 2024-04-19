@@ -7,19 +7,19 @@ export class IdentifierBlock {
 	blockRange: BlockRange;
 	identifierRange: BlockRange;
 	codeElementType: CodeElementType;
-	blockElement: CodeElement | undefined;
+	blockContent: string;
 
 	constructor(
 		blockRange: BlockRange,
 		identifierRange: BlockRange,
 		codeElementType: CodeElementType,
-		codeElement?: CodeElement,
+		blockContent: string,
 		commentRange?: BlockRange
 	) {
 		this.blockRange = blockRange;
 		this.identifierRange = identifierRange;
 		this.commentRange = commentRange;
-		this.blockElement = codeElement;
+		this.blockContent = blockContent;
 		this.codeElementType = codeElementType;
 	}
 }

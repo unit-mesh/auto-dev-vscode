@@ -19,11 +19,11 @@ export class BlockBuilder {
 		this.parser = treeSitterFile.parser;
 	}
 
-	methodRanges(): IdentifierBlock[] | TreeSitterFileError {
+	buildMethod(): IdentifierBlock[] | TreeSitterFileError {
 		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.methodQuery.queryStr, CodeElementType.Method);
 	}
 
-	classRanges(): IdentifierBlock[] | TreeSitterFileError {
+	buildClass(): IdentifierBlock[] | TreeSitterFileError {
 		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
 	}
 
@@ -58,7 +58,8 @@ export class BlockBuilder {
 					let blockRange = new IdentifierBlock(
 						BlockRange.fromNode(identifierNode),
 						BlockRange.fromNode(blockNode),
-						elementType
+						elementType,
+						blockNode.text,
 					);
 
 					if (hasComment) {

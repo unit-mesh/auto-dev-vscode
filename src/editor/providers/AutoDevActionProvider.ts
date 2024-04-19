@@ -32,13 +32,13 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 
 		const file = await documentToTreeSitterFile(document);
 		let blockBuilder = new BlockBuilder(file);
-		const methodRanges: IdentifierBlock[] | TreeSitterFileError = blockBuilder.methodRanges()
+		const methodRanges: IdentifierBlock[] | TreeSitterFileError = blockBuilder.buildMethod();
 		let actions: vscode.CodeAction[] = [];
 		if (methodRanges instanceof Array) {
 			actions = this.buildMethodActions(methodRanges, range, document, lang);
 		}
 
-		const classRanges: IdentifierBlock[] | TreeSitterFileError = blockBuilder.classRanges();
+		const classRanges: IdentifierBlock[] | TreeSitterFileError = blockBuilder.buildClass();
 		if (classRanges instanceof Array) {
 			let classAction = this.buildClassAction(classRanges, range, document);
 			actions = actions.concat(classAction);
