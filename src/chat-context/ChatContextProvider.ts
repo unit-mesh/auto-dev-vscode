@@ -22,9 +22,3 @@ export class ChatContextProvider {
 		throw new Error("Method not implemented.");
 	}
 }
-
-async function collectChatContextList() {
-	const chatContextList = [];
-	chatContextList.push(new ChatContextProvider());
-	return chatContextList;
-}
