@@ -1,28 +1,28 @@
 export enum JsWebFrameworks {
-	React = "React",
-	Vue = "Vue",
-	Angular = "Angular",
-	AngularJS = "AngularJS",
-	Svelte = "Svelte",
-	Astro = "Astro",
-	Lit = "Lit",
-	Solid = "Solid",
-	Preact = "Preact"
+	React = "react",
+	Vue = "vue",
+	Angular = "@angular/core",
+	AngularJS = "angular",
+	Svelte = "svelte",
+	Astro = "astro",
+	Lit = "lit",
+	Solid = "solid-js",
+	Preact = "preact"
 }
 
 export enum JsTestFrameworks {
-	Jest = "Jest",
-	Mocha = "Mocha",
-	Jasmine = "Jasmine",
-	Karma = "Karma",
-	Ava = "Ava",
-	Tape = "Tape",
-	Qunit = "Qunit",
-	Tap = "Tap",
-	Cypress = "Cypress",
-	Protractor = "Protractor",
-	Nightwatch = "Nightwatch",
-	Vitest = "Vitest"
+	Jest = "jest",
+	Mocha = "mocha",
+	Jasmine = "jasmine",
+	Karma = "karma",
+	Ava = "ava",
+	Tape = "tape",
+	Qunit = "qunit",
+	Tap = "tap",
+	Cypress = "cypress",
+	Protractor = "protractor",
+	Nightwatch = "nightwatch",
+	Vitest = "vitest"
 }
 
 export const TYPESCRIPT_PACKAGE = "typescript";

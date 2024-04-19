@@ -1,10 +1,12 @@
 import { injectable } from "inversify";
-import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
-import { JsDependenciesSnapshot, PackageJsonDependencyEntry } from "./JsDependenciesSnapshot";
 import vscode from "vscode";
 import path from "path";
+
+import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
+import { JsDependenciesSnapshot, PackageJsonDependency, PackageJsonDependencyEntry } from "./JsDependenciesSnapshot";
 import { TestStack } from "../jvm/TestStack";
 import { getExtensionContext } from "../../../context";
+import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
 
 @injectable()
 export class JavaScriptContextProvider implements ChatContextProvider {
@@ -57,28 +59,41 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 		let frameworks = new Map<string, boolean>();
 		let testFrameworks = new Map<string, boolean>();
 
-		// for (const [name, entry] of snapshot.packages) {
-		// 	let dependencyType = entry.dependencyType;
-		// 	if (dependencyType === PackageJsonDependency.dependencies || dependencyType === PackageJsonDependency.devDependencies) {
-		// 		if (!name.startsWith("@types/")) {
-		// 			devDependencies.set(name, entry.versionRange);
-		// 		}
-		//
-		// 		for (const framework of JsWebFrameworks.values()) {
-		// 			if (name.startsWith(framework.packageName) || name === framework.packageName) {
-		// 				frameworks.set(framework.packageName, true);
-		// 			}
-		// 		}
-		//
-		// 		for (const framework of JsTestFrameworks.values() {
-		// 			if (name.startsWith(framework.packageName) || name === framework.packageName) {
-		// 				testFrameworks.set(framework.packageName, true);
-		// 			}
-		// 		}
-		// 	}
-		// }
+		for (const [name, entry] of snapshot.packages) {
+			let dependencyType = entry.dependencyType;
+			if (dependencyType === PackageJsonDependency.dependencies || dependencyType === PackageJsonDependency.devDependencies) {
+				if (!name.startsWith("@types/")) {
+					devDependencies.set(name, entry.version);
+				}
+
+				const webFramework = Object.values(JsWebFrameworks);
+				for (const framework of webFramework) {
+					if (name.startsWith(framework) || name === framework) {
+						// todo: call enumToMap
+						frameworks.set(framework, true);
+					}
+				}
+
+				const testFramework = Object.values(JsTestFrameworks);
+				for (const framework of testFramework) {
+					if (name.startsWith(framework) || name === framework) {
+						testFrameworks.set(framework, true);
+					}
+				}
+			}
+		}
 
 		return new TestStack(frameworks, testFrameworks, dependencies, devDependencies);
+	}
+
+	enumToMap(enumObj: any): Map<string, string> {
+		const enumMap = new Map<string, string>();
+		for (const key in enumObj) {
+			if (typeof enumObj[key] === 'string') {
+				enumMap.set(key, enumObj[key]);
+			}
+		}
+		return enumMap;
 	}
 
 	getTypeScriptLanguageContext(snapshot: JsDependenciesSnapshot): ChatContextItem | undefined {

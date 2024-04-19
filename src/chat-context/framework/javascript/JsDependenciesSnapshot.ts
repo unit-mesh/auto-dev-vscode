@@ -1,12 +1,20 @@
 import vscode from "vscode";
 import { MOST_POPULAR_PACKAGES } from "./JavaScriptFrameworks";
-import path from "path";
 
 export interface PackageJsonDependencyEntry {
 	// Define the structure of PackageJsonDependencyEntry
 	// This may vary based on your requirements
 	name: string;
 	version: string;
+	dependencyType: PackageJsonDependency;
+}
+
+export enum PackageJsonDependency {
+	dependencies = "dependencies",
+	devDependencies = "devDependencies",
+	peerDependencies = "peerDependencies",
+	optionalDependencies = "optionalDependencies",
+	bundledDependencies = "bundledDependencies",
 }
 
 /**
