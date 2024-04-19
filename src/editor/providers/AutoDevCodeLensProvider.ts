@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../language/SupportedLanguage";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
-import { IdentifierBlock } from "../document/IdentifierBlock";
+import { NamedElementBlock } from "../document/NamedElementBlock";
 import { BlockBuilder } from "../document/BlockBuilder";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 
@@ -24,7 +24,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 
 			const file = await documentToTreeSitterFile(document);
 			const builder = new BlockBuilder(file);
-			const methodRanges: IdentifierBlock[] | TreeSitterFileError = builder.buildMethod();
+			const methodRanges: NamedElementBlock[] | TreeSitterFileError = builder.buildMethod();
 			let lenses: vscode.CodeLens[] = [];
 
 			if (methodRanges instanceof Array) {
@@ -38,7 +38,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 		})();
 	}
 
-	private setupDocIfNoExist(methodRanges: IdentifierBlock[], document: vscode.TextDocument, langid: string) {
+	private setupDocIfNoExist(methodRanges: NamedElementBlock[], document: vscode.TextDocument, langid: string) {
 		return methodRanges.map((range) => {
 			const title = range.commentRange ? "更新注释" : "生成注释";
 			return new vscode.CodeLens(range.identifierRange, {
@@ -49,7 +49,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 		});
 	}
 
-	private setupQuickChat(methodRanges: IdentifierBlock[], document: vscode.TextDocument, langid: string) {
+	private setupQuickChat(methodRanges: NamedElementBlock[], document: vscode.TextDocument, langid: string) {
 		return methodRanges.map((range) => {
 			const title = `$(autodev-icon)$(chevron-down)`;
 			return new vscode.CodeLens(range.identifierRange, {

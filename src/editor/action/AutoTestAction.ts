@@ -1,14 +1,14 @@
 import { Action } from "./Action";
 import vscode from "vscode";
-import { IdentifierBlock } from "../document/IdentifierBlock";
+import { NamedElementBlock } from "../document/NamedElementBlock";
 
 export class AutoTestAction implements Action {
 	private document: vscode.TextDocument;
-	private range: IdentifierBlock;
+	private range: NamedElementBlock;
 	private edit: vscode.WorkspaceEdit;
 	private language: string;
 
-	constructor(document: vscode.TextDocument, range: IdentifierBlock, edit: vscode.WorkspaceEdit) {
+	constructor(document: vscode.TextDocument, range: NamedElementBlock, edit: vscode.WorkspaceEdit) {
 		this.document = document;
 		this.range = range;
 		this.edit = edit;

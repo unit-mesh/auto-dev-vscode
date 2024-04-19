@@ -1,8 +1,7 @@
 import { BlockRange } from "./BlockRange";
-import { CodeElement } from "../codemodel/CodeFile";
 import { CodeElementType } from "../codemodel/CodeElementType";
 
-export class IdentifierBlock {
+export class NamedElementBlock {
 	commentRange: BlockRange | undefined;
 	blockRange: BlockRange;
 	identifierRange: BlockRange;

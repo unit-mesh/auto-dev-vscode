@@ -1,4 +1,4 @@
-import { IdentifierBlock } from "./IdentifierBlock";
+import { NamedElementBlock } from "./NamedElementBlock";
 import { BlockRange } from "./BlockRange";
 import { TreeSitterFile, TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
@@ -19,11 +19,11 @@ export class BlockBuilder {
 		this.parser = treeSitterFile.parser;
 	}
 
-	buildMethod(): IdentifierBlock[] | TreeSitterFileError {
+	buildMethod(): NamedElementBlock[] | TreeSitterFileError {
 		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.methodQuery.queryStr, CodeElementType.Method);
 	}
 
-	buildClass(): IdentifierBlock[] | TreeSitterFileError {
+	buildClass(): NamedElementBlock[] | TreeSitterFileError {
 		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
 	}
 
@@ -34,7 +34,7 @@ export class BlockBuilder {
 	 * @param elementType The type of code element that the query string represents.
 	 * @returns An array of `IdentifierBlockRange` objects representing the matches, or a `TreeSitterFileError` if an error occurs.
 	 */
-	buildBlock(queryString: string, elementType: CodeElementType): IdentifierBlock[] | TreeSitterFileError {
+	buildBlock(queryString: string, elementType: CodeElementType): NamedElementBlock[] | TreeSitterFileError {
 		try {
 			const query = this.language.query(queryString);
 			const root = this.tree.rootNode;
@@ -55,7 +55,7 @@ export class BlockBuilder {
 					const identifierNode = match.captures[idIndex].node;
 					const blockNode = match.captures[blockIdentIndex].node;
 
-					let blockRange = new IdentifierBlock(
+					let blockRange = new NamedElementBlock(
 						BlockRange.fromNode(identifierNode),
 						BlockRange.fromNode(blockNode),
 						elementType,

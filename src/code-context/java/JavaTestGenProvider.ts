@@ -31,7 +31,6 @@ export class JavaTestGenProvider implements TestGenProvider {
 		throw new Error("Method not implemented.");
 	}
 
-
 	baseTestPrompt: string = `
             |- You MUST use should_xx_xx style for test method name, You MUST use given-when-then style.
             |- Test file should be complete and compilable, without need for further actions.
@@ -44,13 +43,11 @@ export class JavaTestGenProvider implements TestGenProvider {
 
 		// let isSpringRelated = this.checkIsSpringRelated(creationContext.element ?? );
 		let isSpringRelated = true;
-		// if ((typeof creationContext.element) === CodeFile) {
-		// 	isSpringRelated = this.checkIsSpringRelated(creationContext.element);
-		// }
+		if (!creationContext.element) {
+			// isSpringRelated = this.checkIsSpringRelated(creationContext.element) ?? false;
+		}
 
-		let prompt = this.baseTestPrompt + this.junitRule();
-
-		const language = "Java";
+		let prompt = this.baseTestPrompt + await this.junitRule();
 
 		const testPrompt = new TestTemplateFinder();
 		let finalPrompt: ChatContextItem;
@@ -62,7 +59,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 
 			const lookup = testPrompt.lookup("ControllerTest.java");
 			if (lookup !== null) {
-				testControllerPrompt += `\nHere is the Test code template as example\n\`\`\`${language}\n${lookup}\n\`\`\`\n`;
+				testControllerPrompt += `\nHere is the Test code template as example\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 
 			finalPrompt = { clazz: "JavaTestContextProvider", text: testControllerPrompt };
@@ -74,14 +71,14 @@ export class JavaTestGenProvider implements TestGenProvider {
 
 			const lookup = testPrompt.lookup("ServiceTest.java");
 			if (lookup !== null) {
-				testServicePrompt += `\nHere is the Test code template as example\n\`\`\`${language}\n${lookup}\n\`\`\`\n`;
+				testServicePrompt += `\nHere is the Test code template as example\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 
 			finalPrompt = { clazz: "JavaTestContextProvider", text: testServicePrompt };
 		} else {
 			const lookup = testPrompt.lookup("Test.java");
 			if (lookup !== null) {
-				prompt += `\nHere is the Test code template as example\n\`\`\`${language}\n${lookup}\n\`\`\`\n`;
+				prompt += `\nHere is the Test code template as example\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 			finalPrompt = { clazz: "JavaTestContextProvider", text: prompt };
 		}

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { IdentifierBlock } from "./editor/document/IdentifierBlock";
+import { NamedElementBlock } from "./editor/document/NamedElementBlock";
 import { DefaultLanguageService } from "./editor/language/service/DefaultLanguageService";
 
 import { channel } from "./channel";
@@ -41,33 +41,33 @@ const commandsMap: (
   },
   "autodev.generateDoc": async (
     document: vscode.TextDocument,
-    range: IdentifierBlock,
+    range: NamedElementBlock,
     edit: vscode.WorkspaceEdit
   ) => {
     await new AutoDocAction(document, range, edit).execute();
   },
   "autodev.generateTests": async (
     document: vscode.TextDocument,
-    range: IdentifierBlock,
+    range: NamedElementBlock,
     edit: vscode.WorkspaceEdit
   ) => {
     await new AutoTestAction(document, range, edit).execute();
   },
   "autodev.explain": async (
     document: vscode.TextDocument,
-    range: IdentifierBlock,
+    range: NamedElementBlock,
   ) => {
   },
   "autodev.fixThis": async (
     document: vscode.TextDocument,
-    range: IdentifierBlock,
+    range: NamedElementBlock,
   ) => {
   },
   "autodev.terminal.explainTerminalSelectionContextMenu": async () => {
   },
   "autodev.action.quickchat": async (
     document: vscode.TextDocument,
-    range: IdentifierBlock,
+    range: NamedElementBlock,
     edit: vscode.WorkspaceEdit
   ) => {
     // const options: { [key: string]: (context: vscode.ExtensionContext) => Promise<void> } = {
@@ -88,7 +88,7 @@ const commandsMap: (
   },
   "autodev.genApiData": async (
     document: vscode.TextDocument,
-    range: IdentifierBlock,
+    range: NamedElementBlock,
     edit: vscode.WorkspaceEdit
   ) => {
     let structurer = extension.structureProvider?.getStructurer(document.languageId);

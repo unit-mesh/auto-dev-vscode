@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import { TreeSitterFile, TreeSitterFileError, } from "../../code-context/ast/TreeSitterFile";
-import { IdentifierBlock } from "../document/IdentifierBlock";
+import { NamedElementBlock } from "../document/NamedElementBlock";
 import { JavaSemanticLsp } from "../language/semantic-lsp/java/JavaSemanticLsp";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { BlockBuilder } from "../document/BlockBuilder";
@@ -32,13 +32,13 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 
 		const file = await documentToTreeSitterFile(document);
 		let blockBuilder = new BlockBuilder(file);
-		const methodRanges: IdentifierBlock[] | TreeSitterFileError = blockBuilder.buildMethod();
+		const methodRanges: NamedElementBlock[] | TreeSitterFileError = blockBuilder.buildMethod();
 		let actions: vscode.CodeAction[] = [];
 		if (methodRanges instanceof Array) {
 			actions = this.buildMethodActions(methodRanges, range, document, lang);
 		}
 
-		const classRanges: IdentifierBlock[] | TreeSitterFileError = blockBuilder.buildClass();
+		const classRanges: NamedElementBlock[] | TreeSitterFileError = blockBuilder.buildClass();
 		if (classRanges instanceof Array) {
 			let classAction = this.buildClassAction(classRanges, range, document);
 			actions = actions.concat(classAction);
@@ -47,7 +47,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		return actions;
 	}
 
-	private buildMethodActions(methodRanges: IdentifierBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument, lang: string):
+	private buildMethodActions(methodRanges: NamedElementBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument, lang: string):
 		vscode.CodeAction[] {
 		let methodDocActions = methodRanges
 			.filter(result => result.blockRange.contains(range))
@@ -70,7 +70,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		return methodDocActions.concat(apisDocActions);
 	}
 
-	private buildClassAction(classRanges: IdentifierBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
+	private buildClassAction(classRanges: NamedElementBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
 		return classRanges
 			.filter(result => result.identifierRange.contains(range))
 			.map(result => {
@@ -79,7 +79,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			});
 	}
 
-	private static createGenApiDataAction(title: string, result: IdentifierBlock, document: vscode.TextDocument): vscode.CodeAction {
+	private static createGenApiDataAction(title: string, result: NamedElementBlock, document: vscode.TextDocument): vscode.CodeAction {
 		const codeAction = new vscode.CodeAction(
 			title,
 			AutoDevActionProvider.providedCodeActionKinds[0]
@@ -95,7 +95,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		return codeAction;
 	}
 
-	private static createDocAction(title: string, document: vscode.TextDocument, result: IdentifierBlock): vscode.CodeAction {
+	private static createDocAction(title: string, document: vscode.TextDocument, result: NamedElementBlock): vscode.CodeAction {
 		const codeAction = new vscode.CodeAction(
 			title,
 			AutoDevActionProvider.providedCodeActionKinds[0]

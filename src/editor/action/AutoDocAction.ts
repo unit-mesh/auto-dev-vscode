@@ -1,5 +1,5 @@
 import vscode from "vscode";
-import { IdentifierBlock } from "../document/IdentifierBlock";
+import { NamedElementBlock } from "../document/NamedElementBlock";
 import { LANGUAGE_BLOCK_COMMENT_MAP } from "../language/LanguageCommentMap";
 import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 import { ActionType, PromptManager } from "../../prompt-manage/PromptManager";
@@ -21,11 +21,11 @@ export interface AutoDocContext extends TemplateContext {
 
 export class AutoDocAction implements Action {
 	private document: vscode.TextDocument;
-	private range: IdentifierBlock;
+	private range: NamedElementBlock;
 	private edit: vscode.WorkspaceEdit;
 	private language: string;
 
-	constructor(document: vscode.TextDocument, range: IdentifierBlock, edit: vscode.WorkspaceEdit) {
+	constructor(document: vscode.TextDocument, range: NamedElementBlock, edit: vscode.WorkspaceEdit) {
 		this.document = document;
 		this.range = range;
 		this.edit = edit;
@@ -48,6 +48,8 @@ export class AutoDocAction implements Action {
 			action: "AutoDocAction",
 			filename: this.document.fileName,
 			language: this.language,
+			content: this.document.getText(),
+			block: this.range
 		};
 
 		const contextItems = await PromptManager.getInstance().chatContext(creationContext);
