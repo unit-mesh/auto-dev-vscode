@@ -83,9 +83,9 @@
         "group": "AutoDev"
       },
       {
-        "command": "autodev.generateDoc",
+        "command": "autodev.autoComment",
         "category": "AutoDev",
-        "title": "%autodev.command.generateDoc%",
+        "title": "%autodev.command.autoComment%",
         "group": "AutoDev"
       },
       {
@@ -113,9 +113,9 @@
         "group": "AutoDev"
       },
       {
-        "command": "autodev.generateTests",
+        "command": "autodev.autoTest",
         "category": "AutoDev",
-        "title": "%autodev.command.generateTests%",
+        "title": "%autodev.command.autoTests%",
         "group": "AutoDev"
       },
       {
@@ -187,12 +187,12 @@
           "group": "autodevAction@2"
         },
         {
-          "command": "autodev.generateDoc",
+          "command": "autodev.autoComment",
           "when": "!editorReadonly",
           "group": "autodevAction@3"
         },
         {
-          "command": "autodev.generateTests",
+          "command": "autodev.autoTest",
           "when": "!editorReadonly",
           "group": "autodevAction@4"
         }

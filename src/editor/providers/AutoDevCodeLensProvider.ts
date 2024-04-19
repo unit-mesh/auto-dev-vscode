@@ -41,10 +41,10 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 
 	private setupDocIfNoExist(methodRanges: NamedElementBlock[], document: vscode.TextDocument, langid: string) {
 		return methodRanges.map((range) => {
-			const title = l10n.t("autodev.command.generateDoc");
+			const title = l10n.t("autodev.command.autoComment");
 			return new vscode.CodeLens(range.identifierRange, {
 				title,
-				command: "autodev.generateDoc",
+				command: "autodev.autoComment",
 				arguments: [document, range],
 			});
 		});

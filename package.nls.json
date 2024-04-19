@@ -1,8 +1,8 @@
 {
-  "autodev.command.generateDoc": "Generate Documentation",
+  "autodev.command.autoComment": "Generate Documentation",
   "autodev.command.genApiData": "Generate API Data",
   "autodev.command.quickChat": "AutoDev Quick Chat",
   "autodev.command.explain": "Explain This",
   "autodev.command.fixThis": "AutoDev Fix this",
-  "autodev.command.generateTests": "Generate Test"
+  "autodev.command.autoTests": "Generate Test"
 }

@@ -39,14 +39,14 @@ const commandsMap: (
       input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
     });
   },
-  "autodev.generateDoc": async (
+  "autodev.autoComment": async (
     document: vscode.TextDocument,
     range: NamedElementBlock,
     edit: vscode.WorkspaceEdit
   ) => {
     await new AutoDocAction(document, range, edit).execute();
   },
-  "autodev.generateTests": async (
+  "autodev.autoTest": async (
     document: vscode.TextDocument,
     range: NamedElementBlock,
     edit: vscode.WorkspaceEdit

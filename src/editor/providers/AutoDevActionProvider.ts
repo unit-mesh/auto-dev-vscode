@@ -104,7 +104,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 		codeAction.isPreferred = false;
 		codeAction.edit = new vscode.WorkspaceEdit();
 		codeAction.command = {
-			command: "autodev.generateDoc",
+			command: "autodev.autoComment",
 			title: title,
 			arguments: [document, result, codeAction.edit]
 		};
