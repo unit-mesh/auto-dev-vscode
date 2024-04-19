@@ -1,7 +1,10 @@
+import { injectable } from "inversify";
+
 import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../ChatContextProvider";
 import { GradleTooling } from "../tooling/GradleTooling";
 
-export class JavaSdkVersionProvider extends ChatContextProvider {
+@injectable()
+export class JavaSdkVersionProvider implements ChatContextProvider {
 	name = "JavaSdkVersionProvider";
 
 	isApplicable(context: ChatCreationContext): boolean {
@@ -9,7 +12,14 @@ export class JavaSdkVersionProvider extends ChatContextProvider {
 	}
 
 	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
-		const gradleInfo = await GradleTooling.instance().getGradleVersion();
+		let gradleInfo ;
+		try {
+			gradleInfo = await GradleTooling.instance().getGradleVersion();
+		} catch (e) {
+			console.error(e);
+			return [];
+		}
+
 		if (gradleInfo) {
 			return [
 				{

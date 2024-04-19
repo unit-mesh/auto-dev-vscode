@@ -7,7 +7,7 @@ import { GradleTooling } from "../../tooling/GradleTooling";
 import { DependencyEntry } from "../../tooling/_base/Dependence";
 
 @injectable()
-export class SpringContextProvider extends ChatContextProvider {
+export class SpringContextProvider implements ChatContextProvider {
 	static name = "SpringContextProvider";
 
 	isApplicable(context: ChatCreationContext): boolean {
@@ -15,10 +15,16 @@ export class SpringContextProvider extends ChatContextProvider {
 	}
 
 	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
-		const deps = await GradleTooling.instance().getDependencies();
-		let testStack = this.prepareLibrary(deps.dependencies);
+		let deps;
+		try {
+			deps = await GradleTooling.instance().getDependencies();
+		} catch (e) {
+			console.error(e);
+			return [];
+		}
 
-		if (testStack.testFrameworks.size === 0 && testStack.coreFrameworks.size === 0) {
+		let techStacks = this.prepareLibrary(deps.dependencies);
+		if (techStacks.coreFrameworks.size === 0) {
 			return [];
 		}
 
@@ -36,7 +42,7 @@ export class SpringContextProvider extends ChatContextProvider {
 			return [
 				{
 					clazz: SpringContextProvider.name,
-					text: `You are working on a project that uses ${Array.from(testStack.coreFrameworks.keys()).join(",")} to build RESTful APIs.`
+					text: `You are working on a project that uses ${Array.from(techStacks.coreFrameworks.keys()).join(",")} to build RESTful APIs.`
 				}
 			];
 		}
@@ -45,7 +51,7 @@ export class SpringContextProvider extends ChatContextProvider {
 			return [
 				{
 					clazz: SpringContextProvider.name,
-					text: `You are working on a project that uses ${Array.from(testStack.coreFrameworks.keys()).join(",")} to build business logic.`
+					text: `You are working on a project that uses ${Array.from(techStacks.coreFrameworks.keys()).join(",")} to build business logic.`
 				}
 			];
 		}
@@ -58,12 +64,14 @@ export class SpringContextProvider extends ChatContextProvider {
 		let hasMatchSpringMvc: boolean = false;
 		let hasMatchSpringData: boolean = false;
 
+		console.log(libraryDataList);
 		libraryDataList?.forEach(item => {
-			const name: string = `${item.group}:${item.artifact}`;
+			const name: string = item.name;
+			console.log(name);
 
 			if (!hasMatchSpringMvc) {
 				SpringLibrary.SPRING_MVC.forEach(entry => {
-					if (name.includes(entry.coords)) {
+					if (name.includes(entry.coord)) {
 						testStack.coreFrameworks.set(entry.shortText, true);
 						hasMatchSpringMvc = true;
 					}
@@ -72,12 +80,10 @@ export class SpringContextProvider extends ChatContextProvider {
 
 			if (!hasMatchSpringData) {
 				SpringLibrary.SPRING_DATA.forEach(entry => {
-					entry.coords.forEach(coord => {
-						if (name.includes(coord)) {
-							testStack.coreFrameworks.set(entry.shortText, true);
-							hasMatchSpringData = true;
-						}
-					});
+					if (entry.coords.includes(name)) {
+						testStack.coreFrameworks.set(entry.shortText, true);
+						hasMatchSpringData = true;
+					}
 				});
 			}
 

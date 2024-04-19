@@ -5,14 +5,10 @@ export interface SpringDataLibraryDescriptor {
 
 export interface LibraryDescriptor {
 	shortText: string;
-	coords: string;
+	coord: string;
 }
 
 export class SpringLibrary {
-	// Spring
-	private static SPRING_MVC_MAVEN: string = "org.springframework:spring-webmvc";
-	private static SPRING_WEBFLUX_MAVEN: string = "org.springframework:spring-webflux";
-
 	// Spring Data
 	private static REACTOR_MAVEN: string = "io.projectreactor:reactor-core";
 	private static MONGO_REACTIVE_STREAMS_MAVEN: string = "org.mongodb:mongodb-driver-reactivestreams";
@@ -48,11 +44,13 @@ export class SpringLibrary {
 	}
 
 	public static SPRING_MVC: LibraryDescriptor[] = [
-		{ shortText: "Spring MVC", coords: SpringLibrary.SPRING_MVC_MAVEN },
-		{ shortText: "Spring WebFlux", coords: SpringLibrary.SPRING_WEBFLUX_MAVEN }
+		{ shortText: "Spring MVC", coord: "org.springframework:spring-webmvc" },
+		{ shortText: "Spring Boot", coord: "org.springframework.boot:spring-boot-starter-web" },
+		{ shortText: "Spring Boot WebFlux", coord: "org.springframework.boot:spring-boot-starter-webflux" },
+		{ shortText: "Spring WebFlux", coord: "org.springframework:spring-webflux" }
 	];
 
 	public static canApplySpringMvc(libName: string): boolean {
-		return libName === SpringLibrary.SPRING_MVC_MAVEN || libName === SpringLibrary.SPRING_WEBFLUX_MAVEN;
+		return libName === "org.springframework:spring-webmvc" || libName === "org.springframework:spring-webflux";
 	}
 }
