@@ -8,7 +8,6 @@ import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
 import { AutoDevStatus, AutoDevStatusManager } from "../editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { FencedCodeBlock } from "../../markdown/FencedCodeBlock";
-import { insertCodeByRange, selectCodeInRange } from "../editor";
 import { ChatCreationContext } from "../../chat-context/ChatContextProvider";
 
 export class AutoTestAction implements Action {
@@ -25,8 +24,8 @@ export class AutoTestAction implements Action {
 	}
 
 	async execute(): Promise<void> {
-		let testgen = TestGenProviderManager.getInstance();
-		let provider = await testgen.provide(this.language);
+		let testGen = TestGenProviderManager.getInstance();
+		let provider = await testGen.provide(this.language);
 
 		if (provider?.isApplicable(this.language) !== true) {
 			return;

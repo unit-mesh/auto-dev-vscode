@@ -79,12 +79,21 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 	}
 
 	private buildClassAction(classRanges: NamedElementBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
-		return classRanges
+		const docs = classRanges
 			.filter(result => result.identifierRange.contains(range))
 			.map(result => {
 				const title = `AutoDoc for class \`${result.identifierRange.text}\` (AutoDev)`;
 				return AutoDevActionProvider.createDocAction(title, document, result);
 			});
+
+		let testActions: vscode.CodeAction[] = classRanges
+			.filter(result => result.blockRange.contains(range))
+			.map(result => {
+				const title = `AutoTest for class \`${result.identifierRange.text}\` (AutoDev)`;
+				return AutoDevActionProvider.createAutoTestAction(title, document, result);
+			});
+
+		return docs.concat(testActions);
 	}
 
 	private static createGenApiDataAction(title: string, result: NamedElementBlock, document: vscode.TextDocument): vscode.CodeAction {

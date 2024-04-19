@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { AutoDevExtension } from "./AutoDevExtension";
 import { NamedElementBlock } from "./editor/document/NamedElementBlock";
-import { DefaultLanguageService } from "./editor/language/service/DefaultLanguageService";
 
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";

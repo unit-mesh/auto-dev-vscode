@@ -216,6 +216,19 @@ export class ScopeGraph {
 		return ScopeDebug.new(graph, start, src, language);
 	}
 
+	nodeByPosition(line: number, column: number): NodeIndex | undefined {
+		return this.graph.nodes()
+			.filter(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				return nodeKind instanceof LocalDef || nodeKind instanceof Reference || nodeKind instanceof LocalImport;
+			})
+			.find(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				const range = nodeKind.range;
+				return range.start.line === line && range.end.line === line && range.start.column <= column && range.end.column >= column;
+			});
+	}
+
 	allImports(src: NodeIndex) : string[] {
 		let graph = this.graph;
 		const imports = graph
