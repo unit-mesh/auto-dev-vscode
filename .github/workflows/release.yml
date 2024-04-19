@@ -1,0 +1,75 @@
+# GitHub Actions Workflow created for handling the release process based on the draft release prepared with the Build workflow.
+# Running the publishPlugin task requires all following secrets to be provided: PUBLISH_TOKEN, PRIVATE_KEY, PRIVATE_KEY_PASSWORD, CERTIFICATE_CHAIN.
+# See https://plugins.jetbrains.com/docs/intellij/plugin-signing.html for more information.
+
+name: Release
+on:
+  release:
+    types: [ prereleased, released ]
+
+jobs:
+
+  # Prepare and publish the plugin to JetBrains Marketplace repository
+  release:
+    runs-on: ubuntu-latest
+    name: Publish Plugin
+
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    outputs:
+      version: ${{ steps.properties.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      # Set environment variables
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          VERSION="$(cat package.json | grep -o '"version": *"[0-9.]*"' package.json | awk -F '"' '{print $4}' | cut -f2- -d ' ')"
+
+      - name: Compile
+        run: npm run build
+
+      - name: Run unit tests
+        run: npm run test --coverage.enabled true
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: unit-mesh/auto-dev-vscode
+
+      - name: Upgrade packages 🔀
+        run: npm upgrade
+
+      - name: Install VSCE
+        run: npm install -g @vscode/vsce
+
+      - name: Package VSIX
+        run: vsce package
+
+      # Prepare plugin archive content for creating artifact
+      - name: Prepare Plugin Artifact
+        id: artifact
+        shell: bash
+        run: |
+          FILENAME=`ls *.vsix`
+          echo "filename=${FILENAME}" >> $GITHUB_OUTPUT
+
+      # Upload artifact as a release asset
+      - name: Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ github.event.release.tag_name }} ${{ steps.artifact.outputs.filename }}
