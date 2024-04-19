@@ -28,6 +28,11 @@ export class TreeSitterFileCacheManager implements FileCacheManger<TreeSitterFil
 		}
 	}
 
+	/**
+	 * If you want to get doc with cache, please use `documentToTreeSitterFile` instead
+	 * @param uri
+	 * @param version
+	 */
 	public getDocument(uri: Uri, version: number): TreeSitterFile | undefined {
 		const versionMap = this.cache.get(uri);
 		if (versionMap) {

@@ -418,14 +418,14 @@
     (type_identifier) @local.reference))
 
 ;; jsx
-(jsx_expression
-  (identifier) @local.reference)
-
-(jsx_opening_element
-  (identifier) @local.reference)
-
-(jsx_closing_element
-  (identifier) @local.reference)
-
-(jsx_self_closing_element
-  (identifier) @local.reference)
+;(jsx_expression
+;  (identifier) @local.reference)
+;
+;(jsx_opening_element
+;  (identifier) @local.reference)
+;
+;(jsx_closing_element
+;  (identifier) @local.reference)
+;
+;(jsx_self_closing_element
+;  (identifier) @local.reference)

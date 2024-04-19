@@ -7,6 +7,8 @@ import { DefaultLanguageService } from "../../editor/language/service/DefaultLan
 import { ScopeBuilder } from "../../code-search/ScopeBuilder";
 import { ScopeGraph } from "../../code-search/ScopeGraph";
 
+var graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
+
 export class TreeSitterFile {
 	private sourcecode: string;
 	tree: Tree;
@@ -69,12 +71,19 @@ export class TreeSitterFile {
 
 	static cache: TreeSitterFileCacheManager = TreeSitterFileCacheManager.getInstance();
 
-	scopeGraph() : Promise<ScopeGraph> {
+	async scopeGraph(): Promise<ScopeGraph> {
+		if (graphCache.has(this)) {
+			return Promise.resolve(graphCache.get(this)!);
+		}
+
 		let query = this.language.query(this.langConfig.scopeQuery.queryStr);
 		let rootNode = this.tree.rootNode;
 
 		let scopeBuilder = new ScopeBuilder(query, rootNode, this.sourcecode, this.langConfig);
-		return scopeBuilder.build();
+		let scopeGraphPromise = await scopeBuilder.build();
+
+		graphCache.set(this, scopeGraphPromise);
+		return scopeGraphPromise;
 	}
 }
 

@@ -181,17 +181,17 @@ export class ScopeGraph {
 		});
 	}
 
-	public definitions(referenceNode: string): Iterable<string> {
+	public definitions(referenceNode: string): string[] {
 		const iterator = this.graph.outEdges(referenceNode);
 		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) instanceof RefToDef);
 	}
 
-	public imports(referenceNode: string): Iterable<string> {
+	public imports(referenceNode: string): string[] {
 		const iterator = this.graph.outEdges(referenceNode);
 		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) instanceof RefToImport);
 	}
 
-	public references(definitionNode: string): Iterable<string> {
+	public references(definitionNode: string): string[] {
 		const iterator = this.graph.inEdges(definitionNode);
 		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) instanceof RefToDef || this.graph.getEdgeAttributes(edge) instanceof RefToImport);
 	}

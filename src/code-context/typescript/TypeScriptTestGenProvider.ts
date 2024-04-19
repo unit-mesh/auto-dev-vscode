@@ -13,7 +13,6 @@ import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 
 @injectable()
 export class TypeScriptTestGenProvider implements TestGenProvider {
-	private context: TestGenContext | undefined;
 	private languageService: TSLanguageService | undefined;
 
 	isApplicable(lang: string): boolean {
@@ -23,9 +22,8 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 	constructor() {
 	}
 
-	async setup(defaultLanguageService: TSLanguageService, context?: TestGenContext) {
+	async setup(defaultLanguageService: TSLanguageService) {
 		this.languageService = defaultLanguageService;
-		this.context = context;
 	}
 
 	async findOrCreateTestFile(sourceFile: vscode.TextDocument, block: NamedElementBlock): Promise<TestGenContext> {
@@ -42,12 +40,21 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 			return Promise.reject(`Failed to find tree-sitter file for: ${sourceFile.uri}`);
 		}
 
+		let scopeGraph = await tsFile.scopeGraph();
+
+		let imports: string[] = [];
+		let nodeByRange = scopeGraph.nodeByRange(block.blockRange.startIndex, block.blockRange.endIndex);
+		if (nodeByRange) {
+			imports = scopeGraph.imports(nodeByRange);
+		}
+
 		if (fs.existsSync(testFilePath.toString())) {
 			const context: TestGenContext = {
 				currentObject: undefined,
 				language: "",
 				relatedClasses: [],
-				testClassName: ""
+				testClassName: "",
+				imports: imports
 			};
 
 			return context;
@@ -55,16 +62,13 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 
 		await vscode.workspace.fs.writeFile(testFilePath, new Uint8Array());
 
-		// const imports: string[] = (sourceFile as any)?.getImportStatements()?.map((importStatement: any) => {
-		// 	return importStatement.text;
-		// }) ?? [];
-
 		const context: TestGenContext = {
 			currentObject: undefined,
 			isNewFile: true,
 			language: language,
 			relatedClasses: [],
-			testClassName: elementName
+			testClassName: elementName,
+			imports: imports
 		};
 
 		return context;
