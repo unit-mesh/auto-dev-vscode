@@ -18,8 +18,13 @@ import { TypeScriptTestGenProvider } from "./code-context/typescript/TypeScriptT
 import { Structurer } from "./code-context/_base/BaseStructurer";
 import { JavaStructurer } from "./code-context/java/JavaStructurer";
 import { TypeScriptStructurer } from "./code-context/typescript/TypeScriptStructurer";
+import { ActionCreator } from "./editor/action/_base/ActionCreator";
+import { AutoDocCreator } from "./editor/action/autodoc/AutoDocCreator";
 
 const providerContainer = new Container();
+
+// Action Register
+providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoDocCreator);
 
 // ChatContextProvider
 providerContainer.bind<ChatContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(SpringContextProvider);

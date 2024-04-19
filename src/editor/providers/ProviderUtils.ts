@@ -2,7 +2,7 @@ import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import vscode from "vscode";
 import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider";
-import { AutoDevActionProvider } from "./AutoDevActionProvider";
+import { AutoDevCodeActionProvider } from "./AutoDevCodeActionProvider";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
 
 export function registerCodeLensProviders(context: AutoDevExtension) {
@@ -18,10 +18,10 @@ export function registerCodeLensProviders(context: AutoDevExtension) {
 export function registerAutoDevProviders(context: AutoDevExtension) {
 	SUPPORTED_LANGUAGES.forEach((language) => {
 		vscode.languages.registerCodeActionsProvider({ language },
-			new AutoDevActionProvider(context),
+			new AutoDevCodeActionProvider(context),
 			{
 				providedCodeActionKinds:
-				AutoDevActionProvider.providedCodeActionKinds,
+				AutoDevCodeActionProvider.providedCodeActionKinds,
 			}
 		);
 	});

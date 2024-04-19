@@ -8,7 +8,7 @@ import { JavaSemanticLsp } from "../language/semantic-lsp/java/JavaSemanticLsp";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { BlockBuilder } from "../document/BlockBuilder";
 
-export class AutoDevActionProvider implements vscode.CodeActionProvider {
+export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 	private context: AutoDevExtension;
 
 	constructor(context: AutoDevExtension) {
@@ -56,7 +56,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			.filter(result => result.blockRange.contains(range))
 			.map(result => {
 				const title = `AutoDoc for method \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevActionProvider.createDocAction(title, document, result);
+				return AutoDevCodeActionProvider.createDocAction(title, document, result);
 			});
 
 
@@ -66,7 +66,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 				.filter(result => result.blockRange.contains(range))
 				.map(result => {
 					const title = `Gen API Data for \`${result.identifierRange.text}\` (AutoDev)`;
-					return AutoDevActionProvider.createGenApiDataAction(title, result, document);
+					return AutoDevCodeActionProvider.createGenApiDataAction(title, result, document);
 				});
 		}
 
@@ -75,7 +75,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			.filter(result => result.blockRange.contains(range))
 			.map(result => {
 				const title = `AutoTest for method \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevActionProvider.createAutoTestAction(title, document, result);
+				return AutoDevCodeActionProvider.createAutoTestAction(title, document, result);
 			});
 
 		return methodDocActions.concat(apisDocActions).concat(testActions);
@@ -86,14 +86,14 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 			.filter(result => result.identifierRange.contains(range))
 			.map(result => {
 				const title = `AutoDoc for class \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevActionProvider.createDocAction(title, document, result);
+				return AutoDevCodeActionProvider.createDocAction(title, document, result);
 			});
 
 		let testActions: vscode.CodeAction[] = classRanges
 			.filter(named => named.identifierRange.contains(range))
 			.map(result => {
 				const title = `AutoTest for class \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevActionProvider.createAutoTestAction(title, document, result);
+				return AutoDevCodeActionProvider.createAutoTestAction(title, document, result);
 			});
 
 		return docs.concat(testActions);
@@ -102,7 +102,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 	private static createGenApiDataAction(title: string, result: NamedElementBlock, document: vscode.TextDocument): vscode.CodeAction {
 		const codeAction = new vscode.CodeAction(
 			title,
-			AutoDevActionProvider.providedCodeActionKinds[0]
+			AutoDevCodeActionProvider.providedCodeActionKinds[0]
 		);
 		codeAction.isPreferred = false;
 		codeAction.edit = new vscode.WorkspaceEdit();
@@ -118,7 +118,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 	private static createDocAction(title: string, document: vscode.TextDocument, result: NamedElementBlock): vscode.CodeAction {
 		const codeAction = new vscode.CodeAction(
 			title,
-			AutoDevActionProvider.providedCodeActionKinds[0]
+			AutoDevCodeActionProvider.providedCodeActionKinds[0]
 		);
 
 		codeAction.isPreferred = false;
@@ -141,7 +141,7 @@ export class AutoDevActionProvider implements vscode.CodeActionProvider {
 	private static createAutoTestAction(title: string, document: vscode.TextDocument, result: NamedElementBlock) {
 		const codeAction = new vscode.CodeAction(
 			title,
-			AutoDevActionProvider.providedCodeActionKinds[0]
+			AutoDevCodeActionProvider.providedCodeActionKinds[0]
 		);
 
 		codeAction.isPreferred = false;

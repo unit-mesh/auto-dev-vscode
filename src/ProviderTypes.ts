@@ -4,6 +4,7 @@ const PROVIDER_TYPES = {
 	BuildToolProvider: "BuildToolProvider",
 	TestGenProvider: "TestGenProvider",
 	Structurer: "Structurer",
+	ActionCreator: "ActionCreator"
 };
 
 export { PROVIDER_TYPES };
