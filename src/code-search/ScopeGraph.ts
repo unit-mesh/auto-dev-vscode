@@ -28,11 +28,13 @@ export class RefToDef implements EdgeKind {
 export class RefToImport implements EdgeKind {
 }
 
+export type NodeIndex = string;
+
 export class ScopeGraph {
 	graph: Graph<NodeKind>;
-	private rootIndex: string;
+	private rootIndex: NodeIndex;
 
-	constructor(rootNode: SyntaxNode, langIndex: number) {
+	constructor(rootNode: SyntaxNode) {
 		this.graph = new Graph();
 		const range = TextRange.from(rootNode);
 		let localScope = new LocalScope(range);
@@ -41,7 +43,7 @@ export class ScopeGraph {
 		this.rootIndex = index.toString();
 	}
 
-	getNode(node: string): NodeKind {
+	getNode(node: NodeIndex): NodeKind {
 		return this.graph.getNodeAttributes(node);
 	}
 
@@ -136,11 +138,11 @@ export class ScopeGraph {
 		}
 	}
 
-	scopeStack(start: string): ScopeStack {
+	scopeStack(start: NodeIndex): ScopeStack {
 		return new ScopeStack(this.graph, start);
 	}
 
-	private scopeByRange(range: TextRange, start: string): string | null {
+	private scopeByRange(range: TextRange, start: NodeIndex): NodeIndex | null {
 		const targetRange = this.graph.getNodeAttributes(start).range;
 		if (targetRange.contains(range)) {
 			const childScopes = this.graph.inNeighbors(start);
@@ -156,7 +158,7 @@ export class ScopeGraph {
 		return null;
 	}
 
-	private parentScope(start: string): string | null {
+	private parentScope(start: NodeIndex): NodeIndex | null {
 		if (this.graph.getNodeAttributes(start) instanceof LocalScope) {
 			const edges = this.graph.outEdges(start);
 			for (const edge of edges) {
@@ -181,22 +183,22 @@ export class ScopeGraph {
 		});
 	}
 
-	public definitions(referenceNode: string): string[] {
+	public definitions(referenceNode: NodeIndex): NodeIndex[] {
 		const iterator = this.graph.outEdges(referenceNode);
 		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) instanceof RefToDef);
 	}
 
-	public imports(referenceNode: string): string[] {
+	public imports(referenceNode: NodeIndex): NodeIndex[] {
 		const iterator = this.graph.outEdges(referenceNode);
 		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) instanceof RefToImport);
 	}
 
-	public references(definitionNode: string): string[] {
+	public references(definitionNode: NodeIndex): NodeIndex[] {
 		const iterator = this.graph.inEdges(definitionNode);
 		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) instanceof RefToDef || this.graph.getEdgeAttributes(edge) instanceof RefToImport);
 	}
 
-	public nodeByRange(startByte: number, endByte: number): string | undefined {
+	public nodeByRange(startByte: number, endByte: number): NodeIndex | undefined {
 		return this.graph.nodes()
 			.filter(node => {
 				const nodeKind = this.graph.getNodeAttributes(node);
@@ -208,13 +210,13 @@ export class ScopeGraph {
 			});
 	}
 
-	debug(src: string, language: LanguageConfig) {
+	debug(src: NodeIndex, language: LanguageConfig) {
 		const graph = this.graph;
 		const start = this.rootIndex;
 		return ScopeDebug.new(graph, start, src, language);
 	}
 
-	allImports(src: string) : string[] {
+	allImports(src: NodeIndex) : string[] {
 		let graph = this.graph;
 		const imports = graph
 			.inEdges(this.rootIndex)
