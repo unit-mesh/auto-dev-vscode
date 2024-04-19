@@ -1,7 +1,5 @@
-Write unit test for following ${context.lang} code.
-
+Write unit test for following ${context.language} code.
 ${context.chatContext}
-
 #if( $context.relatedClasses.length > 0 )
 ${context.relatedClasses}
 #end
@@ -9,11 +7,10 @@ ${context.relatedClasses}
 Here is current class information:
 ${context.currentClass}
 #end
-
 Here is the source code to be tested:
 
-```$context.lang
-${context.imports}
+```$context.language
+// imports: ${context.imports}
 ${context.sourceCode}
 ```
 
@@ -23,4 +20,3 @@ Start method test code with Markdown code block here:
 #else
 Start ${context.testClassName} test code with Markdown code block here:
 #end
-
