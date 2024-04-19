@@ -16,13 +16,15 @@ export class JavaStructurer extends Structurer {
 	 * @param code The code string to be parsed.
 	 * @returns A Promise that resolves to the generated CodeFile object, or undefined if the parsing fails.
 	 */
-	override async parseFile(code: string): Promise<CodeFile | undefined> {
+	override async parseFile(code: string, filepath: string): Promise<CodeFile | undefined> {
 		const tree = this.parser!!.parse(code);
 		const query = this.config.structureQuery.query(this.language!!);
 		const captures = query!!.captures(tree.rootNode);
 
+		let filename = filepath.split('/')[filepath.split('/').length - 1];
 		const codeFile: CodeFile = {
-			fileName: "",
+			name: filename,
+			filepath: filepath,
 			language: this.langId,
 			functions: [],
 			path: "",

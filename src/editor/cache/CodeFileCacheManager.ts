@@ -70,7 +70,7 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 				return cache.classes.filter((value) => value.canonicalName === canonicalName)[0];
 			}
 
-			let codeFile = await structurer?.parseFile(doc.getText());
+			let codeFile = await structurer?.parseFile(doc.getText(), document.uri.path);
 			if (codeFile === undefined) {
 				return Promise.reject(`Failed to parse file: ${doc.uri}`);
 			}

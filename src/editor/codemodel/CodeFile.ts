@@ -2,7 +2,8 @@ import { PositionElement } from "./PositionElement";
 import { SupportedLanguage } from "../language/SupportedLanguage";
 
 export interface CodeFile extends CodeElement {
-	fileName: string;
+	name: string;
+	filepath: string;
 	language: SupportedLanguage;
 	path: string;
 	package: string;

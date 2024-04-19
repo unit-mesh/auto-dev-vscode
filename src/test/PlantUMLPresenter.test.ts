@@ -4,8 +4,9 @@ import { PlantUMLPresenter } from "../editor/codemodel/presenter/PlantUMLPresent
 describe('PlantUMLPresenter', () => {
   it('should convert a simple file to PlantUML', () => {
     const codeFile: CodeFile = {
+      name: 'ExampleClass',
       package: 'com.example',
-      fileName: "ExampleClass.java",
+      filepath: "ExampleClass.java",
       language: "java",
       path: 'com/example',
       functions: [],

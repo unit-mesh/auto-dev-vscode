@@ -22,7 +22,7 @@ public class ExampleClass {
 		const structurer = new JavaStructurer();
 		await structurer.init(languageService);
 
-		const codeFile = await structurer.parseFile(javaHelloWorld);
+		const codeFile = await structurer.parseFile(javaHelloWorld, "");
 		expect(codeFile as CodeFile).toEqual({
 			"fileName": "",
 			"language": "java",

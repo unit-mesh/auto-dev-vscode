@@ -83,7 +83,7 @@ const commandsMap: (
     }
 
     await structurer.init(new DefaultLanguageService());
-    const file = await structurer.parseFile(document.getText());
+    const file = await structurer.parseFile(document.getText(), document.uri.path);
     if (file !== undefined) {
       const output = new PlantUMLPresenter().convert(file);
 
