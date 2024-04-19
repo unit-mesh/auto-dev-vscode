@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
-import { TreeSitterFile, TreeSitterFileError, } from "../../code-context/ast/TreeSitterFile";
+import { TreeSitterFileError, } from "../../code-context/ast/TreeSitterFile";
 import { NamedElementBlock } from "../document/NamedElementBlock";
 import { JavaSemanticLsp } from "../language/semantic-lsp/java/JavaSemanticLsp";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";

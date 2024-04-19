@@ -38,13 +38,18 @@ export class JavaTestGenProvider implements TestGenProvider {
             |- Instead of using \`@BeforeEach\` methods for setup, include all necessary code initialization within each individual test method, do not write parameterized tests.
             |`.trim();
 
+	// wirte a regex for java import statement
+	importRegex = /import\s+([\w.]+);/g;
+
 	async collect(creationContext: ChatCreationContext): Promise<ChatContextItem[]> {
 		const fileName = creationContext.filename;
 
 		// let isSpringRelated = this.checkIsSpringRelated(creationContext.element ?? );
 		let isSpringRelated = true;
-		if (!creationContext.element) {
-			// isSpringRelated = this.checkIsSpringRelated(creationContext.element) ?? false;
+		if (creationContext) {
+			const imports = this.importRegex.exec(creationContext.content);
+			const importStrings = imports?.map((imp) => imp[1]) ?? [];
+			isSpringRelated = this.checkIsSpringRelated(importStrings) ?? false;
 		}
 
 		let prompt = this.baseTestPrompt + await this.junitRule();
@@ -124,8 +129,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		return rule;
 	}
 
-	private checkIsSpringRelated(codeFile: CodeFile) {
-		const imports = codeFile.imports;
+	private checkIsSpringRelated(imports: string[]) {
 		for (const imp of imports) {
 			if (imp.startsWith("org.springframework")) {
 				return true;

@@ -10,6 +10,7 @@ import { AutoDevStatus, AutoDevStatusManager } from "../editor-api/AutoDevStatus
 import { FencedCodeBlock } from "../../markdown/FencedCodeBlock";
 import { ChatCreationContext } from "../../chat-context/ChatContextProvider";
 import { Action } from "./Action";
+import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 
 export interface AutoDocContext extends TemplateContext {
 	language: string;
@@ -43,6 +44,9 @@ export class AutoDocAction implements Action {
 			code: this.document.getText(this.range.blockRange),
 			forbiddenRules: [],
 		};
+
+		let treeSitterFile = await documentToTreeSitterFile(this.document);
+		let scopeGraph = await treeSitterFile.scopeGraph();
 
 		const creationContext: ChatCreationContext = {
 			action: "AutoDocAction",

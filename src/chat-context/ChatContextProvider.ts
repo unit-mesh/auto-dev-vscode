@@ -1,5 +1,6 @@
 import { CodeElement } from "../editor/codemodel/CodeFile";
 import { NamedElementBlock } from "../editor/document/NamedElementBlock";
+import { ScopeGraph } from "../code-search/ScopeGraph";
 
 export interface ChatContextItem {
 	clazz: string;
@@ -12,7 +13,7 @@ export interface ChatCreationContext {
 	filename: string;
 	content: string;
 	block: NamedElementBlock;
-	element?: CodeElement;
+	graph?: ScopeGraph;
 	extraItems?: ChatContextItem[];
 }
 

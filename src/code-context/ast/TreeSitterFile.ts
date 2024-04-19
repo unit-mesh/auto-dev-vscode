@@ -28,9 +28,6 @@ export class TreeSitterFile {
 		this.language = language;
 	}
 
-	/**
-	 * catch build document
-	 */
 	static async tryBuild(
 		src: string,
 		langId: string,
