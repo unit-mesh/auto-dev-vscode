@@ -85,7 +85,7 @@
       {
         "command": "autodev.autoComment",
         "category": "AutoDev",
-        "title": "%autodev.command.autoComment%",
+        "title": "%AutoComment%",
         "group": "AutoDev"
       },
       {

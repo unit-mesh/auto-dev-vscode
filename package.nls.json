@@ -1,5 +1,5 @@
 {
-  "autodev.command.autoComment": "Generate Documentation",
+  "AutoComment": "Generate Documentation",
   "autodev.command.genApiData": "Generate API Data",
   "autodev.command.quickChat": "AutoDev Quick Chat",
   "autodev.command.explain": "Explain This",
