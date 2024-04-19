@@ -125,14 +125,7 @@ export class ScopeBuilder {
 			}
 		}
 
-		// console.debug(localDefCaptures);
-		// console.debug(localRefCaptures);
-
-		const langId = ALL_LANGUAGES.findIndex(l =>
-			l.languageIds === this.languageConfig.languageIds
-		);
-
-		const scopeGraph = new ScopeGraph(this.rootNode, langId);
+		const scopeGraph = new ScopeGraph(this.rootNode);
 		const captures = this.query.captures(this.rootNode);
 
 		const captureMap: { [index: number]: TextRange[] } = captures.reduce((map: any, capture) => {
