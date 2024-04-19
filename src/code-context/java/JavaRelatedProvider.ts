@@ -2,6 +2,7 @@ import { RelatedCodeProvider } from "../_base/RelatedCodeProvider";
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { CodeFileCacheManager } from "../../editor/cache/CodeFileCacheManager";
 import { channel } from "../../channel";
+import { injectable } from "inversify";
 
 const JAVA_BUILTIN_TYPES = new Set([
 	"byte", "short", "int", "long", "float", "double", "boolean", "char", "void"
@@ -11,13 +12,15 @@ const JAVA_BUILTIN_TYPES = new Set([
 type JavaType = string;
 type CanonicalName = string;
 
-export class JavaRelatedProvider extends RelatedCodeProvider {
+@injectable()
+export class JavaRelatedProvider implements RelatedCodeProvider {
+	name = "JavaRelatedProvider";
+
 	// dynamic get resources
 	importCache: Map<JavaType, CanonicalName> = new Map();
 	private fileManager: CodeFileCacheManager | undefined;
 
 	constructor(fileManager?: CodeFileCacheManager) {
-		super();
 		this.fileManager = fileManager;
 	}
 

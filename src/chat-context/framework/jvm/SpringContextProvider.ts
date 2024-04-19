@@ -8,8 +8,6 @@ import { DependencyEntry } from "../../tooling/_base/Dependence";
 
 @injectable()
 export class SpringContextProvider implements ChatContextProvider {
-	static name = "SpringContextProvider";
-
 	isApplicable(context: ChatCreationContext): boolean {
 		return context.language === "java";
 	}

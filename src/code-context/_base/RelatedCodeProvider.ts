@@ -8,7 +8,7 @@ import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/Co
  *
  * @interface RelatedCodeProvider
  */
-export class RelatedCodeProvider {
+export interface RelatedCodeProvider {
 	/**
 	 * Returns the fan-in and fan-out of the given method.
 	 * For example:
@@ -28,7 +28,5 @@ export class RelatedCodeProvider {
 	 * @returns will be CodeMethod, since `getMethodById` does not have any input parameters,
 	 * and the return type is `CodeMethod`.
 	 */
-	async inputOutputs(file: CodeFile, method: CodeFunction): Promise<CodeStructure[]> {
-		return [];
-	}
+	inputOutputs(file: CodeFile, method: CodeFunction): Promise<CodeStructure[]>;
 }

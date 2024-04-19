@@ -10,8 +10,6 @@ import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
 
 @injectable()
 export class JavaScriptContextProvider implements ChatContextProvider {
-	static name = "JavaScriptContextProvider";
-
 	isApplicable(context: ChatCreationContext): boolean {
 		return context.language === "javascript" || context.language === "typescript" || context.language === "javascriptreact" || context.language === "typescriptreact";
 	}

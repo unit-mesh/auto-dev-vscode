@@ -5,8 +5,6 @@ import { GradleTooling } from "../tooling/GradleTooling";
 
 @injectable()
 export class JavaSdkVersionProvider implements ChatContextProvider {
-	name = "JavaSdkVersionProvider";
-
 	isApplicable(context: ChatCreationContext): boolean {
 		return context.language === "java";
 	}
