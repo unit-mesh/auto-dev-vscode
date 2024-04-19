@@ -6,4 +6,5 @@ export interface TestGenContext {
 	testClassName: string,
 	language: string,
 	currentObject?: CodeStructure,
+	imports?: string[]
 }

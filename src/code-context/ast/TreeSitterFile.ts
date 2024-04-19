@@ -67,7 +67,7 @@ export class TreeSitterFile {
 		return new TreeSitterFile(src, tree, tsConfig, parser, language);
 	}
 
-	static cache: TreeSitterFileCacheManager = new TreeSitterFileCacheManager();
+	static cache: TreeSitterFileCacheManager = TreeSitterFileCacheManager.getInstance();
 
 	scopeGraph() : Promise<ScopeGraph> {
 		let query = this.language.query(this.langConfig.scopeQuery.queryStr);

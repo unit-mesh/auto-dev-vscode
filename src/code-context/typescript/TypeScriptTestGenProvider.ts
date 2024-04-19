@@ -1,13 +1,14 @@
 import fs from "fs";
 import path from "path";
-import vscode, { Uri } from "vscode";
+import vscode from "vscode";
 import { injectable } from "inversify";
 
 import { TestGenProvider } from "../_base/test/TestGenProvider";
-import { CodeFile, CodeStructure } from "../../editor/codemodel/CodeFile";
+import { CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TestGenContext } from "../_base/test/TestGenContext";
 import { NamedElementBlock } from "../../editor/document/NamedElementBlock";
+import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 
 
 @injectable()
@@ -19,7 +20,8 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		return lang === "typescript" || lang === "javascript" || lang === "javascriptreact" || lang === "typescriptreact";
 	}
 
-	constructor() {}
+	constructor() {
+	}
 
 	async setup(defaultLanguageService: TSLanguageService, context?: TestGenContext) {
 		this.languageService = defaultLanguageService;
@@ -35,6 +37,11 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 
 		const elementName = block.identifierRange.text;
 
+		let tsFile = await documentToTreeSitterFile(sourceFile);
+		if (!tsFile) {
+			return Promise.reject(`Failed to find tree-sitter file for: ${sourceFile.uri}`);
+		}
+
 		if (fs.existsSync(testFilePath.toString())) {
 			const context: TestGenContext = {
 				currentObject: undefined,
@@ -46,25 +53,12 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 			return context;
 		}
 
-		// Create test file with vscode.workspace.fs.writeFile
 		await vscode.workspace.fs.writeFile(testFilePath, new Uint8Array());
-
-		// const underTestObj = ReadAction.compute<string, Throwable>(() => {
-		// 	const underTestObj = new JavaScriptClassContextBuilder().getClassContext(elementToTest, false)?.format();
-		//
-		// 	if (!underTestObj) {
-		// 		const funcObj = new JavaScriptMethodContextBuilder().getMethodContext(elementToTest, false, false)?.format();
-		// 		return funcObj ?? '';
-		// 	} else {
-		// 		return underTestObj;
-		// 	}
-		// });
 
 		// const imports: string[] = (sourceFile as any)?.getImportStatements()?.map((importStatement: any) => {
 		// 	return importStatement.text;
 		// }) ?? [];
 
-		// return new TestFileContext(true, testFile, [], elementName, language, underTestObj, imports);
 		const context: TestGenContext = {
 			currentObject: undefined,
 			isNewFile: true,

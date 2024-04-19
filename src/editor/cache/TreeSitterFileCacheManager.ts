@@ -4,6 +4,16 @@ import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { FileCacheManger } from "./FileCacheManger";
 
 export class TreeSitterFileCacheManager implements FileCacheManger<TreeSitterFile> {
+	private static instance: TreeSitterFileCacheManager;
+
+	public static getInstance(): TreeSitterFileCacheManager {
+		if (!TreeSitterFileCacheManager.instance) {
+			TreeSitterFileCacheManager.instance = new TreeSitterFileCacheManager();
+		}
+
+		return TreeSitterFileCacheManager.instance;
+	}
+
 	private cache: Map<Uri, Map<number, TreeSitterFile>>;
 
 	constructor() {
