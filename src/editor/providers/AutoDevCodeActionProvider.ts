@@ -33,16 +33,14 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 		const file = await documentToTreeSitterFile(document);
 		let blockBuilder = new BlockBuilder(file);
 
-		//
-
 		const methodRanges: NamedElementBlock[] | TreeSitterFileError = blockBuilder.buildMethod();
+		const classRanges: NamedElementBlock[] | TreeSitterFileError = blockBuilder.buildClass();
+
 		let actions: vscode.CodeAction[] = [];
+
 		if (methodRanges instanceof Array) {
 			actions = this.buildMethodActions(methodRanges, range, document, lang);
-		}
-
-		const classRanges: NamedElementBlock[] | TreeSitterFileError = blockBuilder.buildClass();
-		if (classRanges instanceof Array) {
+		} else if (classRanges instanceof Array) {
 			let classAction = this.buildClassAction(classRanges, range, document);
 			actions = actions.concat(classAction);
 		}
@@ -130,12 +128,6 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 		};
 
 		return codeAction;
-	}
-
-	private static renderWithLsp(context: AutoDevExtension) {
-		const lsp = new JavaSemanticLsp(context);
-		const client = lsp?.getLanguageClient();
-		console.log(client);
 	}
 
 	private static createAutoTestAction(title: string, document: vscode.TextDocument, result: NamedElementBlock) {

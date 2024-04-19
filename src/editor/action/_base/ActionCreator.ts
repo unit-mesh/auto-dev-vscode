@@ -1,5 +1,6 @@
 import vscode from "vscode";
 import { NamedElementBlock } from "../../document/NamedElementBlock";
+import { AutoDevExtension } from "../../../AutoDevExtension";
 
 export interface ActionCreatorContext {
 	methodRanges: NamedElementBlock[],
@@ -9,6 +10,6 @@ export interface ActionCreatorContext {
 }
 
 export interface ActionCreator {
-	build(context: ActionCreatorContext): Promise<vscode.CodeAction[]>;
+	build(extension: AutoDevExtension, context: ActionCreatorContext): Promise<vscode.CodeAction[]>;
 }
 
