@@ -13,7 +13,39 @@ import { injectable } from "inversify";
 
 @injectable()
 export class NpmBuildToolProvider implements BuildToolProvider {
+	// singleton
+	private static instance_: NpmBuildToolProvider;
+
+	static instance(): NpmBuildToolProvider {
+		if (!NpmBuildToolProvider.instance_) {
+			NpmBuildToolProvider.instance_ = new NpmBuildToolProvider();
+		}
+
+		return NpmBuildToolProvider.instance_;
+	}
+
 	moduleTarget = ["package.json"];
+
+	isApplicable(): Promise<boolean> {
+		return new Promise((resolve, reject) => {
+			const workspaces = vscode.workspace.workspaceFolders?.[0];
+			if (!workspaces) {
+				return resolve(false);
+			}
+
+			let hasTarget = false;
+			for (const target of this.moduleTarget) {
+				const targetPath = vscode.Uri.joinPath(workspaces.uri, target);
+				vscode.workspace.fs.stat(targetPath).then((targetFileType) => {
+					if (targetFileType.type === vscode.FileType.File) {
+						hasTarget = true;
+						resolve(true);
+					}
+				});
+			}
+			resolve(hasTarget);
+		});
+	}
 
 	depTypeMap: { [key: string]: DEP_SCOPE } = {
 		'dependencies': DEP_SCOPE.NORMAL,
@@ -83,10 +115,18 @@ export class NpmBuildToolProvider implements BuildToolProvider {
 		for (const file of packageJsonFiles) {
 			const packageJson = await vscode.workspace.fs.readFile(file).then(data => JSON.parse(data.toString()));
 			for (const [name, version] of Object.entries(packageJson.dependencies || {})) {
-				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version, dependencyType: PackageJsonDependency.dependencies });
+				allPackages.set(name, <PackageJsonDependencyEntry>{
+					name,
+					version,
+					dependencyType: PackageJsonDependency.dependencies
+				});
 			}
 			for (const [name, version] of Object.entries(packageJson.devDependencies || {})) {
-				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version, dependencyType: PackageJsonDependency.devDependencies });
+				allPackages.set(name, <PackageJsonDependencyEntry>{
+					name,
+					version,
+					dependencyType: PackageJsonDependency.devDependencies
+				});
 			}
 		}
 		return allPackages;

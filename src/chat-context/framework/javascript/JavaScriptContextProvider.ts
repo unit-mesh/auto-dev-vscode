@@ -6,6 +6,7 @@ import { TechStack } from "../jvm/TechStack";
 import { getExtensionContext } from "../../../context";
 import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
 import { NpmBuildToolProvider } from "../../tooling/NpmBuildToolProvider";
+import { GradleBuildToolProvider } from "../../tooling/GradleBuildToolProvider";
 
 @injectable()
 export class JavaScriptContextProvider implements ChatContextProvider {
@@ -14,6 +15,11 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 	}
 
 	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
+		let isApplicable = await NpmBuildToolProvider.instance().isApplicable();
+		if (!isApplicable) {
+			return [];
+		}
+
 		let results = [];
 		let snapshot = await new NpmBuildToolProvider().create(getExtensionContext());
 		let typeScriptLanguageContext = this.getTypeScriptLanguageContext(snapshot);
