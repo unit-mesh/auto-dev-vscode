@@ -16,6 +16,7 @@ export class JavaStructurer extends BaseStructurer {
 	 * Parses the given code string and generates a CodeFile object representing the structurer of the code.
 	 *
 	 * @param code The code string to be parsed.
+	 * @param filepath
 	 * @returns A Promise that resolves to the generated CodeFile object, or undefined if the parsing fails.
 	 */
 	override async parseFile(code: string, filepath: string): Promise<CodeFile | undefined> {
