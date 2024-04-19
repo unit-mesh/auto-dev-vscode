@@ -1,4 +1,4 @@
-export class TestStack {
+export class TechStack {
 	coreFrameworks: Map<string, boolean>;
 	testFrameworks: Map<string, boolean>;
 	deps: Map<string, string>;

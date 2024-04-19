@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { TestStack } from "./TestStack";
+import { TechStack } from "./TechStack";
 import { SpringLibrary } from "./SpringLibrary";
 import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
 import { GradleTooling } from "../../tooling/GradleTooling";
@@ -59,8 +59,8 @@ export class SpringContextProvider implements ChatContextProvider {
 		return [];
 	}
 
-	prepareLibrary(libraryDataList: DependencyEntry[]): TestStack {
-		const techStack: TestStack = new TestStack();
+	prepareLibrary(libraryDataList: DependencyEntry[]): TechStack {
+		const techStack: TechStack = new TechStack();
 		libraryDataList?.forEach(item => {
 			const name: string = item.name;
 

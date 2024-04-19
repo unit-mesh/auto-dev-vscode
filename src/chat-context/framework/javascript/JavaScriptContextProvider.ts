@@ -4,7 +4,7 @@ import path from "path";
 
 import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
 import { JsDependenciesSnapshot, PackageJsonDependency, PackageJsonDependencyEntry } from "./JsDependenciesSnapshot";
-import { TestStack } from "../jvm/TestStack";
+import { TechStack } from "../jvm/TechStack";
 import { getExtensionContext } from "../../../context";
 import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
 
@@ -32,7 +32,7 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 			results.push(mostPopularPackagesContext);
 		}
 
-		console.log(`Tech stack: ${techStack}`);
+		console.log(`Tech stack: ${JSON.stringify(techStack)}`);
 		if (techStack.coreFrameworksList().length > 0) {
 			let element = {
 				clazz: JavaScriptContextProvider.name,
@@ -53,7 +53,7 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 		return results;
 	}
 
-	prepareStack(snapshot: JsDependenciesSnapshot): TestStack {
+	prepareStack(snapshot: JsDependenciesSnapshot): TechStack {
 		let devDependencies = new Map<string, string>();
 		let dependencies = new Map<string, string>();
 		let frameworks = new Map<string, boolean>();
@@ -66,24 +66,23 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 					devDependencies.set(name, entry.version);
 				}
 
-				const webFramework = Object.values(JsWebFrameworks);
-				for (const framework of webFramework) {
-					if (name.startsWith(framework) || name === framework) {
-						// todo: call enumToMap
-						frameworks.set(framework, true);
+				const webFramework = this.enumToMap(JsWebFrameworks);
+				for (const [key, value] of webFramework) {
+					if (name.startsWith(value) || name === value) {
+						frameworks.set(key, true);
 					}
 				}
 
-				const testFramework = Object.values(JsTestFrameworks);
-				for (const framework of testFramework) {
-					if (name.startsWith(framework) || name === framework) {
-						testFrameworks.set(framework, true);
+				const testFramework = this.enumToMap(JsTestFrameworks);
+				for (const [key, value] of testFramework) {
+					if (name.startsWith(value) || name === value) {
+						testFrameworks.set(key, true);
 					}
 				}
 			}
 		}
 
-		return new TestStack(frameworks, testFrameworks, dependencies, devDependencies);
+		return new TechStack(frameworks, testFrameworks, dependencies, devDependencies);
 	}
 
 	enumToMap(enumObj: any): Map<string, string> {
@@ -150,8 +149,7 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 
 			const tsConfigs = await this.findTsConfigs(context);
 			const packages = await this.enumerateAllPackages(packageJsonFiles);
-			let jsDependenciesSnapshot = new JsDependenciesSnapshot(packageJsonFiles, resolvedPackageJson, tsConfigs, packages);
-			return jsDependenciesSnapshot;
+			return new JsDependenciesSnapshot(packageJsonFiles, resolvedPackageJson, tsConfigs, packages);
 		}
 
 		return new JsDependenciesSnapshot([], false, [], new Map());
@@ -162,10 +160,10 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 		for (const file of packageJsonFiles) {
 			const packageJson = await vscode.workspace.fs.readFile(file).then(data => JSON.parse(data.toString()));
 			for (const [name, version] of Object.entries(packageJson.dependencies || {})) {
-				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version });
+				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version, dependencyType: PackageJsonDependency.dependencies });
 			}
 			for (const [name, version] of Object.entries(packageJson.devDependencies || {})) {
-				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version });
+				allPackages.set(name, <PackageJsonDependencyEntry>{ name, version, dependencyType: PackageJsonDependency.devDependencies });
 			}
 		}
 		return allPackages;
