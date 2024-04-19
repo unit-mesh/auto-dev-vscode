@@ -9,6 +9,10 @@
     "skipLibCheck": true,
     "types": ["vitest/globals"],
 
+    /* ioc */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
     /* Bundler mode */
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,

@@ -1,9 +1,21 @@
+import { injectable } from "inversify";
+
 import { TestStack } from "./TestStack";
 import { SpringLibrary } from "./SpringLibrary";
+import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
 
-export class SpringContextProvider {
+@injectable()
+export class SpringContextProvider extends ChatContextProvider {
+	static name = "SpringContextProvider";
 
-	// todo: load after gradle init
+	isApplicable(context: ChatCreationContext): boolean {
+		return super.isApplicable(context);
+	}
+
+	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
+		return super.collect(context);
+	}
+
 	prepareLibrary(libraryDataList: any[]): TestStack {
 		const testStack: TestStack = new TestStack();
 		let hasMatchSpringMvc: boolean = false;

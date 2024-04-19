@@ -8,17 +8,19 @@ export interface ChatContextItem {
 export interface ChatCreationContext {
 	origin: string;
 	action: string;
-	sourceFile: any;
-	extraItems: ChatContextItem[];
+	language: string;
 	element: CodeElement;
+	extraItems?: ChatContextItem[];
 }
 
-export class ChatContextProvider {
-	isApplicable(): boolean {
+export abstract class ChatContextProvider {
+	static name = "ChatContextProvider";
+
+	isApplicable(context: ChatCreationContext): boolean {
 		throw new Error("Method not implemented.");
 	}
 
-	async collect(): Promise<ChatContextItem[]> {
+	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
 		throw new Error("Method not implemented.");
 	}
 }
