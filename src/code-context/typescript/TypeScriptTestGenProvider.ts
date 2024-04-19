@@ -45,7 +45,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		let imports: string[] = [];
 		let nodeByRange = scopeGraph.nodeByRange(block.blockRange.startIndex, block.blockRange.endIndex);
 		if (nodeByRange) {
-			imports = scopeGraph.imports(nodeByRange);
+			imports = scopeGraph.allImports(sourceFile.getText());
 		}
 
 		if (fs.existsSync(testFilePath.toString())) {

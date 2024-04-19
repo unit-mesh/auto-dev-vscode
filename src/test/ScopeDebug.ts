@@ -29,8 +29,8 @@ export class DefDebug {
 	constructor(range: TextRange, name: string, refs: TextRange[], symbol: string, src: string) {
 		this.name = name;
 		this.range = range;
-		this.context = context(range, src); // Assuming context is defined elsewhere
-		this.refs = refs.map(r => context(r, src)).map(context => new RefDebug(context));
+		this.context = contextFromRange(range, src); // Assuming context is defined elsewhere
+		this.refs = refs.map(r => contextFromRange(r, src)).map(context => new RefDebug(context));
 		this.symbol = symbol;
 	}
 
@@ -53,8 +53,8 @@ export class ImportDebug {
 	constructor(name: string, range: TextRange, refs: TextRange[], src: string) {
 		this.name = name;
 		this.range = range;
-		this.context = context(range, src);
-		this.refs = refs.map(r => context(r, src)).map(context => new RefDebug(context));
+		this.context = contextFromRange(range, src);
+		this.refs = refs.map(r => contextFromRange(r, src)).map(context => new RefDebug(context));
 	}
 
 	toString(): string {
@@ -159,7 +159,7 @@ export class ScopeDebug {
 	}
 }
 
-export function context(range: TextRange, src: string): string {
+function contextFromRange(range: TextRange, src: string): string {
 	const contextStart = (() => {
 		for (let i = range.start.byte - 1; i >= 0; i--) {
 			if (src[i] === "\n") {

@@ -213,4 +213,53 @@ export class ScopeGraph {
 		const start = this.rootIndex;
 		return ScopeDebug.new(graph, start, src, language);
 	}
+
+	allImports(src: string) : string[] {
+		let graph = this.graph;
+		const imports = graph
+			.inEdges(this.rootIndex)
+			.filter(edge => graph.getEdgeAttributes(edge) instanceof ImportToScope)
+			.map(edge => {
+				const impNode = graph.source(edge);
+				const range = graph.getNodeAttributes(impNode).range;
+				const text = src.slice(range.start.byte, range.end.byte);
+
+				const refs = graph
+					.inEdges(impNode)
+					.filter(edge => graph.getEdgeAttributes(edge) instanceof RefToImport)
+					.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
+					.sort((a, b) => a.start.byte - b.start.byte);
+
+				return contextFromRange(range, src)
+			});
+
+		return imports;
+	}
+}
+
+function contextFromRange(range: TextRange, src: string): string {
+	const contextStart = (() => {
+		for (let i = range.start.byte - 1; i >= 0; i--) {
+			if (src[i] === "\n") {
+				return i + 1;
+			}
+		}
+		return 0;
+	})();
+
+	// first new line after end
+	const contextEnd = (() => {
+		for (let i = range.end.byte; i < src.length; i++) {
+			if (src[i] === "\n") {
+				return i;
+			}
+		}
+		return src.length;
+	})();
+
+	return [
+		src.slice(contextStart, range.start.byte).trimStart(),
+		src.slice(range.start.byte, range.end.byte),
+		src.slice(range.end.byte, contextEnd).trimEnd(),
+	].join("");
 }
