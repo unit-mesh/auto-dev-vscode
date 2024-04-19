@@ -1,31 +1,31 @@
+import fs from "fs";
+import path from "path";
+import vscode, { Uri } from "vscode";
+import { injectable } from "inversify";
+
 import { TestGenProvider } from "../_base/test/TestGenProvider";
 import { CodeFile, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TestGenContext } from "../_base/test/TestGenContext";
-import { injectable } from "inversify";
-import vscode from "vscode";
-import path from "path";
-import fs from "fs";
+
 
 @injectable()
 export class TypeScriptTestGenProvider implements TestGenProvider {
 	private context: TestGenContext | undefined;
 	private languageService: TSLanguageService | undefined;
 
-	constructor() {
-
-	}
-
 	isApplicable(lang: string): boolean {
 		return lang === "typescript" || lang === "javascript" || lang === "javascriptreact" || lang === "typescriptreact";
 	}
+
+	constructor() {}
 
 	async setup(defaultLanguageService: TSLanguageService, context?: TestGenContext) {
 		this.languageService = defaultLanguageService;
 		this.context = context;
 	}
 
-	findOrCreateTestFile(sourceFile: CodeFile, element: any): Promise<TestGenContext> {
+	findOrCreateTestFile(sourceFile: Uri, element: any): Promise<TestGenContext> {
 		return Promise.resolve(this.context!!);
 	}
 

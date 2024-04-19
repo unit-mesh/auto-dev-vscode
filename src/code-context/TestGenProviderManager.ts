@@ -17,7 +17,7 @@ export class TestGenProviderManager {
 		return TestGenProviderManager.instance;
 	}
 
-	async async(lang: SupportedLanguage): Promise<TestGenProvider | undefined> {
+	async provide(lang: SupportedLanguage): Promise<TestGenProvider | undefined> {
 		let testProviders = providerContainer.getAll<TestGenProvider>(PROVIDER_TYPES.TestGenProvider);
 		let provider = testProviders.find((provider) => {
 			return provider.isApplicable(lang);

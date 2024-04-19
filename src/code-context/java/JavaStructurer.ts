@@ -1,11 +1,11 @@
 import Parser, { Query } from "web-tree-sitter";
+import { injectable } from "inversify";
 
 import { createFunction, insertLocation, Structurer } from "../_base/BaseStructurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { LanguageConfig } from "../_base/LanguageConfig";
-import { injectable } from "inversify";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 
@@ -20,9 +20,7 @@ export class JavaStructurer implements Structurer {
 		return lang === "java";
 	}
 
-	constructor() {
-
-	}
+	constructor() {}
 
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
 		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;

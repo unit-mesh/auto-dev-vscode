@@ -1,4 +1,4 @@
-import { l10n } from "vscode";
+import { l10n, Uri } from "vscode";
 
 import { injectable } from "inversify";
 import { TestGenProvider } from "../_base/test/TestGenProvider";
@@ -27,7 +27,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		this.context = context;
 	}
 
-	findOrCreateTestFile(sourceFile: CodeFile, element: any): Promise<TestGenContext> {
+	findOrCreateTestFile(sourceFile: Uri, element: any): Promise<TestGenContext> {
 		return Promise.resolve(this.context!!);
 	}
 
