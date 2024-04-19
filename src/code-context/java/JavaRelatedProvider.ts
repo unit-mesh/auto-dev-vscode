@@ -4,17 +4,16 @@ import { CodeFileCacheManager } from "../../editor/cache/CodeFileCacheManager";
 import { channel } from "../../channel";
 import { injectable } from "inversify";
 
-const JAVA_BUILTIN_TYPES = new Set([
-	"byte", "short", "int", "long", "float", "double", "boolean", "char", "void"
-]);
-
-// typealias for Java types
 type JavaType = string;
 type CanonicalName = string;
 
 @injectable()
 export class JavaRelatedProvider implements RelatedCodeProvider {
 	name = "JavaRelatedProvider";
+
+	JAVA_BUILTIN_TYPES = new Set([
+		"byte", "short", "int", "long", "float", "double", "boolean", "char", "void"
+	]);
 
 	// dynamic get resources
 	importCache: Map<JavaType, CanonicalName> = new Map();

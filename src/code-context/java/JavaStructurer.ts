@@ -1,16 +1,30 @@
-import Parser from "web-tree-sitter";
+import Parser, { Query } from "web-tree-sitter";
 
-import { BaseStructurer } from "../_base/BaseStructurer";
+import { createFunction, insertLocation, Structurer } from "../_base/BaseStructurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { LanguageConfig } from "../_base/LanguageConfig";
 import { injectable } from "inversify";
+import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
+import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 
 @injectable()
-export class JavaStructurer extends BaseStructurer {
+export class JavaStructurer implements Structurer {
 	protected langId: SupportedLanguage = "java";
 	protected config: LanguageConfig = JavaLangConfig;
+	protected parser: Parser | undefined;
+	protected language: Parser.Language | undefined;
+
+	async init(langService: TSLanguageService): Promise<Query | undefined> {
+		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
+		const _parser = langService.getParser() ?? new Parser();
+		const language = await tsConfig.grammar(langService, this.langId);
+		_parser.setLanguage(language);
+		this.parser = _parser;
+		this.language = language;
+		return language?.query(tsConfig.structureQuery.queryStr);
+	}
 
 	/**
 	 * Parses the given code string and generates a CodeFile object representing the structurer of the code.
@@ -19,7 +33,7 @@ export class JavaStructurer extends BaseStructurer {
 	 * @param filepath
 	 * @returns A Promise that resolves to the generated CodeFile object, or undefined if the parsing fails.
 	 */
-	override async parseFile(code: string, filepath: string): Promise<CodeFile | undefined> {
+	async parseFile(code: string, filepath: string): Promise<CodeFile | undefined> {
 		const tree = this.parser!!.parse(code);
 		const query = this.config.structureQuery.query(this.language!!);
 		const captures = query!!.captures(tree.rootNode);
@@ -77,7 +91,7 @@ export class JavaStructurer extends BaseStructurer {
 					classObj.canonicalName = codeFile.package + "." + classObj.name;
 					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
 					if (classNode !== null) {
-						this.insertLocation(classObj, classNode);
+						insertLocation(classObj, classNode);
 						if (!isLastNode) {
 							isLastNode = true;
 						}
@@ -92,12 +106,12 @@ export class JavaStructurer extends BaseStructurer {
 				case 'method-body':
 					if (methodName !== '') {
 						const methodNode = capture.node;
-						const methodObj = this.createFunction(capture, methodName);
+						const methodObj = createFunction(capture, methodName);
 						if (methodReturnType !== '') {
 							methodObj.returnType = methodReturnType;
 						}
 						if (methodNode !== null) {
-							this.insertLocation(classObj, methodNode);
+							insertLocation(classObj, methodNode);
 						}
 
 						methods.push(methodObj);

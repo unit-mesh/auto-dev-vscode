@@ -37,13 +37,14 @@ export class JavaTestGenProvider implements TestGenProvider {
 
 	baseTestPrompt: string = `${l10n.t("lang.java.prompt.basicTestTemplate")}`.trim();
 
-	// wirte a regex for java import statement
+	// write a regex for java import statement
 	importRegex = /import\s+([\w.]+);/g;
+
+	private clazzName = "JavaTestContextProvider";
 
 	async collect(creationContext: ChatCreationContext): Promise<ChatContextItem[]> {
 		const fileName = creationContext.filename;
 
-		// let isSpringRelated = this.checkIsSpringRelated(creationContext.element ?? );
 		let isSpringRelated = true;
 		if (creationContext) {
 			const imports = this.importRegex.exec(creationContext.content);
@@ -64,7 +65,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 				testControllerPrompt += `\nTest code template:\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 
-			finalPrompt = { clazz: "JavaTestContextProvider", text: testControllerPrompt };
+			finalPrompt = { clazz: this.clazzName, text: testControllerPrompt };
 		} else if (this.isService(fileName) && isSpringRelated) {
 			let testServicePrompt = prompt + `\n${l10n.t("lang.java.prompt.testForService")}\n`.trim();
 
@@ -73,13 +74,13 @@ export class JavaTestGenProvider implements TestGenProvider {
 				testServicePrompt += `\nTest code template:\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 
-			finalPrompt = { clazz: "JavaTestContextProvider", text: testServicePrompt };
+			finalPrompt = { clazz: this.clazzName, text: testServicePrompt };
 		} else {
 			const lookup = testPrompt.lookup("Test.java");
 			if (lookup !== null) {
 				prompt += `\nTest code template:\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
-			finalPrompt = { clazz: "JavaTestContextProvider", text: prompt };
+			finalPrompt = { clazz: this.clazzName, text: prompt };
 		}
 
 		return [finalPrompt];

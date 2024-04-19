@@ -1,57 +1,25 @@
-import Parser, { Query } from "web-tree-sitter";
-
-import { TSLanguageUtil } from "../ast/TSLanguageUtil";
-import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
+import Parser from "web-tree-sitter";
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { LanguageConfig } from "./LanguageConfig";
 
 export interface Structurer {
 	parseFile(code: string, path: string): Promise<CodeFile | undefined>
 }
 
-/**
- * Abstract class for structurers that parse code and generate a code structure.
- *
- * @class BaseStructurer
- * @abstract
- */
-export abstract class BaseStructurer implements Structurer {
-	protected parser: Parser | undefined;
-	protected language: Parser.Language | undefined;
-	protected abstract langId: SupportedLanguage;
-	protected config: LanguageConfig | undefined;
+export function insertLocation(model: CodeStructure, node: Parser.SyntaxNode) {
+	model.start = { row: node.startPosition.row, column: node.startPosition.column };
+	model.end = { row: node.endPosition.row, column: node.endPosition.column };
+}
 
-	async init(langService: TSLanguageService): Promise<Query | undefined> {
-		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
-		const _parser = langService.getParser() ?? new Parser();
-		const language = await tsConfig.grammar(langService, this.langId);
-		_parser.setLanguage(language);
-		this.parser = _parser;
-		this.language = language;
-		return language?.query(tsConfig.structureQuery.queryStr);
-	}
+export function createFunction(capture: Parser.QueryCapture, text: string): CodeFunction {
+	const functionObj: CodeFunction = {
+		vars: [],
+		name: text,
+		start: { row: 0, column: 0 },
+		end: { row: 0, column: 0 }
+	};
 
-	async parseFile(code: string, path: string): Promise<CodeFile | undefined> {
-		return undefined;
-	}
-
-	protected insertLocation(model: CodeStructure, node: Parser.SyntaxNode) {
-		model.start = { row: node.startPosition.row, column: node.startPosition.column };
-		model.end = { row: node.endPosition.row, column: node.endPosition.column };
-	}
-
-	protected createFunction(capture: Parser.QueryCapture, text: string): CodeFunction {
-		const functionObj: CodeFunction = {
-			vars: [],
-			name: text,
-			start: { row: 0, column: 0 },
-			end: { row: 0, column: 0 }
-		};
-
-		const node = capture.node.parent ?? capture.node;
-		functionObj.start = { row: node.startPosition.row, column: node.startPosition.column };
-		functionObj.end = { row: node.endPosition.row, column: node.endPosition.column };
-		return functionObj;
-	}
+	const node = capture.node.parent ?? capture.node;
+	functionObj.start = { row: node.startPosition.row, column: node.startPosition.column };
+	functionObj.end = { row: node.endPosition.row, column: node.endPosition.column };
+	return functionObj;
 }
