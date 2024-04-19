@@ -1,7 +1,7 @@
 import { PositionElement } from "./PositionElement";
 import { SupportedLanguage } from "../language/SupportedLanguage";
 
-export interface CodeFile {
+export interface CodeFile extends CodeElement {
 	fileName: string;
 	language: SupportedLanguage;
 	path: string;
@@ -11,7 +11,7 @@ export interface CodeFile {
 	functions?: CodeFunction[];
 }
 
-export interface CodeStructure extends PositionElement {
+export interface CodeStructure extends PositionElement, CodeElement {
 	name: string;
 	// like a package, `com.example.ExampleClass` is the canonical name
 	canonicalName: string,
@@ -25,7 +25,7 @@ export interface CodeStructure extends PositionElement {
 	end: CodePosition;
 }
 
-export interface CodeFunction extends PositionElement {
+export interface CodeFunction extends PositionElement, CodeElement {
 	name: string;
 	vars: CodeVariable[];
 	returnType?: string;
@@ -33,9 +33,13 @@ export interface CodeFunction extends PositionElement {
 	end: CodePosition;
 }
 
-export interface CodeVariable {
+export interface CodeVariable extends CodeElement {
 	name: string;
 	typ: string;
+}
+
+export interface CodeElement {
+	name: string;
 }
 
 export interface CodePosition {
