@@ -1,5 +1,6 @@
-import { injectable } from "inversify";
+import { l10n } from "vscode";
 
+import { injectable } from "inversify";
 import { TestGenProvider } from "../_base/test/TestGenProvider";
 import { CodeFile, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
@@ -8,7 +9,6 @@ import { GradleBuildToolProvider } from "../../chat-context/tooling/GradleBuildT
 import { ChatContextItem, ChatCreationContext } from "../../chat-context/ChatContextProvider";
 import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
-import { t } from "@vscode/l10n";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
@@ -32,7 +32,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		throw new Error("Method not implemented.");
 	}
 
-	baseTestPrompt: string = `${t("lang.java.prompt.basicTestTemplate")}`.trim();
+	baseTestPrompt: string = `${l10n.t("lang.java.prompt.basicTestTemplate")}`.trim();
 
 	// wirte a regex for java import statement
 	importRegex = /import\s+([\w.]+);/g;
@@ -54,7 +54,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		let finalPrompt: ChatContextItem;
 
 		if (this.isController(fileName) && isSpringRelated) {
-			let testControllerPrompt = prompt + `\n${t("lang.java.prompt.testForController")}\n`.trim();
+			let testControllerPrompt = prompt + `\n${l10n.t("lang.java.prompt.testForController")}\n`.trim();
 
 			const lookup = testPrompt.lookup("ControllerTest.java");
 			if (lookup !== null) {
@@ -63,7 +63,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 
 			finalPrompt = { clazz: "JavaTestContextProvider", text: testControllerPrompt };
 		} else if (this.isService(fileName) && isSpringRelated) {
-			let testServicePrompt = prompt + `\n${t("lang.java.prompt.testForService")}\n`.trim();
+			let testServicePrompt = prompt + `\n${l10n.t("lang.java.prompt.testForService")}\n`.trim();
 
 			const lookup = testPrompt.lookup("ServiceTest.java");
 			if (lookup !== null) {
@@ -112,9 +112,9 @@ export class JavaTestGenProvider implements TestGenProvider {
 		}
 
 		if (hasJunit5) {
-			rule = t("lang.java.prompt.useJunit5");
+			rule = l10n.t("lang.java.prompt.useJunit5");
 		} else if (hasJunit4) {
-			rule = t("lang.java.prompt.useJunit4");
+			rule = l10n.t("lang.java.prompt.useJunit4");
 		}
 
 		return rule;

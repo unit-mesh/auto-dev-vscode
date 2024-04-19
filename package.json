@@ -85,37 +85,37 @@
       {
         "command": "autodev.generateDoc",
         "category": "AutoDev",
-        "title": "Auto Generate Document",
+        "title": "%autodev.command.generateDoc%",
         "group": "AutoDev"
       },
       {
         "command": "autodev.genApiData",
         "category": "AutoDev",
-        "title": "Generate API Data",
+        "title": "%autodev.command.genApiData%",
         "group": "AutoDev"
       },
       {
         "command": "autodev.action.quickchat",
         "category": "AutoDev",
-        "title": "AutoDev Quick Chat",
+        "title": "%autodev.command.quickchat%",
         "group": "AutoDev"
       },
       {
         "command": "autodev.explain",
         "category": "AutoDev",
-        "title": "AutoDev Explain this",
+        "title": "%autodev.command.explain%",
         "group": "AutoDev"
       },
       {
         "command": "autodev.fixThis",
         "category": "AutoDev",
-        "title": "AutoDev Fix this",
+        "title": "%autodev.command.fixThis%",
         "group": "AutoDev"
       },
       {
         "command": "autodev.generateTests",
         "category": "AutoDev",
-        "title": "AutoDev Generate Tests",
+        "title": "%autodev.command.generateTests%",
         "group": "AutoDev"
       },
       {

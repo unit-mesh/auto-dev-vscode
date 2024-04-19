@@ -5,6 +5,7 @@ import { TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
 import { NamedElementBlock } from "../document/NamedElementBlock";
 import { BlockBuilder } from "../document/BlockBuilder";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
+import { l10n } from "vscode";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 	constructor(private readonly context: AutoDevExtension) {
@@ -40,7 +41,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 
 	private setupDocIfNoExist(methodRanges: NamedElementBlock[], document: vscode.TextDocument, langid: string) {
 		return methodRanges.map((range) => {
-			const title = range.commentRange ? "更新注释" : "生成注释";
+			const title = l10n.t("autodev.command.generateDoc");
 			return new vscode.CodeLens(range.identifierRange, {
 				title,
 				command: "autodev.generateDoc",
