@@ -1,6 +1,6 @@
 Write unit test for following ${context.lang} code.
 
-${context.frameworkContext}
+${context.chatContext}
 
 #if( $context.relatedClasses.length > 0 )
 ${context.relatedClasses}

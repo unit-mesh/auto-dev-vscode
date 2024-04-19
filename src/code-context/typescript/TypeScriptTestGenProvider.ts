@@ -50,11 +50,12 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 
 		if (fs.existsSync(testFilePath.toString())) {
 			const context: TestGenContext = {
-				currentObject: undefined,
+				currentClass: undefined,
 				language: "",
 				relatedClasses: [],
 				testClassName: "",
-				imports: imports
+				imports: imports,
+				targetPath: testFilePath.fsPath
 			};
 
 			return context;
@@ -63,12 +64,13 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		await vscode.workspace.fs.writeFile(testFilePath, new Uint8Array());
 
 		const context: TestGenContext = {
-			currentObject: undefined,
+			currentClass: undefined,
 			isNewFile: true,
 			language: language,
 			relatedClasses: [],
 			testClassName: elementName,
-			imports: imports
+			imports: imports,
+			targetPath: testFilePath.fsPath
 		};
 
 		return context;

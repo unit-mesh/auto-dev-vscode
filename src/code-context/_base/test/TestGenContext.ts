@@ -1,10 +1,13 @@
 import { CodeStructure } from "../../../editor/codemodel/CodeFile";
+import { TemplateContext } from "../../../prompt-manage/template/TemplateContext";
 
-export interface TestGenContext {
+export interface TestGenContext extends TemplateContext {
 	isNewFile?: boolean,
 	relatedClasses: CodeStructure[],
 	testClassName: string,
 	language: string,
-	currentObject?: CodeStructure,
-	imports?: string[]
+	currentClass?: CodeStructure,
+	imports?: string[],
+	targetPath?: string,
+	sourceCode?: string,
 }

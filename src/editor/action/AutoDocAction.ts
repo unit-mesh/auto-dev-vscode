@@ -45,9 +45,6 @@ export class AutoDocAction implements Action {
 			forbiddenRules: [],
 		};
 
-		let treeSitterFile = await documentToTreeSitterFile(this.document);
-		let scopeGraph = await treeSitterFile.scopeGraph();
-
 		const creationContext: ChatCreationContext = {
 			action: "AutoDocAction",
 			filename: this.document.fileName,
