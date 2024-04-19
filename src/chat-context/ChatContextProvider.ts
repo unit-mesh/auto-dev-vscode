@@ -9,6 +9,7 @@ export interface ChatCreationContext {
 	origin: string;
 	action: string;
 	language: string;
+	filename: string;
 	element: CodeElement;
 	extraItems?: ChatContextItem[];
 }

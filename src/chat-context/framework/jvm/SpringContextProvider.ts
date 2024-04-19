@@ -3,26 +3,63 @@ import { injectable } from "inversify";
 import { TestStack } from "./TestStack";
 import { SpringLibrary } from "./SpringLibrary";
 import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
+import { GradleTooling } from "../../tooling/GradleTooling";
+import { DependencyEntry } from "../../tooling/_base/Dependence";
 
 @injectable()
 export class SpringContextProvider extends ChatContextProvider {
 	static name = "SpringContextProvider";
 
 	isApplicable(context: ChatCreationContext): boolean {
-		return super.isApplicable(context);
+		return context.language === "java";
 	}
 
 	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
-		return super.collect(context);
+		const deps = await GradleTooling.instance().getDependencies();
+		let testStack = this.prepareLibrary(deps.dependencies);
+
+		if (testStack.testFrameworks.size === 0 && testStack.coreFrameworks.size === 0) {
+			return [];
+		}
+
+		const fileName: string = context.filename;
+
+		const isController = (): boolean => {
+			return fileName.endsWith("Controller.java") || fileName.endsWith("Controller.kt");
+		};
+
+		const isService = (): boolean => {
+			return fileName.endsWith("Service.java") || fileName.endsWith("ServiceImpl.java") || fileName.endsWith("Service.kt") || fileName.endsWith("ServiceImpl.kt");
+		};
+
+		if (isController()) {
+			return [
+				{
+					clazz: SpringContextProvider.name,
+					text: `You are working on a project that uses ${Array.from(testStack.coreFrameworks.keys()).join(",")} to build RESTful APIs.`
+				}
+			];
+		}
+
+		if (isService()) {
+			return [
+				{
+					clazz: SpringContextProvider.name,
+					text: `You are working on a project that uses ${Array.from(testStack.coreFrameworks.keys()).join(",")} to build business logic.`
+				}
+			];
+		}
+
+		return [];
 	}
 
-	prepareLibrary(libraryDataList: any[]): TestStack {
+	prepareLibrary(libraryDataList: DependencyEntry[]): TestStack {
 		const testStack: TestStack = new TestStack();
 		let hasMatchSpringMvc: boolean = false;
 		let hasMatchSpringData: boolean = false;
 
 		libraryDataList?.forEach(item => {
-			const name: string = `${item.groupId}:${item.artifactId}`;
+			const name: string = `${item.group}:${item.artifact}`;
 
 			if (!hasMatchSpringMvc) {
 				SpringLibrary.SPRING_MVC.forEach(entry => {

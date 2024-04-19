@@ -1,10 +1,10 @@
 import { GradleTooling } from "./GradleTooling";
-import { channel } from "../../channel";
 
+/**
+ * When the extension is activated, we can process the tooling detection.
+ */
 export class ToolingDetector {
-	async execute() {
-		let deps = await new GradleTooling().getDependencies();
-		channel.append("Detected dependencies: " + JSON.stringify(deps) + "\n");
-		return deps;
+	async startWatch() {
+		await GradleTooling.instance().startWatch();
 	}
 }

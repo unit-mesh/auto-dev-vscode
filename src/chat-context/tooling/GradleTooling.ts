@@ -9,15 +9,36 @@ import { VSCodeAction } from "../../editor/editor-api/VSCodeAction";
 
 export class GradleTooling implements Tooling {
 	moduleTarget = "build.gradle";
-
 	gradleDepRegex: RegExp = /^([^:]+):([^:]+):(.+)$/;
 
+	// singleton
+	private static instance_: GradleTooling;
+	private deps: PackageDependencies | undefined;
+
+	private constructor() {
+	}
+
+	static instance(): GradleTooling {
+		if (!GradleTooling.instance_) {
+			GradleTooling.instance_ = new GradleTooling();
+		}
+		return GradleTooling.instance_;
+	}
+
+	async startWatch() {
+		this.deps = await this.getDependencies();
+	}
+
 	async getDependencies(): Promise<PackageDependencies> {
+		if (this.deps) {
+			return this.deps;
+		}
+
 		return {
 			name: this.getToolingName(),
 			version: await this.getToolingVersion(),
 			path: "",
-			dependencies: await this.findDeps(),
+			dependencies: await this.buildDeps(),
 			packageManager: PackageManger.GRADLE
 		};
 	}
@@ -30,7 +51,7 @@ export class GradleTooling implements Tooling {
 		return "";
 	}
 
-	private async findDeps(): Promise<PackageDependencies[]> {
+	private async buildDeps(): Promise<PackageDependencies[]> {
 		let extension = vscode.extensions.getExtension("vscjava.vscode-gradle");
 		return await extension?.activate().then(async () => {
 			const action = new VSCodeAction();

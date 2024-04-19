@@ -20,6 +20,7 @@ import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
+import { ToolingDetector } from "./chat-context/tooling/ToolingDetector";
 
 export async function activate(context: vscode.ExtensionContext) {
   setExtensionContext(context);
@@ -37,14 +38,13 @@ export async function activate(context: vscode.ExtensionContext) {
   const extension = new AutoDevExtension(
     sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
   );
-  // new ToolingDetector().execute().then((deps) => {
-  // });
-  //
 
   Parser.init().then(async () => {
       registerCodeLensProviders(extension);
       registerAutoDevProviders(extension);
       registerQuickFixProvider(extension);
+
+      await new ToolingDetector().startWatch()
 
       await structureProvider.init();
       extension.setStructureProvider(structureProvider);
