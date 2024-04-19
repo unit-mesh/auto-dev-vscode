@@ -9,15 +9,18 @@ import { GradleBuildToolProvider } from "../../chat-context/tooling/GradleBuildT
 import { ChatContextItem, ChatCreationContext } from "../../chat-context/ChatContextProvider";
 import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
+import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
+	isApplicable(lang: SupportedLanguage): boolean {
+		return lang === "java";
+	}
+
 	private context: TestGenContext | undefined;
 	private languageService: TSLanguageService | undefined;
 
-	constructor() {
-
-	}
+	constructor() {}
 
 	async setup(defaultLanguageService: TSLanguageService, context?: TestGenContext) {
 		this.languageService = defaultLanguageService;

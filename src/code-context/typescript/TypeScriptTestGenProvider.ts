@@ -16,6 +16,10 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 
 	}
 
+	isApplicable(lang: string): boolean {
+		return lang === "typescript" || lang === "javascript" || lang === "javascriptreact" || lang === "typescriptreact";
+	}
+
 	async setup(defaultLanguageService: TSLanguageService, context?: TestGenContext) {
 		this.languageService = defaultLanguageService;
 		this.context = context;
