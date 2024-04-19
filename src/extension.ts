@@ -31,7 +31,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const sidebar = new AutoDevWebviewViewProvider(context);
 	const action = new VSCodeAction();
-	let structureProvider = new StructurerProviderManager();
+	let structureProvider = StructurerProviderManager.getInstance();
 
 	const documentManager = new RecentlyDocumentManager();
 	const diffManager = new DiffManager();
