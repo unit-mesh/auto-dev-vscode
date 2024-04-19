@@ -47,9 +47,6 @@ export async function activate(context: vscode.ExtensionContext) {
 			registerQuickFixProvider(extension);
 
 			await new BuildToolSync().startWatch();
-
-			await structureProvider.init();
-			extension.setStructureProvider(structureProvider);
 		}
 	);
 

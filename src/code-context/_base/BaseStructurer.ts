@@ -1,7 +1,9 @@
 import Parser from "web-tree-sitter";
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
+import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 
 export interface Structurer {
+	isApplicable(lang: SupportedLanguage): any;
 	parseFile(code: string, path: string): Promise<CodeFile | undefined>
 }
 

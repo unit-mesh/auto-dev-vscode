@@ -1,20 +1,31 @@
 import { SupportedLanguage } from "../editor/language/SupportedLanguage";
-import { BaseStructurer } from "./_base/BaseStructurer";
-import { JavaStructurer } from "./java/JavaStructurer";
-import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
+import { Structurer } from "./_base/BaseStructurer";
+import { providerContainer } from "../ProviderContainer.config";
+import { PROVIDER_TYPES } from "../ProviderTypes";
 
 export class StructurerProviderManager {
-	private structureMap: Map<SupportedLanguage, BaseStructurer> = new Map();
+	private static instance: StructurerProviderManager;
 
-	async init() {
-		let map: Map<string, BaseStructurer> = new Map();
-		const structurer = new JavaStructurer();
-		await structurer.init(new DefaultLanguageService());
-		map.set("java", structurer);
-		this.structureMap = map;
+	private constructor() {
 	}
 
-	getStructurer(lang: SupportedLanguage): BaseStructurer | undefined {
-		return this.structureMap.get(lang);
+	static getInstance(): StructurerProviderManager {
+		if (!StructurerProviderManager.instance) {
+			StructurerProviderManager.instance = new StructurerProviderManager();
+		}
+		return StructurerProviderManager.instance;
+	}
+
+	getStructurer(lang: SupportedLanguage): Structurer | undefined {
+		let testProviders = providerContainer.getAll<Structurer>(PROVIDER_TYPES.Structurer);
+		let provider = testProviders.find((provider) => {
+			return provider.isApplicable(lang);
+		});
+
+		if (!provider) {
+			return undefined;
+		}
+
+		return provider;
 	}
 }

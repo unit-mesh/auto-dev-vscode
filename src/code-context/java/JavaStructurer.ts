@@ -16,6 +16,10 @@ export class JavaStructurer implements Structurer {
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 
+	isApplicable(lang: string) {
+		return lang === "java";
+	}
+
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
 		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
 		const _parser = langService.getParser() ?? new Parser();
