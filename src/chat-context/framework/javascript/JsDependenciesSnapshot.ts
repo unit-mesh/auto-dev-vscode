@@ -50,6 +50,7 @@ export class JsDependenciesSnapshot {
 				dependencies.push(dependency);
 			}
 		}
+
 		return dependencies;
 	}
 

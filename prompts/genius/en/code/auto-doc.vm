@@ -1,10 +1,11 @@
 Write documentation for user's given ${context.language} code.
-
-- User rules: ${context.forbiddenRules}
-- Start your documentation with ${context.startSymbol} here, and ends with `${context.endSymbol}`.
-#if( $context.chatContext.length() > 0 )
+#if($context.chatContext.length > 0 )
 ${context.chatContext}
 #end
+#if($context.forbiddenRules.length > 0)
+${context.forbiddenRules}
+#end
+- Start your documentation with ${context.startSymbol} here, and ends with `${context.endSymbol}`.
 Here is User's code:
 ```${context.language}
 ${context.code}

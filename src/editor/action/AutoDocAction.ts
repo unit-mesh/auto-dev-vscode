@@ -52,6 +52,7 @@ export class AutoDocAction {
 		const contextItems = await PromptManager.getInstance().chatContext(creationContext);
 		if (contextItems.length > 0) {
 			templateContext.chatContext = contextItems.map(item => item.text).join("\n - ");
+			console.info(`chat context: ${templateContext.chatContext}`);
 		}
 
 		let content = await PromptManager.getInstance().build(ActionType.AutoDoc, templateContext);
@@ -79,6 +80,8 @@ export class AutoDocAction {
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
 		const output = FencedCodeBlock.parse(doc).text;
+
+		console.info(`FencedCodeBlock parsed output: ${output}`);
 
 		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
 		insertCodeByRange(this.range.blockRange.start, output);

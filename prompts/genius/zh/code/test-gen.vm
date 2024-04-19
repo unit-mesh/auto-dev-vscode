@@ -2,10 +2,10 @@
 
 ${context.frameworkContext}
 
-#if( $context.relatedClasses.length() > 0 )
+#if( $context.relatedClasses.length > 0 )
     ${context.relatedClasses}
 #end
-#if( $context.currentClass.length() > 0 )
+#if( $context.currentClass.length > 0 )
 以下是当前类的信息：
     ${context.currentClass}
 #end

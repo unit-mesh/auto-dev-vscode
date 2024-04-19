@@ -12,12 +12,12 @@
 - test(java): 修复用户控制器的测试用例
 - docs(architecture): 在主页添加架构图
 
-#if( $context.historyExamples.length() > 0 )
+#if( $context.historyExamples.length > 0 )
 以下是用户的历史提交习惯：
 $context.historyExamples
 #end
 
-#if( $context.originText.length() > 0 )
+#if( $context.originText.length > 0 )
 用户想表达的是: $context.originText
 #end
 
