@@ -1,5 +1,4 @@
 import vscode, { Extension } from "vscode";
-import * as util from "util";
 import { ExtensionApi as GradleApi, RunTaskOpts, Output } from "vscode-gradle";
 import { injectable } from "inversify";
 
@@ -92,7 +91,7 @@ export class GradleBuildToolProvider implements BuildToolProvider {
 				args: ["--configuration", "compileClasspath"],
 				showOutputColors: false,
 				onOutput: (output: Output): void => {
-					const message = new util.TextDecoder("utf-8").decode(output.getOutputBytes_asU8());
+					const message = new TextDecoder("utf-8").decode(output.getOutputBytes_asU8());
 
 					let match = this.gradleDepRegex.exec(message);
 					if (match !== null) {
@@ -138,7 +137,7 @@ export class GradleBuildToolProvider implements BuildToolProvider {
 				args: ["-version"],
 				showOutputColors: false,
 				onOutput: (output: Output): void => {
-					const message = new util.TextDecoder("utf-8").decode(output.getOutputBytes_asU8());
+					const message = new TextDecoder("utf-8").decode(output.getOutputBytes_asU8());
 					outputString += message;
 				},
 			};
