@@ -4,6 +4,7 @@ export class IdentifierBlockRange {
 	commentRange: BlockRange | undefined;
 	blockRange: BlockRange;
 	identifierRange: BlockRange;
+	blockType: string | undefined;
 
 	constructor(
 		blockRange: BlockRange,

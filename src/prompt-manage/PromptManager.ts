@@ -2,6 +2,7 @@ import { VSCodeTemplateLoader } from "./loader/VSCodeTemplateLoader";
 import { TemplateRender } from "./template/TemplateRender";
 import { LlmProvider } from "../llm-provider/LlmProvider";
 import { TemplateContext } from "./template/TemplateContext";
+import { ChatContextManager } from "../chat-context/ChatContextManager";
 
 export enum ActionType {
 	AutoDoc,
@@ -22,6 +23,10 @@ export class PromptManager {
 		}
 		return PromptManager._instance;
 	}
+
+	// chatContext(): string {
+	// 	ChatContextManager.instance().collectChatContextList();
+	// }
 
 	async build(type: ActionType, context: TemplateContext): Promise<string> {
 		let templateRender = new TemplateRender(this.templateLoader);
