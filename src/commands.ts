@@ -7,6 +7,7 @@ import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
 import { showQuickPick } from "./editor/editor-api/QuickInput";
 import { AutoDocAction } from "./editor/action/AutoDocAction";
+import { AutoTestAction } from "./editor/action/AutoTestAction";
 
 const commandsMap: (
   extension: AutoDevExtension
@@ -43,13 +44,27 @@ const commandsMap: (
     range: IdentifierBlockRange,
     edit: vscode.WorkspaceEdit
   ) => {
-    let autoDocAction = new AutoDocAction(document, range, edit);
-    await autoDocAction.execute();
+    await new AutoDocAction(document, range, edit).execute();
   },
-  "autodev.explain": async () => {},
-  "autodev.fixThis": async () => {},
-  "autodev.generateTests": async () => {},
-  "autodev.terminal.explainTerminalSelectionContextMenu": async () => {},
+  "autodev.generateTests": async (
+    document: vscode.TextDocument,
+    range: IdentifierBlockRange,
+    edit: vscode.WorkspaceEdit
+  ) => {
+    await new AutoTestAction(document, range, edit).execute();
+  },
+  "autodev.explain": async (
+    document: vscode.TextDocument,
+    range: IdentifierBlockRange,
+  ) => {
+  },
+  "autodev.fixThis": async (
+    document: vscode.TextDocument,
+    range: IdentifierBlockRange,
+  ) => {
+  },
+  "autodev.terminal.explainTerminalSelectionContextMenu": async () => {
+  },
   "autodev.action.quickchat": async (
     document: vscode.TextDocument,
     range: IdentifierBlockRange,

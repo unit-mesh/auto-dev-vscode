@@ -9,6 +9,7 @@ import { insertCodeByRange, selectCodeInRange } from "../editor";
 import { AutoDevStatus, AutoDevStatusManager } from "../editor-api/AutoDevStatusManager";
 import { FencedCodeBlock } from "../../markdown/FencedCodeBlock";
 import { ChatCreationContext } from "../../chat-context/ChatContextProvider";
+import { Action } from "./Action";
 
 export interface AutoDocContext extends TemplateContext {
 	language: string;
@@ -18,7 +19,7 @@ export interface AutoDocContext extends TemplateContext {
 	forbiddenRules: string[];
 }
 
-export class AutoDocAction {
+export class AutoDocAction implements Action {
 	private document: vscode.TextDocument;
 	private range: IdentifierBlockRange;
 	private edit: vscode.WorkspaceEdit;
