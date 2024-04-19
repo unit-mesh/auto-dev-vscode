@@ -24,7 +24,8 @@ public class ExampleClass {
 
 		const codeFile = await structurer.parseFile(javaHelloWorld, "");
 		expect(codeFile as CodeFile).toEqual({
-			"fileName": "",
+			"name": "",
+			"filepath": "",
 			"language": "java",
 			"functions": [],
 			"path": "",
