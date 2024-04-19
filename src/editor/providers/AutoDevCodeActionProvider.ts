@@ -58,11 +58,13 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 			range: range
 		};
 
-		providerContainer.getAll<ActionCreator>(PROVIDER_TYPES.ActionCreator)
-			.map(async (it) => await it.build(creatorContext))
-			.flatMap((async items => {
-				actions = actions.concat(await items);
-			}));
+		let creators = providerContainer
+			.getAll<ActionCreator>(PROVIDER_TYPES.ActionCreator)
+			.map(item => item.build(creatorContext));
+
+		for (const items of creators) {
+			actions = actions.concat(await items);
+		}
 
 		return actions;
 	}
