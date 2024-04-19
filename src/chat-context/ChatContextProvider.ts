@@ -1,4 +1,5 @@
 import { CodeElement } from "../editor/codemodel/CodeFile";
+import { injectable } from "inversify";
 
 export interface ChatContextItem {
 	clazz: string;
@@ -6,22 +7,15 @@ export interface ChatContextItem {
 }
 
 export interface ChatCreationContext {
-	origin: string;
 	action: string;
 	language: string;
 	filename: string;
-	element: CodeElement;
+	element?: CodeElement;
 	extraItems?: ChatContextItem[];
 }
 
-export abstract class ChatContextProvider {
-	static name = "ChatContextProvider";
+export interface ChatContextProvider {
+	isApplicable(context: ChatCreationContext): boolean
 
-	isApplicable(context: ChatCreationContext): boolean {
-		throw new Error("Method not implemented.");
-	}
-
-	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
-		throw new Error("Method not implemented.");
-	}
+	collect(context: ChatCreationContext): Promise<ChatContextItem[]>
 }

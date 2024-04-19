@@ -7,6 +7,7 @@ import { Tooling } from "./_base/Tooling";
 import { PackageManger } from "./_base/PackageManger";
 import { VSCodeAction } from "../../editor/editor-api/VSCodeAction";
 import { GradleVersionInfo, parseGradleVersionInfo } from "./gradle/GradleVersionInfo";
+import { channel } from "../../channel";
 
 export class GradleTooling implements Tooling {
 	moduleTarget = "build.gradle";
@@ -38,13 +39,7 @@ export class GradleTooling implements Tooling {
 			return this.deps;
 		}
 
-		return {
-			name: this.getToolingName(),
-			version: await this.getToolingVersion(),
-			path: "",
-			dependencies: await this.buildDeps(),
-			packageManager: PackageManger.GRADLE
-		};
+		return await this.buildDeps()
 	}
 
 	getToolingName(): string {
@@ -55,7 +50,7 @@ export class GradleTooling implements Tooling {
 		return "";
 	}
 
-	private async buildDeps(): Promise<PackageDependencies[]> {
+	private async buildDeps(): Promise<PackageDependencies> {
 		let extension = vscode.extensions.getExtension("vscjava.vscode-gradle");
 		return await extension?.activate().then(async () => {
 			const action = new VSCodeAction();
@@ -88,14 +83,14 @@ export class GradleTooling implements Tooling {
 
 			await gradleApi.runTask(runTaskOpts);
 
-			return [{
+			return {
 				name: this.getToolingName(),
 				version: await this.getToolingVersion(),
 				path: "",
 				dependencies: results,
 				packageManager: PackageManger.GRADLE
-			}];
-		}) ?? [];
+			};
+		}) ?? Promise.reject("Gradle not found");
 	}
 
 	async getGradleVersion(): Promise<GradleVersionInfo> {
@@ -108,7 +103,8 @@ export class GradleTooling implements Tooling {
 
 			const runTaskOpts: RunTaskOpts = {
 				projectFolder: workspace,
-				taskName: "-version",
+				taskName: "tasks",
+				args: ["-version"],
 				showOutputColors: false,
 				onOutput: (output: Output): void => {
 					const message = new util.TextDecoder("utf-8").decode(output.getOutputBytes_asU8());
@@ -118,6 +114,7 @@ export class GradleTooling implements Tooling {
 
 			await gradleApi.runTask(runTaskOpts);
 
+			channel.append("Gradle Info:\n" + outputString)
 			return parseGradleVersionInfo(outputString);
 		}) ?? await Promise.reject("Gradle not found");
 	}

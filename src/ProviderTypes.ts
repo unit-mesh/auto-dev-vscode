@@ -1,7 +1,5 @@
-import { ChatContextProvider } from "./chat-context/ChatContextProvider";
-
 const PROVIDER_TYPES = {
-	ChatContextProvider: ChatContextProvider.name,
+	ChatContextProvider: "ChatContextProvider",
 };
 
 export { PROVIDER_TYPES };

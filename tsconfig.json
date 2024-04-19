@@ -7,7 +7,7 @@
     ],
     "module": "NodeNext",
     "skipLibCheck": true,
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "reflect-metadata"],
 
     /* ioc */
     "experimentalDecorators": true,

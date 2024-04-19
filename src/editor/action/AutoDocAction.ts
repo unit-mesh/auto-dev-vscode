@@ -8,6 +8,7 @@ import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
 import { insertCodeByRange, selectCodeInRange } from "../editor";
 import { AutoDevStatus, AutoDevStatusManager } from "../editor-api/AutoDevStatusManager";
 import { FencedCodeBlock } from "../../markdown/FencedCodeBlock";
+import { ChatCreationContext } from "../../chat-context/ChatContextProvider";
 
 export interface AutoDocContext extends TemplateContext {
 	language: string;
@@ -34,7 +35,7 @@ export class AutoDocAction {
 		const startSymbol = LANGUAGE_BLOCK_COMMENT_MAP[this.language].start;
 		const endSymbol = LANGUAGE_BLOCK_COMMENT_MAP[this.language].end;
 
-		const context: AutoDocContext = {
+		const templateContext: AutoDocContext = {
 			language: this.language,
 			startSymbol: startSymbol,
 			endSymbol: endSymbol,
@@ -42,9 +43,23 @@ export class AutoDocAction {
 			forbiddenRules: [],
 		};
 
-		let content = await PromptManager.getInstance().build(ActionType.AutoDoc, context);
+		const creationContext: ChatCreationContext = {
+			action: "AutoDocAction",
+			filename: this.document.fileName,
+			language: this.language,
+		};
 
+		const contextItems = await PromptManager.getInstance().chatContext(creationContext);
+		console.log(contextItems)
+		if(contextItems.length > 0) {
+			templateContext.chatContext = contextItems.map(item => item.text).join("\n - ");
+		}
+
+		console.log(templateContext.chatContext);
+
+		let content = await PromptManager.getInstance().build(ActionType.AutoDoc, templateContext);
 		console.info(`request: ${content}`);
+
 		let msg: ChatMessage = {
 			role: ChatRole.User,
 			content: content
