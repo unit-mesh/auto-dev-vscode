@@ -1,6 +1,6 @@
 import Parser, { Query } from "web-tree-sitter";
 
-import { TSLanguageUtil } from "../TSLanguageUtil";
+import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";

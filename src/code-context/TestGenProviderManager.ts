@@ -1,4 +1,4 @@
-import { TestGenProvider } from "./_base/TestGenProvider";
+import { TestGenProvider } from "./_base/test/TestGenProvider";
 import { SupportedLanguage } from "../editor/language/SupportedLanguage";
 import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
 import { JavaTestGenProvider } from "./java/JavaTestGenProvider";
@@ -9,7 +9,7 @@ export class TestGenProviderManager {
 	async init() {
 		let map: Map<string, TestGenProvider> = new Map();
 		const testGen = new JavaTestGenProvider();
-		await testGen.init(new DefaultLanguageService());
+		await testGen.setup(new DefaultLanguageService());
 		map.set("java", testGen);
 		this.testGenMap = map;
 	}

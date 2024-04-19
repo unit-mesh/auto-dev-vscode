@@ -1,6 +1,6 @@
 import vscode from "vscode";
 import { TreeSitterFile } from "./TreeSitterFile";
-import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
+import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
 
 export async function documentToTreeSitterFile(document: vscode.TextDocument) {
 	const cached = TreeSitterFile.cache.getDocument(document.uri, document.version);

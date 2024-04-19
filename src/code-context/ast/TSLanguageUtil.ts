@@ -1,7 +1,7 @@
-import { LanguageConfig } from "./_base/LanguageConfig";
-import { JavaLangConfig } from "./java/JavaLangConfig";
-import { TypeScriptLangConfig } from "./typescript/TypeScriptLangConfig";
-import { GoLangConfig } from "./go/GoLangConfig";
+import { LanguageConfig } from "../_base/LanguageConfig";
+import { JavaLangConfig } from "../java/JavaLangConfig";
+import { TypeScriptLangConfig } from "../typescript/TypeScriptLangConfig";
+import { GoLangConfig } from "../go/GoLangConfig";
 
 export const ALL_LANGUAGES: LanguageConfig[] = [
   JavaLangConfig,

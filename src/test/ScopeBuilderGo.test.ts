@@ -7,7 +7,7 @@ import { ScopeBuilder } from "../code-search/ScopeBuilder";
 import { TestLanguageService } from "./TestLanguageService";
 import { testScopes } from "./ScopeTestUtil";
 import { TSLanguageService } from "../editor/language/service/TSLanguageService";
-import { TreeSitterFile } from "../code-context/TreeSitterFile";
+import { TreeSitterFile } from "../code-context/ast/TreeSitterFile";
 
 describe('ScopeBuilderGo', () => {
 	let parser: any;

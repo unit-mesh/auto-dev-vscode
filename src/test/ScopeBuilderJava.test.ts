@@ -1,4 +1,4 @@
-import { TreeSitterFile } from "../code-context/TreeSitterFile";
+import { TreeSitterFile } from "../code-context/ast/TreeSitterFile";
 
 const Parser = require("web-tree-sitter");
 

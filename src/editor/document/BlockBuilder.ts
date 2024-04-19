@@ -1,6 +1,6 @@
 import { IdentifierBlock } from "./IdentifierBlock";
 import { BlockRange } from "./BlockRange";
-import { TreeSitterFile, TreeSitterFileError } from "../../code-context/TreeSitterFile";
+import { TreeSitterFile, TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import Parser from "web-tree-sitter";
 import { CodeElement } from "../codemodel/CodeFile";

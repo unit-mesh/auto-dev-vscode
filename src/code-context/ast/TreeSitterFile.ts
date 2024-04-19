@@ -1,11 +1,11 @@
 import Parser, { Language, Tree } from "web-tree-sitter";
 
-import { LanguageConfig } from "./_base/LanguageConfig";
+import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageUtil } from "./TSLanguageUtil";
-import { TreeSitterFileCacheManager } from "../editor/cache/TreeSitterFileCacheManager";
-import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
-import { ScopeBuilder } from "../code-search/ScopeBuilder";
-import { ScopeGraph } from "../code-search/ScopeGraph";
+import { TreeSitterFileCacheManager } from "../../editor/cache/TreeSitterFileCacheManager";
+import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
+import { ScopeBuilder } from "../../code-search/ScopeBuilder";
+import { ScopeGraph } from "../../code-search/ScopeGraph";
 
 export class TreeSitterFile {
 	private sourcecode: string;
