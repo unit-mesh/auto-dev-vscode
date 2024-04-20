@@ -11,6 +11,10 @@ export class AutoTestActionCreator extends CodeActionCreator {
 		vscode.CodeActionKind.RefactorRewrite,
 	];
 
+	isApplicable(creatorContext: ActionCreatorContext): boolean {
+		return true;
+	}
+
 	buildClassAction(context: ActionCreatorContext, nameBlock: NamedElementBlock): vscode.CodeAction {
 		const title = `AutoTest for class \`${nameBlock.identifierRange.text}\` (AutoDev)`;
 		return this.createAutoTestAction(title, context.document, nameBlock);

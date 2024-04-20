@@ -11,6 +11,10 @@ export class AutoDocActionCreator extends CodeActionCreator {
 		vscode.CodeActionKind.RefactorRewrite,
 	];
 
+	isApplicable(creatorContext: ActionCreatorContext): boolean {
+		return true;
+	}
+
 	buildClassAction(context: ActionCreatorContext, nameBlock: NamedElementBlock) {
 		const title = `AutoDoc for class \`${nameBlock.identifierRange.text}\` (AutoDev)`;
 		return this.createDocAction(title, context.document, nameBlock);
