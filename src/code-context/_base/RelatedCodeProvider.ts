@@ -1,4 +1,5 @@
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
+import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 
 /**
  * The `RelatedProvider` class provides methods for retrieving input and output structures related to a given symbol.
@@ -9,6 +10,7 @@ import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/Co
  * @interface RelatedCodeProvider
  */
 export interface RelatedCodeProvider {
+	language: SupportedLanguage;
 	/**
 	 * Returns the fan-in and fan-out of the given method.
 	 * For example:

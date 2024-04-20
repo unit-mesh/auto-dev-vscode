@@ -31,11 +31,10 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const sidebar = new AutoDevWebviewViewProvider(context);
 	const action = new VSCodeAction();
-	let structureProvider = StructurerProviderManager.getInstance();
 
 	const documentManager = new RecentlyDocumentManager();
 	const diffManager = new DiffManager();
-	const fileCacheManager = new CodeFileCacheManager(structureProvider);
+	const fileCacheManager = new CodeFileCacheManager();
 	const relatedManager = new RelatedCodeProviderManager(fileCacheManager);
 	const extension = new AutoDevExtension(
 		sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,

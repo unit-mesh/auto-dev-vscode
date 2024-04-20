@@ -1,8 +1,9 @@
+import { injectable } from "inversify";
+
 import { RelatedCodeProvider } from "../_base/RelatedCodeProvider";
 import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { CodeFileCacheManager } from "../../editor/cache/CodeFileCacheManager";
 import { channel } from "../../channel";
-import { injectable } from "inversify";
 
 type JavaType = string;
 type CanonicalName = string;
@@ -10,6 +11,7 @@ type CanonicalName = string;
 @injectable()
 export class JavaRelatedProvider implements RelatedCodeProvider {
 	name = "JavaRelatedProvider";
+	language = "java";
 
 	JAVA_BUILTIN_TYPES = new Set([
 		"byte", "short", "int", "long", "float", "double", "boolean", "char", "void"

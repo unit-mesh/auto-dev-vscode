@@ -9,12 +9,11 @@ import { Structurer } from "../../code-context/_base/BaseStructurer";
 export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 	private documentMap: Map<Uri, Map<number, CodeFile>>;
 	private canonicalNameMap: Map<string, CodeStructure>;
-	private structureProvider: StructurerProviderManager;
+	private structureProvider: StructurerProviderManager = StructurerProviderManager.getInstance();
 
-	constructor(structureProvider: StructurerProviderManager) {
+	constructor() {
 		this.documentMap = new Map<Uri, Map<number, CodeFile>>();
 		this.canonicalNameMap = new Map<string, CodeStructure>();
-		this.structureProvider = structureProvider;
 	}
 
 	// 将 TreeSitterFile 存储到缓存中
