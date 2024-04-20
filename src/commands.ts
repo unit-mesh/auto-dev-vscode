@@ -6,7 +6,7 @@ import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
 import { showQuickPick } from "./editor/editor-api/QuickInput";
 import { AutoDocExecutor } from "./editor/action/autodoc/AutoDocExecutor";
-import { AutoTestExecutor } from "./editor/action/AutoTestExecutor";
+import { AutoTestExecutor } from "./editor/action/autotest/AutoTestExecutor";
 
 const commandsMap: (
   extension: AutoDevExtension

@@ -6,7 +6,7 @@ import { injectable } from "inversify";
 import { TestGenProvider } from "../_base/test/TestGenProvider";
 import { CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { TestGenContext } from "../_base/test/TestGenContext";
+import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { NamedElementBlock } from "../../editor/document/NamedElementBlock";
 import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 
@@ -26,7 +26,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		this.languageService = defaultLanguageService;
 	}
 
-	async findOrCreateTestFile(sourceFile: vscode.TextDocument, block: NamedElementBlock): Promise<TestGenContext> {
+	async findOrCreateTestFile(sourceFile: vscode.TextDocument, block: NamedElementBlock): Promise<AutoTestTemplateContext> {
 		const language = sourceFile.languageId;
 		const testFilePath: vscode.Uri | undefined = this.getTestFilePath(sourceFile);
 		if (!testFilePath) {
@@ -49,7 +49,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		}
 
 		if (fs.existsSync(testFilePath.toString())) {
-			const context: TestGenContext = {
+			const context: AutoTestTemplateContext = {
 				currentClass: undefined,
 				language: "",
 				relatedClasses: [],
@@ -63,7 +63,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 
 		await vscode.workspace.fs.writeFile(testFilePath, new Uint8Array());
 
-		const context: TestGenContext = {
+		const context: AutoTestTemplateContext = {
 			currentClass: undefined,
 			isNewFile: true,
 			language: language,

@@ -47,8 +47,6 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 			actions = actions.concat(methodActions);
 			allRanges = allRanges.concat(methodRanges);
 		} else if (classRanges instanceof Array) {
-			let classAction = this.buildClassAction(classRanges, range, document);
-			actions = actions.concat(classAction);
 			allRanges = allRanges.concat(classRanges);
 		}
 
@@ -82,25 +80,7 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 				});
 		}
 
-		let testActions: vscode.CodeAction[] = methodRanges
-			.filter(result => result.blockRange.contains(range))
-			.map(result => {
-				const title = `AutoTest for method \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevCodeActionProvider.createAutoTestAction(title, document, result);
-			});
-
-		return apisDocActions.concat(testActions);
-	}
-
-	private buildClassAction(classRanges: NamedElementBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument) {
-		let testActions: vscode.CodeAction[] = classRanges
-			.filter(named => named.identifierRange.contains(range))
-			.map(result => {
-				const title = `AutoTest for class \`${result.identifierRange.text}\` (AutoDev)`;
-				return AutoDevCodeActionProvider.createAutoTestAction(title, document, result);
-			});
-
-		return testActions;
+		return apisDocActions.concat(apisDocActions);
 	}
 
 	private static createGenApiDataAction(title: string, result: NamedElementBlock, document: vscode.TextDocument): vscode.CodeAction {
@@ -112,40 +92,6 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 		codeAction.edit = new vscode.WorkspaceEdit();
 		codeAction.command = {
 			command: "autodev.genApiData",
-			title: title,
-			arguments: [document, result, codeAction.edit]
-		};
-
-		return codeAction;
-	}
-
-	private static createDocAction(title: string, document: vscode.TextDocument, result: NamedElementBlock): vscode.CodeAction {
-		const codeAction = new vscode.CodeAction(
-			title,
-			AutoDevCodeActionProvider.providedCodeActionKinds[0]
-		);
-
-		codeAction.isPreferred = false;
-		codeAction.edit = new vscode.WorkspaceEdit();
-		codeAction.command = {
-			command: "autodev.autoComment",
-			title: title,
-			arguments: [document, result, codeAction.edit]
-		};
-
-		return codeAction;
-	}
-
-	private static createAutoTestAction(title: string, document: vscode.TextDocument, result: NamedElementBlock) {
-		const codeAction = new vscode.CodeAction(
-			title,
-			AutoDevCodeActionProvider.providedCodeActionKinds[0]
-		);
-
-		codeAction.isPreferred = false;
-		codeAction.edit = new vscode.WorkspaceEdit();
-		codeAction.command = {
-			command: "autodev.autoTest",
 			title: title,
 			arguments: [document, result, codeAction.edit]
 		};

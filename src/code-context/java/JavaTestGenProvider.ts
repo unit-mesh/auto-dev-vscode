@@ -4,7 +4,7 @@ import { injectable } from "inversify";
 import { TestGenProvider } from "../_base/test/TestGenProvider";
 import { CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { TestGenContext } from "../_base/test/TestGenContext";
+import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { GradleBuildToolProvider } from "../../chat-context/tooling/GradleBuildToolProvider";
 import { ChatContextItem, ChatCreationContext } from "../../chat-context/ChatContextProvider";
 import { MvcUtil } from "./JavaMvcUtil";
@@ -17,17 +17,17 @@ export class JavaTestGenProvider implements TestGenProvider {
 		return lang === "java";
 	}
 
-	private context: TestGenContext | undefined;
+	private context: AutoTestTemplateContext | undefined;
 	private languageService: TSLanguageService | undefined;
 
 	constructor() {}
 
-	async setup(defaultLanguageService: TSLanguageService, context?: TestGenContext) {
+	async setup(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext) {
 		this.languageService = defaultLanguageService;
 		this.context = context;
 	}
 
-	findOrCreateTestFile(sourceFile: vscode.TextDocument, element: any): Promise<TestGenContext> {
+	findOrCreateTestFile(sourceFile: vscode.TextDocument, element: any): Promise<AutoTestTemplateContext> {
 		return Promise.resolve(this.context!!);
 	}
 

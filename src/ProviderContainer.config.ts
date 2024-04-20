@@ -20,11 +20,13 @@ import { JavaStructurer } from "./code-context/java/JavaStructurer";
 import { TypeScriptStructurer } from "./code-context/typescript/TypeScriptStructurer";
 import { ActionCreator } from "./editor/action/_base/ActionCreator";
 import { AutoDocCreator } from "./editor/action/autodoc/AutoDocCreator";
+import { AutoTestCreator } from "./editor/action/autotest/AutoTestCreator";
 
 const providerContainer = new Container();
 
 // Action Register
 providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoDocCreator);
+providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoTestCreator);
 
 // ChatContextProvider
 providerContainer.bind<ChatContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(SpringContextProvider);
