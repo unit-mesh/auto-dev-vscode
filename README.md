@@ -63,6 +63,7 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] UI
 - [ ] Local embedding
     - [ ] TF-IDF
+        - [natural]((https://naturalnode.github.io/natural/tfidf.html)
     - [ ] Simple Text Embedding
     - [ ] ONNX Runtime
     - [ ] Embedding Database
