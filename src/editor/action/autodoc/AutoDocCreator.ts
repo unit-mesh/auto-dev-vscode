@@ -1,9 +1,10 @@
 import { injectable } from "inversify";
 import vscode from "vscode";
 
-import { ActionCreator, ActionCreatorContext } from "../_base/ActionCreator";
+import { ActionCreator } from "../_base/ActionCreator";
 import { CodeElementType } from "../../codemodel/CodeElementType";
 import { NamedElementBlock } from "../../document/NamedElementBlock";
+import { ActionCreatorContext } from "../_base/ActionCreatorContext";
 
 @injectable()
 export class AutoDocCreator implements ActionCreator {

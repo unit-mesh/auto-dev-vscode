@@ -10,7 +10,7 @@ import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevSta
 import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
 import { ChatCreationContext } from "../../../chat-context/ChatContextProvider";
 import { Executor } from "../_base/Executor";
-import { AutoDocContext } from "./AutoDocContext";
+import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
 
 export class AutoDocExecutor implements Executor {
 	private document: vscode.TextDocument;
@@ -29,7 +29,7 @@ export class AutoDocExecutor implements Executor {
 		const startSymbol = LANGUAGE_BLOCK_COMMENT_MAP[this.language].start;
 		const endSymbol = LANGUAGE_BLOCK_COMMENT_MAP[this.language].end;
 
-		const templateContext: AutoDocContext = {
+		const templateContext: AutoDocTemplateContext = {
 			language: this.language,
 			startSymbol: startSymbol,
 			endSymbol: endSymbol,

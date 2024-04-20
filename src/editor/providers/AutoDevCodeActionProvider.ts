@@ -8,7 +8,8 @@ import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileU
 import { BlockBuilder } from "../document/BlockBuilder";
 import { providerContainer } from "../../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../../ProviderTypes";
-import { ActionCreator, ActionCreatorContext } from "../action/_base/ActionCreator";
+import { ActionCreator } from "../action/_base/ActionCreator";
+import { ActionCreatorContext } from "../action/_base/ActionCreatorContext";
 
 export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 	private context: AutoDevExtension;
