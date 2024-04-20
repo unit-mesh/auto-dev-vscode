@@ -6,7 +6,7 @@ import { NamedElementBlock } from "../../document/NamedElementBlock";
 import { ActionCreatorContext } from "../_base/ActionCreatorContext";
 
 @injectable()
-export class AutoDocCreator extends CodeActionCreator {
+export class AutoDocActionCreator extends CodeActionCreator {
 	static readonly providedCodeActionKinds = [
 		vscode.CodeActionKind.RefactorRewrite,
 	];
@@ -22,7 +22,7 @@ export class AutoDocCreator extends CodeActionCreator {
 	}
 
 	private createDocAction(title: string, document: vscode.TextDocument, result: NamedElementBlock): vscode.CodeAction {
-		const codeAction = new vscode.CodeAction(title, AutoDocCreator.providedCodeActionKinds[0]);
+		const codeAction = new vscode.CodeAction(title, AutoDocActionCreator.providedCodeActionKinds[0]);
 
 		codeAction.isPreferred = false;
 		codeAction.edit = new vscode.WorkspaceEdit();

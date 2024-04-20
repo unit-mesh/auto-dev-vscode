@@ -5,8 +5,8 @@ import { NamedElementBlock } from "./editor/document/NamedElementBlock";
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
 import { showQuickPick } from "./editor/editor-api/QuickInput";
-import { AutoDocExecutor } from "./editor/action/autodoc/AutoDocExecutor";
-import { AutoTestExecutor } from "./editor/action/autotest/AutoTestExecutor";
+import { AutoDocActionExecutor } from "./editor/action/autodoc/AutoDocActionExecutor";
+import { AutoTestActionExecutor } from "./editor/action/autotest/AutoTestActionExecutor";
 
 const commandsMap: (
   extension: AutoDevExtension
@@ -43,14 +43,14 @@ const commandsMap: (
     range: NamedElementBlock,
     edit: vscode.WorkspaceEdit
   ) => {
-    await new AutoDocExecutor(document, range, edit).execute();
+    await new AutoDocActionExecutor(document, range, edit).execute();
   },
   "autodev.autoTest": async (
     document: vscode.TextDocument,
     range: NamedElementBlock,
     edit: vscode.WorkspaceEdit
   ) => {
-    await new AutoTestExecutor(document, range, edit).execute();
+    await new AutoTestActionExecutor(document, range, edit).execute();
   },
   "autodev.explain": async (
     document: vscode.TextDocument,

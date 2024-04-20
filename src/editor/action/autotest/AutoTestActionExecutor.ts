@@ -1,6 +1,6 @@
 import vscode from "vscode";
 
-import { Executor } from "../_base/Executor";
+import { ActionExecutor } from "../_base/ActionExecutor";
 import { NamedElementBlock } from "../../document/NamedElementBlock";
 import { TestGenProviderManager } from "../../../code-context/TestGenProviderManager";
 import { ActionType, PromptManager } from "../../../prompt-manage/PromptManager";
@@ -10,7 +10,7 @@ import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
 import { ChatCreationContext } from "../../../chat-context/ChatContextProvider";
 
-export class AutoTestExecutor implements Executor {
+export class AutoTestActionExecutor implements ActionExecutor {
 	private document: vscode.TextDocument;
 	private range: NamedElementBlock;
 	private edit: vscode.WorkspaceEdit;

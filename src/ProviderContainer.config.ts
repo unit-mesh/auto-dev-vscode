@@ -19,14 +19,14 @@ import { Structurer } from "./code-context/_base/BaseStructurer";
 import { JavaStructurer } from "./code-context/java/JavaStructurer";
 import { TypeScriptStructurer } from "./code-context/typescript/TypeScriptStructurer";
 import { ActionCreator } from "./editor/action/_base/ActionCreator";
-import { AutoDocCreator } from "./editor/action/autodoc/AutoDocCreator";
-import { AutoTestCreator } from "./editor/action/autotest/AutoTestCreator";
+import { AutoDocActionCreator } from "./editor/action/autodoc/AutoDocActionCreator";
+import { AutoTestActionCreator } from "./editor/action/autotest/AutoTestActionCreator";
 
 const providerContainer = new Container();
 
 // Action Register
-providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoDocCreator);
-providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoTestCreator);
+providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoDocActionCreator);
+providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoTestActionCreator);
 
 // ChatContextProvider
 providerContainer.bind<ChatContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(SpringContextProvider);

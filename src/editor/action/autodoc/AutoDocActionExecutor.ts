@@ -9,10 +9,10 @@ import { insertCodeByRange, selectCodeInRange } from "../../editor";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
 import { ChatCreationContext } from "../../../chat-context/ChatContextProvider";
-import { Executor } from "../_base/Executor";
+import { ActionExecutor } from "../_base/ActionExecutor";
 import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
 
-export class AutoDocExecutor implements Executor {
+export class AutoDocActionExecutor implements ActionExecutor {
 	private document: vscode.TextDocument;
 	private range: NamedElementBlock;
 	private edit: vscode.WorkspaceEdit;

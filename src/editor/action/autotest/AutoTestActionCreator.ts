@@ -6,7 +6,7 @@ import { ActionCreatorContext } from "../_base/ActionCreatorContext";
 import { NamedElementBlock } from "../../document/NamedElementBlock";
 
 @injectable()
-export class AutoTestCreator extends CodeActionCreator {
+export class AutoTestActionCreator extends CodeActionCreator {
 	static readonly providedCodeActionKinds = [
 		vscode.CodeActionKind.RefactorRewrite,
 	];
@@ -22,7 +22,7 @@ export class AutoTestCreator extends CodeActionCreator {
 	}
 
 	private createAutoTestAction(title: string, document: vscode.TextDocument, result: NamedElementBlock): vscode.CodeAction {
-		const codeAction = new vscode.CodeAction(title, AutoTestCreator.providedCodeActionKinds[0]);
+		const codeAction = new vscode.CodeAction(title, AutoTestActionCreator.providedCodeActionKinds[0]);
 
 		codeAction.isPreferred = false;
 		codeAction.edit = new vscode.WorkspaceEdit();
