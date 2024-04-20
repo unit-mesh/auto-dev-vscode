@@ -59,6 +59,7 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 
 		let creators = providerContainer
 			.getAll<ActionCreator>(PROVIDER_TYPES.ActionCreator)
+			.filter(item => item.isApplicable(creatorContext))
 			.map(item => item.build(creatorContext));
 
 		for (const items of creators) {

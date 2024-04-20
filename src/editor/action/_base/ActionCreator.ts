@@ -6,9 +6,15 @@ import { NamedElementBlock } from "../../document/NamedElementBlock";
 
 export interface ActionCreator {
 	build(context: ActionCreatorContext): Promise<vscode.CodeAction[]>;
+
+	isApplicable(creatorContext: ActionCreatorContext): boolean;
 }
 
 export abstract class CodeActionCreator implements ActionCreator {
+	isApplicable(creatorContext: ActionCreatorContext): boolean {
+		return true;
+	}
+
 	build(context: ActionCreatorContext): Promise<vscode.CodeAction[]> {
 		let apisDocActions: vscode.CodeAction[] = [];
 		for (let nameBlock of context.namedElementBlocks) {
