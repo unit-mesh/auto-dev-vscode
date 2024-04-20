@@ -39,12 +39,8 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 		const methodRanges: NamedElementBlock[] | TreeSitterFileError = blockBuilder.buildMethod();
 		const classRanges: NamedElementBlock[] | TreeSitterFileError = blockBuilder.buildClass();
 
-		let actions: vscode.CodeAction[] = [];
-
 		let allRanges: NamedElementBlock[] = [];
 		if (methodRanges instanceof Array) {
-			let methodActions = this.buildMethodActions(methodRanges, range, document, lang);
-			actions = actions.concat(methodActions);
 			allRanges = allRanges.concat(methodRanges);
 		} else if (classRanges instanceof Array) {
 			allRanges = allRanges.concat(classRanges);
@@ -62,41 +58,11 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 			.filter(item => item.isApplicable(creatorContext))
 			.map(item => item.build(creatorContext));
 
+		let actions: vscode.CodeAction[] = [];
 		for (const items of creators) {
 			actions = actions.concat(await items);
 		}
 
 		return actions;
-	}
-
-	private buildMethodActions(methodRanges: NamedElementBlock[], range: vscode.Range | vscode.Selection, document: vscode.TextDocument, lang: string):
-		vscode.CodeAction[] {
-		let apisDocActions: vscode.CodeAction[] = [];
-		if (this.context.structureProvider?.getStructurer(lang)) {
-			apisDocActions = methodRanges
-				.filter(result => result.blockRange.contains(range))
-				.map(result => {
-					const title = `Gen API Data for \`${result.identifierRange.text}\` (AutoDev)`;
-					return AutoDevCodeActionProvider.createGenApiDataAction(title, result, document);
-				});
-		}
-
-		return apisDocActions.concat(apisDocActions);
-	}
-
-	private static createGenApiDataAction(title: string, result: NamedElementBlock, document: vscode.TextDocument): vscode.CodeAction {
-		const codeAction = new vscode.CodeAction(
-			title,
-			AutoDevCodeActionProvider.providedCodeActionKinds[0]
-		);
-		codeAction.isPreferred = false;
-		codeAction.edit = new vscode.WorkspaceEdit();
-		codeAction.command = {
-			command: "autodev.genApiData",
-			title: title,
-			arguments: [document, result, codeAction.edit]
-		};
-
-		return codeAction;
 	}
 }

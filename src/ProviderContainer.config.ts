@@ -21,12 +21,14 @@ import { TypeScriptStructurer } from "./code-context/typescript/TypeScriptStruct
 import { ActionCreator } from "./editor/action/_base/ActionCreator";
 import { AutoDocActionCreator } from "./editor/action/autodoc/AutoDocActionCreator";
 import { AutoTestActionCreator } from "./editor/action/autotest/AutoTestActionCreator";
+import { GenApiDataActionCreator } from "./editor/action/api-data/GenApiDataActionCreator";
 
 const providerContainer = new Container();
 
 // Action Register
 providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoDocActionCreator);
 providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoTestActionCreator);
+providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(GenApiDataActionCreator);
 
 // ChatContextProvider
 providerContainer.bind<ChatContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(SpringContextProvider);
