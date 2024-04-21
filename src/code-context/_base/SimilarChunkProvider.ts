@@ -21,4 +21,15 @@ export class SimilarChunkProvider {
 		const unionSize = set1.size + set2.size - intersectionSize;
 		return intersectionSize / unionSize;
 	}
+
+	/**
+	 * GitHub Copilot Chatbot implementation of the cosine similarity function.
+	 */
+	cosineSimilarity(vector1: number[], vector2: number[]): number {
+		let dotProduct = vector1.reduce((acc, val, idx) => acc + val * vector2[idx], 0);
+		let magnitude1 = Math.sqrt(vector1.reduce((acc, val) => acc + val * val, 0));
+		let magnitude2 = Math.sqrt(vector2.reduce((acc, val) => acc + val * val, 0));
+		return dotProduct / (magnitude1 * magnitude2);
+	}
+
 }
