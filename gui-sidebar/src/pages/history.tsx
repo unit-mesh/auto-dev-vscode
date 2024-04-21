@@ -220,7 +220,7 @@ function History() {
           }
           return workspacePaths.includes(session.workspaceDirectory);
         })
-        // Filter by search term
+        // ChunkFilter.ts by search term
         .filter((session) => {
           return searchTerm === "" || sessionIds.includes(session.sessionId);
         })
