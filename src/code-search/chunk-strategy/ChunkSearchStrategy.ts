@@ -2,34 +2,27 @@ import { CancellationToken } from "vscode";
 
 const DEFAULT_THRESHOLD = 0.72;
 
-interface Item {
+export interface EmbeddingItem {
 	embedding: number[];
 }
 
-interface ScoredItem {
+interface ScoredItem<T> {
 	score: number;
-	item: Item;
+	item: T;
 }
 
-function calculateTopElement(
-	targets: number[][],
-	items: Item[],
-	count: number,
-	threshold: number = DEFAULT_THRESHOLD
-): Item[] {
-	return items
-		.flatMap(item => {
-			let maxScore = 0;
-			for (const target of targets) {
-				let score = item.embedding.reduce((acc, val, index) => acc + val * target[index], 0);
-				maxScore = Math.max(maxScore, score);
-			}
-			return { score: maxScore, item };
-		})
-		.filter(scoredItem => scoredItem.score > threshold)
-		.sort((a: ScoredItem, b: ScoredItem) => b.score - a.score)
-		.slice(0, count)
-		.map(scoredItem => scoredItem.item);
+function filterAndSortByScore<T extends EmbeddingItem>(embeddings: number[][], items: T[], limit: number, minThreshold: number = DEFAULT_THRESHOLD): T[] {
+	return items.flatMap((item: T) => {
+		let maxScore: number = 0;
+		for (let embedding of embeddings) {
+			let score: number = item.embedding.reduce((total: number, value: number, index: number) => total + value * embedding[index], 0);
+			maxScore = Math.max(maxScore, score);
+		}
+		return { score: maxScore, item: item } as ScoredItem<T>;
+	}).filter((scoredItem: ScoredItem<T>) => scoredItem.score > minThreshold)
+		.sort((a: ScoredItem<T>, b: ScoredItem<T>) => b.score - a.score)
+		.slice(0, limit)
+		.map((scoredItem: ScoredItem<T>) => scoredItem.item);
 }
 
 export class SemanticSearch {
