@@ -1,4 +1,4 @@
-import { Embedding, EmbeddingItem, ScoredItem } from "./Embedding";
+import { Embedding, EmbeddingItem, ScoredItem } from "../embedding/Embedding";
 
 const DEFAULT_THRESHOLD = 0.72;
 
