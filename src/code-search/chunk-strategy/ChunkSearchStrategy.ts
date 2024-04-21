@@ -1,3 +1,5 @@
+import { CancellationToken } from "vscode";
+
 const DEFAULT_THRESHOLD = 0.72;
 
 interface Item {
@@ -31,7 +33,7 @@ function calculateTopElement(
 }
 
 export class SemanticSearch {
-	async isAvailable () {
+	async isAvailable() {
 		throw new Error("Method not implemented.");
 	}
 
@@ -40,15 +42,15 @@ export class SemanticSearch {
 	}
 
 	/**
-	 * 在 SemanticSearch 中搜索文件块。
-	 * @param {string[]} queryKeywords - 查询关键字数组。
+	 * 搜索相似代码块
+	 * @param {string} text - 要搜索的文本。
 	 * @param {number} maxResults - 最大结果数。
 	 * @param {object} options - 搜索选项对象。
 	 * @param {boolean} options.include - 是否包含指定的内容。
-	 * @param {object} cancellationSignal - 用于取消操作的信号对象。
+	 * @param {object} cancellationToken - 用于取消操作的信号对象。
 	 * @returns {Promise<Array>} - 返回搜索结果的数组。
 	 */
-	async searchFileChunks(queryKeywords: string[], maxResults: number, options: any, cancellationSignal: any) {
+	async searchFileChunks(text: string, maxResults: number, options: any, cancellationToken: CancellationToken) {
 		// 实现搜索逻辑
 	}
 }
