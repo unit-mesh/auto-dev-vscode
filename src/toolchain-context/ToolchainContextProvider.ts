@@ -1,5 +1,5 @@
 import { NamedElementBlock } from "../editor/document/NamedElementBlock";
-import { ScopeGraph } from "../code-search/ScopeGraph";
+import { ScopeGraph } from "../code-search/semantic/ScopeGraph";
 
 export interface ToolchainContextItem {
 	/// for recording and debugging

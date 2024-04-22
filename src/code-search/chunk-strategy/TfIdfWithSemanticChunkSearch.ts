@@ -1,6 +1,6 @@
 import natural, { TfIdf } from "natural";
 
-import { SemanticSearch } from "./ChunkSearchStrategy";
+import { SemanticSearch } from "./SemanticSearch";
 import { CancellationToken } from "vscode";
 import { TfIdfCallback } from "natural/lib/natural/tfidf";
 import { ChunkItem, Embedding, ScoredItem } from "../embedding/Embedding";

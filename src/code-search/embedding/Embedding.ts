@@ -1,4 +1,4 @@
-import { TextRange } from "../model/TextRange";
+import { TextRange } from "../semantic/model/TextRange";
 
 export type Embedding = number[];
 

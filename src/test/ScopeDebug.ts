@@ -1,11 +1,11 @@
 import Graph from "graphology";
 
-import { TextRange } from "../code-search/model/TextRange";
+import { TextRange } from "../code-search/semantic/model/TextRange";
 import { LanguageConfig } from "../code-context/_base/LanguageConfig";
-import { NodeKind } from "../code-search/scope/NodeKind";
-import { DefToScope, EdgeKind, ImportToScope, RefToDef, RefToImport, ScopeToScope } from "../code-search/ScopeGraph";
-import { LocalDef } from "../code-search/scope/LocalDef";
-import { nameOfSymbol } from "../code-search/model/Namespace";
+import { NodeKind } from "../code-search/semantic/scope/NodeKind";
+import { DefToScope, EdgeKind, ImportToScope, RefToDef, RefToImport, ScopeToScope } from "../code-search/semantic/ScopeGraph";
+import { LocalDef } from "../code-search/semantic/scope/LocalDef";
+import { nameOfSymbol } from "../code-search/semantic/model/Namespace";
 
 export class RefDebug {
 	context: string;

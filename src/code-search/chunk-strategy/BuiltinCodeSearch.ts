@@ -1,4 +1,4 @@
-import { SemanticSearch } from "./ChunkSearchStrategy";
+import { SemanticSearch } from "./SemanticSearch";
 
 export class BuiltinCodeSearch extends SemanticSearch {
 	async toSemanticChunks(similarFiles: string[], currentFile: string) {

@@ -4,8 +4,8 @@ import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageUtil } from "./TSLanguageUtil";
 import { TreeSitterFileCacheManager } from "../../editor/cache/TreeSitterFileCacheManager";
 import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
-import { ScopeBuilder } from "../../code-search/ScopeBuilder";
-import { ScopeGraph } from "../../code-search/ScopeGraph";
+import { ScopeBuilder } from "../../code-search/semantic/ScopeBuilder";
+import { ScopeGraph } from "../../code-search/semantic/ScopeGraph";
 
 var graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 

@@ -2,7 +2,7 @@ import { Language, Query } from "web-tree-sitter";
 
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { NameSpaces } from "../../code-search/model/Namespace";
+import { NameSpaces } from "../../code-search/semantic/model/Namespace";
 
 // Languages based on tree-sitter grammars
 export interface LanguageConfig {
