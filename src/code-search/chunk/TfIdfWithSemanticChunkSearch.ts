@@ -3,6 +3,7 @@ import natural, { TfIdf } from "natural";
 import { SemanticSearch } from "../chunk-strategy/ChunkSearchStrategy";
 import { CancellationToken } from "vscode";
 import { TfIdfCallback } from "natural/lib/natural/tfidf";
+import { Embedding } from "../embedding/Embedding";
 
 /**
  * we use Natural's TfIdf to calculate the similarity between two code chunks.
@@ -33,6 +34,21 @@ export class TfIdfWithSemanticChunkSearch extends SemanticSearch {
 	search(query: string, callback?: TfIdfCallback) {
 		const results = this.tfidf.tfidfs(query, callback);
 		return results;
+	}
+
+	computeEmbeddings(chunk: string) : Embedding[] {
+		const termFreq = this.calculateTermFrequencies(chunk);
+		return this.computeTfidf(termFreq);
+	}
+
+	calculateTermFrequencies(chunk: string) : Record<string, number> {
+		// return this.generateTermFrequencyMap(this.splitTerms(chunk));
+		return {};
+	}
+
+	computeTfidf(termFreq: Record<string, number>) {
+		// return this.tfidf.tfidf(termFreq);
+		return [];
 	}
 }
 
