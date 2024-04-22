@@ -19,6 +19,7 @@ export class NavieChunker {
 				if (startByte >= endByte) {
 					return undefined;
 				}
+
 				return new TextRange(
 					{
 						byte: startByte,
@@ -32,7 +33,7 @@ export class NavieChunker {
 					src.substring(startByte, endByte)
 				);
 			})
-			.filter(chunk => chunk instanceof  TextRange);
+			.filter(chunk => chunk instanceof TextRange);
 
 		return chunks as TextRange[];
 	}

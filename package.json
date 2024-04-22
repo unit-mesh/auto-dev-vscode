@@ -278,6 +278,7 @@
     "@vscode/l10n": "^0.0.18",
     "graphology": "^0.25.4",
     "inversify": "^6.0.2",
+    "isbinaryfile": "^5.0.2",
     "monaco-vscode-textmate-theme-converter": "^0.1.7",
     "natural": "^7.0.5",
     "node-fetch": "^3.3.2",
