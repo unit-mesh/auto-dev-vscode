@@ -1,4 +1,4 @@
-import { parseGradleVersionInfo } from '../../lang-eco-context/buildtool/gradle/GradleVersionInfo';
+import { parseGradleVersionInfo } from '../../toolchain-context/buildtool/gradle/GradleVersionInfo';
 
 describe('parseGradleInfo', () => {
   it('should parse gradle info correctly', () => {

@@ -8,7 +8,7 @@ import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
 import { insertCodeByRange, selectCodeInRange } from "../../editor";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
-import { LangEcoCreationContext } from "../../../lang-eco-context/LangEcoContextProvider";
+import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
 
@@ -37,7 +37,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			forbiddenRules: [],
 		};
 
-		const creationContext: LangEcoCreationContext = {
+		const creationContext: CreateToolchainContext = {
 			action: "AutoDocAction",
 			filename: this.document.fileName,
 			language: this.language,

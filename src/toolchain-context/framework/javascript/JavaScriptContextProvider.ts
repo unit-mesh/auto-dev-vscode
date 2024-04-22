@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { LangEcoContextItem, LangEcoContextProvider, LangEcoCreationContext } from "../../LangEcoContextProvider";
+import { ToolchainContextItem, ToolchainContextProvider, CreateToolchainContext } from "../../ToolchainContextProvider";
 import { JsDependenciesSnapshot, PackageJsonDependency } from "./JsDependenciesSnapshot";
 import { TechStack } from "../jvm/TechStack";
 import { getExtensionContext } from "../../../context";
@@ -8,12 +8,12 @@ import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
 import { NpmBuildToolProvider } from "../../buildtool/NpmBuildToolProvider";
 
 @injectable()
-export class JavaScriptContextProvider implements LangEcoContextProvider {
-	async isApplicable(context: LangEcoCreationContext): Promise<boolean> {
+export class JavaScriptContextProvider implements ToolchainContextProvider {
+	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
 		return context.language === "javascript" || context.language === "typescript" || context.language === "javascriptreact" || context.language === "typescriptreact";
 	}
 
-	async collect(context: LangEcoCreationContext): Promise<LangEcoContextItem[]> {
+	async collect(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
 		let isApplicable = await NpmBuildToolProvider.instance().isApplicable();
 		if (!isApplicable) {
 			return [];
@@ -97,7 +97,7 @@ export class JavaScriptContextProvider implements LangEcoContextProvider {
 		return enumMap;
 	}
 
-	getTypeScriptLanguageContext(snapshot: JsDependenciesSnapshot): LangEcoContextItem | undefined {
+	getTypeScriptLanguageContext(snapshot: JsDependenciesSnapshot): ToolchainContextItem | undefined {
 		const packageJson = snapshot.packages.get('typescript');
 		if (!packageJson) {
 			return undefined;
@@ -117,7 +117,7 @@ export class JavaScriptContextProvider implements LangEcoContextProvider {
 	 * @return a ChatContextItem object representing the context of the most popular packages used in the project,
 	 *         or null if no popular packages are found
 	 */
-	getMostPopularPackagesContext(snapshot: JsDependenciesSnapshot): LangEcoContextItem | undefined {
+	getMostPopularPackagesContext(snapshot: JsDependenciesSnapshot): ToolchainContextItem | undefined {
 		const dependencies = snapshot.mostPopularFrameworks();
 		if (dependencies.length === 0) {
 			return undefined;

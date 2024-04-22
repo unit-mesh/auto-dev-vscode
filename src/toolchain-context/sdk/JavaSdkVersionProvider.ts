@@ -1,15 +1,15 @@
 import { injectable } from "inversify";
 
-import { LangEcoContextItem, LangEcoContextProvider, LangEcoCreationContext } from "../LangEcoContextProvider";
+import { ToolchainContextItem, ToolchainContextProvider, CreateToolchainContext } from "../ToolchainContextProvider";
 import { GradleBuildToolProvider } from "../buildtool/GradleBuildToolProvider";
 
 @injectable()
-export class JavaSdkVersionProvider implements LangEcoContextProvider {
-	async isApplicable(context: LangEcoCreationContext): Promise<boolean> {
+export class JavaSdkVersionProvider implements ToolchainContextProvider {
+	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
 		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable();
 	}
 
-	async collect(context: LangEcoCreationContext): Promise<LangEcoContextItem[]> {
+	async collect(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
 		let gradleInfo;
 		try {
 			gradleInfo = await GradleBuildToolProvider.instance().getGradleVersion();

@@ -1,8 +1,8 @@
 import { VSCodeTemplateLoader } from "./loader/VSCodeTemplateLoader";
 import { TemplateRender } from "./template/TemplateRender";
 import { TemplateContext } from "./template/TemplateContext";
-import { LangEcotManager } from "../lang-eco-context/LangEcotManager";
-import { LangEcoContextItem, LangEcoCreationContext } from "../lang-eco-context/LangEcoContextProvider";
+import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
+import { ToolchainContextItem, CreateToolchainContext } from "../toolchain-context/ToolchainContextProvider";
 
 export enum ActionType {
 	AutoDoc,
@@ -24,8 +24,8 @@ export class PromptManager {
 		return PromptManager._instance;
 	}
 
-	async chatContext(context: LangEcoCreationContext): Promise<LangEcoContextItem[]> {
-		return LangEcotManager.instance().collectChatContextList(context);
+	async chatContext(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
+		return ToolchainContextManager.instance().collectContextItems(context);
 	}
 
 	async build(type: ActionType, context: TemplateContext): Promise<string> {
