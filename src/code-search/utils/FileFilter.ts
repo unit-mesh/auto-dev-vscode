@@ -50,7 +50,7 @@ class FileFilter {
 		const readAsync = util.promisify(fs.read);
 		const bufferSize = 512;
 
-		if (this.isString(input)) {
+		if (typeof input === 'string') {
 			const fileStats = await statAsync(input);
 			if (!fileStats.isFile()) {
 				throw new Error('Not a file');
@@ -71,14 +71,9 @@ class FileFilter {
 		}
 	}
 
+	private MAX_BUFFER_SIZE: number = 512; // 缓冲区大小
 
-	isString(value: any) {
-		return typeof value === 'string' || value instanceof String;
-	}
-
-	MAX_BUFFER_SIZE: number = 512; // 缓冲区大小
-
-	isTextFile(buffer: Buffer, inputLength: number): boolean {
+	private isTextFile(buffer: Buffer, inputLength: number): boolean {
 		if (inputLength === 0) {
 			return false;
 		}
@@ -110,7 +105,7 @@ class FileFilter {
 	}
 
 	// 检查是否存在 BOM
-	hasBOM(buffer: Buffer, length: number): boolean {
+	private hasBOM(buffer: Buffer, length: number): boolean {
 		return (length >= 3 && buffer[0] === 239 && buffer[1] === 187 && buffer[2] === 191);
 	}
 
