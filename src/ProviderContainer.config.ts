@@ -1,16 +1,16 @@
 import { Container } from "inversify";
 import { PROVIDER_TYPES } from "./ProviderTypes";
 
-import { ChatContextProvider } from "./lang-context/ChatContextProvider";
-import { SpringContextProvider } from "./lang-context/framework/jvm/SpringContextProvider";
-import { JavaSdkVersionProvider } from "./lang-context/sdk/JavaSdkVersionProvider";
-import { JavaScriptContextProvider } from "./lang-context/framework/javascript/JavaScriptContextProvider";
+import { LangEcoContextProvider } from "./lang-eco-context/LangEcoContextProvider";
+import { SpringContextProvider } from "./lang-eco-context/framework/jvm/SpringContextProvider";
+import { JavaSdkVersionProvider } from "./lang-eco-context/sdk/JavaSdkVersionProvider";
+import { JavaScriptContextProvider } from "./lang-eco-context/framework/javascript/JavaScriptContextProvider";
 
 import { RelatedCodeProvider } from "./code-context/_base/RelatedCodeProvider";
 import { JavaRelatedProvider } from "./code-context/java/JavaRelatedProvider";
-import { BuildToolProvider } from "./lang-context/buildtool/_base/BuildToolProvider";
-import { NpmBuildToolProvider } from "./lang-context/buildtool/NpmBuildToolProvider";
-import { GradleBuildToolProvider } from "./lang-context/buildtool/GradleBuildToolProvider";
+import { BuildToolProvider } from "./lang-eco-context/buildtool/_base/BuildToolProvider";
+import { NpmBuildToolProvider } from "./lang-eco-context/buildtool/NpmBuildToolProvider";
+import { GradleBuildToolProvider } from "./lang-eco-context/buildtool/GradleBuildToolProvider";
 
 import { JavaTestGenProvider } from "./code-context/java/JavaTestGenProvider";
 import { TestGenProvider } from "./code-context/_base/test/TestGenProvider";
@@ -31,9 +31,9 @@ providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoTestA
 providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(GenApiDataActionCreator);
 
 // ChatContextProvider
-providerContainer.bind<ChatContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(SpringContextProvider);
-providerContainer.bind<ChatContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(JavaSdkVersionProvider);
-providerContainer.bind<ChatContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(JavaScriptContextProvider);
+providerContainer.bind<LangEcoContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(SpringContextProvider);
+providerContainer.bind<LangEcoContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(JavaSdkVersionProvider);
+providerContainer.bind<LangEcoContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(JavaScriptContextProvider);
 
 /**
  * A Language need to have a:

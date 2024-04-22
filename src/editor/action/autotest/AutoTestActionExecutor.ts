@@ -8,7 +8,7 @@ import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
-import { ChatCreationContext } from "../../../lang-context/ChatContextProvider";
+import { LangEcoCreationContext } from "../../../lang-eco-context/LangEcoContextProvider";
 
 export class AutoTestActionExecutor implements ActionExecutor {
 	private document: vscode.TextDocument;
@@ -34,7 +34,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		let testContext = await provider.findOrCreateTestFile(this.document, this.range);
 		testContext.sourceCode = this.range.blockRange.text;
 
-		const creationContext: ChatCreationContext = {
+		const creationContext: LangEcoCreationContext = {
 			action: "AutoDocAction",
 			filename: this.document.fileName,
 			language: this.language,

@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
+import { LangEcoContextItem, LangEcoContextProvider, LangEcoCreationContext } from "../../LangEcoContextProvider";
 import { JsDependenciesSnapshot, PackageJsonDependency } from "./JsDependenciesSnapshot";
 import { TechStack } from "../jvm/TechStack";
 import { getExtensionContext } from "../../../context";
@@ -8,12 +8,12 @@ import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
 import { NpmBuildToolProvider } from "../../buildtool/NpmBuildToolProvider";
 
 @injectable()
-export class JavaScriptContextProvider implements ChatContextProvider {
-	async isApplicable(context: ChatCreationContext): Promise<boolean> {
+export class JavaScriptContextProvider implements LangEcoContextProvider {
+	async isApplicable(context: LangEcoCreationContext): Promise<boolean> {
 		return context.language === "javascript" || context.language === "typescript" || context.language === "javascriptreact" || context.language === "typescriptreact";
 	}
 
-	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
+	async collect(context: LangEcoCreationContext): Promise<LangEcoContextItem[]> {
 		let isApplicable = await NpmBuildToolProvider.instance().isApplicable();
 		if (!isApplicable) {
 			return [];
@@ -97,7 +97,7 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 		return enumMap;
 	}
 
-	getTypeScriptLanguageContext(snapshot: JsDependenciesSnapshot): ChatContextItem | undefined {
+	getTypeScriptLanguageContext(snapshot: JsDependenciesSnapshot): LangEcoContextItem | undefined {
 		const packageJson = snapshot.packages.get('typescript');
 		if (!packageJson) {
 			return undefined;
@@ -117,7 +117,7 @@ export class JavaScriptContextProvider implements ChatContextProvider {
 	 * @return a ChatContextItem object representing the context of the most popular packages used in the project,
 	 *         or null if no popular packages are found
 	 */
-	getMostPopularPackagesContext(snapshot: JsDependenciesSnapshot): ChatContextItem | undefined {
+	getMostPopularPackagesContext(snapshot: JsDependenciesSnapshot): LangEcoContextItem | undefined {
 		const dependencies = snapshot.mostPopularFrameworks();
 		if (dependencies.length === 0) {
 			return undefined;

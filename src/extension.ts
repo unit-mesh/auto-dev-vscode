@@ -21,7 +21,7 @@ import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
-import { BuildToolSync } from "./lang-context/buildtool/BuildToolSync";
+import { BuildToolSync } from "./lang-eco-context/buildtool/BuildToolSync";
 
 export async function activate(context: vscode.ExtensionContext) {
 	setExtensionContext(context);

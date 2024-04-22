@@ -5,8 +5,8 @@ import { TestGenProvider } from "../_base/test/TestGenProvider";
 import { CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
-import { GradleBuildToolProvider } from "../../lang-context/buildtool/GradleBuildToolProvider";
-import { ChatContextItem, ChatCreationContext } from "../../lang-context/ChatContextProvider";
+import { GradleBuildToolProvider } from "../../lang-eco-context/buildtool/GradleBuildToolProvider";
+import { LangEcoContextItem, LangEcoCreationContext } from "../../lang-eco-context/LangEcoContextProvider";
 import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
@@ -42,7 +42,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 
 	private clazzName = "JavaTestContextProvider";
 
-	async collect(creationContext: ChatCreationContext): Promise<ChatContextItem[]> {
+	async collect(creationContext: LangEcoCreationContext): Promise<LangEcoContextItem[]> {
 		const fileName = creationContext.filename;
 
 		let isSpringRelated = true;
@@ -55,7 +55,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		let prompt = this.baseTestPrompt + await this.junitRule();
 
 		const testPrompt = new TestTemplateFinder();
-		let finalPrompt: ChatContextItem;
+		let finalPrompt: LangEcoContextItem;
 
 		if (this.isController(fileName) && isSpringRelated) {
 			let testControllerPrompt = prompt + `\n${l10n.t("lang.java.prompt.testForController")}\n`.trim();

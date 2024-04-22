@@ -1,15 +1,15 @@
 import { injectable } from "inversify";
 
-import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../ChatContextProvider";
+import { LangEcoContextItem, LangEcoContextProvider, LangEcoCreationContext } from "../LangEcoContextProvider";
 import { GradleBuildToolProvider } from "../buildtool/GradleBuildToolProvider";
 
 @injectable()
-export class JavaSdkVersionProvider implements ChatContextProvider {
-	async isApplicable(context: ChatCreationContext): Promise<boolean> {
+export class JavaSdkVersionProvider implements LangEcoContextProvider {
+	async isApplicable(context: LangEcoCreationContext): Promise<boolean> {
 		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable();
 	}
 
-	async collect(context: ChatCreationContext): Promise<ChatContextItem[]> {
+	async collect(context: LangEcoCreationContext): Promise<LangEcoContextItem[]> {
 		let gradleInfo;
 		try {
 			gradleInfo = await GradleBuildToolProvider.instance().getGradleVersion();
