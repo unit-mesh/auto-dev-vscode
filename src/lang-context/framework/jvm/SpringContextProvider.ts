@@ -3,8 +3,8 @@ import { injectable } from "inversify";
 import { TechStack } from "./TechStack";
 import { SpringLibrary } from "./SpringLibrary";
 import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../../ChatContextProvider";
-import { GradleBuildToolProvider } from "../../tooling/GradleBuildToolProvider";
-import { DependencyEntry } from "../../tooling/_base/Dependence";
+import { GradleBuildToolProvider } from "../../buildtool/GradleBuildToolProvider";
+import { DependencyEntry } from "../../buildtool/_base/Dependence";
 
 @injectable()
 export class SpringContextProvider implements ChatContextProvider {

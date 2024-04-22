@@ -95,7 +95,7 @@ export class TfIdfWithSemanticChunkSearch extends SemanticSearch {
 	}
 }
 
-function withCancellation<T>(promise: Promise<T>, cancellationToken: CancellationToken, result: T): Promise<T> {
+export function withCancellation<T>(promise: Promise<T>, cancellationToken: CancellationToken, result: T): Promise<T> {
 	return new Promise<T>((resolve, reject) => {
 		const cancellationListener = cancellationToken.onCancellationRequested(() => {
 			cancellationListener.dispose();

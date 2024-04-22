@@ -1,4 +1,4 @@
-import { parseGradleVersionInfo } from '../../chat-context/tooling/gradle/GradleVersionInfo';
+import { parseGradleVersionInfo } from '../../lang-context/buildtool/gradle/GradleVersionInfo';
 
 describe('parseGradleInfo', () => {
   it('should parse gradle info correctly', () => {

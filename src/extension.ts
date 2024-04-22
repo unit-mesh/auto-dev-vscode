@@ -8,7 +8,6 @@ import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
 import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { StructurerProviderManager } from "./code-context/StructurerProviderManager";
 import Parser from "web-tree-sitter";
 
 import { removeExtensionContext, setExtensionContext } from './context';
@@ -22,7 +21,7 @@ import { channel } from "./channel";
 import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
-import { BuildToolSync } from "./chat-context/tooling/BuildToolSync";
+import { BuildToolSync } from "./lang-context/buildtool/BuildToolSync";
 
 export async function activate(context: vscode.ExtensionContext) {
 	setExtensionContext(context);

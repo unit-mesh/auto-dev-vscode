@@ -8,7 +8,7 @@ import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
-import { ChatCreationContext } from "../../../chat-context/ChatContextProvider";
+import { ChatCreationContext } from "../../../lang-context/ChatContextProvider";
 
 export class AutoTestActionExecutor implements ActionExecutor {
 	private document: vscode.TextDocument;

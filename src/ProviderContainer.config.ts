@@ -1,16 +1,16 @@
 import { Container } from "inversify";
 import { PROVIDER_TYPES } from "./ProviderTypes";
 
-import { ChatContextProvider } from "./chat-context/ChatContextProvider";
-import { SpringContextProvider } from "./chat-context/framework/jvm/SpringContextProvider";
-import { JavaSdkVersionProvider } from "./chat-context/sdk/JavaSdkVersionProvider";
-import { JavaScriptContextProvider } from "./chat-context/framework/javascript/JavaScriptContextProvider";
+import { ChatContextProvider } from "./lang-context/ChatContextProvider";
+import { SpringContextProvider } from "./lang-context/framework/jvm/SpringContextProvider";
+import { JavaSdkVersionProvider } from "./lang-context/sdk/JavaSdkVersionProvider";
+import { JavaScriptContextProvider } from "./lang-context/framework/javascript/JavaScriptContextProvider";
 
 import { RelatedCodeProvider } from "./code-context/_base/RelatedCodeProvider";
 import { JavaRelatedProvider } from "./code-context/java/JavaRelatedProvider";
-import { BuildToolProvider } from "./chat-context/tooling/_base/BuildToolProvider";
-import { NpmBuildToolProvider } from "./chat-context/tooling/NpmBuildToolProvider";
-import { GradleBuildToolProvider } from "./chat-context/tooling/GradleBuildToolProvider";
+import { BuildToolProvider } from "./lang-context/buildtool/_base/BuildToolProvider";
+import { NpmBuildToolProvider } from "./lang-context/buildtool/NpmBuildToolProvider";
+import { GradleBuildToolProvider } from "./lang-context/buildtool/GradleBuildToolProvider";
 
 import { JavaTestGenProvider } from "./code-context/java/JavaTestGenProvider";
 import { TestGenProvider } from "./code-context/_base/test/TestGenProvider";

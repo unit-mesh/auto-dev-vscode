@@ -22,9 +22,3 @@ export class SemanticSearch {
 		// 实现搜索逻辑
 	}
 }
-
-export class CodeSearch extends SemanticSearch {
-	async toSemanticChunks(similarFiles: string[], currentFile: string) {
-		throw new Error("Method not implemented.");
-	}
-}

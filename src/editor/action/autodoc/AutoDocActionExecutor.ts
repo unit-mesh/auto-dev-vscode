@@ -8,7 +8,7 @@ import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
 import { insertCodeByRange, selectCodeInRange } from "../../editor";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
-import { ChatCreationContext } from "../../../chat-context/ChatContextProvider";
+import { ChatCreationContext } from "../../../lang-context/ChatContextProvider";
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
 

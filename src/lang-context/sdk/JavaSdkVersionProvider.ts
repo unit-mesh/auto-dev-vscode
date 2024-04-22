@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 
 import { ChatContextItem, ChatContextProvider, ChatCreationContext } from "../ChatContextProvider";
-import { GradleBuildToolProvider } from "../tooling/GradleBuildToolProvider";
+import { GradleBuildToolProvider } from "../buildtool/GradleBuildToolProvider";
 
 @injectable()
 export class JavaSdkVersionProvider implements ChatContextProvider {

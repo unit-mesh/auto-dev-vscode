@@ -1,8 +1,8 @@
 import { VSCodeTemplateLoader } from "./loader/VSCodeTemplateLoader";
 import { TemplateRender } from "./template/TemplateRender";
 import { TemplateContext } from "./template/TemplateContext";
-import { ChatContextManager } from "../chat-context/ChatContextManager";
-import { ChatContextItem, ChatCreationContext } from "../chat-context/ChatContextProvider";
+import { ChatContextManager } from "../lang-context/ChatContextManager";
+import { ChatContextItem, ChatCreationContext } from "../lang-context/ChatContextProvider";
 
 export enum ActionType {
 	AutoDoc,
