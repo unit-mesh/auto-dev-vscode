@@ -61,13 +61,13 @@ class FileFilter {
 				const buffer = Buffer.alloc(bufferSize);
 				const read = await readAsync(fileDescriptor, buffer, 0, bufferSize, 0);
 				await closeAsync(fileDescriptor);
-				return this.checkBinary(buffer, read.bytesRead);
+				return !this.isTextFile(buffer, read.bytesRead);
 			} catch (error) {
 				await closeAsync(fileDescriptor);
 				throw error;
 			}
 		} else {
-			return this.checkBinary(input, length === undefined ? input.length : length);
+			return !this.isTextFile(input, length === undefined ? input.length : length);
 		}
 	}
 
@@ -76,74 +76,77 @@ class FileFilter {
 		return typeof value === 'string' || value instanceof String;
 	}
 
-	BUFFER_SIZE: number = 512; // 缓冲区大小
+	MAX_BUFFER_SIZE: number = 512; // 缓冲区大小
 
-	// 二进制文件的阈值，表示二进制字符的比例超过这个值则判定为二进制文件
-	checkBinary(data: Buffer, length: number): boolean {
-		// 如果文件为空，则不是二进制文件
-		if (length === 0) {
+	isTextFile(buffer: Buffer, inputLength: number): boolean {
+		if (inputLength === 0) {
 			return false;
 		}
 
-		let binaryCount = 0; // 记录二进制字符的数量
-		const maxLength = Math.min(length, this.BUFFER_SIZE); // 只检查缓冲区内的数据
+		const length = Math.min(inputLength, this.MAX_BUFFER_SIZE);
 
-		// 检查 BOM（Byte Order Mark）和 UTF-16 编码
-		if (
-			(maxLength >= 3 && data[0] === 0xEF && data[1] === 0xBB && data[2] === 0xBF) ||
-			(maxLength >= 4 && data[0] === 0x00 && data[1] === 0x00 && data[2] === 0xFE && data[3] === 0xFF) ||
-			(maxLength >= 4 && data[0] === 0xFF && data[1] === 0xFE && data[2] === 0x00 && data[3] === 0x00) ||
-			(maxLength >= 4 && data[0] === 0x84 && data[1] === 0x31 && data[2] === 0x95 && data[3] === 0x33)
-		) {
+		// 检查是否存在 BOM 或者二进制文件标志
+		if (this.hasBOM(buffer, length) || this.hasBinarySignature(buffer, length)) {
 			return false;
 		}
 
-		// 检查 PDF 文件的标识符
-		if (maxLength >= 5 && data.slice(0, 5).toString() === '%PDF-') {
+		// 检查 PDF 文件头
+		if (this.startsWithPDFHeader(buffer, length)) {
 			return true;
 		}
 
-		// 检查 UTF-16 编码
-		if ((maxLength >= 2 && data[0] === 0xFE && data[1] === 0xFF) || (maxLength >= 2 && data[0] === 0xFF && data[1] === 0xFE)) {
+		// 检查 UTF-16 BOM
+		if (this.hasUTF16BOM(buffer, length)) {
 			return false;
 		}
 
-		// 检查每个字节，判断是否为二进制字符
-		for (let i = 0; i < maxLength; i++) {
-			if (data[i] === 0x00) {
-				return true; // 发现空字符，可能是二进制文件
-			}
-			// 判断是否为 ASCII 控制字符或扩展 ASCII 控制字符
-			if (
-				(data[i] < 0x07 || data[i] > 0x0E) && (data[i] < 0x20 || data[i] > 0x7F) &&
-				!(data[i] > 0xC1 && data[i] < 0xE0 && i + 1 < maxLength) &&
-				!(data[i] > 0xDF && data[i] < 0xF0 && i + 2 < maxLength && data[i + 1] > 0x7F && data[i + 1] < 0xC0 && data[i + 2] > 0x7F && data[i + 2] < 0xC0)
-			) {
-				binaryCount++; // 记录二进制字符的数量
-				if (i >= 32 && binaryCount * 100 / maxLength > 10) {
-					return true; // 如果二进制字符比例超过阈值，则判定为二进制文件
-				}
-			}
+		// 检查是否包含控制字符或非 ASCII 字符
+		if (this.containsNonAsciiSequence(buffer, length)) {
+			return true;
 		}
 
-		// 如果二进制字符比例超过阈值或者二进制字符数量超过 1 且满足特定条件，则判定为二进制文件
-		return binaryCount * 100 / maxLength > 10 || (binaryCount > 1 && containsNonAsciiSequence(data, maxLength));
+		// 如果以上条件都不满足，则判断为文本文件
+		return true;
 	}
-}
 
-// 检查是否包含连续的非 ASCII 字符序列
-function containsNonAsciiSequence(data: Buffer, length: number): boolean {
-	let reader = new ByteReader(data, length);
-	let nonAsciiSequenceCount = 0;
-	while (!reader.isEOF() && !reader.hasError()) {
-		if (reader.currentByte() < 0) {
-			nonAsciiSequenceCount++;
-		} else {
-			nonAsciiSequenceCount = 0;
-		}
-		reader.advance();
+	// 检查是否存在 BOM
+	hasBOM(buffer: Buffer, length: number): boolean {
+		return (length >= 3 && buffer[0] === 239 && buffer[1] === 187 && buffer[2] === 191);
 	}
-	return nonAsciiSequenceCount > 0;
+
+	// 检查是否存在二进制文件标志
+	hasBinarySignature(buffer: Buffer, length: number): boolean {
+		return (
+			(length >= 4 && buffer[0] === 0 && buffer[1] === 0 && buffer[2] === 254 && buffer[3] === 255) ||
+			(length >= 4 && buffer[0] === 255 && buffer[1] === 254 && buffer[2] === 0 && buffer[3] === 0) ||
+			(length >= 4 && buffer[0] === 132 && buffer[1] === 49 && buffer[2] === 149 && buffer[3] === 51)
+		);
+	}
+
+	// 检查 PDF 文件头
+	startsWithPDFHeader(buffer: Buffer, length: number): boolean {
+		return (length >= 5 && buffer.slice(0, 5).toString() === '%PDF-');
+	}
+
+	// 检查 UTF-16 BOM
+	hasUTF16BOM(buffer: Buffer, length: number): boolean {
+		return ((length >= 2 && buffer[0] === 254 && buffer[1] === 255) || (length >= 2 && buffer[0] === 255 && buffer[1] === 254));
+	}
+
+	// 检查是否包含连续的非 ASCII 字符序列
+	containsNonAsciiSequence(data: Buffer, length: number): boolean {
+		let reader = new ByteReader(data, length);
+		let nonAsciiSequenceCount = 0;
+		while (!reader.isEOF() && !reader.hasError()) {
+			if (reader.currentByte() < 0) {
+				nonAsciiSequenceCount++;
+			} else {
+				nonAsciiSequenceCount = 0;
+			}
+			reader.advance();
+		}
+		return nonAsciiSequenceCount > 0;
+	}
 }
 
 class ByteReader {
