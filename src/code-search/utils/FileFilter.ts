@@ -1,7 +1,7 @@
 import { Uri, WorkspaceFolder } from 'vscode';
-import fs from "fs";
 const isBinaryFile = require("isbinaryfile").isBinaryFile;
-
+var ignore = require('ignore');
+var fs = require('fs');
 /**
  * Example usage:
  * ```javascript
@@ -16,25 +16,13 @@ const isBinaryFile = require("isbinaryfile").isBinaryFile;
  * ```
  */
 class FileFilter {
-	private readonly MAX_FILE_SIZE: number = 100000;
-	private readonly MAX_IMAGE_SIZE: number = 1 * 1024 * 1024;
-	private readonly SUPPORTED_EXTENSIONS: Set<string> = new Set(['jpg', 'jpeg', 'jpe', 'png', 'gif', 'bmp', 'tif', 'tiff', 'tga', 'ico', 'webp', 'svg', 'eps', 'heif', 'heic', 'pdf', 'raw', 'mp4', 'm4v', 'mkv', 'webm', 'mov', 'avi', 'wmv', 'flv', 'mp3', 'wav', 'm4a', 'flac', 'ogg', 'wma', 'weba', 'aac', '7z', 'bz2', 'gz', 'rar', 'tar', 'xz', 'zip', 'vsix', 'db', 'bin', 'dat', 'hex', 'map', 'wasm', 'pyc', 'pdb', 'sym', 'git']);
-	private readonly IGNORED_DIRECTORIES: string[] = ['node_modules', 'out', 'dist', '.git', '.yarn', '.npm', '.venv', 'foo.asar', '.vscode-test'];
-	private readonly IGNORED_FILES: string[] = ['.DS_Store', 'Thumbs.db', 'package-lock.json', 'yarn.lock'];
-	private readonly SPECIAL_SCHEMES: string[] = ['vscode', 'vscode-userdata', 'output', 'inmemory', 'private', 'git'];
+	isIgnored(uri: Uri, workspaceFolder: WorkspaceFolder | undefined) {
+		let ignored = ignore()
+			.add(fs.readFileSync(".gitignore").toString());
 
-	shouldIncludeFile(uri: Uri, workspace: {
-		getWorkspaceFolders(): readonly WorkspaceFolder[]
-	}, includeUntitled: boolean): boolean {
-		if (this.SPECIAL_SCHEMES.includes(uri.scheme) || (includeUntitled && !['file', 'untitled'].includes(uri.scheme) && !workspace.getWorkspaceFolders()?.some(folder => uri.scheme === folder.uri.scheme))) {
-			return false;
-		}
-
-		const fileExtension = this.getFileExtension(uri);
-		const fileName = uri.path.split('/').pop()?.toLowerCase() || '';
-
-		return !(this.SUPPORTED_EXTENSIONS.has(fileExtension) || this.IGNORED_FILES.includes(fileName) || uri.path.toLowerCase().split(/[/\\]/g).some(segment => this.IGNORED_DIRECTORIES.includes(segment)));
+		return ignored.ignores(uri.path);
 	}
+
 
 	private getFileExtension(uri: Uri): string {
 		const pathSegments = uri.path.split('/');
@@ -44,9 +32,6 @@ class FileFilter {
 	}
 
 	async isBinaryFile(data: any, length: number) {
-		// const isBinaryFileSync = require("isbinaryfile").isBinaryFileSync;
-		// const bytes = fs.readFileSync(filename);
-		// const size = fs.lstatSync(filename).size;
 		return await isBinaryFile(data, length);
 	}
 }
