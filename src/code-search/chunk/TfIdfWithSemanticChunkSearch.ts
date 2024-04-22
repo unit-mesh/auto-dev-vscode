@@ -3,7 +3,7 @@ import natural, { TfIdf } from "natural";
 import { SemanticSearch } from "../chunk-strategy/ChunkSearchStrategy";
 import { CancellationToken } from "vscode";
 import { TfIdfCallback } from "natural/lib/natural/tfidf";
-import { Embedding } from "../embedding/Embedding";
+import { ChunkItem, Embedding, ScoredItem } from "../embedding/Embedding";
 
 /**
  * we use Natural's TfIdf to calculate the similarity between two code chunks.
@@ -13,6 +13,7 @@ import { Embedding } from "../embedding/Embedding";
  */
 export class TfIdfWithSemanticChunkSearch extends SemanticSearch {
 	private tfidf: TfIdf;
+	_embeddingsMemoryCache: Map<String, Embedding> = new Map;
 
 	constructor() {
 		super();
@@ -34,6 +35,48 @@ export class TfIdfWithSemanticChunkSearch extends SemanticSearch {
 	search(query: string, callback?: TfIdfCallback) {
 		const results = this.tfidf.tfidfs(query, callback);
 		return results;
+	}
+
+	async getEmbeddings(chunks: ChunkItem[], cancelToken: CancellationToken) {
+		const chunksToCompute = [];
+
+		// Check if embeddings are available in cache, otherwise add to compute list
+		for (const chunk of chunks) {
+			const embedding = this._embeddingsMemoryCache.get(chunk.text);
+			if (embedding) {
+				chunk.embedding = embedding;
+			} else {
+				chunksToCompute.push(chunk);
+			}
+		}
+
+		// If all embeddings are in cache, return chunks
+		if (chunksToCompute.length === 0) {
+			return chunks;
+		}
+
+		// Compute embeddings for chunks not in cache
+		const embeddingsToCompute = chunksToCompute.map(chunk => {
+			// const embedding = $h(accessor, chunk.file);
+			// return UKe(chunk, embedding);
+			return chunk;
+		});
+
+		const computedEmbeddings = await this.computeEmbeddingsWithRetry(embeddingsToCompute, cancelToken);
+
+		// Update cache and chunk objects with computed embeddings
+		for (let i = 0; i < chunksToCompute.length; i++) {
+			const chunk = chunksToCompute[i];
+			const computedEmbedding = computedEmbeddings[i];
+			chunk.embedding = computedEmbedding;
+			this._embeddingsMemoryCache.set(chunk.text, computedEmbedding);
+		}
+
+		return chunks;
+	}
+
+	private async computeEmbeddingsWithRetry(embeddingsToCompute: any[], cancelToken: CancellationToken) {
+		return [];
 	}
 
 	computeEmbeddings(chunk: string) : Embedding[] {
