@@ -35,11 +35,13 @@ export class BlockBuilder {
 		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
 	}
 
-	buildForPosition(selection: Selection): NamedElementBlock[] {
+	buildForLine(lineNo: number): NamedElementBlock[] {
 		const methodNodes = this.buildMethod();
 		if (methodNodes instanceof Array) {
 			// todo: hande for typescript imports
-			let methodBlock = methodNodes.filter(node => node.blockRange.contains(selection));
+			let methodBlock = methodNodes.filter(
+				node => lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line
+			);
 			if (methodBlock.length > 0) {
 				return methodBlock;
 			}
@@ -47,7 +49,9 @@ export class BlockBuilder {
 
 		const classNodes = this.buildClass();
 		if (classNodes instanceof Array) {
-			let classBlocks = classNodes.filter(node => node.blockRange.contains(selection));
+			let classBlocks = classNodes.filter(
+				node => lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line
+			);
 			if (classBlocks.length > 0) {
 				return classBlocks;
 			}

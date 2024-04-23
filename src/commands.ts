@@ -65,11 +65,6 @@ const commandsMap: (
   ) => {
   },
   "autodev.menu.autoComment": async () => {
-    const newSelection = await CursorUtil.selectionFromNode();
-    if (!newSelection) {
-      return;
-    }
-
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
@@ -79,7 +74,8 @@ const commandsMap: (
     let document = editor.document;
     //
     let blockBuilderPromise = await BlockBuilder.from(document);
-    let ranges = blockBuilderPromise.buildForPosition(newSelection);
+    let currentLine = editor.selection.active.line;
+    let ranges = blockBuilderPromise.buildForLine(currentLine);
 
     if (ranges.length === 0) {
       return;
