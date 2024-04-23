@@ -3,7 +3,7 @@ import Parser from "web-tree-sitter";
 
 import { getLanguageForFile } from "./TreeSitterParser";
 
-export async function getParserForFile(uri: vscode.Uri, filepath: string) {
+export async function getParserForFile(filepath: string, uri?: vscode.Uri) {
 	if (process.env.IS_BINARY) {
 		return undefined;
 	}

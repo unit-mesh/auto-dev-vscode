@@ -7,6 +7,7 @@ import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresente
 import { showQuickPick } from "./editor/editor-api/QuickInput";
 import { AutoDocActionExecutor } from "./editor/action/autodoc/AutoDocActionExecutor";
 import { AutoTestActionExecutor } from "./editor/action/autotest/AutoTestActionExecutor";
+import { CursorUtil } from "./editor/document/CursorUtil";
 
 const commandsMap: (
   extension: AutoDevExtension
@@ -61,6 +62,20 @@ const commandsMap: (
     document: vscode.TextDocument,
     range: NamedElementBlock,
   ) => {
+  },
+  "autodev.menu.autoComment": async () => {
+    const newSelection = await CursorUtil.selectionFromNode();
+    if (!newSelection) {
+      return;
+    }
+
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    editor.selection = newSelection;
+    editor.revealRange(newSelection);
   },
   "autodev.terminal.explainTerminalSelectionContextMenu": async () => {
   },

@@ -21,7 +21,10 @@ export class JavaRelatedProvider implements RelatedCodeProvider {
 	importCache: Map<JavaType, CanonicalName> = new Map();
 	private fileManager: CodeFileCacheManager | undefined;
 
-	constructor(fileManager?: CodeFileCacheManager) {
+	constructor() {
+	}
+
+	async setFileManager(fileManager: CodeFileCacheManager) {
 		this.fileManager = fileManager;
 	}
 
