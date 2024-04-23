@@ -11,6 +11,7 @@ import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
+import { MarkdownTextProcessor } from "../../../markdown/MarkdownTextProcessor";
 
 export class AutoDocActionExecutor implements ActionExecutor {
 	private document: vscode.TextDocument;
@@ -90,7 +91,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 		const finalText = FencedCodeBlock.parse(doc).text;
 
 		console.info(`FencedCodeBlock parsed output: ${finalText}`);
-		let document = this.buildDocFromSuggestion(doc, startSymbol, endSymbol);
+		let document = MarkdownTextProcessor.buildDocFromSuggestion(doc, startSymbol, endSymbol);
 
 		// todo: parse comments
 		let startLine = this.range.blockRange.start.line;
@@ -100,21 +101,4 @@ export class AutoDocActionExecutor implements ActionExecutor {
 		let textRange: Position = new Position(startLine - 1, 0);
 		insertCodeByRange(textRange, document);
 	}
-
-	buildDocFromSuggestion(suggestDoc: string, commentStart: string, commentEnd: string): string {
-		const startIndex = suggestDoc.indexOf(commentStart);
-		if (startIndex < 0) {
-			return "";
-		}
-
-		const docComment = suggestDoc.substring(startIndex);
-		const endIndex = docComment.indexOf(commentEnd, commentStart.length);
-		if (endIndex < 0) {
-			return docComment + commentEnd;
-		}
-
-		const substring = docComment.substring(0, endIndex + commentEnd.length);
-		return substring;
-	}
-
 }
