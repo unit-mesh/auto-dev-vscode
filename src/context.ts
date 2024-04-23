@@ -7,7 +7,7 @@ export function setExtensionContext(context: vscode.ExtensionContext) {
 }
 
 export function getExtensionUri() {
-  return _context?.extensionUri;
+  return _context?.extensionUri!;
 }
 
 

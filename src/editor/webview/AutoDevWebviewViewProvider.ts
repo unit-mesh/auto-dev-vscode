@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
-import { getExtensionUri, getNonce, getUniqueId } from "../util/vscode";
+import { getExtensionUri } from "../../context";
+import { getNonce, getUniqueId } from "../util/vscode";
 import { getTheme } from "../util/getTheme";
 
 import { AutoDevWebviewProtocol } from "./AutoDevWebviewProtocol";
@@ -11,7 +12,7 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
 
   constructor(
     private readonly _context: vscode.ExtensionContext,
-    private readonly windowId: string = '',
+    private readonly windowId: string = ""
   ) {}
 
   get webview() {
@@ -25,9 +26,14 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
     _token: vscode.CancellationToken
   ): Promise<void> {
     this._webview = webviewView.webview;
-    this.webviewProtocol = new AutoDevWebviewProtocol(this._webview);
+    this.webviewProtocol = new AutoDevWebviewProtocol(
+      this._webview,
+    );
 
-    webviewView.webview.html = await this.getSidebarContent(this._context, webviewView);
+    webviewView.webview.html = await this.getSidebarContent(
+      this._context,
+      webviewView
+    );
   }
 
   async getSidebarContent(
@@ -35,9 +41,9 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
     panel: vscode.WebviewPanel | vscode.WebviewView,
     page: string | undefined = undefined,
     edits: any[] | undefined = undefined,
-    isFullScreen: boolean = false,
+    isFullScreen: boolean = false
   ): Promise<string> {
-    let extensionUri = getExtensionUri();
+    let extensionUri = getExtensionUri()!;
     let scriptUri: string;
     let styleMainUri: string;
     let vscMediaUrl: string = panel.webview
@@ -46,17 +52,21 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
 
     const inDevelopmentMode =
       context?.extensionMode === vscode.ExtensionMode.Development;
-    if (!inDevelopmentMode) {
-      scriptUri = panel.webview
-        .asWebviewUri(vscode.Uri.joinPath(extensionUri, "gui-sidebar/dist/assets/index.js"))
-        .toString();
-      styleMainUri = panel.webview
-        .asWebviewUri(vscode.Uri.joinPath(extensionUri, "gui-sidebar/dist/assets/index.css"))
-        .toString();
-    } else {
-      scriptUri = "http://localhost:5173/src/main.tsx";
-      styleMainUri = "http://localhost:5173/src/index.css";
-    }
+    // if (!inDevelopmentMode) {
+    scriptUri = panel.webview
+      .asWebviewUri(
+        vscode.Uri.joinPath(extensionUri, "gui-sidebar/dist/assets/index.js")
+      )
+      .toString();
+    styleMainUri = panel.webview
+      .asWebviewUri(
+        vscode.Uri.joinPath(extensionUri, "gui-sidebar/dist/assets/index.css")
+      )
+      .toString();
+    // } else {
+    //   scriptUri = "http://localhost:5173/src/main.tsx";
+    //   styleMainUri = "http://localhost:5173/src/index.css";
+    // }
 
     panel.webview.options = {
       enableScripts: true,
@@ -121,8 +131,8 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
         <script>window.colorThemeName = "dark-plus"</script>
         <script>window.workspacePaths = ${JSON.stringify(
           vscode.workspace.workspaceFolders?.map(
-            (folder) => folder.uri.fsPath,
-          ) || [],
+            (folder) => folder.uri.fsPath
+          ) || []
         )}</script>
         <script>window.isFullScreen = ${isFullScreen}</script>
 

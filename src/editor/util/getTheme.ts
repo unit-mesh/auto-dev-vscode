@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { convertTheme } from "monaco-vscode-textmate-theme-converter/lib/cjs";
 import * as path from "path";
 import * as vscode from "vscode";
-import { getExtensionUri } from "./vscode";
+import { getExtensionUri } from "../../context";
 
 const builtinThemes: any = {
   "Default Dark Modern": "dark_modern",
@@ -58,11 +58,17 @@ export function getTheme() {
 
     if (currentTheme === undefined && builtinThemes[colorTheme]) {
       const filename = builtinThemes[colorTheme] + ".json";
-      currentTheme = fs
-        .readFileSync(
-          path.join(getExtensionUri().fsPath, "builtin-themes", filename),
-        )
-        .toString();
+      const themeFilePath = path.join(
+        getExtensionUri().fsPath,
+        "builtin-themes",
+        filename
+      );
+
+      if (fs.existsSync(themeFilePath)) {
+        currentTheme = fs.readFileSync(themeFilePath).toString();
+      } else {
+        return undefined;
+      }
     }
 
     // Strip comments from theme
@@ -71,7 +77,7 @@ export function getTheme() {
     if (parsed.include) {
       const includeThemeString = fs
         .readFileSync(
-          path.join(getExtensionUri().fsPath, "builtin-themes", parsed.include),
+          path.join(getExtensionUri().fsPath, "builtin-themes", parsed.include)
         )
         .toString();
       const includeTheme = parseThemeString(includeThemeString);
