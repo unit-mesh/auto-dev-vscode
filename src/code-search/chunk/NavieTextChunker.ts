@@ -1,6 +1,9 @@
 import { TextRange } from "../semantic/model/TextRange";
 
-export class NavieChunker {
+/**
+ * Pure text chunker that splits text by whitespace.
+ */
+export class NavieTextChunker {
 	public static chunk(text: string): string[] {
 		return text.split(/\s+/);
 	}
