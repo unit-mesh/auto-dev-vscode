@@ -81,5 +81,5 @@ export const JavaLangConfig: LanguageConfig = {
 			'label',
 		]
 	],
-	autoSelectParentNode: []
+	autoSelectInsideParent: []
 };

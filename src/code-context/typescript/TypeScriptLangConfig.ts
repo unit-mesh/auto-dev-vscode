@@ -24,7 +24,7 @@ export const TypeScriptLangConfig: LanguageConfig = {
     `),
 	classQuery: new MemoizedQuery(`
       (class_declaration
-        (identifier) @name.definition.class) @definition.class
+        (type_identifier) @name.definition.class) @definition.class
     `),
 	methodQuery: new MemoizedQuery(`
       (function_declaration
@@ -69,7 +69,7 @@ export const TypeScriptLangConfig: LanguageConfig = {
     )
 
     (class_declaration
-      name: (type_identifier ) @class-name
+      name: (type_identifier) @class-name
       body: (class_body
         (method_definition
           name: (property_identifier) @class-method-name
@@ -112,5 +112,5 @@ export const TypeScriptLangConfig: LanguageConfig = {
 			"label",
 		]
 	],
-	autoSelectParentNode: ["export_statement"]
+	autoSelectInsideParent: ["export_statement"]
 };

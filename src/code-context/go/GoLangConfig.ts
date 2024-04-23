@@ -95,5 +95,5 @@ export const GoLangConfig: LanguageConfig = {
 		["member"],
 		["label"],
 	],
-	autoSelectParentNode: []
+	autoSelectInsideParent: []
 };
