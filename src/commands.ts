@@ -74,8 +74,9 @@ const commandsMap: (
       return;
     }
 
-    editor.selection = newSelection;
-    editor.revealRange(newSelection);
+    let edit = new vscode.WorkspaceEdit();
+    let document = editor.document;
+    // await new AutoDocActionExecutor(document, range, edit).execute();
   },
   "autodev.terminal.explainTerminalSelectionContextMenu": async () => {
   },

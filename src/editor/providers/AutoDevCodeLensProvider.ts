@@ -30,8 +30,8 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 			let lenses: vscode.CodeLens[] = [];
 
 			if (methodRanges instanceof Array) {
-				const docLens = this.setupDocIfNoExist(methodRanges, document, languageId);
-				const chatLens = this.setupQuickChat(methodRanges, document, languageId);
+				const docLens = this.setupDocIfNoExist(methodRanges, document);
+				const chatLens = this.setupQuickChat(methodRanges, document);
 
 				lenses = lenses.concat(docLens, chatLens);
 			}
@@ -40,7 +40,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 		})();
 	}
 
-	private setupDocIfNoExist(methodRanges: NamedElementBlock[], document: vscode.TextDocument, langid: string) {
+	private setupDocIfNoExist(methodRanges: NamedElementBlock[], document: vscode.TextDocument) {
 		return methodRanges.map((range) => {
 			const title = l10n.t("AutoComment");
 			return new vscode.CodeLens(range.identifierRange, {
@@ -51,7 +51,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 		});
 	}
 
-	private setupQuickChat(methodRanges: NamedElementBlock[], document: vscode.TextDocument, langid: string) {
+	private setupQuickChat(methodRanges: NamedElementBlock[], document: vscode.TextDocument) {
 		return methodRanges.map((range) => {
 			const title = `$(autodev-icon)$(chevron-down)`;
 			return new vscode.CodeLens(range.identifierRange, {
