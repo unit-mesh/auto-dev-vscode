@@ -31,11 +31,11 @@ export const TypeScriptLangConfig: LanguageConfig = {
         (identifier) @name.definition.method) @definition.method
 
 			(generator_function_declaration
-				name: (identifier) @generator_function.identifier
-			) @generator_function
+				name: (identifier) @name.identifier.method
+			) @definition.method
 
       (class_declaration
-        name: (type_identifier )
+        name: (type_identifier)
         body: (class_body
           ((method_definition
             name: (property_identifier) @name.definition.method
@@ -112,5 +112,5 @@ export const TypeScriptLangConfig: LanguageConfig = {
 			"label",
 		]
 	],
-	autoSelectParentNode: ["autoSelectParentNode"]
+	autoSelectParentNode: ["export_statement"]
 };

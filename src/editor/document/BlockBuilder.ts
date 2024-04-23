@@ -72,23 +72,23 @@ export class BlockBuilder {
 			return (
 				matches?.flatMap((match) => {
 					const identifierNode = match.captures[0].node;
-					let blockNode = match.captures[1].node;
+					let declNode = match.captures[1].node;
 
 					if (this.langConfig.autoSelectParentNode.length > 0) {
 						this.langConfig.autoSelectParentNode.forEach((nodeType) => {
-							if (blockNode.parent?.type === nodeType) {
-								blockNode = blockNode.parent;
+							if (declNode.parent?.type === nodeType) {
+								declNode = declNode.parent;
 							}
 						});
 					}
 
-					let commentNode = SyntaxNodeUtil.previousNodes(blockNode, ['block_comment', 'line_comment']);
+					let commentNode = SyntaxNodeUtil.previousNodes(declNode, ['block_comment', 'line_comment']);
 
 					let blockRange = new NamedElementBlock(
 						BlockRange.fromNode(identifierNode),
-						BlockRange.fromNode(blockNode),
+						BlockRange.fromNode(declNode),
 						elementType,
-						blockNode.text,
+						declNode.text,
 					);
 
 					if (commentNode.length > 0) {
