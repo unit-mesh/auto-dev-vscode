@@ -76,7 +76,7 @@ export class BlockBuilder {
 
 					if (this.langConfig.autoSelectInsideParent.length > 0) {
 						this.langConfig.autoSelectInsideParent.forEach((nodeType) => {
-							if (blockNode.parent?.parent?.type === nodeType) {
+							if (blockNode.parent?.type === nodeType) {
 								blockNode = blockNode.parent;
 							}
 						});
