@@ -30,6 +30,10 @@ export const TypeScriptLangConfig: LanguageConfig = {
       (function_declaration
         (identifier) @name.definition.method) @definition.method
 
+			(generator_function_declaration
+				name: (identifier) @generator_function.identifier
+			) @generator_function
+
       (class_declaration
         name: (type_identifier )
         body: (class_body
