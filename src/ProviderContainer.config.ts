@@ -21,7 +21,7 @@ import { TypeScriptStructurer } from "./code-context/typescript/TypeScriptStruct
 import { ActionCreator } from "./editor/action/_base/ActionCreator";
 import { AutoDocActionCreator } from "./editor/action/autodoc/AutoDocActionCreator";
 import { AutoTestActionCreator } from "./editor/action/autotest/AutoTestActionCreator";
-import { GenApiDataActionCreator } from "./editor/action/api-data/GenApiDataActionCreator";
+import { GenApiDataActionCreator } from "./editor/action/test-data/GenApiDataActionCreator";
 
 const providerContainer = new Container();
 

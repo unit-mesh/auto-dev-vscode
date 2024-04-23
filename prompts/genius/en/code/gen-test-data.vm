@@ -1,0 +1,22 @@
+Generate JSON data (with markdown code block) based on given ${context.language} code and request/response info.
+So that we can use it to test for APIs.
+
+Use the following template to generate the JSON data:
+
+action: // request method, url: // the request url
+request:
+    // the request body in json
+response:
+    // the response body in json
+
+For example:
+
+```
+GET /api/v1/users
+request:
+{
+  "body": "hello"
+}
+
+
+```
