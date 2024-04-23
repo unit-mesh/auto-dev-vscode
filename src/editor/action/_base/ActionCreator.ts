@@ -39,7 +39,7 @@ export abstract class CodeActionCreator implements ActionCreator {
 		return Promise.resolve(apisDocActions);
 	}
 
-	abstract buildClassAction(context: ActionCreatorContext, nameBlock: NamedElementBlock): vscode.CodeAction;
+	abstract buildClassAction(context: ActionCreatorContext, elementBlock: NamedElementBlock): vscode.CodeAction;
 
-	abstract buildMethodAction(context: ActionCreatorContext, nameBlock: NamedElementBlock): vscode.CodeAction;
+	abstract buildMethodAction(context: ActionCreatorContext, elementBlock: NamedElementBlock): vscode.CodeAction;
 }

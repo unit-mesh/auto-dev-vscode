@@ -35,7 +35,13 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			endSymbol: endSymbol,
 			code: this.document.getText(this.range.blockRange),
 			forbiddenRules: [],
+			// 原有注释
+			originalComments: []
 		};
+
+		if (this.range.commentRange) {
+			templateContext.originalComments.push(this.document.getText(this.range.commentRange));
+		}
 
 		const creationContext: CreateToolchainContext = {
 			action: "AutoDocAction",

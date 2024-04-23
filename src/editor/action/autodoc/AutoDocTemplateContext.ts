@@ -6,4 +6,5 @@ export interface AutoDocTemplateContext extends TemplateContext {
 	endSymbol: string;
 	code: string;
 	forbiddenRules: string[];
+	originalComments: string[];
 }
