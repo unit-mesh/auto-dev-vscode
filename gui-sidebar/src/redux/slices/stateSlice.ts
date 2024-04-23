@@ -7,6 +7,7 @@ import {
   ContextItemId,
   ContextItemWithId,
   PersistedSessionInfo,
+  BrowserSerializedContinueConfig,
 } from "../../shims/typings";
 import { stripImages } from "../../shims/utils";
 import { v4 } from "uuid";
@@ -117,35 +118,55 @@ const initialState: State = {
     contextProviders: [],
     models: [
       {
-        title: "GPT-4 Vision (Free Trial)",
-        provider: "free-trial",
-        model: "gpt-4-vision-preview",
+        title: "GPT-4",
+        provider: "openai",
+        model: "gpt-4",
       },
       {
-        title: "GPT-3.5-Turbo (Free Trial)",
-        provider: "free-trial",
+        title: "GPT-3.5 turbo",
+        provider: "openai",
         model: "gpt-3.5-turbo",
       },
       {
-        title: "Gemini Pro (Free Trial)",
-        provider: "free-trial",
-        model: "gemini-pro",
+        title: "ERNIE-Bot turbo",
+        provider: "baiduwenxin",
+        model: "ERNIE-Bot-turbo",
       },
       {
-        title: "Codellama 70b (Free Trial)",
-        provider: "free-trial",
-        model: "codellama-70b",
+        title: "QWen turbo",
+        provider: "alibabatongyi",
+        model: "qwen-turbo",
       },
-      {
-        title: "Mixtral (Free Trial)",
-        provider: "free-trial",
-        model: "mistral-8x7b",
-      },
-      {
-        title: "Claude 3 Sonnet (Free Trial)",
-        provider: "free-trial",
-        model: "claude-3-sonnet-20240229",
-      },
+      // {
+      //   title: "GPT-4 Vision (Free Trial)",
+      //   provider: "free-trial",
+      //   model: "gpt-4-vision-preview",
+      // },
+      // {
+      //   title: "GPT-3.5-Turbo (Free Trial)",
+      //   provider: "free-trial",
+      //   model: "gpt-3.5-turbo",
+      // },
+      // {
+      //   title: "Gemini Pro (Free Trial)",
+      //   provider: "free-trial",
+      //   model: "gemini-pro",
+      // },
+      // {
+      //   title: "Codellama 70b (Free Trial)",
+      //   provider: "free-trial",
+      //   model: "codellama-70b",
+      // },
+      // {
+      //   title: "Mixtral (Free Trial)",
+      //   provider: "free-trial",
+      //   model: "mistral-8x7b",
+      // },
+      // {
+      //   title: "Claude 3 Sonnet (Free Trial)",
+      //   provider: "free-trial",
+      //   model: "claude-3-sonnet-20240229",
+      // },
     ],
   },
   title: "New Session",
@@ -159,14 +180,26 @@ export const stateSlice = createSlice({
   reducers: {
     setConfig: (
       state,
-      // { payload: config }: PayloadAction<BrowserSerializedContinueConfig>,
-      { payload: config }: PayloadAction<{models: Array<{title: string}>}>,
+      { payload: config }: PayloadAction<BrowserSerializedContinueConfig>
     ) => {
-      const defaultModelTitle =
-        config.models.find((model) => model.title === state.defaultModelTitle)
-          ?.title || config.models[0].title;
-      state.config = config;
-      state.defaultModelTitle = defaultModelTitle;
+      const { slashCommands, contextProviders, models } = config || {};
+
+      if (models && models.length > 0) {
+        const defaultModelTitle =
+          models.find((model) => model.title === state.defaultModelTitle)
+            ?.title || models[0].title;
+
+        state.config.models = models;
+        state.defaultModelTitle = defaultModelTitle;
+      }
+
+      if (slashCommands && slashCommands.length > 0) {
+        state.config.slashCommands = slashCommands;
+      }
+
+      if (contextProviders && contextProviders.length > 0) {
+        state.config.contextProviders = contextProviders;
+      }
     },
     addLogs: (state, { payload }: PayloadAction<[string, string][]>) => {
       if (!state.history.length) {
@@ -188,7 +221,7 @@ export const stateSlice = createSlice({
       }: PayloadAction<{
         index: number;
         contextItems: ChatHistoryItem["contextItems"];
-      }>,
+      }>
     ) => {
       if (state.history[index]) {
         state.history[index].contextItems = contextItems;
@@ -198,7 +231,7 @@ export const stateSlice = createSlice({
       state,
       {
         payload: { index, item },
-      }: PayloadAction<{ index?: number; item: ContextItemWithId }>,
+      }: PayloadAction<{ index?: number; item: ContextItemWithId }>
     ) => {
       if (index === undefined) {
         const isFirstContextItem =
@@ -221,7 +254,7 @@ export const stateSlice = createSlice({
       }: PayloadAction<{
         index: number;
         editorState: JSONContent;
-      }>,
+      }>
     ) => {
       const historyItem = state.history[payload.index];
       if (!historyItem) {
@@ -248,7 +281,7 @@ export const stateSlice = createSlice({
         payload,
       }: PayloadAction<{
         editorState: JSONContent;
-      }>,
+      }>
     ) => {
       state.history.push({
         message: { role: "user", content: "" },
@@ -273,7 +306,7 @@ export const stateSlice = createSlice({
         message: ChatMessage;
         index: number;
         contextItems?: ContextItemWithId[];
-      }>,
+      }>
     ) => {
       if (payload.index >= state.history.length) {
         state.history.push({
@@ -301,7 +334,7 @@ export const stateSlice = createSlice({
       }: PayloadAction<{
         index: number;
         contextItems: ContextItemWithId[];
-      }>,
+      }>
     ) => {
       const historyItem = state.history[payload.index];
       if (!historyItem) {
@@ -320,7 +353,7 @@ export const stateSlice = createSlice({
     },
     newSession: (
       state,
-      { payload }: PayloadAction<PersistedSessionInfo | undefined>,
+      { payload }: PayloadAction<PersistedSessionInfo | undefined>
     ) => {
       if (payload) {
         state.history = payload.history;
@@ -338,14 +371,14 @@ export const stateSlice = createSlice({
       state,
       {
         payload,
-      }: PayloadAction<{ ids: ContextItemId[]; index: number | undefined }>,
+      }: PayloadAction<{ ids: ContextItemId[]; index: number | undefined }>
     ) => {
       const getKey = (id: ContextItemId) => `${id.providerTitle}-${id.itemId}`;
       const ids = new Set(payload.ids.map(getKey));
 
       if (payload.index === undefined) {
         state.contextItems = state.contextItems.filter(
-          (item) => !ids.has(getKey(item.id)),
+          (item) => !ids.has(getKey(item.id))
         );
       } else {
         state.history[payload.index].contextItems = state.history[
@@ -357,7 +390,7 @@ export const stateSlice = createSlice({
       state,
       {
         payload,
-      }: PayloadAction<{ rangeInFileWithContents: any; edit: boolean }>,
+      }: PayloadAction<{ rangeInFileWithContents: any; edit: boolean }>
     ) => {
       let contextItems = [...state.contextItems].map((item) => {
         return { ...item, editing: false };
@@ -420,7 +453,7 @@ export const stateSlice = createSlice({
       state,
       {
         payload,
-      }: PayloadAction<{ ids: ContextItemId[]; index: number | undefined }>,
+      }: PayloadAction<{ ids: ContextItemId[]; index: number | undefined }>
     ) => {
       const ids = payload.ids.map((id) => id.itemId);
 
@@ -456,7 +489,7 @@ export const stateSlice = createSlice({
     },
     setDefaultModel: (state, { payload }: PayloadAction<string>) => {
       const model = state.config.models.find(
-        (model) => model.title === payload,
+        (model) => model.title === payload
       );
       if (!model) return;
       return {

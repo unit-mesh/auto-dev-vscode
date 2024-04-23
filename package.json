@@ -65,6 +65,55 @@
           "type": "string",
           "default": null,
           "markdownDescription": "If your team is set up to use shared configuration, enter the server URL here and your user token below to enable automatic syncing."
+        },
+        "autodev.chatModels": {
+          "type": "array",
+          "default": [
+            {
+              "title": "GPT-4 turbo",
+              "provider": "openai",
+              "model": "gpt-4-turbo",
+              "apiKey": null,
+              "baseURL": null,
+              "temperature": null,
+              "maxTokens": null,
+              "stop": null,
+              "clientOptions": {}
+            },
+            {
+              "title": "GPT-3.5 turbo",
+              "provider": "openai",
+              "model": "gpt-3.5-turbo",
+              "apiKey": null,
+              "baseURL": null,
+              "temperature": null,
+              "maxTokens": null,
+              "stop": null,
+              "clientOptions": {}
+            },
+            {
+              "title": "ERNIE-Bot turbo",
+              "provider": "qianfan",
+              "model": "ERNIE-Bot-turbo",
+              "apiKey": null,
+              "secretKey": null,
+              "temperature": null,
+              "maxTokens": null,
+              "stop": null,
+              "clientOptions": {}
+            },
+            {
+              "title": "QWen turbo",
+              "provider": "tongyi",
+              "model": "qwen-turbo",
+              "apiKey": null,
+              "temperature": null,
+              "maxTokens": null,
+              "stop": null,
+              "clientOptions": {}
+            }
+          ],
+          "markdownDescription": "Chat models"
         }
       }
     },
@@ -274,6 +323,10 @@
     "pa": "vsce package"
   },
   "dependencies": {
+    "@langchain/anthropic": "^0.1.16",
+    "@langchain/community": "^0.0.51",
+    "@langchain/core": "^0.1.59",
+    "@langchain/openai": "^0.0.28",
     "@unit-mesh/treesitter-artifacts": "^1.5.3",
     "@vscode/l10n": "^0.0.18",
     "graphology": "^0.25.4",

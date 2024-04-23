@@ -17,7 +17,7 @@ function useSetup(dispatch: Dispatch<any>) {
   const [configLoaded, setConfigLoaded] = useState<boolean>(false);
 
   const loadConfig = async () => {
-    const config = await ideRequest("config/getBrowserSerialized", undefined);
+    const config = await ideRequest("config/getBrowserSerialized", undefined);    
     dispatch(setConfig(config));
     setConfigLoaded(true);
   };
