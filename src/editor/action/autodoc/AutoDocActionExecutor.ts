@@ -43,6 +43,8 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			templateContext.originalComments.push(this.document.getText(this.range.commentRange));
 		}
 
+		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
+
 		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
 		if (this.range.commentRange) {
 			selectCodeInRange(this.range.commentRange.start, this.range.commentRange.end);
@@ -70,7 +72,6 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			content: content
 		};
 
-		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
 		let llm = LlmProvider.instance();
 		let doc: string = "";
 
@@ -86,15 +87,16 @@ export class AutoDocActionExecutor implements ActionExecutor {
 		console.info(`result: ${doc}`);
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
-		const output = FencedCodeBlock.parse(doc).text;
+		const finalText = FencedCodeBlock.parse(doc).text;
 
-		console.info(`FencedCodeBlock parsed output: ${output}`);
+		console.info(`FencedCodeBlock parsed output: ${finalText}`);
 
+		// todo: parse comments
 		let startLine = this.range.blockRange.start.line;
 		if (startLine === 0) {
 			startLine = 1;
 		}
 		let textRange: Position = new Position(startLine - 1, 0);
-		insertCodeByRange(textRange, output);
+		insertCodeByRange(textRange, finalText);
 	}
 }
