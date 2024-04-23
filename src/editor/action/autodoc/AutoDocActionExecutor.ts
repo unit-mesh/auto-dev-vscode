@@ -90,6 +90,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 		const finalText = FencedCodeBlock.parse(doc).text;
 
 		console.info(`FencedCodeBlock parsed output: ${finalText}`);
+		let document = this.buildDocFromSuggestion(doc, startSymbol, endSymbol);
 
 		// todo: parse comments
 		let startLine = this.range.blockRange.start.line;
@@ -97,6 +98,23 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			startLine = 1;
 		}
 		let textRange: Position = new Position(startLine - 1, 0);
-		insertCodeByRange(textRange, finalText);
+		insertCodeByRange(textRange, document);
 	}
+
+	buildDocFromSuggestion(suggestDoc: string, commentStart: string, commentEnd: string): string {
+		const startIndex = suggestDoc.indexOf(commentStart);
+		if (startIndex < 0) {
+			return "";
+		}
+
+		const docComment = suggestDoc.substring(startIndex);
+		const endIndex = docComment.indexOf(commentEnd, commentStart.length);
+		if (endIndex < 0) {
+			return docComment + commentEnd;
+		}
+
+		const substring = docComment.substring(0, endIndex + commentEnd.length);
+		return substring;
+	}
+
 }
