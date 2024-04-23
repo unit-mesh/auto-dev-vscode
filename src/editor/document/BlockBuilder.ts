@@ -2,12 +2,12 @@ import Parser from "web-tree-sitter";
 
 import { NamedElementBlock } from "./NamedElementBlock";
 import { BlockRange } from "./BlockRange";
-import { TreeSitterFile, TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
+import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import { CodeElementType } from "../codemodel/CodeElementType";
-import { SyntaxNodeUtil } from "./SyntaxNodeUtil";
-import vscode, { Position, Selection } from "vscode";
+import vscode from "vscode";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
+import { previousNodesOfType } from "../../code-context/ast/TreeSitterUtil";
 
 export class BlockBuilder {
 	langConfig: LanguageConfig;
@@ -82,7 +82,7 @@ export class BlockBuilder {
 						});
 					}
 
-					let commentNode = SyntaxNodeUtil.previousNodes(blockNode, ['block_comment', 'line_comment']);
+					let commentNode = previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
 
 					let blockRange = new NamedElementBlock(
 						BlockRange.fromNode(blockNode),
