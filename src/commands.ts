@@ -8,6 +8,7 @@ import { showQuickPick } from "./editor/editor-api/QuickInput";
 import { AutoDocActionExecutor } from "./editor/action/autodoc/AutoDocActionExecutor";
 import { AutoTestActionExecutor } from "./editor/action/autotest/AutoTestActionExecutor";
 import { CursorUtil } from "./editor/document/CursorUtil";
+import { BlockBuilder } from "./editor/document/BlockBuilder";
 
 const commandsMap: (
   extension: AutoDevExtension
@@ -76,7 +77,15 @@ const commandsMap: (
 
     let edit = new vscode.WorkspaceEdit();
     let document = editor.document;
-    // await new AutoDocActionExecutor(document, range, edit).execute();
+    //
+    let blockBuilderPromise = await BlockBuilder.from(document);
+    let ranges = blockBuilderPromise.buildForPosition(newSelection);
+
+    if (ranges.length === 0) {
+      return;
+    }
+
+    await new AutoDocActionExecutor(document, ranges[0], edit).execute();
   },
   "autodev.terminal.explainTerminalSelectionContextMenu": async () => {
   },

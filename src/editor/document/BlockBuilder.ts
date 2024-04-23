@@ -6,6 +6,8 @@ import { TreeSitterFile, TreeSitterFileError } from "../../code-context/ast/Tree
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import { CodeElementType } from "../codemodel/CodeElementType";
 import { SyntaxNodeUtil } from "./SyntaxNodeUtil";
+import vscode, { Position, Selection } from "vscode";
+import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 
 export class BlockBuilder {
 	langConfig: LanguageConfig;
@@ -20,12 +22,36 @@ export class BlockBuilder {
 		this.parser = treeSitterFile.parser;
 	}
 
+	static async from(document: vscode.TextDocument): Promise<BlockBuilder> {
+		let file = await documentToTreeSitterFile(document);
+		return new BlockBuilder(file);
+	}
+
 	buildMethod(): NamedElementBlock[] | TreeSitterFileError {
 		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.methodQuery.queryStr, CodeElementType.Method);
 	}
 
 	buildClass(): NamedElementBlock[] | TreeSitterFileError {
 		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
+	}
+
+	buildForPosition(selection: Selection): NamedElementBlock[] {
+		const start: Position = selection.start;
+		const end: Position = selection.end;
+
+		const methodNodes = this.buildMethod();
+		if (methodNodes instanceof Array) {
+			return methodNodes
+				.filter(node => node.blockRange.contains(start) && node.blockRange.contains(end));
+		}
+
+		const classNodes = this.buildClass();
+		if (classNodes instanceof Array) {
+			return classNodes
+				.filter(node => node.blockRange.contains(start) && node.blockRange.contains(end));
+		}
+
+		return [];
 	}
 
 	/**
