@@ -39,6 +39,10 @@ export interface LanguageConfig {
   // Namespaces defined by this language,
   // E.g.: type namespace, variable namespace, function namespace
   namespaces: NameSpaces;
+
+  // should select parent
+  // for example, in JavaScript/TypeScript, if we select function, we should also select the export keyword.
+  autoSelectParentNode: string[];
 }
 
 export class MemoizedQuery {

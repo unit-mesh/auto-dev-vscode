@@ -111,5 +111,6 @@ export const TypeScriptLangConfig: LanguageConfig = {
 			// misc.
 			"label",
 		]
-	]
+	],
+	autoSelectParentNode: ["autoSelectParentNode"]
 };

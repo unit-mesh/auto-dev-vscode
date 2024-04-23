@@ -27,35 +27,30 @@ export class BlockBuilder {
 		return new BlockBuilder(file);
 	}
 
-	buildMethod(): NamedElementBlock[] | TreeSitterFileError {
-		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.methodQuery.queryStr, CodeElementType.Method);
+	buildMethod(): NamedElementBlock[] {
+		return this.buildBlock(this.langConfig.methodQuery.queryStr, CodeElementType.Method);
 	}
 
-	buildClass(): NamedElementBlock[] | TreeSitterFileError {
-		return !this.parser ? TreeSitterFileError.queryError : this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
+	buildClass(): NamedElementBlock[] {
+		return this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
 	}
 
 	buildForLine(lineNo: number): NamedElementBlock[] {
 		const methodNodes = this.buildMethod();
-		if (methodNodes instanceof Array) {
-			// todo: hande for typescript imports
-			let methodBlock = methodNodes.filter(
-				node => lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line
-			);
-			if (methodBlock.length > 0) {
-				return methodBlock;
-			}
+		 // todo: hande for typescript imports
+		let methodBlock = methodNodes.filter(
+			node => lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line
+		);
+		if (methodBlock.length > 0) {
+			return methodBlock;
 		}
 
 		const classNodes = this.buildClass();
-		if (classNodes instanceof Array) {
-			let classBlocks = classNodes.filter(
-				node => lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line
-			);
-			if (classBlocks.length > 0) {
-				return classBlocks;
-			}
-
+		let classBlocks = classNodes.filter(
+			node => lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line
+		);
+		if (classBlocks.length > 0) {
+			return classBlocks;
 		}
 
 		return [];
@@ -68,7 +63,7 @@ export class BlockBuilder {
 	 * @param elementType The type of code element that the query string represents.
 	 * @returns An array of `IdentifierBlockRange` objects representing the matches, or a `TreeSitterFileError` if an error occurs.
 	 */
-	buildBlock(queryString: string, elementType: CodeElementType): NamedElementBlock[] | TreeSitterFileError {
+	buildBlock(queryString: string, elementType: CodeElementType): NamedElementBlock[] {
 		try {
 			const query = this.language.query(queryString);
 			const root = this.tree.rootNode;
@@ -77,7 +72,15 @@ export class BlockBuilder {
 			return (
 				matches?.flatMap((match) => {
 					const identifierNode = match.captures[0].node;
-					const blockNode = match.captures[1].node;
+					let blockNode = match.captures[1].node;
+
+					if (this.langConfig.autoSelectParentNode.length > 0) {
+						this.langConfig.autoSelectParentNode.forEach((nodeType) => {
+							if (blockNode.parent?.type === nodeType) {
+								blockNode = blockNode.parent;
+							}
+						});
+					}
 
 					let commentNode = SyntaxNodeUtil.previousNodes(blockNode, ['block_comment', 'line_comment']);
 
@@ -96,7 +99,8 @@ export class BlockBuilder {
 				}) ?? []
 			);
 		} catch (error) {
-			return TreeSitterFileError.queryError;
+			console.error(error);
+			return [];
 		}
 	}
 }
