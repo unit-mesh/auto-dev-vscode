@@ -2,8 +2,7 @@ import { NamedElementBlock } from "./NamedElementBlock";
 import { BlockRange } from "./BlockRange";
 import { TreeSitterFile, TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
-import Parser from "web-tree-sitter";
-import { CodeElement } from "../codemodel/CodeFile";
+import Parser, { SyntaxNode } from "web-tree-sitter";
 import { CodeElementType } from "../codemodel/CodeElementType";
 
 export class BlockBuilder {
@@ -42,18 +41,10 @@ export class BlockBuilder {
 
 			return (
 				matches?.flatMap((match) => {
-					let idIndex = 0;
-					let blockIdentIndex = 1;
-					let commentIndex = -1;
-					let hasComment = match.captures.length > 2;
-					if (hasComment) {
-						commentIndex = 0;
-						idIndex = 1;
-						blockIdentIndex = 2;
-					}
+					const identifierNode = match.captures[0].node;
+					const blockNode = match.captures[1].node;
 
-					const identifierNode = match.captures[idIndex].node;
-					const blockNode = match.captures[blockIdentIndex].node;
+					// comment node
 
 					let blockRange = new NamedElementBlock(
 						BlockRange.fromNode(identifierNode),
@@ -62,10 +53,10 @@ export class BlockBuilder {
 						blockNode.text,
 					);
 
-					if (hasComment) {
-						const commentNode = match.captures[commentIndex].node;
-						blockRange.commentRange = BlockRange.fromNode(commentNode);
-					}
+					// if (hasComment) {
+					// 	const commentNode = match.captures[commentIndex].node;
+					// 	blockRange.commentRange = BlockRange.fromNode(commentNode);
+					// }
 
 					return blockRange;
 				}) ?? []
@@ -73,5 +64,17 @@ export class BlockBuilder {
 		} catch (error) {
 			return TreeSitterFileError.queryError;
 		}
+	}
+
+	getPreviousNodesOfType(node: SyntaxNode, nodeNames: string[] = ['comment']): SyntaxNode[] {
+		let results: SyntaxNode[] = [];
+		let preNode: SyntaxNode | null = node.previousNamedSibling;
+
+		while (preNode && nodeNames.some(name => name === preNode?.type)) {
+			results.push(preNode);
+			preNode = preNode.previousNamedSibling;
+		}
+
+		return results.reverse();
 	}
 }
