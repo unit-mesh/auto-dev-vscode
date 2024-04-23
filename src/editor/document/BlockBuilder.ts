@@ -1,9 +1,11 @@
+import Parser from "web-tree-sitter";
+
 import { NamedElementBlock } from "./NamedElementBlock";
 import { BlockRange } from "./BlockRange";
 import { TreeSitterFile, TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
-import Parser, { SyntaxNode } from "web-tree-sitter";
 import { CodeElementType } from "../codemodel/CodeElementType";
+import { SyntaxNodeUtil } from "./SyntaxNodeUtil";
 
 export class BlockBuilder {
 	langConfig: LanguageConfig;
@@ -44,7 +46,7 @@ export class BlockBuilder {
 					const identifierNode = match.captures[0].node;
 					const blockNode = match.captures[1].node;
 
-					// comment node
+					let commentNode = SyntaxNodeUtil.previousNodes(blockNode, ['block_comment', 'line_comment']);
 
 					let blockRange = new NamedElementBlock(
 						BlockRange.fromNode(identifierNode),
@@ -53,10 +55,9 @@ export class BlockBuilder {
 						blockNode.text,
 					);
 
-					// if (hasComment) {
-					// 	const commentNode = match.captures[commentIndex].node;
-					// 	blockRange.commentRange = BlockRange.fromNode(commentNode);
-					// }
+					if (commentNode.length > 0) {
+						blockRange.commentRange = BlockRange.fromNode(commentNode[0]);
+					}
 
 					return blockRange;
 				}) ?? []
@@ -65,16 +66,5 @@ export class BlockBuilder {
 			return TreeSitterFileError.queryError;
 		}
 	}
-
-	getPreviousNodesOfType(node: SyntaxNode, nodeNames: string[] = ['comment']): SyntaxNode[] {
-		let results: SyntaxNode[] = [];
-		let preNode: SyntaxNode | null = node.previousNamedSibling;
-
-		while (preNode && nodeNames.some(name => name === preNode?.type)) {
-			results.push(preNode);
-			preNode = preNode.previousNamedSibling;
-		}
-
-		return results.reverse();
-	}
 }
+
