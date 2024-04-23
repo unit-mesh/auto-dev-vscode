@@ -2,8 +2,13 @@ import vscode from "vscode";
 
 import { NamedElementBlock } from "../../document/NamedElementBlock";
 import { ActionExecutor } from "../_base/ActionExecutor";
+import { TemplateContext } from "../../../prompt-manage/template/TemplateContext";
 
-class TestDataTemplateContext {
+export interface TestDataTemplateContext extends TemplateContext {
+	baseUrl?: string;
+	requestStructure: string;
+	responseStructure: string;
+	selectedText: string;
 }
 
 export class GenTestDataActionExecutor implements ActionExecutor {

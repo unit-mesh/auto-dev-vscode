@@ -17,6 +17,16 @@ request:
 {
   "body": "hello"
 }
-
-
 ```
+Here is code information:
+#if($context.baseUrl.length > 0)
+// base URL route:
+#end
+// compare this request body relate info: ${context.requestStructure}
+// compare this response body relate info: ${context.responseStructure}
+Here is the user's code:
+```${context.language}
+${context.selectedText}
+```
+
+Please generate the JSON data.
