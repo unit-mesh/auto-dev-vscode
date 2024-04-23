@@ -86,6 +86,10 @@ export class AutoDocActionExecutor implements ActionExecutor {
 		console.info(`FencedCodeBlock parsed output: ${output}`);
 
 		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
+		if (this.range.commentRange) {
+			selectCodeInRange(this.range.commentRange.start, this.range.commentRange.end);
+		}
+
 		insertCodeByRange(this.range.blockRange.start, output);
 	}
 }
