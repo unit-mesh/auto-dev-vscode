@@ -94,7 +94,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 		if (startLine === 0) {
 			startLine = 1;
 		}
-		let textRange: Position = new Position(startLine - 1, 0)
+		let textRange: Position = new Position(startLine - 1, 0);
 		insertCodeByRange(textRange, output);
 	}
 }
