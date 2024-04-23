@@ -36,19 +36,22 @@ export class BlockBuilder {
 	}
 
 	buildForPosition(selection: Selection): NamedElementBlock[] {
-		const start: Position = selection.start;
-		const end: Position = selection.end;
-
 		const methodNodes = this.buildMethod();
 		if (methodNodes instanceof Array) {
-			return methodNodes
-				.filter(node => node.blockRange.contains(start) && node.blockRange.contains(end));
+			// todo: hande for typescript imports
+			let methodBlock = methodNodes.filter(node => node.blockRange.contains(selection));
+			if (methodBlock.length > 0) {
+				return methodBlock;
+			}
 		}
 
 		const classNodes = this.buildClass();
 		if (classNodes instanceof Array) {
-			return classNodes
-				.filter(node => node.blockRange.contains(start) && node.blockRange.contains(end));
+			let classBlocks = classNodes.filter(node => node.blockRange.contains(selection));
+			if (classBlocks.length > 0) {
+				return classBlocks;
+			}
+
 		}
 
 		return [];
