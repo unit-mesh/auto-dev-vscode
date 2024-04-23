@@ -1,4 +1,4 @@
-import vscode from "vscode";
+import vscode, { Position } from "vscode";
 
 import { NamedElementBlock } from "../../document/NamedElementBlock";
 import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../language/LanguageCommentMap";
@@ -90,6 +90,11 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			selectCodeInRange(this.range.commentRange.start, this.range.commentRange.end);
 		}
 
-		insertCodeByRange(this.range.blockRange.start, output);
+		let startLine = this.range.blockRange.start.line;
+		if (startLine === 0) {
+			startLine = 1;
+		}
+		let textRange: Position = new Position(startLine - 1, 0)
+		insertCodeByRange(textRange, output);
 	}
 }
