@@ -43,6 +43,11 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			templateContext.originalComments.push(this.document.getText(this.range.commentRange));
 		}
 
+		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
+		if (this.range.commentRange) {
+			selectCodeInRange(this.range.commentRange.start, this.range.commentRange.end);
+		}
+
 		const creationContext: CreateToolchainContext = {
 			action: "AutoDocAction",
 			filename: this.document.fileName,
@@ -84,11 +89,6 @@ export class AutoDocActionExecutor implements ActionExecutor {
 		const output = FencedCodeBlock.parse(doc).text;
 
 		console.info(`FencedCodeBlock parsed output: ${output}`);
-
-		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
-		if (this.range.commentRange) {
-			selectCodeInRange(this.range.commentRange.start, this.range.commentRange.end);
-		}
 
 		let startLine = this.range.blockRange.start.line;
 		if (startLine === 0) {
