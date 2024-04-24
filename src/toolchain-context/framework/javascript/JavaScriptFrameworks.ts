@@ -7,7 +7,9 @@ export enum JsWebFrameworks {
 	Astro = "astro",
 	Lit = "lit",
 	Solid = "solid-js",
-	Preact = "preact"
+	Preact = "preact",
+	Next = "next",
+	Nuxt = "nuxt",
 }
 
 export enum JsTestFrameworks {
