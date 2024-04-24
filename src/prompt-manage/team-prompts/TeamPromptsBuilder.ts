@@ -10,7 +10,7 @@ class TeamPromptsBuilder {
 	private rootPath;
 
 	constructor() {
-		this.baseDir = SettingService.instance().teamPromptsBaseDir();
+		this.baseDir = SettingService.instance().customPromptsDir();
 		this.rootPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : '';
 	}
 

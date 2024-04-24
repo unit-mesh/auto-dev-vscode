@@ -18,8 +18,8 @@ export class SettingService {
 		return SettingService.instance_;
 	}
 
-	teamPromptsBaseDir(): string {
-		const settings = vscode.workspace.getConfiguration('team-prompts', this.projectUri);
+	customPromptsDir(): string {
+		const settings = vscode.workspace.getConfiguration('prompts', this.projectUri);
 		return settings.get('prompts') || '';
 	}
 

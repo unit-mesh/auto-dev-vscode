@@ -21,10 +21,6 @@ export function getNonce() {
   return text;
 }
 
-export function getExtensionUri(): vscode.Uri {
-  return vscode.extensions.getExtension("Continue.continue")!.extensionUri;
-}
-
 export function getViewColumnOfFile(
   filepath: string,
 ): vscode.ViewColumn | undefined {

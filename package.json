@@ -51,6 +51,11 @@
     "configuration": {
       "title": "AutoDev",
       "properties": {
+        "autodev.customPromptDir": {
+          "type": "string",
+          "default": "prompts",
+          "markdownDescription": "Custom prompt directory"
+        },
         "autodev.openaiCompatibleConfig": {
           "type": "object",
           "default": {
