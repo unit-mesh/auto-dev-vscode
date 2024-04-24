@@ -1,9 +1,11 @@
 ---
 layout: default
 title: Dev New Language
-nav_order: 1
+nav_order: 2
 parent: Development
 ---
+
+## Add a New Language
 
 If you want to add a new language support, you can follow the steps below:
 
@@ -14,44 +16,44 @@ If you want to add a new language support, you can follow the steps below:
     - `Structurer.ts`, which will provider the UML for simplifying the code
     - `TestGenProvider.ts`, which will provider the test generation for the code
 3. Add to ProviderManager, for example:
-   - RelatedCodeProviderManager
-   - StructurerProviderManager
-   - TestGenProviderManager
+    - RelatedCodeProviderManager
+    - StructurerProviderManager
+    - TestGenProviderManager
 
 ## LanguageConfig
 
 ```typescript
 export interface LanguageConfig {
-  // A list of language names that can be processed by these scope queries
-  // e.g.: ["typescript", "typescriptreact"], ["rust"]
-  languageIds: string[];
+	// A list of language names that can be processed by these scope queries
+	// e.g.: ["typescript", "typescriptreact"], ["rust"]
+	languageIds: string[];
 
-  // Extensions that can help classify the file: .rs, .rb, .cabal
-  fileExtensions: string[];
+	// Extensions that can help classify the file: .rs, .rb, .cabal
+	fileExtensions: string[];
 
-  // tree-sitter grammar for this language
-  grammar: (langService: TSLanguageService, langId: SupportedLanguage) => Promise<Language | undefined>;
+	// tree-sitter grammar for this language
+	grammar: (langService: TSLanguageService, langId: SupportedLanguage) => Promise<Language | undefined>;
 
-  // Compiled tree-sitter scope query for this language.
-  scopeQuery: MemoizedQuery;
+	// Compiled tree-sitter scope query for this language.
+	scopeQuery: MemoizedQuery;
 
-  // Compiled tree-sitter hoverables query
-  hoverableQuery: MemoizedQuery;
+	// Compiled tree-sitter hoverables query
+	hoverableQuery: MemoizedQuery;
 
-  // class query
-  classQuery: MemoizedQuery;
+	// class query
+	classQuery: MemoizedQuery;
 
-  // method query
-  methodQuery: MemoizedQuery;
+	// method query
+	methodQuery: MemoizedQuery;
 
-  // method input and output query
-  methodIOQuery?: MemoizedQuery;
+	// method input and output query
+	methodIOQuery?: MemoizedQuery;
 
-  // structurer query
-  structureQuery: MemoizedQuery;
+	// structurer query
+	structureQuery: MemoizedQuery;
 
-  // Namespaces defined by this language,
-  // E.g.: type namespace, variable namespace, function namespace
-  namespaces: NameSpaces;
+	// Namespaces defined by this language,
+	// E.g.: type namespace, variable namespace, function namespace
+	namespaces: NameSpaces;
 }
 ```
