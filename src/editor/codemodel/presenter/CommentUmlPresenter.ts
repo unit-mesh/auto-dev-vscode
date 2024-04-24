@@ -1,5 +1,5 @@
 import { PlantUMLPresenter } from "./PlantUMLPresenter";
-import { CodeFile, CodeStructure } from "../CodeFile";
+import { CodeFile } from "../CodeFile";
 import { LANGUAGE_LINE_COMMENT_MAP } from "../../language/LanguageCommentMap";
 
 export class CommentUmlPresenter extends PlantUMLPresenter {
