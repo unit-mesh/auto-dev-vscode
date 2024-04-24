@@ -5,6 +5,8 @@ nav_order: 1
 parent: Development
 ---
 
+# Architecture Design Principles
+
 ## Unique Architecture (Todo)
 
 Cross-platform for share code between JetBrains IDE and VSCode.
@@ -40,3 +42,10 @@ leverages [inversify](https://github.com/inversify/InversifyJS).
    - ActionCreator,
 - ProviderContainer.config.ts is a container for all providers, which you can inject into the system.
 
+# Prompt Design Principles
+
+## All is about Context
+
+## Variable and Template
+
+## Dynamic context
