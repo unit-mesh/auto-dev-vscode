@@ -27,16 +27,6 @@ export class PromptManager {
 		return ToolchainContextManager.instance().collectContextItems(context);
 	}
 
-	async registerCustomPrompt(): Promise<void> {
-		// 1. load all prompts from the project dir
-
-		// 2. convert the prompt to CustomActionPrompt
-
-		// 3. build context
-
-		// 4. register the prompt
-	}
-
 	/**
 	 * Constructs a custom intention prompt using the [Velocity] templating engine.
 	 *

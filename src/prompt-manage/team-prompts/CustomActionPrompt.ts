@@ -1,6 +1,8 @@
 import { InteractionType } from "../../custom-action/InteractionType";
 import { TemplateRoleSplitter } from "./TemplateRoleSplitter";
 import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
+import { AutoDevExtension } from "../../AutoDevExtension";
+import { window } from "vscode";
 
 export enum CustomActionType {
 	Default,
@@ -122,5 +124,9 @@ export class CustomActionPrompt {
 				content: chatContent
 			}];
 		}
+	}
+
+	async execute(extension: AutoDevExtension) {
+		await window.showInformationMessage("Executing custom action: " + this.messages[0].content);
 	}
 }

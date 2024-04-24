@@ -4,11 +4,11 @@ import { NamedElementBlock } from "./editor/document/NamedElementBlock";
 
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
-import { showQuickPick } from "./editor/editor-api/QuickInput";
 import { AutoDocActionExecutor } from "./editor/action/autodoc/AutoDocActionExecutor";
 import { AutoTestActionExecutor } from "./editor/action/autotest/AutoTestActionExecutor";
-import { CursorUtil } from "./editor/document/CursorUtil";
 import { BlockBuilder } from "./editor/document/BlockBuilder";
+import { QuickActionService } from "./editor/editor-api/QuickAction";
+import { TeamPromptsBuilder } from "./prompt-manage/team-prompts/TeamPromptsBuilder";
 
 const commandsMap: (
   extension: AutoDevExtension
@@ -90,21 +90,13 @@ const commandsMap: (
     range: NamedElementBlock,
     edit: vscode.WorkspaceEdit
   ) => {
-    // const options: { [key: string]: (context: vscode.ExtensionContext) => Promise<void> } = {
-    //   showQuickPick: showQuickPick,
-    //   showInputBox: showInputBox
-    // };
-    // const quickPick = window.createQuickPick();
-    // quickPick.items = Object.keys(options).map(label => ({ label }));
-    // quickPick.onDidChangeSelection(selection => {
-    //   if (selection[0]) {
-    //     options[selection[0].label](extension.extensionContext)
-    //       .catch(console.error);
-    //   }
-    // });
-    // quickPick.onDidHide(() => quickPick.dispose());
-    // quickPick.show();
-    showQuickPick();
+    let customPrompts = TeamPromptsBuilder.instance().teamPrompts();
+    let quickActionService = QuickActionService.instance();
+
+    customPrompts.forEach(prompt => {
+      quickActionService.registerCustomPrompt(prompt.actionName, prompt.actionPrompt);
+    });
+    await quickActionService.showQuickAction(extension);
   },
   "autodev.genApiData": async (
     document: vscode.TextDocument,

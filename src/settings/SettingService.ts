@@ -20,7 +20,7 @@ export class SettingService {
 
 	customPromptsDir(): string {
 		const settings = vscode.workspace.getConfiguration('prompts', this.projectUri);
-		return settings.get('prompts') || '';
+		return settings.get('prompts') || 'prompts';
 	}
 
 	llmConfig(): LlmConfig {
