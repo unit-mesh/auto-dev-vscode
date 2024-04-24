@@ -25,3 +25,12 @@ export const LANGUAGE_BLOCK_COMMENT_MAP: { [key: SupportedLanguage]: { start: st
 	"typescript": { start: "/*", end: "*/" },
 	"typescriptreact": { start: "/*", end: "*/" },
 };
+
+export const LANGUAGE_COMMENT_RULE: { [key: SupportedLanguage]: string[] } = {
+	"java": [
+		`use @param tag`,
+		`use @return tag`,
+		`do not return example code`,
+		`do not use @author and @version tags`
+	]
+};

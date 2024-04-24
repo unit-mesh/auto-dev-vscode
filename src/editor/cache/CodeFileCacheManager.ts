@@ -2,7 +2,7 @@ import vscode, { Uri } from "vscode";
 import { FileCacheManger } from "./FileCacheManger";
 import { CodeFile, CodeStructure } from "../codemodel/CodeFile";
 import { SupportedLanguage } from "../language/SupportedLanguage";
-import { EXT_LANGUAGE_MAP } from "../language/ExtLanguageMap";
+import { EXT_LANGUAGE_MAP } from "../language/ExtensionLanguageMap";
 import { StructurerProviderManager } from "../../code-context/StructurerProviderManager";
 import { Structurer } from "../../code-context/_base/BaseStructurer";
 

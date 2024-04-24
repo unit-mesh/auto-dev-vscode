@@ -5,7 +5,7 @@ import Parser, { Language } from "web-tree-sitter";
 import path from "path";
 
 import { getExtensionUri } from '../../../context';
-import { EXT_LANGUAGE_MAP } from "../ExtLanguageMap";
+import { EXT_LANGUAGE_MAP } from "../ExtensionLanguageMap";
 
 const LanguageParserMap: Map<SupportedLanguage, Parser.Language> = new Map();
 async function loadLanguageOndemand(
