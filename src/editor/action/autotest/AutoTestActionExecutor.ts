@@ -42,7 +42,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			block: this.range
 		};
 
-		const contextItems = await PromptManager.getInstance().chatContext(creationContext);
+		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);
 		if (contextItems.length > 0) {
 			testContext.chatContext = contextItems.map(item => item.text).join("\n - ");
 			console.info(`chat context: ${testContext.chatContext}`);

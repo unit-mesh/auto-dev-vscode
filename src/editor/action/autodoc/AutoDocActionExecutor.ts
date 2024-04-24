@@ -59,7 +59,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			block: this.range
 		};
 
-		const contextItems = await PromptManager.getInstance().chatContext(creationContext);
+		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);
 		if (contextItems.length > 0) {
 			templateContext.chatContext = contextItems.map(item => item.text).join("\n - ");
 			console.info(`chat context: ${templateContext.chatContext}`);
