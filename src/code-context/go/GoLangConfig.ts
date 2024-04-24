@@ -1,6 +1,6 @@
 import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import goscm from '../../schemas/indexes/go.scm?raw';
+import goscm from '../../code-search/schemas/indexes/go.scm?raw';
 
 export const GoLangConfig: LanguageConfig = {
 	languageIds: ["Go"],

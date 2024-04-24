@@ -1,7 +1,7 @@
 import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import tsscm from '../../schemas/indexes/typescript.scm?raw';
+import tsscm from '../../code-search/schemas/indexes/typescript.scm?raw';
 
 export const TypeScriptLangConfig: LanguageConfig = {
 	languageIds: ["typescript", "typescriptreact"],
