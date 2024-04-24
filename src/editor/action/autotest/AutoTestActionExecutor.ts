@@ -51,7 +51,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			console.info(`chat context: ${testContext.chatContext}`);
 		}
 
-		let content = await PromptManager.getInstance().build(ActionType.AutoTest, testContext);
+		let content = await PromptManager.getInstance().templateToPrompt(ActionType.AutoTest, testContext);
 		console.info(`request: ${content}`);
 
 		let msg: ChatMessage = {

@@ -9,6 +9,7 @@ export enum CustomActionType {
 
 export class CustomActionPrompt {
 	interaction: InteractionType;
+	// higher priority will be shown first
 	priority: number;
 	type: CustomActionType;
 	other: { [key: string]: any };
