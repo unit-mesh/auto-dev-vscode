@@ -43,7 +43,7 @@ jobs:
         run: npm run build
 
       - name: Compile GUI
-        run: cd gui-sidebar && npm run build
+        run: cd gui-sidebar && npm install && npm run build
 
       - name: Run unit tests
         run: npm run test --coverage.enabled true
