@@ -3,14 +3,17 @@ import vscode from "vscode";
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { NamedElementBlock } from "../../document/NamedElementBlock";
 import { TestGenProviderManager } from "../../../code-context/TestGenProviderManager";
-import { ActionType, PromptManager } from "../../../prompt-manage/PromptManager";
+import { PromptManager } from "../../../prompt-manage/PromptManager";
 import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
+import { ActionType } from "../../../prompt-manage/ActionType";
 
 export class AutoTestActionExecutor implements ActionExecutor {
+	type: ActionType = ActionType.AutoTest;
+
 	private document: vscode.TextDocument;
 	private range: NamedElementBlock;
 	private edit: vscode.WorkspaceEdit;

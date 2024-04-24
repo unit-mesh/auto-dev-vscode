@@ -3,6 +3,7 @@ import vscode from "vscode";
 import { NamedElementBlock } from "../../document/NamedElementBlock";
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { TemplateContext } from "../../../prompt-manage/template/TemplateContext";
+import { ActionType } from "../../../prompt-manage/ActionType";
 
 export interface TestDataTemplateContext extends TemplateContext {
 	baseUrl?: string;
@@ -11,7 +12,9 @@ export interface TestDataTemplateContext extends TemplateContext {
 	selectedText: string;
 }
 
-export class GenTestDataActionExecutor implements ActionExecutor {
+export class GenApiDataActionExecutor implements ActionExecutor {
+	type: ActionType = ActionType.GenApiData;
+
 	private document: vscode.TextDocument;
 	private range: NamedElementBlock;
 	private edit: vscode.WorkspaceEdit;

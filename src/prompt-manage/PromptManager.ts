@@ -2,15 +2,10 @@ import { VSCodeTemplateLoader } from "./loader/VSCodeTemplateLoader";
 import { TemplateRender } from "./template/TemplateRender";
 import { TemplateContext } from "./template/TemplateContext";
 import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
-import { ToolchainContextItem, CreateToolchainContext } from "../toolchain-context/ToolchainContextProvider";
+import { CreateToolchainContext, ToolchainContextItem } from "../toolchain-context/ToolchainContextProvider";
 import { CustomActionPrompt } from "./team-prompts/CustomActionPrompt";
 import { NamedElementBlock } from "../editor/document/NamedElementBlock";
-
-export enum ActionType {
-	AutoDoc,
-	AutoTest,
-	GenApiData,
-}
+import { ActionType } from "./ActionType";
 
 export class PromptManager {
 	private static _instance: PromptManager;

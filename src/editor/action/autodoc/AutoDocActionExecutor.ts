@@ -2,7 +2,7 @@ import vscode, { Position } from "vscode";
 
 import { NamedElementBlock } from "../../document/NamedElementBlock";
 import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../language/LanguageCommentMap";
-import { ActionType, PromptManager } from "../../../prompt-manage/PromptManager";
+import { PromptManager } from "../../../prompt-manage/PromptManager";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
 import { insertCodeByRange, selectCodeInRange } from "../../editor";
@@ -12,8 +12,11 @@ import { CreateToolchainContext } from "../../../toolchain-context/ToolchainCont
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
 import { MarkdownTextProcessor } from "../../../markdown/MarkdownTextProcessor";
+import { ActionType } from "../../../prompt-manage/ActionType";
 
 export class AutoDocActionExecutor implements ActionExecutor {
+	type: ActionType = ActionType.AutoDoc;
+
 	private document: vscode.TextDocument;
 	private range: NamedElementBlock;
 	private edit: vscode.WorkspaceEdit;
