@@ -12,6 +12,7 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 pnpm-lock.yaml
+!gui-sidebar/dist
 gui-sidebar/**
 semantic/**
 coverage/**
