@@ -12,20 +12,23 @@ export class CustomActionPrompt {
 	priority: number;
 	type: CustomActionType;
 	other: { [key: string]: any };
-	msgs: ChatMessage[];
+	messages: ChatMessage[];
+	pathmatch?: string;
 
 	constructor(
 		interaction: InteractionType = InteractionType.AppendCursorStream,
 		priority: number = 0,
 		type: CustomActionType = CustomActionType.Default,
 		other: { [key: string]: any } = {},
-		msgs: ChatMessage[] = []
+		messages: ChatMessage[] = [],
+		match?: string
 	) {
 		this.interaction = interaction;
 		this.priority = priority;
 		this.type = type;
 		this.other = other;
-		this.msgs = msgs;
+		this.messages = messages;
+		this.pathmatch = match;
 	}
 
 	/**
@@ -96,9 +99,9 @@ export class CustomActionPrompt {
 				}, {});
 
 			const chatContent = matchResult[2];
-			prompt.msgs = this.parseChatMessage(chatContent);
+			prompt.messages = this.parseChatMessage(chatContent);
 		} else {
-			prompt.msgs = this.parseChatMessage(content);
+			prompt.messages = this.parseChatMessage(content);
 		}
 
 		return prompt;
@@ -106,12 +109,11 @@ export class CustomActionPrompt {
 
 	private static parseChatMessage(chatContent: string): ChatMessage[] {
 		try {
-			const msgs = TemplateRoleSplitter.split(chatContent);
-			return Object.entries(msgs).map(([key, value]) => ({
+			const messages = TemplateRoleSplitter.split(chatContent);
+			return Object.entries(messages).map(([key, value]) => ({
 				role: key as ChatRole,
 				content: value
 			}));
-			return [];
 		} catch (e) {
 			console.warn(`Failed to parse chat message: ${chatContent}`, e);
 			return [{
