@@ -3,6 +3,8 @@ import { TemplateRender } from "./template/TemplateRender";
 import { TemplateContext } from "./template/TemplateContext";
 import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
 import { ToolchainContextItem, CreateToolchainContext } from "../toolchain-context/ToolchainContextProvider";
+import { CustomActionPrompt } from "./team-prompts/CustomActionPrompt";
+import { NamedElementBlock } from "../editor/document/NamedElementBlock";
 
 export enum ActionType {
 	AutoDoc,
@@ -27,6 +29,35 @@ export class PromptManager {
 
 	async collectToolchain(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
 		return ToolchainContextManager.instance().collectContextItems(context);
+	}
+
+	async registerCustomPrompt(): Promise<void> {
+		// todos and call constructCustomPrompt
+	}
+
+	/**
+	 * Constructs a custom intention prompt using the [Velocity] templating engine.
+	 *
+	 * This function is used to generate a custom prompt message for an intention action based on the provided PsiElement, selected text,
+	 * before and after cursor text. It uses a set of [VariableResolver]s to resolve variables within the template and populate the
+	 * [VelocityContext].
+	 *
+	 * The [VelocityContext] is then used to evaluate the template and generate the prompt message.
+	 *
+	 * @param psiElement The PsiElement to use for resolving variables.
+	 * @param selectedText The selected text in the editor.
+	 * @param beforeCursor The text before the cursor.
+	 * @param afterCursor The text after the cursor.
+	 * @return A [CustomIntentionPrompt] with the generated prompt message.
+	 */
+	async constructCustomPrompt(
+		psiElement: NamedElementBlock,
+		selectedText: string,
+		beforeCursor: string,
+		afterCursor: string
+	): Promise<CustomActionPrompt[]> {
+
+		return [];
 	}
 
 	/**
