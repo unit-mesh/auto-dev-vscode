@@ -46,11 +46,22 @@ export class TeamPromptsBuilder {
 
 			vmFiles.forEach(file => {
 				const filePath = path.join(promptsDir, file);
+				// the action name will be the file name without the extension
+				let actionName = file.split('.').slice(0, -1).join('.');
 				const fileContent = fs.readFileSync(filePath, 'utf-8');
+				let actionPrompt = CustomActionPrompt.fromContent(fileContent);
+				if (!actionPrompt) {
+					return;
+				}
+
+				// check name is in the prompt
+				if (actionPrompt.name) {
+					actionName = actionPrompt.name;
+				}
 
 				const teamPromptAction: TeamPromptAction = {
-					actionName: file,
-					actionPrompt: CustomActionPrompt.fromContent(fileContent)
+					actionName: actionName,
+					actionPrompt: actionPrompt
 				};
 
 				prompts.push(teamPromptAction);
@@ -113,13 +124,7 @@ export class TeamPromptsBuilder {
 	}
 
 	private buildPrompts(prompts: string[]): TeamPromptAction[] {
-		return prompts.map(filename => {
-			const promptName = filename.replace(/-/g, ' ').split('.')[0];
-			const promptContent = fs.readFileSync(this.rootDir + '/' + this.baseDir + '/' + filename, 'utf-8');
-			const actionPrompt = CustomActionPrompt.fromContent(promptContent);
-
-			return { actionName: promptName, actionPrompt };
-		});
+		return [];
 	}
 }
 

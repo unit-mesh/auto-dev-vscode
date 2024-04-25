@@ -10,6 +10,7 @@ export enum CustomActionType {
 }
 
 export class CustomActionPrompt {
+	name?: string;
 	interaction: InteractionType;
 	// higher priority will be shown first
 	priority: number;
@@ -19,6 +20,7 @@ export class CustomActionPrompt {
 	pathmatch?: string;
 
 	constructor(
+		name: string = "",
 		interaction: InteractionType = InteractionType.AppendCursorStream,
 		priority: number = 0,
 		type: CustomActionType = CustomActionType.Default,
@@ -32,6 +34,7 @@ export class CustomActionPrompt {
 		this.other = other;
 		this.messages = messages;
 		this.pathmatch = match;
+		this.name = name;
 	}
 
 	/**
@@ -90,6 +93,7 @@ export class CustomActionPrompt {
 			const yaml = require('js-yaml');
 			const frontMatterMap = yaml.load(frontMatter);
 
+			prompt.name = frontMatterMap["name"];
 			prompt.interaction = frontMatterMap["interaction"] ? InteractionType[frontMatterMap["interaction"] as keyof typeof InteractionType] : InteractionType.AppendCursorStream;
 			prompt.priority = frontMatterMap["priority"] ? parseInt(frontMatterMap["priority"]) : 0;
 			prompt.type = frontMatterMap["type"] ? CustomActionType[frontMatterMap["type"] as keyof typeof CustomActionType] : CustomActionType.Default;
