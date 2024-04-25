@@ -85,7 +85,7 @@ const commandsMap: (
   },
   "autodev.terminal.explainTerminalSelectionContextMenu": async () => {
   },
-  "autodev.action.quickchat": async (
+  "autodev.action.quickAction": async (
     document: vscode.TextDocument,
     range: NamedElement,
     edit: vscode.WorkspaceEdit

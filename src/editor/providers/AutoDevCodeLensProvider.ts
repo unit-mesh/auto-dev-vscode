@@ -56,7 +56,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 			const title = `$(autodev-icon)$(chevron-down)`;
 			return new vscode.CodeLens(range.identifierRange, {
 				title,
-				command: "autodev.action.quickchat",
+				command: "autodev.action.quickAction",
 				arguments: [document, range],
 			});
 		});

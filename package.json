@@ -149,7 +149,7 @@
         "group": "AutoDev"
       },
       {
-        "command": "autodev.action.quickchat",
+        "command": "autodev.action.quickAction",
         "category": "AutoDev",
         "title": "%autodev.command.quickChat%",
         "group": "AutoDev"
@@ -226,7 +226,7 @@
       ],
       "autodev": [
         {
-          "command": "autodev.action.quickchat",
+          "command": "autodev.action.quickAction",
           "when": "!editorReadonly",
           "group": "autodev@1"
         },
