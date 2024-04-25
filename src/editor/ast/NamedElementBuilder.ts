@@ -15,11 +15,11 @@ export class NamedElementBuilder {
 	language: Parser.Language;
 	parser: Parser | undefined = undefined;
 
-	constructor(treeSitterFile: TreeSitterFile) {
-		this.langConfig = treeSitterFile.langConfig;
-		this.tree = treeSitterFile.tree;
-		this.language = treeSitterFile.language;
-		this.parser = treeSitterFile.parser;
+	constructor(file: TreeSitterFile) {
+		this.langConfig = file.langConfig;
+		this.tree = file.tree;
+		this.language = file.language;
+		this.parser = file.parser;
 	}
 
 	static async from(document: vscode.TextDocument): Promise<NamedElementBuilder> {

@@ -73,9 +73,9 @@ const commandsMap: (
     let edit = new vscode.WorkspaceEdit();
     let document = editor.document;
     //
-    let blockBuilderPromise = await NamedElementBuilder.from(document);
+    let elementBuilder = await NamedElementBuilder.from(document);
     let currentLine = editor.selection.active.line;
-    let ranges = blockBuilderPromise.getElementForAction(currentLine);
+    let ranges = elementBuilder.getElementForAction(currentLine);
 
     if (ranges.length === 0) {
       return;
