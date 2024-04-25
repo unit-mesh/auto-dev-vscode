@@ -10,6 +10,7 @@ export class CustomActionPrompt {
 	priority: number;
 	type: CustomActionType;
 	other: { [key: string]: any };
+	// which include the `.vm` file content
 	messages: ChatMessage[];
 	pathmatch?: string;
 

@@ -6,7 +6,7 @@ import { TemplateContext } from "./template/TemplateContext";
 import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
 import { CreateToolchainContext, ToolchainContextItem } from "../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "./ActionType";
-import { CustomActionVariable } from "./custom-action/CustomActionVariable";
+import { CustomActionTemplateContext } from "./custom-action/CustomActionTemplateContext";
 import { CustomActionExecutePrompt } from "./custom-action/CustomActionExecutePrompt";
 
 export class PromptManager {
@@ -28,7 +28,7 @@ export class PromptManager {
 		return ToolchainContextManager.instance().collectContextItems(context);
 	}
 
-	async constructContext(): Promise<CustomActionVariable> {
+	async constructContext(): Promise<CustomActionTemplateContext> {
 		return Promise.reject("Not implemented");
 	}
 
@@ -41,11 +41,6 @@ export class PromptManager {
 	 *
 	 * The [VelocityContext] is then used to evaluate the template and generate the prompt message.
 	 *
-	 * @param psiElement The PsiElement to use for resolving variables.
-	 * @param selectedText The selected text in the editor.
-	 * @param beforeCursor The text before the cursor.
-	 * @param afterCursor The text after the cursor.
-	 * @return A [CustomIntentionPrompt] with the generated prompt message.
 	 */
 	async constructCustomPrompt(): Promise<CustomActionExecutePrompt[]> {
 		return [];

@@ -1,11 +1,12 @@
-import { CustomActionVariable } from "./CustomActionVariable";
+import { CustomActionTemplateContext } from "./CustomActionTemplateContext";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
 import { FencedCodeBlock } from "../../markdown/FencedCodeBlock";
 import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
+import { CustomActionPrompt } from "./CustomActionPrompt";
 
 export class CustomActionExecutor {
-	public async execute(context: CustomActionVariable): Promise<string> {
+	public static async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt): Promise<string> {
 		const content = "";
 		console.info(`request: ${content}`);
 

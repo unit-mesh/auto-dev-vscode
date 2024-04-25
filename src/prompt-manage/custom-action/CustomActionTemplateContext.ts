@@ -1,7 +1,7 @@
 import { TemplateContext } from "../template/TemplateContext";
 import { NamedElement } from "../../editor/ast/NamedElement";
 
-export interface CustomActionVariable extends TemplateContext {
+export interface CustomActionTemplateContext extends TemplateContext {
 	filepath: string,
 	element: NamedElement,
 	beforeCursor: string,

@@ -1,8 +1,12 @@
-import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
 import { window } from "vscode";
-import { AutoDevExtension } from "../../AutoDevExtension";
 
-export class QuickActionService {
+import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
+import { AutoDevExtension } from "../../AutoDevExtension";
+import { Service } from "../../service/Service";
+import { CustomActionContextBuilder } from "../../prompt-manage/custom-action/CustomActionContextBuilder";
+import { CustomActionExecutor } from "../../prompt-manage/custom-action/CustomActionExecutor";
+
+export class QuickActionService implements Service {
 	private static instance_: QuickActionService;
 	private quickPick = window.createQuickPick();
 	private items: { [key: string]: CustomActionPrompt } = {};
@@ -34,9 +38,14 @@ export class QuickActionService {
 		this.quickPick.show();
 	}
 
-
 	async execute(extension: AutoDevExtension, prompt: CustomActionPrompt) {
-		await window.showInformationMessage("Executing custom-action action: " + prompt.name);
+		const currentDocument = window.activeTextEditor?.document;
+		if (!currentDocument) {
+			return;
+		}
+
+		let context = await CustomActionContextBuilder.fromDocument(currentDocument);
+		await CustomActionExecutor.execute(context, prompt);
 	}
 }
 
