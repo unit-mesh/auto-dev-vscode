@@ -1,6 +1,7 @@
-import { CustomActionPrompt, CustomActionType } from '../prompt-manage/team-prompts/CustomActionPrompt';
+import { CustomActionPrompt } from '../prompt-manage/custom-action/CustomActionPrompt';
 import { InteractionType } from "../custom-action/InteractionType";
 import { ChatRole } from "../llm-provider/ChatMessage";
+import { CustomActionType } from "../prompt-manage/custom-action/CustomActionType";
 
 describe('CustomActionPrompt', () => {
   describe('fromContent', () => {

@@ -1,4 +1,4 @@
-import { CustomActionPrompt } from "../../prompt-manage/team-prompts/CustomActionPrompt";
+import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
 import { window } from "vscode";
 import { AutoDevExtension } from "../../AutoDevExtension";
 
@@ -36,7 +36,7 @@ export class QuickActionService {
 
 
 	async execute(extension: AutoDevExtension, prompt: CustomActionPrompt) {
-		await window.showInformationMessage("Executing custom action: " + prompt.name);
+		await window.showInformationMessage("Executing custom-action action: " + prompt.name);
 	}
 }
 

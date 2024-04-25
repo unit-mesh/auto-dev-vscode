@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-class TestTemplateFinder {
+class UnitTestSampleFinder {
 	private project: vscode.WorkspaceFolder;
 
 	constructor(project: vscode.WorkspaceFolder) {

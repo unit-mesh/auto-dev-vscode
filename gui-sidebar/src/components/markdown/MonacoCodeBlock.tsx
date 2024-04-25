@@ -153,9 +153,9 @@ export {};
 //     monacoRef.current = monaco;
 //     editorRef.current = editor;
 
-//     monacoRef.current.editor.defineTheme("custom-theme", getThemeFromWindow());
+//     monacoRef.current.editor.defineTheme("custom-action-theme", getThemeFromWindow());
 //     liftOff(monacoRef.current).then(() => {
-//       monacoRef.current.editor.setTheme("custom-theme");
+//       monacoRef.current.editor.setTheme("custom-action-theme");
 //     });
 
 //     editorRef.current.onDidContentSizeChange(() => {
@@ -171,10 +171,10 @@ export {};
 //       if (e.data.type === "setTheme") {
 //         (window as any).fullColorTheme = e.data.theme;
 //         monacoRef.current.editor.defineTheme(
-//           "custom-theme",
+//           "custom-action-theme",
 //           getThemeFromWindow()
 //         );
-//         monacoRef.current.editor.setTheme("custom-theme");
+//         monacoRef.current.editor.setTheme("custom-action-theme");
 //       }
 //     };
 //     window.addEventListener("message", listener);

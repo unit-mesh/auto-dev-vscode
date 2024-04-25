@@ -3,7 +3,7 @@ import { TemplateRender } from "./template/TemplateRender";
 import { TemplateContext } from "./template/TemplateContext";
 import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
 import { CreateToolchainContext, ToolchainContextItem } from "../toolchain-context/ToolchainContextProvider";
-import { CustomActionPrompt } from "./team-prompts/CustomActionPrompt";
+import { CustomActionPrompt } from "./custom-action/CustomActionPrompt";
 import { NamedElementBlock } from "../editor/document/NamedElementBlock";
 import { ActionType } from "./ActionType";
 import vscode from "vscode";
@@ -28,9 +28,9 @@ export class PromptManager {
 	}
 
 	/**
-	 * Constructs a custom intention prompt using the [Velocity] templating engine.
+	 * Constructs a custom-action intention prompt using the [Velocity] templating engine.
 	 *
-	 * This function is used to generate a custom prompt message for an intention action based on the provided PsiElement, selected text,
+	 * This function is used to generate a custom-action prompt message for an intention action based on the provided PsiElement, selected text,
 	 * before and after cursor text. It uses a set of [VariableResolver]s to resolve variables within the template and populate the
 	 * [VelocityContext].
 	 *

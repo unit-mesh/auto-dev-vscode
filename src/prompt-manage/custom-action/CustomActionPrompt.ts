@@ -1,11 +1,7 @@
 import { InteractionType } from "../../custom-action/InteractionType";
-import { TemplateRoleSplitter } from "./TemplateRoleSplitter";
+import { TemplateRoleSplitter } from "../team-prompts/TemplateRoleSplitter";
 import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
-
-export enum CustomActionType {
-	Default,
-	QuickAction,
-}
+import { CustomActionType } from "./CustomActionType";
 
 export class CustomActionPrompt {
 	name?: string;

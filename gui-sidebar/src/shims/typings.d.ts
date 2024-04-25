@@ -675,7 +675,7 @@ export interface Config {
     disableIndexing?: boolean;
     /** If set to true, Continue will not make extra requests to the LLM to generate a summary title of each session. */
     disableSessionTitles?: boolean;
-    /** An optional token to identify a user. Not used by Continue unless you write custom coniguration that requires such a token */
+    /** An optional token to identify a user. Not used by Continue unless you write custom-action coniguration that requires such a token */
     userToken?: string;
     /** The provider used to calculate embeddings. If left empty, Continue will use transformers.js to calculate the embeddings with all-MiniLM-L6-v2 */
     embeddingsProvider?: EmbeddingsProviderDescription | EmbeddingsProvider;

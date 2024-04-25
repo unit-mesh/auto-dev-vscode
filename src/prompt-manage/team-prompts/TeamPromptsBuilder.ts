@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-import { CustomActionPrompt } from './CustomActionPrompt';
+import { CustomActionPrompt } from '../custom-action/CustomActionPrompt';
 import { TeamPromptAction } from "./TeamPromptAction";
 import { SettingService } from "../../settings/SettingService";
 import { WorkspaceFolder } from "vscode";
@@ -92,6 +92,7 @@ export class TeamPromptsBuilder {
 	private buildPrompts(promptsDir: string) {
 		const files = fs.readdirSync(promptsDir);
 		const prompts: TeamPromptAction[] = [];
+
 		try {
 			const vmFiles = files.filter(file => file.endsWith('.vm'));
 
@@ -121,7 +122,7 @@ export class TeamPromptsBuilder {
 				prompts.push(teamPromptAction);
 			});
 		} catch (error) {
-			console.error('Error reading prompts directory:', error);
+			// ignore error
 		}
 
 		return prompts;
