@@ -1,3 +1,4 @@
+import vscode from "vscode";
 import Parser from "web-tree-sitter";
 
 import { NamedElement } from "./NamedElement";
@@ -5,10 +6,22 @@ import { TextInRange } from "./TextInRange";
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import { CodeElementType } from "../codemodel/CodeElementType";
-import vscode from "vscode";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { previousNodesOfType } from "../../code-context/ast/TreeSitterUtil";
 
+/**
+ * The `NamedElementBuilder` class is used to build named elements (such as variables, methods, and classes) from a
+ * TreeSitter file. It uses the Tree-sitter parsing library to parse the source code and extract the named elements, like
+ * - Class
+ * - Method
+ * - Variable
+ *
+ * @property {LanguageConfig} langConfig - The language configuration for the TypeScript file.
+ * @property {Parser.Tree} tree - The syntax tree of the TypeScript file.
+ * @property {Parser.Language} language - The language of the TypeScript file.
+ * @property {Parser | undefined} parser - The parser used to parse the TypeScript file.
+ *
+ */
 export class NamedElementBuilder {
 	langConfig: LanguageConfig;
 	tree: Parser.Tree;

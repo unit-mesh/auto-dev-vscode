@@ -7,7 +7,7 @@ import { DefaultLanguageService } from "../../editor/language/service/DefaultLan
 import { ScopeBuilder } from "../../code-search/semantic/ScopeBuilder";
 import { ScopeGraph } from "../../code-search/semantic/ScopeGraph";
 
-var graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
+const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 
 export class TreeSitterFile {
 	private sourcecode: string;
