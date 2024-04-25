@@ -7,7 +7,7 @@ import { PromptManager } from "../../../prompt-manage/PromptManager";
 import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
-import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
+import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "../../../prompt-manage/ActionType";
 
@@ -75,7 +75,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		console.info(`result: ${doc}`);
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
-		const output = FencedCodeBlock.parse(doc).text;
+		const output = MarkdownCodeBlock.parse(doc).text;
 
 		console.info(`FencedCodeBlock parsed output: ${output}`);
 		// write to output file

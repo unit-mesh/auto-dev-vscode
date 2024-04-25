@@ -7,7 +7,7 @@ import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
 import { insertCodeByRange, selectCodeInRange } from "../../editor";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
-import { FencedCodeBlock } from "../../../markdown/FencedCodeBlock";
+import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
@@ -91,7 +91,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 		console.info(`result: ${doc}`);
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
-		const finalText = FencedCodeBlock.parse(doc).text;
+		const finalText = MarkdownCodeBlock.parse(doc).text;
 
 		console.info(`FencedCodeBlock parsed output: ${finalText}`);
 		let document = MarkdownTextProcessor.buildDocFromSuggestion(doc, startSymbol, endSymbol);

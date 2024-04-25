@@ -12,7 +12,7 @@ import { SUPPORTED_LANGUAGES } from "../editor/language/SupportedLanguage";
  * @param {string} text The text content of the code block.
  * @param {boolean} isComplete Indicates whether the code block is complete or not.
  */
-export class FencedCodeBlock {
+export class MarkdownCodeBlock {
 	language: string;
 	text: string;
 	isComplete: boolean;
@@ -23,7 +23,7 @@ export class FencedCodeBlock {
 		this.isComplete = isComplete;
 	}
 
-	static parse(content: string): FencedCodeBlock {
+	static parse(content: string): MarkdownCodeBlock {
 		const regex = /```([\w#+]*)/;
 		// convert content \\n to \n
 		const lines = content.replace(/\\n/g, "\n").split("\n");
@@ -68,18 +68,18 @@ export class FencedCodeBlock {
 		}
 
 		let trimmedCode = codeBuilder.slice(startIndex, endIndex + 1).join("\n");
-		const language = FencedCodeBlock.findLanguage(languageId || "");
+		const language = MarkdownCodeBlock.findLanguage(languageId || "");
 
 		// if content is not empty, but code is empty, then it's a markdown
 		if (!trimmedCode.trim()) {
-			return new FencedCodeBlock("markdown", content.replace(/\\n/g, "\n"), codeClosed);
+			return new MarkdownCodeBlock("markdown", content.replace(/\\n/g, "\n"), codeClosed);
 		}
 
 		if (languageId === "devin" || languageId === "devins") {
 			trimmedCode = trimmedCode.replace(/\\`\\`\\`/g, "```");
 		}
 
-		return new FencedCodeBlock(language, trimmedCode, codeClosed);
+		return new MarkdownCodeBlock(language, trimmedCode, codeClosed);
 	}
 
 	/**
