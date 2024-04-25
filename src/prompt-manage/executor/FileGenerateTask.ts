@@ -9,7 +9,7 @@ export class FileGenerateTask {
 	constructor(
 		private readonly project: vscode.WorkspaceFolder,
 		private readonly messages: ChatMessage[],
-		private readonly fileName: string | undefined
+		private readonly fileName: string | undefined = undefined
 	) {
 	}
 

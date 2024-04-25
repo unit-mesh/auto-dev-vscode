@@ -4,7 +4,8 @@ import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/Aut
 import { MarkdownCodeBlock } from "../../markdown/MarkdownCodeBlock";
 import { CustomActionPrompt } from "./CustomActionPrompt";
 import { InteractionType } from "../../custom-action/InteractionType";
-import vscode from "vscode";
+import vscode, { TextEditor } from "vscode";
+import { FileGenerateTask } from "../executor/FileGenerateTask";
 
 export class CustomActionExecutor {
 	public static async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt) {
@@ -28,10 +29,10 @@ export class CustomActionExecutor {
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
 
-		CustomActionExecutor.handleOutput(prompt, output);
+		await CustomActionExecutor.handleOutput(prompt, output);
 	}
 
-	private static handleOutput(prompt: CustomActionPrompt, inputText: string) {
+	private static async handleOutput(prompt: CustomActionPrompt, inputText: string) {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			return;
@@ -42,15 +43,36 @@ export class CustomActionExecutor {
 				// todo:
 				break;
 			case InteractionType.AppendCursor:
+				CustomActionExecutor.insertText(editor, inputText);
 				break;
 			case InteractionType.AppendCursorStream:
+				CustomActionExecutor.insertText(editor, inputText);
 				break;
 			case InteractionType.OutputFile:
+				let generateTask = new FileGenerateTask(
+					vscode.workspace.getWorkspaceFolder(editor.document.uri)!!,
+					prompt.messages,
+				);
+
+				await generateTask.run();
 				break;
 			case InteractionType.ReplaceSelection:
+				CustomActionExecutor.updateText(editor, inputText);
 				break;
 			default:
 				throw new Error(`Unknown interaction type: ${prompt.interaction}`);
 		}
+	}
+
+	private static insertText(editor: TextEditor, inputText: string) {
+		vscode.window.activeTextEditor?.edit((editBuilder) => {
+			editBuilder.insert(editor.selection.active, inputText);
+		});
+	}
+
+	private static updateText(editor: TextEditor, inputText: string) {
+		vscode.window.activeTextEditor?.edit((editBuilder) => {
+			editBuilder.replace(editor.selection, inputText);
+		});
 	}
 }
