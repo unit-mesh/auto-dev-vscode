@@ -9,7 +9,7 @@ import { FileGenerateTask } from "../executor/FileGenerateTask";
 export class CustomActionExecutor {
 	public static async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt) {
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
-		console.info(`request: ${prompt.messages}`);
+		console.info(`request: ${JSON.stringify(prompt.messages)}`);
 
 		let llm = LlmProvider.instance();
 		let output: string = "";

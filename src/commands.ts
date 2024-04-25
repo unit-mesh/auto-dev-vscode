@@ -90,13 +90,8 @@ const commandsMap: (
     range: NamedElement,
     edit: vscode.WorkspaceEdit
   ) => {
-    let customPrompts = TeamPromptsBuilder.instance().teamPrompts();
     let quickActionService = QuickActionService.instance();
-
-    customPrompts.forEach(prompt => {
-      quickActionService.registerCustomPrompt(prompt.actionName, prompt.actionPrompt);
-    });
-    await quickActionService.showQuickAction(extension);
+    await quickActionService.show(extension);
   },
   "autodev.genApiData": async (
     document: vscode.TextDocument,

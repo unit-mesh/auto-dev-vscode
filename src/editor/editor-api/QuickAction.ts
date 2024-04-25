@@ -5,10 +5,10 @@ import { AutoDevExtension } from "../../AutoDevExtension";
 import { Service } from "../../service/Service";
 import { CustomActionContextBuilder } from "../../prompt-manage/custom-action/CustomActionContextBuilder";
 import { CustomActionExecutor } from "../../prompt-manage/custom-action/CustomActionExecutor";
+import { TeamPromptsBuilder } from "../../prompt-manage/team-prompts/TeamPromptsBuilder";
 
 export class QuickActionService implements Service {
 	private static instance_: QuickActionService;
-	private quickPick = window.createQuickPick();
 	private items: { [key: string]: CustomActionPrompt } = {};
 
 	private constructor() {
@@ -26,16 +26,24 @@ export class QuickActionService implements Service {
 		this.items[name] = prompt;
 	}
 
-	async showQuickAction(extension: AutoDevExtension) {
-		this.quickPick.items = Object.keys(this.items).map(label => ({ label }));
-		this.quickPick.onDidChangeSelection(async selection => {
+	async show(extension: AutoDevExtension) {
+		this.items = {};
+		let quickPick = window.createQuickPick();
+		let customPrompts = TeamPromptsBuilder.instance().teamPrompts();
+		customPrompts.forEach(prompt => {
+			this.registerCustomPrompt(prompt.actionName, prompt.actionPrompt);
+		});
+
+		quickPick.items = Object.keys(this.items).map(label => ({ label }));
+		quickPick.onDidChangeSelection(async selection => {
 			if (selection[0]) {
 				const item = this.items[selection[0].label];
 				await this.execute(extension, item);
+				quickPick.hide();
 			}
 		});
-		this.quickPick.onDidHide(() => this.quickPick.dispose());
-		this.quickPick.show();
+		quickPick.onDidHide(() => quickPick.dispose());
+		quickPick.show();
 	}
 
 	async execute(extension: AutoDevExtension, prompt: CustomActionPrompt) {
