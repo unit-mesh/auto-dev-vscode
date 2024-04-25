@@ -28,11 +28,16 @@ export class QuickActionService {
 		this.quickPick.onDidChangeSelection(async selection => {
 			if (selection[0]) {
 				const item = this.items[selection[0].label];
-				await item.execute(extension);
+				await this.execute(extension, item);
 			}
 		});
 		this.quickPick.onDidHide(() => this.quickPick.dispose());
 		this.quickPick.show();
+	}
+
+
+	async execute(extension: AutoDevExtension, prompt: CustomActionPrompt) {
+		await window.showInformationMessage("Executing custom action: " + prompt.name);
 	}
 }
 

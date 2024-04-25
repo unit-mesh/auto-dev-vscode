@@ -17,6 +17,7 @@ Chat message 1
 Chat message 2
 `;
       const expectedPrompt = new CustomActionPrompt(
+        undefined,
         InteractionType.AppendCursorStream,
         1,
         CustomActionType.Default,
@@ -36,6 +37,7 @@ Chat message 2
     it('should handle invalid content', () => {
       const content = 'Invalid content';
       const expectedPrompt = new CustomActionPrompt(
+        undefined,
         InteractionType.AppendCursorStream,
         0,
         CustomActionType.Default,
