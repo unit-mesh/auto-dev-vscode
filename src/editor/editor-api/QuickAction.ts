@@ -32,7 +32,10 @@ export class QuickActionService implements Service {
 		let quickPick = window.createQuickPick();
 		let customPrompts = TeamPromptsBuilder.instance().teamPrompts();
 
-		channel.append("Custom prompts: " + customPrompts.map(prompt => prompt.actionName).join(", "));
+		if (customPrompts.length === 0) {
+			channel.append("No custom prompts found");
+			return;
+		}
 
 		customPrompts.forEach(prompt => {
 			this.registerCustomPrompt(prompt.actionName, prompt.actionPrompt);

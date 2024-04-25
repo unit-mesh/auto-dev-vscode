@@ -6,6 +6,7 @@ import { TeamPromptAction } from "./TeamPromptAction";
 import { SettingService } from "../../settings/SettingService";
 import { WorkspaceFolder } from "vscode";
 import path from "path";
+import { channel } from "../../channel";
 
 export class TeamPromptsBuilder {
 	private baseDir: string;
@@ -37,7 +38,9 @@ export class TeamPromptsBuilder {
 			return [];
 		}
 
+		channel.append("Root dir: " + rootDir + "\n");
 		const promptsDir = path.join(rootDir, this.baseDir);
+		channel.append("Prompts dir: " + promptsDir + "\n");
 		return this.buildPrompts(promptsDir);
 	}
 
@@ -123,6 +126,7 @@ export class TeamPromptsBuilder {
 			});
 		} catch (error) {
 			// ignore error
+			channel.append("Error reading prompts: " + error + "\n");
 		}
 
 		return prompts;
