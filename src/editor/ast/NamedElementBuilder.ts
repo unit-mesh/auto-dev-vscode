@@ -1,7 +1,7 @@
 import Parser from "web-tree-sitter";
 
 import { NamedElement } from "./NamedElement";
-import { BlockRange } from "./BlockRange";
+import { TextInRange } from "./TextInRange";
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import { CodeElementType } from "../codemodel/CodeElementType";
@@ -103,14 +103,14 @@ export class NamedElementBuilder {
 					let commentNode = previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
 
 					let blockRange = new NamedElement(
-						BlockRange.fromNode(blockNode),
-						BlockRange.fromNode(idNode),
+						TextInRange.fromNode(blockNode),
+						TextInRange.fromNode(idNode),
 						elementType,
 						blockNode.text,
 					);
 
 					if (commentNode.length > 0) {
-						blockRange.commentRange = BlockRange.fromNode(commentNode[0]);
+						blockRange.commentRange = TextInRange.fromNode(commentNode[0]);
 					}
 
 					return blockRange;

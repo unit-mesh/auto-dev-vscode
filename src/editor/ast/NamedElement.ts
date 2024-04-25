@@ -1,4 +1,4 @@
-import { BlockRange } from "./BlockRange";
+import { TextInRange } from "./TextInRange";
 import { CodeElementType } from "../codemodel/CodeElementType";
 
 /**
@@ -22,18 +22,18 @@ import { CodeElementType } from "../codemodel/CodeElementType";
  * - commentRange: `// This is a method comment`
  */
 export class NamedElement {
-	blockRange: BlockRange;
-	identifierRange: BlockRange;
+	blockRange: TextInRange;
+	identifierRange: TextInRange;
 	codeElementType: CodeElementType;
 	blockContent: string;
-	commentRange: BlockRange | undefined;
+	commentRange: TextInRange | undefined;
 
 	constructor(
-		blockRange: BlockRange,
-		identifierRange: BlockRange,
+		blockRange: TextInRange,
+		identifierRange: TextInRange,
 		codeElementType: CodeElementType,
 		blockContent: string,
-		commentRange?: BlockRange
+		commentRange?: TextInRange
 	) {
 		this.blockRange = blockRange;
 		this.identifierRange = identifierRange;
