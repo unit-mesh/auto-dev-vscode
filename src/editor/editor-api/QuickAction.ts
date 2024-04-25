@@ -6,6 +6,7 @@ import { Service } from "../../service/Service";
 import { CustomActionContextBuilder } from "../../prompt-manage/custom-action/CustomActionContextBuilder";
 import { CustomActionExecutor } from "../../prompt-manage/custom-action/CustomActionExecutor";
 import { TeamPromptsBuilder } from "../../prompt-manage/team-prompts/TeamPromptsBuilder";
+import { channel } from "../../channel";
 
 export class QuickActionService implements Service {
 	private static instance_: QuickActionService;
@@ -30,6 +31,9 @@ export class QuickActionService implements Service {
 		this.items = {};
 		let quickPick = window.createQuickPick();
 		let customPrompts = TeamPromptsBuilder.instance().teamPrompts();
+
+		channel.append("Custom prompts: " + customPrompts.map(prompt => prompt.actionName).join(", "));
+
 		customPrompts.forEach(prompt => {
 			this.registerCustomPrompt(prompt.actionName, prompt.actionPrompt);
 		});
@@ -37,6 +41,7 @@ export class QuickActionService implements Service {
 		quickPick.items = Object.keys(this.items).map(label => ({ label }));
 		quickPick.onDidChangeSelection(async selection => {
 			if (selection[0]) {
+				channel.append("Selected: " + selection[0].label);
 				quickPick.busy = true;
 				quickPick.enabled = false;
 				const item = this.items[selection[0].label];
