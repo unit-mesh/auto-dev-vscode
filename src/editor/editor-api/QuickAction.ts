@@ -3,7 +3,6 @@ import { window } from "vscode";
 import { AutoDevExtension } from "../../AutoDevExtension";
 
 export class QuickActionService {
-	// singleton
 	private static instance_: QuickActionService;
 	private quickPick = window.createQuickPick();
 	private items: { [key: string]: CustomActionPrompt } = {};
