@@ -6,7 +6,7 @@ import { TemplateContext } from "./template/TemplateContext";
 import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
 import { CreateToolchainContext, ToolchainContextItem } from "../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "./ActionType";
-import { CustomActionContext } from "./custom-action/CustomActionContext";
+import { CustomActionVariable } from "./custom-action/CustomActionVariable";
 import { CustomActionExecutePrompt } from "./custom-action/CustomActionExecutePrompt";
 
 export class PromptManager {
@@ -28,7 +28,7 @@ export class PromptManager {
 		return ToolchainContextManager.instance().collectContextItems(context);
 	}
 
-	async constructContext(): Promise<CustomActionContext> {
+	async constructContext(): Promise<CustomActionVariable> {
 		return Promise.reject("Not implemented");
 	}
 
@@ -60,7 +60,7 @@ export class PromptManager {
 	 */
 	async templateToPrompt(type: ActionType, context: TemplateContext): Promise<string> {
 		let templateRender = new TemplateRender(this.templateLoader);
-		let template: string;
+		let template: string | undefined;
 
 		// we only support for zh-cn-cn and en only, if the language is not supported, we default to en
 		let humanLanguage = vscode.env.language;
@@ -77,6 +77,10 @@ export class PromptManager {
 				break;
 			case ActionType.GenApiData:
 				template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/code/gen-api-data.vm`);
+		}
+
+		if (!template) {
+			throw new Error(`No template found for action type ${type}`);
 		}
 
 		return templateRender.render(template, context);

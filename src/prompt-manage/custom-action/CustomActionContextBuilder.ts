@@ -1,10 +1,10 @@
 import vscode from "vscode";
 import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
 import { StructurerProviderManager } from "../../code-context/StructurerProviderManager";
-import { CustomActionContext } from "./CustomActionContext";
+import { CustomActionVariable } from "./CustomActionVariable";
 
 export class CustomActionContextBuilder {
-	public static async fromDocument(document: vscode.TextDocument): Promise<CustomActionContext> {
+	public static async fromDocument(document: vscode.TextDocument): Promise<CustomActionVariable> {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			throw new Error("No active text editor");
