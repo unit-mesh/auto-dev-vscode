@@ -5,17 +5,26 @@ import { CustomActionPrompt } from "./CustomActionPrompt";
 import { InteractionType } from "../../custom-action/InteractionType";
 import vscode, { TextEditor } from "vscode";
 import { FileGenerateTask } from "../executor/FileGenerateTask";
+import { TemplateRender } from "../template/TemplateRender";
 
 export class CustomActionExecutor {
 	public static async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt) {
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
-		console.info(`request: ${JSON.stringify(prompt.messages)}`);
+		const compiler = new TemplateRender();
+		const messages = prompt.messages.map((msg) => {
+			return {
+				role: msg.role,
+				content: compiler.render(msg.content, context),
+			};
+		});
+
+		console.info(`request: ${JSON.stringify(messages)}`);
 
 		let llm = LlmProvider.instance();
 		let output: string = "";
 
 		try {
-			for await (const chunk of llm._streamChat(prompt.messages)) {
+			for await (const chunk of llm._streamChat(messages)) {
 				output += chunk.content;
 			}
 		} catch (e) {

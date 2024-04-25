@@ -2,12 +2,16 @@ import Velocity from "velocityjs";
 import { TemplateContext } from "./TemplateContext";
 import fs from "fs";
 import { TemplateLoader } from "../loader/TemplateLoader";
+import { VSCodeTemplateLoader } from "../loader/VSCodeTemplateLoader";
 
 export class TemplateRender {
 	private templateCache: { [filename: string]: string } = {};
 	private templateLoader: TemplateLoader;
 
-	constructor(templateLoader: TemplateLoader) {
+	constructor(templateLoader?: TemplateLoader) {
+		if (templateLoader === undefined) {
+			templateLoader = new VSCodeTemplateLoader();
+		}
 		this.templateLoader = templateLoader;
 	}
 
