@@ -350,6 +350,7 @@
     "@langchain/community": "^0.0.51",
     "@langchain/core": "^0.1.59",
     "@langchain/openai": "^0.0.28",
+    "@types/js-yaml": "^4.0.9",
     "@unit-mesh/treesitter-artifacts": "^1.5.3",
     "@vscode/l10n": "^0.0.18",
     "graphology": "^0.25.4",

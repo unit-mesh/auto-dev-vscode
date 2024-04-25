@@ -1,3 +1,5 @@
+import yaml from "js-yaml";
+
 import { InteractionType } from "../../custom-action/InteractionType";
 import { TemplateRoleSplitter } from "../team-prompts/TemplateRoleSplitter";
 import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
@@ -85,8 +87,7 @@ export class CustomActionPrompt {
 		const prompt = new CustomActionPrompt();
 		if (matchResult !== null) {
 			const frontMatter = matchResult[1];
-			const yaml = require('js-yaml');
-			const frontMatterMap = yaml.load(frontMatter);
+			const frontMatterMap = yaml.load(frontMatter) as any;
 
 			prompt.name = frontMatterMap["name"];
 			prompt.interaction = frontMatterMap["interaction"] ? InteractionType[frontMatterMap["interaction"] as keyof typeof InteractionType] : InteractionType.AppendCursorStream;
