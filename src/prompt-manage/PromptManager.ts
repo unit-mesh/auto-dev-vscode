@@ -3,10 +3,10 @@ import { TemplateRender } from "./template/TemplateRender";
 import { TemplateContext } from "./template/TemplateContext";
 import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
 import { CreateToolchainContext, ToolchainContextItem } from "../toolchain-context/ToolchainContextProvider";
-import { CustomActionPrompt } from "./custom-action/CustomActionPrompt";
-import { NamedElementBlock } from "../editor/document/NamedElementBlock";
 import { ActionType } from "./ActionType";
 import vscode from "vscode";
+import { CustomActionContext } from "./custom-action/CustomActionContext";
+import { CustomActionExecutePrompt } from "./custom-action/CustomActionExecutePrompt";
 
 export class PromptManager {
 	private static _instance: PromptManager;
@@ -27,6 +27,10 @@ export class PromptManager {
 		return ToolchainContextManager.instance().collectContextItems(context);
 	}
 
+	async constructContext(): Promise<CustomActionContext> {
+		return Promise.reject("Not implemented");
+	}
+
 	/**
 	 * Constructs a custom-action intention prompt using the [Velocity] templating engine.
 	 *
@@ -42,12 +46,7 @@ export class PromptManager {
 	 * @param afterCursor The text after the cursor.
 	 * @return A [CustomIntentionPrompt] with the generated prompt message.
 	 */
-	async constructCustomPrompt(
-		psiElement: NamedElementBlock,
-		selectedText: string,
-		beforeCursor: string,
-		afterCursor: string
-	): Promise<CustomActionPrompt[]> {
+	async constructCustomPrompt(): Promise<CustomActionExecutePrompt[]> {
 		return [];
 	}
 
