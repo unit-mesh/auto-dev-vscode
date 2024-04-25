@@ -1,7 +1,6 @@
 import { CustomActionTemplateContext } from "./CustomActionTemplateContext";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
-import { MarkdownCodeBlock } from "../../markdown/MarkdownCodeBlock";
 import { CustomActionPrompt } from "./CustomActionPrompt";
 import { InteractionType } from "../../custom-action/InteractionType";
 import vscode, { TextEditor } from "vscode";
@@ -10,8 +9,7 @@ import { FileGenerateTask } from "../executor/FileGenerateTask";
 export class CustomActionExecutor {
 	public static async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt) {
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
-		const content = "";
-		console.info(`request: ${content}`);
+		console.info(`request: ${prompt.messages}`);
 
 		let llm = LlmProvider.instance();
 		let output: string = "";

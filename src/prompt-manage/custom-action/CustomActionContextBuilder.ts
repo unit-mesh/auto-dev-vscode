@@ -2,6 +2,7 @@ import vscode from "vscode";
 import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
 import { StructurerProviderManager } from "../../code-context/StructurerProviderManager";
 import { CustomActionTemplateContext } from "./CustomActionTemplateContext";
+import { LANGUAGE_BLOCK_COMMENT_MAP, LANGUAGE_LINE_COMMENT_MAP } from "../../editor/language/LanguageCommentMap";
 
 export class CustomActionContextBuilder {
 	public static async fromDocument(document: vscode.TextDocument): Promise<CustomActionTemplateContext> {
@@ -18,6 +19,7 @@ export class CustomActionContextBuilder {
 		const afterCursor = text.substring(editor.selection.end.character);
 		const currentLine = editor.selection.active.line;
 		const selection = editor.document.getText(editor.selection);
+		const commentSymbol = LANGUAGE_LINE_COMMENT_MAP[language] || "//";
 
 		// element context
 		const elementBuilder = await NamedElementBuilder.from(document);
@@ -36,12 +38,13 @@ export class CustomActionContextBuilder {
 		// todo: build for SimilarChunk
 
 		return {
+			language: language,
+			commentSymbol: commentSymbol,
 			filepath: filepath,
 			element: element,
 			beforeCursor: beforeCursor,
 			afterCursor: afterCursor,
 			selection: selection,
-			language: language
 		};
 	}
 }
