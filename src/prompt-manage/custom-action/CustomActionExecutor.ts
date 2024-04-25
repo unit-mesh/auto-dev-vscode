@@ -30,7 +30,7 @@ export class CustomActionExecutor {
 		await CustomActionExecutor.handleOutput(prompt, output);
 	}
 
-	private static async handleOutput(prompt: CustomActionPrompt, inputText: string) {
+	private static async handleOutput(prompt: CustomActionPrompt, outputText: string) {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			return;
@@ -41,21 +41,21 @@ export class CustomActionExecutor {
 				// todo:
 				break;
 			case InteractionType.AppendCursor:
-				CustomActionExecutor.insertText(editor, inputText);
+				CustomActionExecutor.insertText(editor, outputText);
 				break;
 			case InteractionType.AppendCursorStream:
-				CustomActionExecutor.insertText(editor, inputText);
+				CustomActionExecutor.insertText(editor, outputText);
 				break;
 			case InteractionType.OutputFile:
 				let generateTask = new FileGenerateTask(
 					vscode.workspace.getWorkspaceFolder(editor.document.uri)!!,
-					prompt.messages,
+					outputText,
 				);
 
 				await generateTask.run();
 				break;
 			case InteractionType.ReplaceSelection:
-				CustomActionExecutor.updateText(editor, inputText);
+				CustomActionExecutor.updateText(editor, outputText);
 				break;
 			default:
 				throw new Error(`Unknown interaction type: ${prompt.interaction}`);

@@ -59,7 +59,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			filename: this.document.fileName,
 			language: this.language,
 			content: this.document.getText(),
-			block: this.range
+			element: this.range
 		};
 
 		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);

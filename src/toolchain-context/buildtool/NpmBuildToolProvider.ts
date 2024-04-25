@@ -33,17 +33,21 @@ export class NpmBuildToolProvider implements BuildToolProvider {
 				return resolve(false);
 			}
 
-			let hasTarget = false;
-			for (const target of this.moduleTarget) {
-				const targetPath = vscode.Uri.joinPath(workspaces.uri, target);
-				vscode.workspace.fs.stat(targetPath).then((targetFileType) => {
-					if (targetFileType.type === vscode.FileType.File) {
-						hasTarget = true;
-						resolve(true);
-					}
-				});
+			try {
+				let hasTarget = false;
+				for (const target of this.moduleTarget) {
+					const targetPath = vscode.Uri.joinPath(workspaces.uri, target);
+					vscode.workspace.fs.stat(targetPath).then((targetFileType) => {
+						if (targetFileType.type === vscode.FileType.File) {
+							hasTarget = true;
+							resolve(true);
+						}
+					});
+				}
+				resolve(hasTarget);
+			} catch(e) {
+				resolve(false);
 			}
-			resolve(hasTarget);
 		});
 	}
 

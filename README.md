@@ -52,6 +52,8 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] Syntax Highlight
     - [ ] Custom command
 - [ ] Custom prompt
+    - [x] Custom prompt
+      - [x] Align to IDE version
     - [ ] Json Schema validation
     - [ ] Custom prompt settings
 - [ ] Custom Agent

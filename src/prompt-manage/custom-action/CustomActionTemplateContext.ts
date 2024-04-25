@@ -8,6 +8,7 @@ export interface CustomActionTemplateContext extends TemplateContext {
 	afterCursor: string,
 	selection: string,
 	commentSymbol: string,
+	toolchainContext: string,
 	input?: string
 	output?: string,
 	spec?: string,

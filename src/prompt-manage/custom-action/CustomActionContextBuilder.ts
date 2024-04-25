@@ -3,6 +3,8 @@ import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
 import { StructurerProviderManager } from "../../code-context/StructurerProviderManager";
 import { CustomActionTemplateContext } from "./CustomActionTemplateContext";
 import { LANGUAGE_BLOCK_COMMENT_MAP, LANGUAGE_LINE_COMMENT_MAP } from "../../editor/language/LanguageCommentMap";
+import { ToolchainContextManager } from "../../toolchain-context/ToolchainContextManager";
+import { CreateToolchainContext } from "../../toolchain-context/ToolchainContextProvider";
 
 export class CustomActionContextBuilder {
 	public static async fromDocument(document: vscode.TextDocument): Promise<CustomActionTemplateContext> {
@@ -37,9 +39,24 @@ export class CustomActionContextBuilder {
 
 		// todo: build for SimilarChunk
 
+		// toolchain context
+		const creationContext: CreateToolchainContext = {
+			action: "CustomAction",
+			filename: document.fileName,
+			language,
+			content: document.getText(),
+			element: element
+		};
+		const contextItems = await ToolchainContextManager.instance().collectContextItems(creationContext);
+		let toolchainContext = "";
+		if (contextItems.length > 0) {
+			toolchainContext = contextItems.map(item => item.text).join("\n - ");
+		}
+
 		return {
 			language: language,
 			commentSymbol: commentSymbol,
+			toolchainContext,
 			filepath: filepath,
 			element: element,
 			beforeCursor: beforeCursor,
