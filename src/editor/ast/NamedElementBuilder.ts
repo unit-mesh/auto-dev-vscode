@@ -83,12 +83,36 @@ export class NamedElementBuilder {
 		return [];
 	}
 
+	getElementForSelection(startLine: number, endLine: number): NamedElement[] {
+		const methodNodes = this.buildMethod();
+		let methodBlock = methodNodes.filter(NamedElementBuilder.isIntersectRange(startLine, endLine));
+		if (methodBlock.length > 0) {
+			return methodBlock;
+		}
+
+		const classNodes = this.buildClass();
+		let classBlocks = classNodes.filter(NamedElementBuilder.isIntersectRange(startLine, endLine));
+		if (classBlocks.length > 0) {
+			return classBlocks;
+		}
+
+		return [];
+	}
+
 	private static isIntersect(lineNo: number) {
 		return (node: NamedElement) => NamedElementBuilder.contains(node, lineNo);
 	}
 
 	private static contains(node: NamedElement, lineNo: number) {
 		return lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line;
+	}
+
+	private static isIntersectRange(startLine: number, endLine: number) {
+		return (node: NamedElement) => NamedElementBuilder.containsRange(node, startLine, endLine);
+	}
+
+	private static containsRange(node: NamedElement, startLine: number, endLine: number) {
+		return startLine <= node.blockRange.start.line && endLine >= node.blockRange.end.line;
 	}
 
 	/**

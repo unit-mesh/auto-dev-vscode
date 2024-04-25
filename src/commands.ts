@@ -48,11 +48,28 @@ const commandsMap: (
     await new AutoDocActionExecutor(document, range, edit).execute();
   },
   "autodev.autoTest": async (
-    document: vscode.TextDocument,
-    range: NamedElement,
-    edit: vscode.WorkspaceEdit
+    document?: vscode.TextDocument,
+    element?: NamedElement,
+    edit?: vscode.WorkspaceEdit
   ) => {
-    await new AutoTestActionExecutor(document, range, edit).execute();
+    const editor = vscode.window.activeTextEditor;
+    const textDocument = document || vscode.window.activeTextEditor?.document;
+    if (!textDocument) {
+      return;
+    }
+
+    let elementBuilder = await NamedElementBuilder.from(textDocument);
+    const selectionStart: number = editor?.selection.start.line ?? 0;
+    const selectionEnd: number = editor?.selection.end.line ?? textDocument.lineCount;
+
+    const nameElement = element || elementBuilder.getElementForSelection(selectionStart, selectionEnd)?.[0];
+    if (!nameElement) {
+      return;
+    }
+
+    const workspaceEdit = edit || new vscode.WorkspaceEdit();
+
+    await new AutoTestActionExecutor(textDocument, nameElement, workspaceEdit).execute();
   },
   "autodev.explain": async (
     document: vscode.TextDocument,
