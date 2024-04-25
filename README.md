@@ -29,7 +29,7 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] RelatedCode
     - [ ] SimilarChunk?
 - [ ] Chat mode
-    - [ ] Chat UI
+    - [x] Chat UI
     - [ ] Chat with selection
     - [ ] Chat with code
 - [ ] Touch Point
