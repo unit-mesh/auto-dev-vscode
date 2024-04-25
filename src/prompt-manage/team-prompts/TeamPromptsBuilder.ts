@@ -38,39 +38,7 @@ export class TeamPromptsBuilder {
 		}
 
 		const promptsDir = path.join(rootDir, this.baseDir);
-		const prompts: TeamPromptAction[] = [];
-
-		try {
-			const files = fs.readdirSync(promptsDir);
-			const vmFiles = files.filter(file => file.endsWith('.vm'));
-
-			vmFiles.forEach(file => {
-				const filePath = path.join(promptsDir, file);
-				// the action name will be the file name without the extension
-				let actionName = file.split('.').slice(0, -1).join('.');
-				const fileContent = fs.readFileSync(filePath, 'utf-8');
-				let actionPrompt = CustomActionPrompt.fromContent(fileContent);
-				if (!actionPrompt) {
-					return;
-				}
-
-				// check name is in the prompt
-				if (actionPrompt.name) {
-					actionName = actionPrompt.name;
-				}
-
-				const teamPromptAction: TeamPromptAction = {
-					actionName: actionName,
-					actionPrompt: actionPrompt
-				};
-
-				prompts.push(teamPromptAction);
-			});
-		} catch (error) {
-			console.error('Error reading prompts directory:', error);
-		}
-
-		return prompts;
+		return this.buildPrompts(promptsDir);
 	}
 
 	/**
@@ -85,9 +53,7 @@ export class TeamPromptsBuilder {
 			return [];
 		}
 
-		const quickPromptFiles = fs.readdirSync(quickPromptDir).filter(file => file.endsWith('.vm'));
-
-		return this.buildPrompts(quickPromptFiles);
+		return this.buildPrompts(quickPromptDir);
 	}
 
 	/**
@@ -123,8 +89,42 @@ export class TeamPromptsBuilder {
 		return fs.readFileSync(overrideFilePath, 'utf-8');
 	}
 
-	private buildPrompts(prompts: string[]): TeamPromptAction[] {
-		return [];
+	private buildPrompts(promptsDir: string) {
+		const files = fs.readdirSync(promptsDir);
+		const prompts: TeamPromptAction[] = [];
+		try {
+			const vmFiles = files.filter(file => file.endsWith('.vm'));
+
+			vmFiles.forEach(file => {
+				const filePath = path.join(promptsDir, file);
+				// the action name will be the file name without the extension， and remove slice
+				let actionName =
+					file.split('.').slice(0, -1).join('.')
+						.replaceAll('-', ' ');
+
+				const fileContent = fs.readFileSync(filePath, 'utf-8');
+				let actionPrompt = CustomActionPrompt.fromContent(fileContent);
+				if (!actionPrompt) {
+					return;
+				}
+
+				// check name is in the prompt
+				if (actionPrompt.name) {
+					actionName = actionPrompt.name;
+				}
+
+				const teamPromptAction: TeamPromptAction = {
+					actionName: actionName,
+					actionPrompt: actionPrompt
+				};
+
+				prompts.push(teamPromptAction);
+			});
+		} catch (error) {
+			console.error('Error reading prompts directory:', error);
+		}
+
+		return prompts;
 	}
 }
 
