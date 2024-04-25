@@ -48,7 +48,10 @@
   ],
   "main": "./dist/extension.js",
   "enabledApiProposals": [
-    "contribSourceControlInputBoxMenu"
+    "contribSourceControlHistoryItemGroupMenu",
+    "contribSourceControlHistoryItemMenu",
+    "contribSourceControlInputBoxMenu",
+    "contribSourceControlTitleMenu"
   ],
   "contributes": {
     "configuration": {
@@ -270,13 +273,6 @@
         {
           "command": "autodev.git.generateCommitMessage",
           "when": "scmProvider == git"
-        }
-      ],
-      "testing/message/context": [
-        {
-          "command": "autodev.tests.fixTest",
-          "when": "testing.testItemHasUri",
-          "group": "inline@1"
         }
       ],
       "commandPalette": [

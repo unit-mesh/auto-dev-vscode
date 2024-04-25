@@ -96,6 +96,9 @@ const commandsMap: (
   "autodev.git.generateCommitMessage": async () => {
     // vscode.extensions.getExtension('vscode.git')?.exports.getAPI(1).repositories[0].inputBox.value = newvalue;
   },
+  "autodev.git.generateCommitMessage": async () => {
+
+  },
   "autodev.genApiData": async (
     document: vscode.TextDocument,
     range: NamedElement,
