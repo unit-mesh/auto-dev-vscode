@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import vscode from "vscode";
 
 import { CodeActionCreator } from "../_base/ActionCreator";
-import { NamedElement } from "../../document/NamedElement";
+import { NamedElement } from "../../ast/NamedElement";
 import { ActionCreatorContext } from "../_base/ActionCreatorContext";
 
 @injectable()

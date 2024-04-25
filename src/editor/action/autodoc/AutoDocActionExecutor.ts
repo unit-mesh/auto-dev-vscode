@@ -1,6 +1,6 @@
 import vscode, { Position } from "vscode";
 
-import { NamedElement } from "../../document/NamedElement";
+import { NamedElement } from "../../ast/NamedElement";
 import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../language/LanguageCommentMap";
 import { PromptManager } from "../../../prompt-manage/PromptManager";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";

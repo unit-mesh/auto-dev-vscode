@@ -3,9 +3,9 @@ import * as vscode from "vscode";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import { TreeSitterFileError, } from "../../code-context/ast/TreeSitterFile";
-import { NamedElement } from "../document/NamedElement";
+import { NamedElement } from "../ast/NamedElement";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
-import { BlockBuilder } from "../document/BlockBuilder";
+import { NamedElementBuilder } from "../ast/NamedElementBuilder";
 import { providerContainer } from "../../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../../ProviderTypes";
 import { ActionCreator } from "../action/_base/ActionCreator";
@@ -34,7 +34,7 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 		}
 
 		const file = await documentToTreeSitterFile(document);
-		let blockBuilder = new BlockBuilder(file);
+		let blockBuilder = new NamedElementBuilder(file);
 
 		const methodRanges: NamedElement[] = blockBuilder.buildMethod();
 		const classRanges: NamedElement[] = blockBuilder.buildClass();

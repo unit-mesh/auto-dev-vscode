@@ -7,7 +7,7 @@ import { TestGenProvider } from "../_base/test/TestGenProvider";
 import { CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
-import { NamedElement } from "../../editor/document/NamedElement";
+import { NamedElement } from "../../editor/ast/NamedElement";
 import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 
 

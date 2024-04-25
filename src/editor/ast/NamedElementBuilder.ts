@@ -9,7 +9,7 @@ import vscode from "vscode";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { previousNodesOfType } from "../../code-context/ast/TreeSitterUtil";
 
-export class BlockBuilder {
+export class NamedElementBuilder {
 	langConfig: LanguageConfig;
 	tree: Parser.Tree;
 	language: Parser.Language;
@@ -22,9 +22,13 @@ export class BlockBuilder {
 		this.parser = treeSitterFile.parser;
 	}
 
-	static async from(document: vscode.TextDocument): Promise<BlockBuilder> {
+	static async from(document: vscode.TextDocument): Promise<NamedElementBuilder> {
 		let file = await documentToTreeSitterFile(document);
-		return new BlockBuilder(file);
+		return new NamedElementBuilder(file);
+	}
+
+	buildVariable(): NamedElement[] {
+		throw new Error("Method not implemented.");
 	}
 
 	buildMethod(): NamedElement[] {
@@ -35,9 +39,23 @@ export class BlockBuilder {
 		return this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
 	}
 
-	buildForLine(lineNo: number): NamedElement[] {
+	/**
+	 * The `getElementForAction` method is used to get the named elements (either method or class) that are present at a specific line number in the TypeScript code.
+	 *
+	 * @param lineNo - The line number in the TypeScript code.
+	 *
+	 * @returns An array of `NamedElement` objects. Each `NamedElement` object represents a method or class that is present at the specified line number. If no such elements are found, an empty array is returned.
+	 *
+	 * The method first builds a list of method nodes using the `buildMethod` function. It then filters this list to find the methods that are present at the specified line number. If any such methods are found, they are returned.
+	 *
+	 * If no methods are found at the specified line number, the method then builds a list of class nodes using the `buildClass` function. It filters this list to find the classes that are present at the specified line number. If any such classes are found, they are returned.
+	 *
+	 * If no methods or classes are found at the specified line number, the method returns an empty array.
+	 *
+	 * Note: This method currently does not handle TypeScript imports.
+	 */
+	getElementForAction(lineNo: number): NamedElement[] {
 		const methodNodes = this.buildMethod();
-		 // todo: hande for typescript imports
 		let methodBlock = methodNodes.filter(
 			node => lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line
 		);

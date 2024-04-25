@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { NamedElement } from "./editor/document/NamedElement";
+import { NamedElement } from "./editor/ast/NamedElement";
 
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
 import { AutoDocActionExecutor } from "./editor/action/autodoc/AutoDocActionExecutor";
 import { AutoTestActionExecutor } from "./editor/action/autotest/AutoTestActionExecutor";
-import { BlockBuilder } from "./editor/document/BlockBuilder";
+import { NamedElementBuilder } from "./editor/ast/NamedElementBuilder";
 import { QuickActionService } from "./editor/editor-api/QuickAction";
 import { TeamPromptsBuilder } from "./prompt-manage/team-prompts/TeamPromptsBuilder";
 
@@ -73,9 +73,9 @@ const commandsMap: (
     let edit = new vscode.WorkspaceEdit();
     let document = editor.document;
     //
-    let blockBuilderPromise = await BlockBuilder.from(document);
+    let blockBuilderPromise = await NamedElementBuilder.from(document);
     let currentLine = editor.selection.active.line;
-    let ranges = blockBuilderPromise.buildForLine(currentLine);
+    let ranges = blockBuilderPromise.getElementForAction(currentLine);
 
     if (ranges.length === 0) {
       return;

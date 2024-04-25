@@ -4,8 +4,8 @@ import { l10n } from "vscode";
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../language/SupportedLanguage";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
-import { NamedElement } from "../document/NamedElement";
-import { BlockBuilder } from "../document/BlockBuilder";
+import { NamedElement } from "../ast/NamedElement";
+import { NamedElementBuilder } from "../ast/NamedElementBuilder";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
@@ -25,7 +25,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 			}
 
 			const file = await documentToTreeSitterFile(document);
-			const builder = new BlockBuilder(file);
+			const builder = new NamedElementBuilder(file);
 			const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
 			let lenses: vscode.CodeLens[] = [];
 

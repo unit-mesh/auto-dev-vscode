@@ -1,7 +1,7 @@
 import vscode from "vscode";
 
 import { ActionExecutor } from "../_base/ActionExecutor";
-import { NamedElement } from "../../document/NamedElement";
+import { NamedElement } from "../../ast/NamedElement";
 import { TestGenProviderManager } from "../../../code-context/TestGenProviderManager";
 import { PromptManager } from "../../../prompt-manage/PromptManager";
 import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";

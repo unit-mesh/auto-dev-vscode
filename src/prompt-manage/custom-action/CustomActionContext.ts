@@ -1,5 +1,5 @@
 import { TemplateContext } from "../template/TemplateContext";
-import { NamedElement } from "../../editor/document/NamedElement";
+import { NamedElement } from "../../editor/ast/NamedElement";
 
 export interface CustomActionContext extends TemplateContext {
 	filepath: string,

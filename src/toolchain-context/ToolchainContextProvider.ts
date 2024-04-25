@@ -1,4 +1,4 @@
-import { NamedElement } from "../editor/document/NamedElement";
+import { NamedElement } from "../editor/ast/NamedElement";
 import { ScopeGraph } from "../code-search/semantic/ScopeGraph";
 
 export interface ToolchainContextItem {

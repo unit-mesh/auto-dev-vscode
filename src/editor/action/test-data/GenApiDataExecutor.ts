@@ -1,6 +1,6 @@
 import vscode from "vscode";
 
-import { NamedElement } from "../../document/NamedElement";
+import { NamedElement } from "../../ast/NamedElement";
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { TemplateContext } from "../../../prompt-manage/template/TemplateContext";
 import { ActionType } from "../../../prompt-manage/ActionType";

@@ -2,7 +2,7 @@ import vscode from "vscode";
 
 import { ActionCreatorContext } from "./ActionCreatorContext";
 import { CodeElementType } from "../../codemodel/CodeElementType";
-import { NamedElement } from "../../document/NamedElement";
+import { NamedElement } from "../../ast/NamedElement";
 import { injectable } from "inversify";
 
 export interface ActionCreator {

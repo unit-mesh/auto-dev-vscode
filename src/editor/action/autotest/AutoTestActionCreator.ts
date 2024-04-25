@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 
 import { CodeActionCreator } from "../_base/ActionCreator";
 import { ActionCreatorContext } from "../_base/ActionCreatorContext";
-import { NamedElement } from "../../document/NamedElement";
+import { NamedElement } from "../../ast/NamedElement";
 
 @injectable()
 export class AutoTestActionCreator extends CodeActionCreator {
