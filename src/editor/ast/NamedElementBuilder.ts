@@ -56,22 +56,26 @@ export class NamedElementBuilder {
 	 */
 	getElementForAction(lineNo: number): NamedElement[] {
 		const methodNodes = this.buildMethod();
-		let methodBlock = methodNodes.filter(
-			node => lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line
-		);
+		let methodBlock = methodNodes.filter(NamedElementBuilder.isIntersect(lineNo));
 		if (methodBlock.length > 0) {
 			return methodBlock;
 		}
 
 		const classNodes = this.buildClass();
-		let classBlocks = classNodes.filter(
-			node => lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line
-		);
+		let classBlocks = classNodes.filter(NamedElementBuilder.isIntersect(lineNo));
 		if (classBlocks.length > 0) {
 			return classBlocks;
 		}
 
 		return [];
+	}
+
+	private static isIntersect(lineNo: number) {
+		return (node: NamedElement) => NamedElementBuilder.contains(node, lineNo);
+	}
+
+	private static contains(node: NamedElement, lineNo: number) {
+		return lineNo >= node.blockRange.start.line && lineNo <= node.blockRange.end.line;
 	}
 
 	/**
