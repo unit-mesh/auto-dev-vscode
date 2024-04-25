@@ -1,6 +1,6 @@
 import Parser from "web-tree-sitter";
 
-import { NamedElementBlock } from "./NamedElementBlock";
+import { NamedElement } from "./NamedElement";
 import { BlockRange } from "./BlockRange";
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
@@ -27,15 +27,15 @@ export class BlockBuilder {
 		return new BlockBuilder(file);
 	}
 
-	buildMethod(): NamedElementBlock[] {
+	buildMethod(): NamedElement[] {
 		return this.buildBlock(this.langConfig.methodQuery.queryStr, CodeElementType.Method);
 	}
 
-	buildClass(): NamedElementBlock[] {
+	buildClass(): NamedElement[] {
 		return this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
 	}
 
-	buildForLine(lineNo: number): NamedElementBlock[] {
+	buildForLine(lineNo: number): NamedElement[] {
 		const methodNodes = this.buildMethod();
 		 // todo: hande for typescript imports
 		let methodBlock = methodNodes.filter(
@@ -63,7 +63,7 @@ export class BlockBuilder {
 	 * @param elementType The type of code element that the query string represents.
 	 * @returns An array of `IdentifierBlockRange` objects representing the matches, or a `TreeSitterFileError` if an error occurs.
 	 */
-	buildBlock(queryString: string, elementType: CodeElementType): NamedElementBlock[] {
+	buildBlock(queryString: string, elementType: CodeElementType): NamedElement[] {
 		try {
 			const query = this.language.query(queryString);
 			const root = this.tree.rootNode;
@@ -84,7 +84,7 @@ export class BlockBuilder {
 
 					let commentNode = previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
 
-					let blockRange = new NamedElementBlock(
+					let blockRange = new NamedElement(
 						BlockRange.fromNode(blockNode),
 						BlockRange.fromNode(idNode),
 						elementType,

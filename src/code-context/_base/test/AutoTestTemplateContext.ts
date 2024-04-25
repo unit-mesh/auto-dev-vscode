@@ -5,7 +5,6 @@ export interface AutoTestTemplateContext extends TemplateContext {
 	isNewFile?: boolean,
 	relatedClasses: CodeStructure[],
 	testClassName: string,
-	language: string,
 	currentClass?: CodeStructure,
 	imports?: string[],
 	targetPath?: string,

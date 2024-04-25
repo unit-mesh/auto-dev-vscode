@@ -1,9 +1,9 @@
 import vscode from "vscode";
 
-import { NamedElementBlock } from "../../document/NamedElementBlock";
+import { NamedElement } from "../../document/NamedElement";
 
 export interface ActionCreatorContext {
-	namedElementBlocks: NamedElementBlock[],
+	namedElementBlocks: NamedElement[],
 	range: vscode.Range | vscode.Selection,
 	document: vscode.TextDocument,
 	lang: string

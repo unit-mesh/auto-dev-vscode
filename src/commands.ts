@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { AutoDevExtension } from "./AutoDevExtension";
-import { NamedElementBlock } from "./editor/document/NamedElementBlock";
+import { NamedElement } from "./editor/document/NamedElement";
 
 import { channel } from "./channel";
 import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
@@ -42,26 +42,26 @@ const commandsMap: (
   },
   "autodev.autoComment": async (
     document: vscode.TextDocument,
-    range: NamedElementBlock,
+    range: NamedElement,
     edit: vscode.WorkspaceEdit
   ) => {
     await new AutoDocActionExecutor(document, range, edit).execute();
   },
   "autodev.autoTest": async (
     document: vscode.TextDocument,
-    range: NamedElementBlock,
+    range: NamedElement,
     edit: vscode.WorkspaceEdit
   ) => {
     await new AutoTestActionExecutor(document, range, edit).execute();
   },
   "autodev.explain": async (
     document: vscode.TextDocument,
-    range: NamedElementBlock,
+    range: NamedElement,
   ) => {
   },
   "autodev.fixThis": async (
     document: vscode.TextDocument,
-    range: NamedElementBlock,
+    range: NamedElement,
   ) => {
   },
   "autodev.menu.autoComment": async () => {
@@ -87,7 +87,7 @@ const commandsMap: (
   },
   "autodev.action.quickchat": async (
     document: vscode.TextDocument,
-    range: NamedElementBlock,
+    range: NamedElement,
     edit: vscode.WorkspaceEdit
   ) => {
     let customPrompts = TeamPromptsBuilder.instance().teamPrompts();
@@ -100,7 +100,7 @@ const commandsMap: (
   },
   "autodev.genApiData": async (
     document: vscode.TextDocument,
-    range: NamedElementBlock,
+    range: NamedElement,
     edit: vscode.WorkspaceEdit
   ) => {
     let structurer = extension.structureProvider?.getStructurer(document.languageId);

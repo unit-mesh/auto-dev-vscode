@@ -2,7 +2,7 @@ import vscode from "vscode";
 
 import { ActionCreatorContext } from "./ActionCreatorContext";
 import { CodeElementType } from "../../codemodel/CodeElementType";
-import { NamedElementBlock } from "../../document/NamedElementBlock";
+import { NamedElement } from "../../document/NamedElement";
 import { injectable } from "inversify";
 
 export interface ActionCreator {
@@ -39,7 +39,7 @@ export abstract class CodeActionCreator implements ActionCreator {
 		return Promise.resolve(apisDocActions);
 	}
 
-	abstract buildClassAction(context: ActionCreatorContext, elementBlock: NamedElementBlock): vscode.CodeAction;
+	abstract buildClassAction(context: ActionCreatorContext, elementBlock: NamedElement): vscode.CodeAction;
 
-	abstract buildMethodAction(context: ActionCreatorContext, elementBlock: NamedElementBlock): vscode.CodeAction;
+	abstract buildMethodAction(context: ActionCreatorContext, elementBlock: NamedElement): vscode.CodeAction;
 }

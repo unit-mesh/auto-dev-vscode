@@ -1,7 +1,7 @@
 import vscode from "vscode";
 
 import { ActionExecutor } from "../_base/ActionExecutor";
-import { NamedElementBlock } from "../../document/NamedElementBlock";
+import { NamedElement } from "../../document/NamedElement";
 import { TestGenProviderManager } from "../../../code-context/TestGenProviderManager";
 import { PromptManager } from "../../../prompt-manage/PromptManager";
 import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
@@ -15,11 +15,11 @@ export class AutoTestActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoTest;
 
 	private document: vscode.TextDocument;
-	private range: NamedElementBlock;
+	private range: NamedElement;
 	private edit: vscode.WorkspaceEdit;
 	private language: string;
 
-	constructor(document: vscode.TextDocument, range: NamedElementBlock, edit: vscode.WorkspaceEdit) {
+	constructor(document: vscode.TextDocument, range: NamedElement, edit: vscode.WorkspaceEdit) {
 		this.document = document;
 		this.range = range;
 		this.edit = edit;

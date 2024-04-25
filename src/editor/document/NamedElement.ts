@@ -21,7 +21,7 @@ import { CodeElementType } from "../codemodel/CodeElementType";
  * - blockContent: `public static void main(string[] args) { ... }`
  * - commentRange: `// This is a method comment`
  */
-export class NamedElementBlock {
+export class NamedElement {
 	blockRange: BlockRange;
 	identifierRange: BlockRange;
 	codeElementType: CodeElementType;

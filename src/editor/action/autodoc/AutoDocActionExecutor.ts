@@ -1,6 +1,6 @@
 import vscode, { Position } from "vscode";
 
-import { NamedElementBlock } from "../../document/NamedElementBlock";
+import { NamedElement } from "../../document/NamedElement";
 import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../language/LanguageCommentMap";
 import { PromptManager } from "../../../prompt-manage/PromptManager";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
@@ -18,11 +18,11 @@ export class AutoDocActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
 
 	private document: vscode.TextDocument;
-	private range: NamedElementBlock;
+	private range: NamedElement;
 	private edit: vscode.WorkspaceEdit;
 	private language: string;
 
-	constructor(document: vscode.TextDocument, range: NamedElementBlock, edit: vscode.WorkspaceEdit) {
+	constructor(document: vscode.TextDocument, range: NamedElement, edit: vscode.WorkspaceEdit) {
 		this.document = document;
 		this.range = range;
 		this.edit = edit;

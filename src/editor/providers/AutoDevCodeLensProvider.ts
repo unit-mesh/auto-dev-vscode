@@ -4,7 +4,7 @@ import { l10n } from "vscode";
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../language/SupportedLanguage";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
-import { NamedElementBlock } from "../document/NamedElementBlock";
+import { NamedElement } from "../document/NamedElement";
 import { BlockBuilder } from "../document/BlockBuilder";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 
@@ -26,7 +26,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 
 			const file = await documentToTreeSitterFile(document);
 			const builder = new BlockBuilder(file);
-			const methodRanges: NamedElementBlock[] | TreeSitterFileError = builder.buildMethod();
+			const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
 			let lenses: vscode.CodeLens[] = [];
 
 			if (methodRanges instanceof Array) {
@@ -40,7 +40,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 		})();
 	}
 
-	private setupDocIfNoExist(methodRanges: NamedElementBlock[], document: vscode.TextDocument) {
+	private setupDocIfNoExist(methodRanges: NamedElement[], document: vscode.TextDocument) {
 		return methodRanges.map((range) => {
 			const title = l10n.t("AutoComment");
 			return new vscode.CodeLens(range.identifierRange, {
@@ -51,7 +51,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 		});
 	}
 
-	private setupQuickChat(methodRanges: NamedElementBlock[], document: vscode.TextDocument) {
+	private setupQuickChat(methodRanges: NamedElement[], document: vscode.TextDocument) {
 		return methodRanges.map((range) => {
 			const title = `$(autodev-icon)$(chevron-down)`;
 			return new vscode.CodeLens(range.identifierRange, {

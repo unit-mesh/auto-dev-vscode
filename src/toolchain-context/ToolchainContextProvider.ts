@@ -1,4 +1,4 @@
-import { NamedElementBlock } from "../editor/document/NamedElementBlock";
+import { NamedElement } from "../editor/document/NamedElement";
 import { ScopeGraph } from "../code-search/semantic/ScopeGraph";
 
 export interface ToolchainContextItem {
@@ -12,7 +12,7 @@ export interface CreateToolchainContext {
 	language: string;
 	filename: string;
 	content: string;
-	block: NamedElementBlock;
+	block: NamedElement;
 	graph?: ScopeGraph;
 	extraItems?: ToolchainContextItem[];
 }

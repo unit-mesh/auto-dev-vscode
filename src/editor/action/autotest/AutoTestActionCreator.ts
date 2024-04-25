@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 
 import { CodeActionCreator } from "../_base/ActionCreator";
 import { ActionCreatorContext } from "../_base/ActionCreatorContext";
-import { NamedElementBlock } from "../../document/NamedElementBlock";
+import { NamedElement } from "../../document/NamedElement";
 
 @injectable()
 export class AutoTestActionCreator extends CodeActionCreator {
@@ -15,17 +15,17 @@ export class AutoTestActionCreator extends CodeActionCreator {
 		return true;
 	}
 
-	buildClassAction(context: ActionCreatorContext, nameBlock: NamedElementBlock): vscode.CodeAction {
+	buildClassAction(context: ActionCreatorContext, nameBlock: NamedElement): vscode.CodeAction {
 		const title = `AutoTest for class \`${nameBlock.identifierRange.text}\` (AutoDev)`;
 		return this.createAutoTestAction(title, context.document, nameBlock);
 	}
 
-	buildMethodAction(context: ActionCreatorContext, nameBlock: NamedElementBlock): vscode.CodeAction {
+	buildMethodAction(context: ActionCreatorContext, nameBlock: NamedElement): vscode.CodeAction {
 		const title = `AutoTest for method \`${nameBlock.identifierRange.text}\` (AutoDev)`;
 		return this.createAutoTestAction(title, context.document, nameBlock);
 	}
 
-	private createAutoTestAction(title: string, document: vscode.TextDocument, result: NamedElementBlock): vscode.CodeAction {
+	private createAutoTestAction(title: string, document: vscode.TextDocument, result: NamedElement): vscode.CodeAction {
 		const codeAction = new vscode.CodeAction(title, AutoTestActionCreator.providedCodeActionKinds[0]);
 
 		codeAction.isPreferred = false;

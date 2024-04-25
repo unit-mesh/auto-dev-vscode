@@ -7,7 +7,7 @@ import { TestGenProvider } from "../_base/test/TestGenProvider";
 import { CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
-import { NamedElementBlock } from "../../editor/document/NamedElementBlock";
+import { NamedElement } from "../../editor/document/NamedElement";
 import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 
 
@@ -26,7 +26,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		this.languageService = defaultLanguageService;
 	}
 
-	async findOrCreateTestFile(sourceFile: vscode.TextDocument, block: NamedElementBlock): Promise<AutoTestTemplateContext> {
+	async findOrCreateTestFile(sourceFile: vscode.TextDocument, block: NamedElement): Promise<AutoTestTemplateContext> {
 		const language = sourceFile.languageId;
 		const testFilePath: vscode.Uri | undefined = this.getTestFilePath(sourceFile);
 		if (!testFilePath) {

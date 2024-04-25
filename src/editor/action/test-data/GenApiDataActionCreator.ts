@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 
 import { ActionCreator } from "../_base/ActionCreator";
 import { ActionCreatorContext } from "../_base/ActionCreatorContext";
-import { NamedElementBlock } from "../../document/NamedElementBlock";
+import { NamedElement } from "../../document/NamedElement";
 import { CodeElementType } from "../../codemodel/CodeElementType";
 import { StructurerProviderManager } from "../../../code-context/StructurerProviderManager";
 
@@ -36,7 +36,7 @@ export class GenApiDataActionCreator implements ActionCreator {
 		return Promise.resolve(apisDocActions);
 	}
 
-	private createGenApiDataAction(title: string, result: NamedElementBlock, document: vscode.TextDocument): vscode.CodeAction {
+	private createGenApiDataAction(title: string, result: NamedElement, document: vscode.TextDocument): vscode.CodeAction {
 		const codeAction = new vscode.CodeAction(
 			title,
 			GenApiDataActionCreator.providedCodeActionKinds[0]

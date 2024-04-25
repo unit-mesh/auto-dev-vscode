@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import { TreeSitterFileError, } from "../../code-context/ast/TreeSitterFile";
-import { NamedElementBlock } from "../document/NamedElementBlock";
+import { NamedElement } from "../document/NamedElement";
 import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { BlockBuilder } from "../document/BlockBuilder";
 import { providerContainer } from "../../ProviderContainer.config";
@@ -36,10 +36,10 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 		const file = await documentToTreeSitterFile(document);
 		let blockBuilder = new BlockBuilder(file);
 
-		const methodRanges: NamedElementBlock[] = blockBuilder.buildMethod();
-		const classRanges: NamedElementBlock[] = blockBuilder.buildClass();
+		const methodRanges: NamedElement[] = blockBuilder.buildMethod();
+		const classRanges: NamedElement[] = blockBuilder.buildClass();
 
-		let allRanges: NamedElementBlock[] = [];
+		let allRanges: NamedElement[] = [];
 		allRanges = allRanges.concat(methodRanges, classRanges);
 
 		const creatorContext: ActionCreatorContext = {

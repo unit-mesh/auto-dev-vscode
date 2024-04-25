@@ -1,10 +1,11 @@
+import vscode from "vscode";
+
 import { VSCodeTemplateLoader } from "./loader/VSCodeTemplateLoader";
 import { TemplateRender } from "./template/TemplateRender";
 import { TemplateContext } from "./template/TemplateContext";
 import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
 import { CreateToolchainContext, ToolchainContextItem } from "../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "./ActionType";
-import vscode from "vscode";
 import { CustomActionContext } from "./custom-action/CustomActionContext";
 import { CustomActionExecutePrompt } from "./custom-action/CustomActionExecutePrompt";
 
