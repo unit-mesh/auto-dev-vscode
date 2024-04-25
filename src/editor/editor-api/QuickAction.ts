@@ -37,9 +37,12 @@ export class QuickActionService implements Service {
 		quickPick.items = Object.keys(this.items).map(label => ({ label }));
 		quickPick.onDidChangeSelection(async selection => {
 			if (selection[0]) {
-				quickPick.hide();
+				quickPick.busy = true;
+				quickPick.enabled = false;
 				const item = this.items[selection[0].label];
 				await this.execute(extension, item);
+				quickPick.busy = false;
+				quickPick.hide();
 			}
 		});
 		quickPick.onDidHide(() => quickPick.dispose());
