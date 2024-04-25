@@ -44,13 +44,26 @@ export class TemplateRender {
 		return string;
 	}
 
-	private getDefaultFilePath(filename: string): string {
-		return filename;
-	}
-
+	/**
+	 * The `render` method is a public method that takes in a template string and a context of type `TemplateContext`.
+	 * It then uses these parameters to render a new template string.
+	 *
+	 * @param {string} template - The template string to be rendered.
+	 * @param {TemplateContext} context - The context to be used in rendering the template.
+	 *
+	 * @returns {string} - The rendered template string.
+	 *
+	 * Note: In older versions, the context would be `TemplateContext` only. The context was previously defined
+	 * as `{ context: context}`.
+	 */
 	public render(template: string, context: TemplateContext): string {
-		return Velocity.render(template, {
+		let newContext = {
 			context
-		});
+		};
+
+		/// old version context will be TemplateContext only, context, { context: context}
+		let finalContext = Object.assign({}, context, newContext);
+
+		return Velocity.render(template, finalContext);
 	}
 }
