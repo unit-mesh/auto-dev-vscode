@@ -93,6 +93,9 @@ const commandsMap: (
     let quickActionService = QuickActionService.instance();
     await quickActionService.show(extension);
   },
+  "autodev.git.generateCommitMessage": async () => {
+    // vscode.extensions.getExtension('vscode.git')?.exports.getAPI(1).repositories[0].inputBox.value = newvalue;
+  },
   "autodev.genApiData": async (
     document: vscode.TextDocument,
     range: NamedElement,

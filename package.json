@@ -47,6 +47,9 @@
     "onView:autodevGUIView"
   ],
   "main": "./dist/extension.js",
+  "enabledApiProposals": [
+    "contribSourceControlInputBoxMenu"
+  ],
   "contributes": {
     "configuration": {
       "title": "AutoDev",
@@ -187,8 +190,14 @@
       {
         "command": "autodev.terminal.explainTerminalSelectionContextMenu",
         "category": "AutoDev",
-        "title": "AutoDev Explain Terminal Selection",
+        "title": "AutoDev: Explain this",
         "group": "AutoDev"
+      },
+      {
+        "command": "autodev.git.generateCommitMessage",
+        "title": "Gen Commit Message",
+        "icon": "$(autodev)",
+        "category": "AutoDev"
       }
     ],
     "keybindings": [
@@ -255,6 +264,19 @@
         {
           "command": "autodev.terminal.explainTerminalSelectionContextMenu",
           "group": "1_autodev@0"
+        }
+      ],
+      "scm/inputBox": [
+        {
+          "command": "autodev.git.generateCommitMessage",
+          "when": "scmProvider == git"
+        }
+      ],
+      "testing/message/context": [
+        {
+          "command": "autodev.tests.fixTest",
+          "when": "testing.testItemHasUri",
+          "group": "inline@1"
         }
       ],
       "commandPalette": [
