@@ -1,6 +1,7 @@
+import { convertTheme } from "monaco-vscode-textmate-theme-converter/lib/cjs";
+
 import mergeJson from "./merge";
 import * as fs from "fs";
-import { convertTheme } from "monaco-vscode-textmate-theme-converter/lib/cjs";
 import * as path from "path";
 import * as vscode from "vscode";
 import { getExtensionUri } from "../../context";

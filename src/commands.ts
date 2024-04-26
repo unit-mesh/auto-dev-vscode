@@ -85,14 +85,19 @@ const commandsMap: (
   },
   "autodev.explain": async () => {
     const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
-    let document = editor.document;
+    if (!editor) { return; }
+    let selection: string = editor.document.getText(editor.selection);
 
-    extension.sidebar.webviewProtocol?.request("userInput", {
-      input: document.getText(),
-    });
+    let document = editor.document;
+    let input;
+
+    if (selection.length > 0) {
+      input = selection;
+    } else {
+      input = document.getText();
+    }
+
+    extension.sidebar.webviewProtocol?.request("userInput", { input });
 
     vscode.commands.executeCommand("autodev.autodevGUIView.focus");
   },
@@ -100,6 +105,7 @@ const commandsMap: (
     document: vscode.TextDocument,
     range: NamedElement,
   ) => {
+
   },
   "autodev.menu.autoComment": async () => {
     const editor = vscode.window.activeTextEditor;
