@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from "uuid";
 
 import { getExtensionUri } from "../../context";
 import { callAI, getChatModelList } from "./langchain-tools";
