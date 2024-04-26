@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { v4 as uuidv4 } from "uuid";
+const { v4: uuidv4 } = require('uuid');
 
 import { getExtensionUri } from "../../context";
 import { callAI, getChatModelList } from "./langchain-tools";
@@ -32,7 +32,6 @@ export class AutoDevWebviewProtocol {
       }
 
       channel.appendLine(`Received message: ${messageType}`);
-      channel.append(`Data: ${JSON.stringify(message.data)}`);
 
       const reply = (data: unknown) => {
         this._webview.postMessage({
@@ -44,7 +43,7 @@ export class AutoDevWebviewProtocol {
 
       switch (messageType) {
         case "getOpenFiles":
-          return this.getOpenFiles({
+          this.getOpenFiles({
             id: messageId,
             type: messageType,
             data: message.data,
@@ -137,6 +136,7 @@ export class AutoDevWebviewProtocol {
 
   private send(messageType: string, data: any, messageId?: string): string {
     const id = messageId ?? uuidv4();
+    channel.appendLine(`Sending message: ${messageType}`);
     this._webview?.postMessage({
       messageType,
       data,

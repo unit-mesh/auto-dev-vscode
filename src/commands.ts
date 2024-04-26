@@ -88,8 +88,8 @@ const commandsMap: (
     }
     let document = editor.document;
 
-    extension.sidebar.webviewProtocol?.request("explainCode", {
-      code: document.getText(),
+    extension.sidebar.webviewProtocol?.request("userInput", {
+      input: document.getText(),
     });
   },
   "autodev.fixThis": async (
