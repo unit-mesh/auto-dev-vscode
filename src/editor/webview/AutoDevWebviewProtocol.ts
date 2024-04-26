@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
-import { v4 as uuidv4 } from "uuid";
 
 import { getExtensionUri } from "../../context";
 import { callAI, getChatModelList } from "./langchain-tools";
 import { channel } from "../../channel";
+import { uuid } from "./uuid";
 
 type WebviewEvent = {
   id: string;
@@ -224,7 +224,7 @@ export class AutoDevWebviewProtocol {
   private send(messageType: string, data: any, messageId?: string): string {
     channel.appendLine(`Sending message: ${messageType}`);
 
-    const id = messageId ?? uuidv4();
+    const id = messageId ?? uuid();
     this._webview?.postMessage({
       messageType,
       data,
@@ -234,7 +234,7 @@ export class AutoDevWebviewProtocol {
   }
 
   request(messageType: string, data: any) {
-    const messageId = uuidv4();
+    const messageId = uuid();
     return new Promise((resolve) => {
       if (!this._webview) {
         resolve(undefined);
