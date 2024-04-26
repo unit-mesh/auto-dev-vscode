@@ -64,7 +64,7 @@ export class QuickActionService implements Service {
 		}
 
 		let context = await CustomActionContextBuilder.fromDocument(currentDocument);
-		await CustomActionExecutor.execute(context, prompt);
+		await CustomActionExecutor.execute(context, prompt, extension);
 	}
 }
 

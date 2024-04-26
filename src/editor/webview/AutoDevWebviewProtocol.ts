@@ -223,7 +223,6 @@ export class AutoDevWebviewProtocol {
 
   private send(messageType: string, data: any, messageId?: string): string {
     channel.appendLine(`Sending message: ${messageType}`);
-
     const id = messageId ?? uuid();
     this._webview?.postMessage({
       messageType,

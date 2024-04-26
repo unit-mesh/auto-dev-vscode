@@ -6,9 +6,10 @@ import { InteractionType } from "../../custom-action/InteractionType";
 import vscode, { TextEditor } from "vscode";
 import { FileGenerateTask } from "../executor/FileGenerateTask";
 import { TemplateRender } from "../template/TemplateRender";
+import { AutoDevExtension } from "../../AutoDevExtension";
 
 export class CustomActionExecutor {
-	public static async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt) {
+	public static async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt, extension: AutoDevExtension) {
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
 		const compiler = new TemplateRender();
 		const messages = prompt.messages.map((msg) => {
@@ -36,10 +37,10 @@ export class CustomActionExecutor {
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
 
-		await CustomActionExecutor.handleOutput(prompt, output);
+		await CustomActionExecutor.handleOutput(prompt, output, extension);
 	}
 
-	private static async handleOutput(prompt: CustomActionPrompt, outputText: string) {
+	private static async handleOutput(prompt: CustomActionPrompt, outputText: string, extension: AutoDevExtension) {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			return;
@@ -47,7 +48,7 @@ export class CustomActionExecutor {
 
 		switch (prompt.interaction) {
 			case InteractionType.ChatPanel:
-				// todo:
+				await extension.sidebar.webviewProtocol.request("userInput", { input: outputText });
 				break;
 			case InteractionType.AppendCursor:
 				CustomActionExecutor.insertText(editor, outputText);
