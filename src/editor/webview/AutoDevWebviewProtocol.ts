@@ -21,6 +21,89 @@ export class AutoDevWebviewProtocol {
     return this._onMessage.event;
   }
 
+  listeners = new Map<keyof WebviewProtocol, ((message: Message) => any)[]>();
+  abortedMessageIds: Set<string> = new Set();
+
+  on<T extends keyof WebviewProtocol>(
+    messageType: T,
+    handler: (
+      message: Message<WebviewProtocol[T][0]>,
+    ) => Promise<WebviewProtocol[T][1]> | WebviewProtocol[T][1],
+  ): void {
+    if (!this.listeners.has(messageType)) {
+      this.listeners.set(messageType, []);
+    }
+    this.listeners.get(messageType)?.push(handler);
+  }
+
+  get webview(): vscode.Webview | undefined {
+    return this._webview;
+  }
+
+  set webview(webView: vscode.Webview) {
+    this._webview = webView;
+    this._webviewListener?.dispose();
+
+    this._webviewListener = this._webview.onDidReceiveMessage(async (msg) => {
+      if (!msg.messageType || !msg.messageId) {
+        throw new Error("Invalid webview protocol msg: " + JSON.stringify(msg));
+      }
+
+      const respond = (message: any) =>
+        this.send(msg.messageType, message, msg.messageId);
+
+      const handlers = this.listeners.get(msg.messageType) || [];
+      for (const handler of handlers) {
+        try {
+          const response = await handler(msg);
+          if (
+            response &&
+            typeof response[Symbol.asyncIterator] === "function"
+          ) {
+            let next = await response.next();
+            while (!next.done) {
+              respond(next.value);
+              next = await response.next();
+            }
+            respond({ done: true, content: next.value?.content });
+          } else {
+            respond(response || {});
+          }
+        } catch (e: any) {
+          console.error(
+            "Error handling webview message: " +
+            JSON.stringify({ msg }, null, 2),
+          );
+
+          let message = e.message;
+          if (e.cause) {
+            if (e.cause.name === "ConnectTimeoutError") {
+              message = `Connection timed out. If you expect it to take a long time to connect, you can increase the timeout in config.json by setting "requestOptions": { "timeout": 10000 }. You can find the full config reference here: https://continue.dev/docs/reference/config`;
+            } else if (e.cause.code === "ECONNREFUSED") {
+              message = `Connection was refused. This likely means that there is no server running at the specified URL. If you are running your own server you may need to set the "apiBase" parameter in config.json. For example, you can set up an OpenAI-compatible server like here: https://continue.dev/docs/reference/Model%20Providers/openai#openai-compatible-servers--apis`;
+            } else {
+              message = `The request failed with "${e.cause.name}": ${e.cause.message}. If you're having trouble setting up Continue, please see the troubleshooting guide for help.`;
+            }
+          }
+
+          vscode.window
+            .showErrorMessage(message, "Show Logs", "Troubleshooting")
+            .then((selection) => {
+              if (selection === "Show Logs") {
+                vscode.commands.executeCommand(
+                  "workbench.action.toggleDevTools",
+                );
+              } else if (selection === "Troubleshooting") {
+                vscode.env.openExternal(
+                  vscode.Uri.parse("https://continue.dev/docs/troubleshooting"),
+                );
+              }
+            });
+        }
+      }
+    });
+  }
+
   constructor(webview: vscode.Webview) {
     this._webview = webview;
 
@@ -43,12 +126,8 @@ export class AutoDevWebviewProtocol {
 
       switch (messageType) {
         case "getOpenFiles":
-          this.getOpenFiles({
-            id: messageId,
-            type: messageType,
-            data: message.data,
-            reply,
-          });
+          let files = this.getOpenFiles();
+          this.send("getOpenFiles", files, messageId);
           break;
         case "onLoad":
           this.onLoad({
@@ -95,17 +174,12 @@ export class AutoDevWebviewProtocol {
     return document.uri.scheme === "file";
   }
 
-  getOpenFiles({ reply, type }: WebviewEvent) {
-    let files = vscode.workspace.textDocuments
+  getOpenFiles() {
+    return vscode.workspace.textDocuments
       .filter((document) => this.documentIsCode(document))
       .map((document) => {
         return document.uri.fsPath;
       });
-
-    console.log(files);
-    return reply(type,{
-      files
-    });
   }
 
   // See continue BrowserSerializedContinueConfig
@@ -148,8 +222,9 @@ export class AutoDevWebviewProtocol {
   }
 
   private send(messageType: string, data: any, messageId?: string): string {
-    const id = messageId ?? uuidv4();
     channel.appendLine(`Sending message: ${messageType}`);
+
+    const id = messageId ?? uuidv4();
     this._webview?.postMessage({
       messageType,
       data,
