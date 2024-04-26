@@ -36,7 +36,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 	async findOrCreateTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
 		const language = sourceFile.languageId;
 
-		const targetPath = this.context!!.filename.replace(".java", "Test.java");
+		const targetPath = sourceFile.fileName.replace(".java", "Test.java");
 
 		const testContext: AutoTestTemplateContext = {
 			filename: sourceFile.fileName,

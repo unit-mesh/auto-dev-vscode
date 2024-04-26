@@ -36,8 +36,12 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			return;
 		}
 
+		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
+
 		const testContext = await provider.findOrCreateTestFile(this.document, this.namedElement);
 
+		// start time
+		const startTime = new Date().getTime();
 		const creationContext: CreateToolchainContext = {
 			action: "AutoDocAction",
 			filename: this.document.fileName,
@@ -46,11 +50,17 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			element: this.namedElement
 		};
 
+		// TODO: spike better way to improve performance
 		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);
 		if (contextItems.length > 0) {
 			testContext.chatContext = contextItems.map(item => item.text).join("\n - ");
 			console.info(`chat context: ${testContext.chatContext}`);
 		}
+
+		// end time
+		const endTime = new Date().getTime();
+		console.info(`Time taken to collect context: ${endTime - startTime}ms`);
+		channel.appendLine(`Time taken to collect context: ${endTime - startTime}ms`);
 
 		let content = await PromptManager.getInstance().templateToPrompt(ActionType.AutoTest, testContext);
 		console.info(`request: ${content}`);
@@ -60,7 +70,6 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			content: content
 		};
 
-		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
 		let llm = LlmProvider.instance();
 		let doc: string = "";
 
