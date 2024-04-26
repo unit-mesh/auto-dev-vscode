@@ -25,9 +25,6 @@ const commandsMap: (
       vscode.commands.executeCommand("autodev.autodevGUIView.focus");
     }
   },
-  "autodev.autodevGUIView": async () => {
-
-  },
   "autodev.sendToTerminal": (text: string) => {
     extension.action.runCommand(text).then(
       () => {},
@@ -56,9 +53,7 @@ const commandsMap: (
   ) => {
     const editor = vscode.window.activeTextEditor;
     const textDocument = editor?.document;
-    if (!textDocument) {
-      return;
-    }
+    if (!textDocument) { return; }
 
     let elementBuilder: NamedElementBuilder | null = null;
     await NamedElementBuilder.from(textDocument).then((builder) => {
@@ -67,20 +62,15 @@ const commandsMap: (
       channel.appendLine(`Error: ${err}`);
     });
 
-    if (elementBuilder === null) {
-      return;
-    }
+    if (elementBuilder === null) { return; }
 
     const selectionStart: number = editor?.selection.start.line ?? 0;
     const selectionEnd: number = editor?.selection.end.line ?? textDocument.lineCount;
 
     const nameElement = element || (elementBuilder as NamedElementBuilder)!!.getElementForSelection(selectionStart, selectionEnd)?.[0];
-    if (!nameElement) {
-      return;
-    }
+    if (!nameElement) { return;}
 
     const workspaceEdit = edit || new vscode.WorkspaceEdit();
-
     await new AutoTestActionExecutor(textDocument, nameElement, workspaceEdit).execute();
   },
   "autodev.explain": async () => {
@@ -105,7 +95,7 @@ const commandsMap: (
     document: vscode.TextDocument,
     range: NamedElement,
   ) => {
-
+    //
   },
   "autodev.menu.autoComment": async () => {
     const editor = vscode.window.activeTextEditor;
@@ -127,6 +117,7 @@ const commandsMap: (
     await new AutoDocActionExecutor(document, ranges[0], edit).execute();
   },
   "autodev.terminal.explainTerminalSelectionContextMenu": async () => {
+    //
   },
   "autodev.action.quickAction": async (
     document: vscode.TextDocument,
@@ -182,14 +173,4 @@ export function registerCommands(extension: AutoDevExtension) {
       vscode.commands.registerCommand(command, handler)
     );
   });
-}
-
-function generateDocumentation(code: string): string {
-  return `
-/**
-   * This function/method does something.
-   * @param {string} param1 Description of parameter 1.
-   * @returns {number} Description of the return value.
-   */
-`;
 }
