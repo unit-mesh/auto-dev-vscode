@@ -26,10 +26,7 @@ const commandsMap: (
     }
   },
   "autodev.sendToTerminal": (text: string) => {
-    extension.action.runCommand(text).then(
-      () => {},
-      (err) => vscode.window.showErrorMessage(err.message)
-    );
+    extension.action.runCommand(text).then(() => {}, (err) => vscode.window.showErrorMessage(err.message));
   },
   "autodev.debugTerminal": async () => {
     vscode.commands.executeCommand("autodev.autodevGUIView.focus");
