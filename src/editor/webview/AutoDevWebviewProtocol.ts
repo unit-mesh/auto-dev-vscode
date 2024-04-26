@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { getExtensionUri } from "../../context";
-import { callAI, getChatModelList } from "./langchain-tools";
+import { callAI, getChatModelList } from "./LLMTools";
 import { channel } from "../../channel";
 import { uuid } from "./uuid";
 
