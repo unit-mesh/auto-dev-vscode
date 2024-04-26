@@ -8,8 +8,6 @@ import { AutoDocActionExecutor } from "./editor/action/autodoc/AutoDocActionExec
 import { AutoTestActionExecutor } from "./editor/action/autotest/AutoTestActionExecutor";
 import { NamedElementBuilder } from "./editor/ast/NamedElementBuilder";
 import { QuickActionService } from "./editor/editor-api/QuickAction";
-import { TeamPromptsBuilder } from "./prompt-manage/team-prompts/TeamPromptsBuilder";
-import assert from "node:assert";
 
 const commandsMap: (
   extension: AutoDevExtension
@@ -83,10 +81,16 @@ const commandsMap: (
 
     await new AutoTestActionExecutor(textDocument, nameElement, workspaceEdit).execute();
   },
-  "autodev.explain": async (
-    document: vscode.TextDocument,
-    range: NamedElement,
-  ) => {
+  "autodev.explain": async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+    let document = editor.document;
+
+    extension.sidebar.webviewProtocol?.request("explainCode", {
+      code: document.getText(),
+    });
   },
   "autodev.fixThis": async (
     document: vscode.TextDocument,

@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
-import { getExtensionUri } from "../../context";
+import { v4 as uuidv4 } from "uuid";
 
+import { getExtensionUri } from "../../context";
 import { callAI, getChatModelList } from "./langchain-tools";
+import { channel } from "../../channel";
 
 type WebviewEvent = {
   id: string;
@@ -28,6 +30,9 @@ export class AutoDevWebviewProtocol {
       if (!(messageId || messageType)) {
         return;
       }
+
+      channel.appendLine(`Received message: ${messageType}`);
+      channel.append(`Data: ${JSON.stringify(message.data)}`);
 
       const reply = (data: unknown) => {
         this._webview.postMessage({
@@ -130,9 +135,41 @@ export class AutoDevWebviewProtocol {
     }
   }
 
-  request(messageType: string, data: any) {
-    throw new Error("Method not implemented.");
+  private send(messageType: string, data: any, messageId?: string): string {
+    const id = messageId ?? uuidv4();
+    this._webview?.postMessage({
+      messageType,
+      data,
+      messageId: id,
+    });
+    return id;
   }
+
+  request(messageType: string, data: any) {
+    const messageId = uuidv4();
+    return new Promise((resolve) => {
+      if (!this._webview) {
+        resolve(undefined);
+        return;
+      }
+
+      this.send(messageType, data, messageId);
+      const disposable = this._webview.onDidReceiveMessage(
+        (msg: Message<any>) => {
+          if (msg.messageId === messageId) {
+            resolve(msg.data);
+            disposable?.dispose();
+          }
+        },
+      );
+    });
+  }
+}
+
+export interface Message<T = any> {
+  messageType: string;
+  messageId: string;
+  data: T;
 }
 
 export type WebviewProtocol = {
