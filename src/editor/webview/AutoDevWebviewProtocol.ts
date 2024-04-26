@@ -9,7 +9,7 @@ type WebviewEvent = {
   id: string;
   type: string;
   data: any;
-  reply: (data: unknown) => void;
+  reply: (messageType: string, data: object) => void;
 };
 
 export class AutoDevWebviewProtocol {
@@ -33,10 +33,10 @@ export class AutoDevWebviewProtocol {
 
       channel.appendLine(`Received message: ${messageType}`);
 
-      const reply = (data: unknown) => {
+      const reply = (messageType: string, data: unknown) => {
         this._webview.postMessage({
           messageId: messageId,
-          messageType: "onLoad",
+          messageType: messageType,
           data: JSON.stringify(data),
         });
       };
@@ -76,13 +76,13 @@ export class AutoDevWebviewProtocol {
           });
           break;
         default:
-          console.log("unknown mesaage type: %s", messageType);
+          console.log("unknown message type: %s", messageType);
       }
     });
   }
 
-  onLoad({ reply }: WebviewEvent) {
-    reply({
+  onLoad({ type, reply }: WebviewEvent) {
+    reply(type, {
       windowId: "1",
       serverUrl: "",
       workspacePaths: [],
@@ -95,19 +95,22 @@ export class AutoDevWebviewProtocol {
     return document.uri.scheme === "file";
   }
 
-  getOpenFiles({ reply }: WebviewEvent) {
+  getOpenFiles({ reply, type }: WebviewEvent) {
     let files = vscode.workspace.textDocuments
       .filter((document) => this.documentIsCode(document))
       .map((document) => {
         return document.uri.fsPath;
       });
 
-    return reply(files);
+    console.log(files);
+    return reply(type,{
+      files
+    });
   }
 
   // See continue BrowserSerializedContinueConfig
-  getBrowserSerialized({ reply }: WebviewEvent) {
-    reply({
+  getBrowserSerialized({ reply, type }: WebviewEvent) {
+    reply(type,{
       models: getChatModelList(),
       // contextProviders: [],
       // disableIndexing: false,
@@ -116,29 +119,29 @@ export class AutoDevWebviewProtocol {
     });
   }
 
-  async streamChat({ data, reply }: WebviewEvent) {
+  async streamChat({ data, reply, type }: WebviewEvent) {
     console.log("streamChat", JSON.stringify(data));
 
     try {
       const completion = await callAI(data);
 
       if (!completion) {
-        reply({ content: "暂不支持此模型的使用" });
-        reply({ done: true });
+        reply(type, { content: "暂不支持此模型的使用" });
+        reply(type, { done: true });
         return;
       }
 
       for await (const chunk of completion) {
-        reply({
+        reply(type, {
           content: chunk.content,
         });
       }
     } catch (err) {
-      reply({
+      reply(type, {
         content: `Error: ${(err as Error).message}`,
       });
     } finally {
-      reply({
+      reply(type, {
         done: true,
       });
     }
