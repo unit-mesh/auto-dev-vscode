@@ -96,11 +96,13 @@ export class AutoDevWebviewProtocol {
   }
 
   getOpenFiles({ reply }: WebviewEvent) {
-    return vscode.workspace.textDocuments
+    let files = vscode.workspace.textDocuments
       .filter((document) => this.documentIsCode(document))
       .map((document) => {
         return document.uri.fsPath;
       });
+
+    return reply(files);
   }
 
   // See continue BrowserSerializedContinueConfig
