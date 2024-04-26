@@ -14,6 +14,10 @@ import { NamedElement } from "../../editor/ast/NamedElement";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
+	baseTestPrompt: string = `${l10n.t("lang.java.prompt.basicTestTemplate")}`.trim();
+	// write a regex for java import statement
+	importRegex = /import\s+([\w.]+);/g;
+
 	isApplicable(lang: SupportedLanguage): boolean {
 		return lang === "java";
 	}
@@ -29,15 +33,23 @@ export class JavaTestGenProvider implements TestGenProvider {
 		this.context = context;
 	}
 
-	findOrCreateTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
+	async findOrCreateTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
 		const language = sourceFile.languageId;
 
+		const targetPath = this.context!!.filename.replace(".java", "Test.java");
+
 		const testContext: AutoTestTemplateContext = {
+			filename: sourceFile.fileName,
 			language: language,
+			targetPath: targetPath,
 			testClassName: element.identifierRange.text,
 			sourceCode: element.blockRange.text,
-			relatedClasses: []
+			relatedClasses: [],
+			imports: [],
 		};
+
+		const targetUri = vscode.Uri.file(targetPath);
+		await vscode.workspace.fs.writeFile(targetUri, new Uint8Array());
 
 		return Promise.resolve(testContext);
 	}
@@ -46,20 +58,16 @@ export class JavaTestGenProvider implements TestGenProvider {
 		throw new Error("Method not implemented.");
 	}
 
-	baseTestPrompt: string = `${l10n.t("lang.java.prompt.basicTestTemplate")}`.trim();
-
-	// write a regex for java import statement
-	importRegex = /import\s+([\w.]+);/g;
-
 	private clazzName = "JavaTestContextProvider";
 
-	async collect(creationContext: CreateToolchainContext): Promise<ToolchainContextItem[]> {
-		const fileName = creationContext.filename;
+	async collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
+		const fileName = context.filename;
 
 		let isSpringRelated = true;
-		if (creationContext) {
-			const imports = this.importRegex.exec(creationContext.content);
+		if (context) {
+			const imports = this.importRegex.exec(context.sourceCode!!);
 			const importStrings = imports?.map((imp) => imp[1]) ?? [];
+			this.context!!.imports = imports?.map((imp) => imp[1]) ?? [];
 			isSpringRelated = this.checkIsSpringRelated(importStrings) ?? false;
 		}
 

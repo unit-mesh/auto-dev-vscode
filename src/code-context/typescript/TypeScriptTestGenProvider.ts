@@ -51,6 +51,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 
 		if (fs.existsSync(testFilePath.toString())) {
 			const context: AutoTestTemplateContext = {
+				filename: sourceFile.fileName,
 				currentClass: undefined,
 				language: "",
 				relatedClasses: [],
@@ -66,6 +67,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		await vscode.workspace.fs.writeFile(testFilePath, new Uint8Array());
 
 		const context: AutoTestTemplateContext = {
+			filename: sourceFile.fileName,
 			currentClass: undefined,
 			isNewFile: true,
 			language: language,
