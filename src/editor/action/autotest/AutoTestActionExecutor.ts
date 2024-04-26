@@ -10,6 +10,8 @@ import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "../../../prompt-manage/ActionType";
+import { AutoTestTemplateContext } from "../../../code-context/_base/test/AutoTestTemplateContext";
+import { channel } from "../../../channel";
 
 export class AutoTestActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoTest;
@@ -34,8 +36,12 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			return;
 		}
 
-		let testContext = await provider.findOrCreateTestFile(this.document, this.range);
-		testContext.sourceCode = this.range.blockRange.text;
+		const testContext: AutoTestTemplateContext = {
+			language: this.language,
+			testClassName: this.range.identifierRange.text,
+			sourceCode: this.range.blockRange.text,
+			relatedClasses: []
+		};
 
 		const creationContext: CreateToolchainContext = {
 			action: "AutoDocAction",
@@ -73,6 +79,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			return;
 		}
 		console.info(`result: ${doc}`);
+		channel.appendLine(doc);
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
 		const output = MarkdownCodeBlock.parse(doc).text;
