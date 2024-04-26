@@ -131,7 +131,13 @@ const commandsMap: (
     await quickActionService.show(extension);
   },
   "autodev.git.generateCommitMessage": async () => {
-    // vscode.extensions.getExtension('vscode.git')?.exports.getAPI(1).repositories[0].inputBox.value = newvalue;
+    vscode.extensions.getExtension('vscode.git')?.activate().then((gitExtension) => {
+      const gitAPI = gitExtension.getAPI(1);
+      const repo = gitAPI.repositories[0];
+      const commitMessage = repo.inputBox.value;
+
+      channel.appendLine(`commit message: ${commitMessage}`);
+    });
   },
   "autodev.genApiData": async (
     document: vscode.TextDocument,

@@ -1,7 +1,7 @@
 import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
 import { TeamPromptAction } from "./TeamPromptAction";
 import vscode from "vscode";
-import { InteractionType } from "../../custom-action/InteractionType";
+import { InteractionType } from "../InteractionType";
 
 class TeamPromptExecTask implements vscode.Disposable {
 	project: vscode.WorkspaceFolder;

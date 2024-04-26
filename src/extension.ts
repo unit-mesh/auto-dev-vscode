@@ -62,8 +62,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	vscode.workspace.onDidCloseTextDocument(async (document: vscode.TextDocument) => {
-		}
-	);
+	});
 
 	AutoDevStatusManager.instance.create();
 }

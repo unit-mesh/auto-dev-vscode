@@ -1,5 +1,5 @@
 import { CustomActionPrompt } from '../prompt-manage/custom-action/CustomActionPrompt';
-import { InteractionType } from "../custom-action/InteractionType";
+import { InteractionType } from "../prompt-manage/InteractionType";
 import { ChatRole } from "../llm-provider/ChatMessage";
 import { CustomActionType } from "../prompt-manage/custom-action/CustomActionType";
 

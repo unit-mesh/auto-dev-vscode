@@ -1,6 +1,6 @@
 import yaml from "js-yaml";
 
-import { InteractionType } from "../../custom-action/InteractionType";
+import { InteractionType } from "../InteractionType";
 import { TemplateRoleSplitter } from "../team-prompts/TemplateRoleSplitter";
 import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
 import { CustomActionType } from "./CustomActionType";

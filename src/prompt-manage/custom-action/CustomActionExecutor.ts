@@ -2,7 +2,7 @@ import { CustomActionTemplateContext } from "./CustomActionTemplateContext";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
 import { CustomActionPrompt } from "./CustomActionPrompt";
-import { InteractionType } from "../../custom-action/InteractionType";
+import { InteractionType } from "../InteractionType";
 import vscode, { TextEditor } from "vscode";
 import { FileGenerateTask } from "../executor/FileGenerateTask";
 import { TemplateRender } from "../template/TemplateRender";
