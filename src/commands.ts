@@ -25,7 +25,9 @@ const commandsMap: (
       vscode.commands.executeCommand("autodev.autodevGUIView.focus");
     }
   },
-  "autodev.autodevGUIView": async () => {},
+  "autodev.autodevGUIView": async () => {
+
+  },
   "autodev.sendToTerminal": (text: string) => {
     extension.action.runCommand(text).then(
       () => {},
@@ -91,6 +93,8 @@ const commandsMap: (
     extension.sidebar.webviewProtocol?.request("userInput", {
       input: document.getText(),
     });
+
+    vscode.commands.executeCommand("autodev.autodevGUIView.focus");
   },
   "autodev.fixThis": async (
     document: vscode.TextDocument,

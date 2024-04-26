@@ -91,8 +91,16 @@ export class AutoDevWebviewProtocol {
     });
   }
 
+  private documentIsCode(document: vscode.TextDocument) {
+    return document.uri.scheme === "file";
+  }
+
   getOpenFiles({ reply }: WebviewEvent) {
-    reply([]);
+    return vscode.workspace.textDocuments
+      .filter((document) => this.documentIsCode(document))
+      .map((document) => {
+        return document.uri.fsPath;
+      });
   }
 
   // See continue BrowserSerializedContinueConfig
