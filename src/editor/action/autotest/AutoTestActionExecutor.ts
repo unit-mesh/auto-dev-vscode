@@ -17,13 +17,13 @@ export class AutoTestActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoTest;
 
 	private document: vscode.TextDocument;
-	private range: NamedElement;
+	private namedElement: NamedElement;
 	private edit: vscode.WorkspaceEdit;
 	private language: string;
 
 	constructor(document: vscode.TextDocument, range: NamedElement, edit: vscode.WorkspaceEdit) {
 		this.document = document;
-		this.range = range;
+		this.namedElement = range;
 		this.edit = edit;
 		this.language = document.languageId;
 	}
@@ -36,19 +36,14 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			return;
 		}
 
-		const testContext: AutoTestTemplateContext = {
-			language: this.language,
-			testClassName: this.range.identifierRange.text,
-			sourceCode: this.range.blockRange.text,
-			relatedClasses: []
-		};
+		const testContext = await provider.findOrCreateTestFile(this.document, this.namedElement);
 
 		const creationContext: CreateToolchainContext = {
 			action: "AutoDocAction",
 			filename: this.document.fileName,
 			language: this.language,
 			content: this.document.getText(),
-			element: this.range
+			element: this.namedElement
 		};
 
 		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);

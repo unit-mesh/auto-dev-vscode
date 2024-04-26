@@ -14,6 +14,7 @@ import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 @injectable()
 export class TypeScriptTestGenProvider implements TestGenProvider {
 	private languageService: TSLanguageService | undefined;
+	private context: AutoTestTemplateContext | undefined;
 
 	isApplicable(lang: string): boolean {
 		return lang === "typescript" || lang === "javascript" || lang === "javascriptreact" || lang === "typescriptreact";
@@ -58,6 +59,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 				targetPath: testFilePath.fsPath
 			};
 
+			this.context = context;
 			return context;
 		}
 

@@ -10,6 +10,7 @@ import { ToolchainContextItem, CreateToolchainContext } from "../../toolchain-co
 import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
+import { NamedElement } from "../../editor/ast/NamedElement";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
@@ -20,15 +21,25 @@ export class JavaTestGenProvider implements TestGenProvider {
 	private context: AutoTestTemplateContext | undefined;
 	private languageService: TSLanguageService | undefined;
 
-	constructor() {}
+	constructor() {
+	}
 
 	async setup(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext) {
 		this.languageService = defaultLanguageService;
 		this.context = context;
 	}
 
-	findOrCreateTestFile(sourceFile: vscode.TextDocument, element: any): Promise<AutoTestTemplateContext> {
-		return Promise.resolve(this.context!!);
+	findOrCreateTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
+		const language = sourceFile.languageId;
+
+		const testContext: AutoTestTemplateContext = {
+			language: language,
+			testClassName: element.identifierRange.text,
+			sourceCode: element.blockRange.text,
+			relatedClasses: []
+		};
+
+		return Promise.resolve(testContext);
 	}
 
 	lookupRelevantClass(element: any): Promise<CodeStructure> {
