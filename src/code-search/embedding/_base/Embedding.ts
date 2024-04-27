@@ -11,5 +11,5 @@ export interface ChunkItem {
 	file: string;
 	text: string;
 	range: TextRange;
-	embedding?: Embedding;
+	embedding: Embedding;
 }

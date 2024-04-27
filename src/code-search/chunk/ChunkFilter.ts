@@ -1,10 +1,9 @@
-import { Embedding, ScoredItem } from "../embedding/_base/Embedding";
-import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
+import { ChunkItem, Embedding, ScoredItem } from "../embedding/_base/Embedding";
 
 const DEFAULT_THRESHOLD = 0.72;
 
 export class ChunkFilter {
-	static filterAndSortByScore<T extends EmbeddingsProvider>(embeddings: Embedding[], items: T[], limit: number, minThreshold: number = DEFAULT_THRESHOLD): T[] {
+	static filterAndSortByScore<T extends ChunkItem>(embeddings: Embedding[], items: T[], limit: number, minThreshold: number = DEFAULT_THRESHOLD): T[] {
 		return items.flatMap((item: T) => {
 			let maxScore: number = 0;
 			for (let embedding of embeddings) {
@@ -17,5 +16,4 @@ export class ChunkFilter {
 			.slice(0, limit)
 			.map((scoredItem: ScoredItem<T>) => scoredItem.item);
 	}
-
 }
