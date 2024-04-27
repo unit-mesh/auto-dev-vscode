@@ -49,12 +49,12 @@ export class LanceDbIndex implements CodebaseIndex {
 		tags: BranchAndDir[],
 		filterDirectory: string | undefined,
 	): Promise<Chunk[]> {
-		const lancedb = await import("vectordb");
-		if (!lancedb.connect) {
-			throw new Error("LanceDB failed to load a native module");
-		}
-		const [vector] = await this.embeddingsProvider.embed([query]);
-		const db = await lancedb.connect(getLanceDbPath());
+		// const lancedb = await import("vectordb");
+		// if (!lancedb.connect) {
+		// 	throw new Error("LanceDB failed to load a native module");
+		// }
+		// const [vector] = await this.embeddingsProvider.embed([query]);
+		// const db = await lancedb.connect(getLanceDbPath());
 
 		// todo;
 		return [];
