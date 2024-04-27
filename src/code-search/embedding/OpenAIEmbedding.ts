@@ -1,8 +1,5 @@
-import { RemoteEmbedding } from "./RemoteEmbedding";
-import { Embedding } from "./Embedding";
+import AuthedEmbeddingsProvider from "./_base/AuthedEmbeddingsProvider";
 
-export class OpenAIEmbedding extends RemoteEmbedding {
-	override async embed(text: string): Promise<Embedding> {
-		return text.split('').map((char) => char.charCodeAt(0));
-	}
+export class OpenAIEmbedding extends AuthedEmbeddingsProvider {
+
 }

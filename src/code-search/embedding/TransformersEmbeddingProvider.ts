@@ -1,5 +1,7 @@
-import { Embedding } from "./Embedding";
-import { EmbeddingProvider } from "./EmbeddingProvider";
+import { Embedding } from "./_base/Embedding";
+
+import { LocalEmbeddingProvider } from "./_base/LocalEmbeddingProvider";
+
 const { env, pipeline } = require("@xenova/transformers");
 
 env.allowLocalModels = true;
@@ -23,7 +25,7 @@ class EmbeddingsPipeline {
 	}
 }
 
-export class TransformersEmbeddingProvider implements EmbeddingProvider {
+export class TransformersEmbeddingProvider implements LocalEmbeddingProvider {
 	id = "transformersJs";
 
 	static MaxGroupSize: number = 4;

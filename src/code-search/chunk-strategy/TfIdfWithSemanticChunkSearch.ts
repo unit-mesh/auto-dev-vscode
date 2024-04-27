@@ -3,7 +3,7 @@ import natural, { TfIdf } from "natural";
 import { SemanticSearch } from "./SemanticSearch";
 import { CancellationToken } from "vscode";
 import { TfIdfCallback } from "natural/lib/natural/tfidf";
-import { ChunkItem, Embedding, ScoredItem } from "../embedding/Embedding";
+import { ChunkItem, Embedding, ScoredItem } from "../embedding/_base/Embedding";
 
 /**
  * we use Natural's TfIdf to calculate the similarity between two code chunks.
