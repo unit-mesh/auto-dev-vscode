@@ -7,5 +7,4 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 	update(tag: IndexTag, repoName: string | undefined): AsyncGenerator<IndexingProgressUpdate, any, unknown> {
 		throw new Error("Method not implemented.");
 	}
-
 }
