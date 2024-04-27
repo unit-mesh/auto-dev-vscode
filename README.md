@@ -36,9 +36,10 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [X] QuickPick
     - [x] ContextMenu
     - [x] QuickFix
-    - [ ] Terminal
-    - [ ] Commit Message
     - [x] CodeLens
+    - [x] Terminal
+    - [ ] Commit Message for SCM
+    - [ ] Fix when error
 - [ ] Semantic Analysis for multiple languages
     - [x] TreeSitter
         - [x] Class level
@@ -53,7 +54,7 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] Custom command
 - [ ] Custom prompt
     - [x] Custom prompt
-      - [x] Align to IDE version
+        - [x] Align to IDE version
     - [ ] Json Schema validation
     - [ ] Custom prompt settings
 - [ ] Custom Agent
@@ -68,10 +69,12 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
         - [natural]((https://naturalnode.github.io/natural/tfidf.html)
     - [ ] Simple Text Embedding
     - [ ] ONNX Runtime
+    - [ ] Transformerjs
+        - [ ] [transformers](https://xenova.github.io/transformers.js/)
     - [ ] Embedding Database
-        - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike
-            - [vectordb](https://www.npmjs.com/package/vectordb)
-        - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike
+        - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike ?
+            - [vectordb](https://www.npmjs.com/package/vectordb) ?
+        - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike ?
 - [ ] l18n
     -  [x] init
 

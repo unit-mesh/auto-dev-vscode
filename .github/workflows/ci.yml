@@ -46,9 +46,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: unit-mesh/auto-dev-vscode
 
-      - name: Upgrade packages 🔀
-        run: npm upgrade
-
       - name: Install VSCE
         run: npm install -g @vscode/vsce
 
