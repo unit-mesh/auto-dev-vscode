@@ -370,6 +370,7 @@
     "node-machine-id": "^1.1.12",
     "openai": "^4.36.0",
     "reflect-metadata": "^0.2.2",
+    "vectordb": "0.4.12",
     "velocityjs": "^2.0.6",
     "vscode-gradle": "^3.10.1",
     "vscode-languageclient": "^9.0.1",
