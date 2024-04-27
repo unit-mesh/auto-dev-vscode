@@ -1,9 +1,10 @@
-import { CodebaseIndex, IndexTag, IndexingProgressUpdate, BranchAndDir } from "./CodebaseIndex";
-import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
-import { Chunk } from "../chunk/Chunk";
 import path from "path";
 import fs from "fs";
 import os from "os";
+
+import { CodebaseIndex, IndexTag, IndexingProgressUpdate, BranchAndDir } from "./CodebaseIndex";
+import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
+import { Chunk } from "../chunk/Chunk";
 
 export function getAutoDevGlobalPath(): string {
 	// This is ~/.autodev on mac/linux
