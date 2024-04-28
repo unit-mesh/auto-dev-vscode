@@ -4,24 +4,24 @@ import { parsedCodeChunker } from "./util/CodeChunkerUtil";
 
 export class ConstructCodeChunker implements Chunker {
 	chunk(filepath: string, contents: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
-		return codeChunker(filepath, contents, maxChunkSize);
-	}
-}
-
-export async function* codeChunker(
-	filepath: string,
-	contents: string,
-	maxChunkSize: number,
-): AsyncGenerator<ChunkWithoutID> {
-	if (contents.trim().length === 0) {
-		return;
+		return ConstructCodeChunker.codeChunker(filepath, contents, maxChunkSize);
 	}
 
-	let parser = await getParserForFile(filepath);
-	if (parser === undefined) {
-		console.warn(`Failed to load parser for file ${filepath}: `);
-		return;
-	}
+	static async* codeChunker(
+		filepath: string,
+		contents: string,
+		maxChunkSize: number,
+	): AsyncGenerator<ChunkWithoutID> {
+		if (contents.trim().length === 0) {
+			return;
+		}
 
-	yield* parsedCodeChunker(parser, contents, maxChunkSize);
+		let parser = await getParserForFile(filepath);
+		if (parser === undefined) {
+			console.warn(`Failed to load parser for file ${filepath}: `);
+			return;
+		}
+
+		yield* parsedCodeChunker(parser, contents, maxChunkSize);
+	}
 }
