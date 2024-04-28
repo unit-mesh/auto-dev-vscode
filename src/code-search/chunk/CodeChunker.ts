@@ -1,4 +1,5 @@
-import { SyntaxNode } from "web-tree-sitter";
+import Parser, { SyntaxNode } from "web-tree-sitter";
+
 import { ChunkWithoutID } from "./Chunk";
 import { getParserForFile } from "../../editor/language/parser/ParserUtil";
 import { countTokens } from "../token/TokenCounter";
@@ -191,6 +192,16 @@ function* getSmartCollapsedChunks(
 	}
 }
 
+
+export async function* parsedCodeChunker(
+	parser: Parser,
+	contents: string,
+	maxChunkSize: number,
+): AsyncGenerator<ChunkWithoutID> {
+	const tree = parser.parse(contents);
+	yield* getSmartCollapsedChunks(tree.rootNode, contents, maxChunkSize);
+}
+
 export async function* codeChunker(
 	filepath: string,
 	contents: string,
@@ -206,7 +217,5 @@ export async function* codeChunker(
 		return;
 	}
 
-	const tree = parser.parse(contents);
-
-	yield* getSmartCollapsedChunks(tree.rootNode, contents, maxChunkSize);
+	yield* parsedCodeChunker(parser, contents, maxChunkSize);
 }
