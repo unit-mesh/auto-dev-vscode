@@ -11,3 +11,6 @@ export interface Chunk extends ChunkWithoutID {
 	index: number; // Index of the chunk in the document at filepath
 }
 
+export interface Chunker {
+	chunk(filepath: string, contents: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID>;
+}

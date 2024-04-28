@@ -1,8 +1,8 @@
 import { countTokens } from "../../token/TokenCounter";
 import { MAX_CHUNK_SIZE } from "../../constants";
 import { EXT_LANGUAGE_MAP } from "../../../editor/language/ExtensionLanguageMap";
-import { codeChunker } from "./CodeChunkerWrapper";
 import { Chunk, ChunkWithoutID } from "../Chunk";
+import { codeChunker } from "../ConstructCodeChunker";
 
 export function* basicChunker(
 	contents: string,

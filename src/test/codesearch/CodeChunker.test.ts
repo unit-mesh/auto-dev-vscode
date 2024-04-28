@@ -50,7 +50,7 @@ describe('CodeChunk for Java', () => {
         from.addNeighbor(to);
         to.addNeighbor(from); // 如果是无向图，需要双向连接
     }
-}`
+}`;
 
 		let sampleCode = `
 import java.util.*;
