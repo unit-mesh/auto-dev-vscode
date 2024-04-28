@@ -58,10 +58,7 @@ export class AutoDevExtension {
 			this.indexingCancellationController.abort();
 		}
 		this.indexingCancellationController = new AbortController();
-		for await (const update of this.indexer.refresh(
-			dirs,
-			this.indexingCancellationController.signal,
-		)) {
+		for await (const update of this.indexer.refresh(dirs, this.indexingCancellationController.signal)) {
 			this.webviewProtocol.request("indexProgress", update);
 		}
 	}

@@ -25,8 +25,7 @@ export class CodebaseIndexer {
 		};
 
 		for (let directory of workspaceDirs) {
-			//
+			//getRepoName
 		}
 	}
-
 }
