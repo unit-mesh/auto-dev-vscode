@@ -64,12 +64,13 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] Database
     - [ ] Terminal
     - [ ] UI
-- [ ] Local embedding
+- [ ] Local Search
     - [ ] TF-IDF
-        - [natural]((https://naturalnode.github.io/natural/tfidf.html)
+        - [natural](https://naturalnode.github.io/natural/tfidf.html)
     - [ ] Simple Text Embedding
+- [ ] Semantic Embedding
     - [ ] ONNX Runtime
-    - [ ] Transformerjs
+    - [ ] Transformer.js
         - [ ] [transformers](https://xenova.github.io/transformers.js/)
     - [ ] Embedding Database
         - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike ?
