@@ -1,3 +1,11 @@
+export interface MessagePart {
+	type: "text" | "imageUrl";
+	text?: string;
+	imageUrl?: { url: string };
+}
+
+export type MessageContent = string | MessagePart[];
+
 export interface ChatMessage {
 	role: ChatRole;
 	content: string;
