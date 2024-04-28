@@ -1,10 +1,18 @@
-import { ChunkWithoutID } from "./Chunk";
+import { Chunker, ChunkWithoutID } from "./Chunk";
 import { cleanFragment, cleanHeader } from "../../markdown/MarkdownClean";
 import { countTokens } from "../token/TokenCounter";
 import { basicChunker } from "./util/ChunkDocument";
 
-export class MarkdownChunker {
-	chunk(content: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
+/**
+ * The `MarkdownChunker` class is an implementation of the `Chunker` interface. It is used to break down a markdown
+ * file into smaller chunks based on the specified maximum chunk size.
+ *
+ * @export
+ * @class MarkdownChunker
+ * @implements {Chunker}
+ */
+export class MarkdownChunker implements Chunker {
+	async* chunk(filepath: string, content: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
 		return this.markdownChunker(content, maxChunkSize, 1);
 	}
 
