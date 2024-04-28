@@ -1,7 +1,6 @@
 import { Query, SyntaxNode } from "web-tree-sitter";
 
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
-import { ALL_LANGUAGES } from "../../code-context/ast/TSLanguageUtil";
 import { TextRange } from "./model/TextRange";
 import { LocalImport } from "./scope/LocalImport";
 import { LocalScope } from "./scope/LocalScope";
