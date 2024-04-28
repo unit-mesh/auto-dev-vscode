@@ -1,11 +1,7 @@
 import { CancellationToken } from "vscode";
 
 export class SemanticSearch {
-	async isAvailable() {
-		throw new Error("Method not implemented.");
-	}
-
-	async toSemanticChunks(similarFiles: string[], currentFile: string) {
+	async toChunks(similarFiles: string[], currentFile: string) {
 		throw new Error("Method not implemented.");
 	}
 
@@ -18,7 +14,7 @@ export class SemanticSearch {
 	 * @param {object} cancellationToken - 用于取消操作的信号对象。
 	 * @returns {Promise<Array>} - 返回搜索结果的数组。
 	 */
-	async searchFileChunks(items: string, maxResults: number, options: any, cancellationToken: CancellationToken) {
+	async searchChunks(items: string, maxResults: number, options: any, cancellationToken: CancellationToken) {
 		// 实现搜索逻辑
 	}
 }
