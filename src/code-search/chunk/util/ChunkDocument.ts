@@ -3,7 +3,7 @@ import { MAX_CHUNK_SIZE } from "../../constants";
 import { EXT_LANGUAGE_MAP } from "../../../editor/language/ExtensionLanguageMap";
 import { Chunk, ChunkWithoutID } from "../_base/Chunk";
 import { ConstructCodeChunker } from "../ConstructCodeChunker";
-import { basicChunker } from "./BasicChunker";
+import { basicChunker } from "../BasicChunker";
 
 async function* chunkDocumentWithoutId(
 	filepath: string,
