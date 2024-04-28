@@ -22,12 +22,10 @@ import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderMa
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolSync } from "./toolchain-context/buildtool/BuildToolSync";
+import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 
 export async function activate(context: vscode.ExtensionContext) {
 	setExtensionContext(context);
-
-	channel.show();
-
 	const sidebar = new AutoDevWebviewViewProvider(context);
 	const action = new VSCodeAction();
 
@@ -50,7 +48,15 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	registerCommands(extension);
 	registerWebViewProvider(extension);
+	bindingDocumentChange(documentManager);
 
+	AutoDevStatusManager.instance.create();
+
+	// setup for index
+	channel.show();
+}
+
+function bindingDocumentChange(documentManager: RecentlyDocumentManager) {
 	vscode.window.onDidChangeActiveTextEditor(
 		async (editor: vscode.TextEditor | undefined) => {
 			if (!editor) {
@@ -63,8 +69,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	vscode.workspace.onDidCloseTextDocument(async (document: vscode.TextDocument) => {
 	});
-
-	AutoDevStatusManager.instance.create();
 }
 
 export function deactivate() {
