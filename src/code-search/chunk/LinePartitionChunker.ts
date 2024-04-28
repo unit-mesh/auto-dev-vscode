@@ -61,15 +61,8 @@ export class LinePartitionChunker implements Chunker {
 				}
 
 				return new TextRange(
-					{
-						byte: startByte,
-						line: startLine,
-						column: 0
-					}, {
-						byte: endByte,
-						line: endLine,
-						column: 0
-					},
+					{ byte: startByte, line: startLine, column: 0 },
+					{ byte: endByte, line: endLine, column: 0 },
 					source.substring(startByte, endByte)
 				);
 			})
