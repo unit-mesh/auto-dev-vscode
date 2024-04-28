@@ -1,4 +1,4 @@
-import { ChunkItem, Embedding, ScoredItem } from "../embedding/_base/Embedding";
+import { ChunkItem, Embedding, ScoredItem } from "../../embedding/_base/Embedding";
 
 const DEFAULT_THRESHOLD = 0.72;
 

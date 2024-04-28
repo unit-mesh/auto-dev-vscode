@@ -1,7 +1,7 @@
 import { ChunkWithoutID } from "../../code-search/chunk/Chunk";
 
 const Parser = require("web-tree-sitter");
-import { parsedCodeChunker } from "../../code-search/chunk/CodeChunker";
+import { parsedCodeChunker } from "../../code-search/chunk/util/CodeChunkerUtil";
 import { JavaLangConfig } from "../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../TestLanguageService";
 

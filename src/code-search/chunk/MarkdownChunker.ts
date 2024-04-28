@@ -1,6 +1,7 @@
-import { basicChunker, ChunkWithoutID } from "./Chunk";
+import { ChunkWithoutID } from "./Chunk";
 import { cleanFragment, cleanHeader } from "../../markdown/MarkdownClean";
 import { countTokens } from "../token/TokenCounter";
+import { basicChunker } from "./util/ChunkDocument";
 
 export async function* markdownChunker(
 	content: string,

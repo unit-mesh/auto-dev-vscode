@@ -1,6 +1,6 @@
-import { ChunkWithoutID } from "./Chunk";
-import { getParserForFile } from "../../editor/language/parser/ParserUtil";
-import { parsedCodeChunker } from "./CodeChunker";
+import { ChunkWithoutID } from "../Chunk";
+import { getParserForFile } from "../../../editor/language/parser/ParserUtil";
+import { parsedCodeChunker } from "./CodeChunkerUtil";
 
 export async function* codeChunker(
 	filepath: string,

@@ -1,7 +1,7 @@
 import Parser, { SyntaxNode } from "web-tree-sitter";
 
-import { ChunkWithoutID } from "./Chunk";
-import { countTokens } from "../token/TokenCounter";
+import { ChunkWithoutID } from "../Chunk";
+import { countTokens } from "../../token/TokenCounter";
 
 function collapsedReplacement(node: SyntaxNode): string {
 	if (node.type === "statement_block") {
@@ -197,4 +197,3 @@ export async function* parsedCodeChunker(
 	const tree = parser.parse(contents);
 	yield* getSmartCollapsedChunks(tree.rootNode, contents, maxChunkSize);
 }
-
