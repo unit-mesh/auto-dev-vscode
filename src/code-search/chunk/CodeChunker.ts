@@ -1,7 +1,6 @@
 import Parser, { SyntaxNode } from "web-tree-sitter";
 
 import { ChunkWithoutID } from "./Chunk";
-import { getParserForFile } from "../../editor/language/parser/ParserUtil";
 import { countTokens } from "../token/TokenCounter";
 
 function collapsedReplacement(node: SyntaxNode): string {
@@ -165,15 +164,13 @@ function* getSmartCollapsedChunks(
 	root = true,
 ): Generator<ChunkWithoutID> {
 	// Keep entire text if not over size
-	if (
-		(root || node.type in collapsedNodeConstructors) &&
-		countTokens(node.text) < maxChunkSize
-	) {
+	if ((root || node.type in collapsedNodeConstructors) && countTokens(node.text) < maxChunkSize) {
 		yield {
 			content: node.text,
 			startLine: node.startPosition.row,
 			endLine: node.endPosition.row,
 		};
+
 		return;
 	}
 
@@ -192,7 +189,6 @@ function* getSmartCollapsedChunks(
 	}
 }
 
-
 export async function* parsedCodeChunker(
 	parser: Parser,
 	contents: string,
@@ -202,20 +198,3 @@ export async function* parsedCodeChunker(
 	yield* getSmartCollapsedChunks(tree.rootNode, contents, maxChunkSize);
 }
 
-export async function* codeChunker(
-	filepath: string,
-	contents: string,
-	maxChunkSize: number,
-): AsyncGenerator<ChunkWithoutID> {
-	if (contents.trim().length === 0) {
-		return;
-	}
-
-	let parser = await getParserForFile(filepath);
-	if (parser === undefined) {
-		console.warn(`Failed to load parser for file ${filepath}: `);
-		return;
-	}
-
-	yield* parsedCodeChunker(parser, contents, maxChunkSize);
-}

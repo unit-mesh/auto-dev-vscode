@@ -1,7 +1,7 @@
 import { countTokens } from "../token/TokenCounter";
 import { MAX_CHUNK_SIZE } from "../constants";
-import { codeChunker } from "./CodeChunker";
 import { EXT_LANGUAGE_MAP } from "../../editor/language/ExtensionLanguageMap";
+import { codeChunker } from "./BasicCodeChunker";
 
 export interface ChunkWithoutID {
 	content: string;

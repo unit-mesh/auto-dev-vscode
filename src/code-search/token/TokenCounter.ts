@@ -1,9 +1,11 @@
 // @ts-ignore
 import { Tiktoken, encodingForModel as _encodingForModel } from "js-tiktoken";
-// @ts-ignore
-const llamaTokenizer = require("llama-tokenizer-js");
 import { ChatMessage, ChatRole, MessageContent, MessagePart } from "../../llm-provider/ChatMessage";
 import { autodetectTemplateType } from "./LlmModelUtil";
+
+
+// @ts-ignore
+import llamaTokenizer from "llama-tokenizer-js";
 
 export const TOKEN_BUFFER_FOR_SAFETY = 350;
 
@@ -25,7 +27,7 @@ function encodingForModel(modelName: string): Encoding {
 		return gptEncoding;
 	}
 
-	return llamaTokenizer;
+	return llamaTokenizer as unknown as Encoding;
 }
 
 function countImageTokens(content: MessagePart): number {
