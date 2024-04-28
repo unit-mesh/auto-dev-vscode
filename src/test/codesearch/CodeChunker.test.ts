@@ -1,10 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
+import { ConstructCodeChunker } from "../../code-search/chunk/ConstructCodeChunker";
+
 const Parser = require("web-tree-sitter");
 
-import { ChunkWithoutID } from "../../code-search/chunk/Chunk";
-import { parsedCodeChunker } from "../../code-search/chunk/util/CodeChunkerUtil";
+import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
 import { JavaLangConfig } from "../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../TestLanguageService";
+import { CollapsedCodeChunker } from "../../code-search/chunk/_base/CollapsedCodeChunker";
 
 describe('CodeChunk for Java', () => {
 	let parser: any;
@@ -61,7 +63,8 @@ ${nodeCode}
 // 图类
 ${graphCode}
 `;
-		let codeChunker: AsyncGenerator<ChunkWithoutID> = parsedCodeChunker(parser, sampleCode, 100);
+		let chunker = new CollapsedCodeChunker();
+		let codeChunker: AsyncGenerator<ChunkWithoutID> = chunker.parsedCodeChunker(parser, sampleCode, 100);
 		const results = [];
 
 		for await (let chunk of codeChunker) {

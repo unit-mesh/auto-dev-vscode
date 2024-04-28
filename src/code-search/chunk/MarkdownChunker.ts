@@ -1,4 +1,4 @@
-import { Chunker, ChunkWithoutID } from "./Chunk";
+import { Chunker, ChunkWithoutID } from "./_base/Chunk";
 import { cleanFragment, cleanHeader } from "../../markdown/MarkdownClean";
 import { countTokens } from "../token/TokenCounter";
 

@@ -4,7 +4,7 @@ import os from "os";
 
 import { CodebaseIndex, IndexTag, IndexingProgressUpdate, BranchAndDir } from "./CodebaseIndex";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
-import { Chunk } from "../chunk/Chunk";
+import { Chunk } from "../chunk/_base/Chunk";
 
 export function getAutoDevGlobalPath(): string {
 	// This is ~/.autodev on mac/linux

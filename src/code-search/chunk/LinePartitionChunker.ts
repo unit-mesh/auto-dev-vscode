@@ -1,5 +1,5 @@
 import { TextRange } from "../semantic/model/TextRange";
-import { ChunkWithoutID, Chunker } from "./Chunk";
+import { ChunkWithoutID, Chunker } from "./_base/Chunk";
 
 /**
  * The `LinePartitionChunker` class is an implementation of the `Chunker` interface.

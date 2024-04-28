@@ -1,5 +1,5 @@
 import { LinePartitionChunker } from "../../code-search/chunk/LinePartitionChunker";
-import { ChunkWithoutID } from "../../code-search/chunk/Chunk";
+import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
 import { TextRange } from "../../code-search/semantic/model/TextRange";
 
 describe('LinePartitionChunker', () => {

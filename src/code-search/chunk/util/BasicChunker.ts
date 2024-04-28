@@ -1,4 +1,4 @@
-import { ChunkWithoutID } from "../Chunk";
+import { ChunkWithoutID } from "../_base/Chunk";
 import { countTokens } from "../../token/TokenCounter";
 
 export function* basicChunker(

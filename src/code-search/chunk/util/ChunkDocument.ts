@@ -1,7 +1,7 @@
 import { countTokens } from "../../token/TokenCounter";
 import { MAX_CHUNK_SIZE } from "../../constants";
 import { EXT_LANGUAGE_MAP } from "../../../editor/language/ExtensionLanguageMap";
-import { Chunk, ChunkWithoutID } from "../Chunk";
+import { Chunk, ChunkWithoutID } from "../_base/Chunk";
 import { ConstructCodeChunker } from "../ConstructCodeChunker";
 import { basicChunker } from "./BasicChunker";
 
@@ -14,11 +14,12 @@ async function* chunkDocumentWithoutId(
 		return;
 	}
 
+	const chunker = new ConstructCodeChunker();
 	const segs = filepath.split(".");
 	const ext = segs[segs.length - 1];
 	if (ext in EXT_LANGUAGE_MAP) {
 		try {
-			for await (const chunk of ConstructCodeChunker.codeChunker(filepath, contents, maxChunkSize)) {
+			for await (const chunk of chunker.chunk(filepath, contents, maxChunkSize)) {
 				yield chunk;
 			}
 			return;

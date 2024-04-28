@@ -1,13 +1,13 @@
-import { Chunker, ChunkWithoutID } from "./Chunk";
+import { Chunker, ChunkWithoutID } from "./_base/Chunk";
 import { getParserForFile } from "../../editor/language/parser/ParserUtil";
-import { parsedCodeChunker } from "./util/CodeChunkerUtil";
+import { CollapsedCodeChunker } from "./_base/CollapsedCodeChunker";
 
-export class ConstructCodeChunker implements Chunker {
+export class ConstructCodeChunker extends CollapsedCodeChunker implements Chunker {
 	chunk(filepath: string, contents: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
-		return ConstructCodeChunker.codeChunker(filepath, contents, maxChunkSize);
+		return this.codeChunker(filepath, contents, maxChunkSize);
 	}
 
-	static async* codeChunker(
+	async* codeChunker(
 		filepath: string,
 		contents: string,
 		maxChunkSize: number,
@@ -22,6 +22,6 @@ export class ConstructCodeChunker implements Chunker {
 			return;
 		}
 
-		yield* parsedCodeChunker(parser, contents, maxChunkSize);
+		yield* this.parsedCodeChunker(parser, contents, maxChunkSize);
 	}
 }
