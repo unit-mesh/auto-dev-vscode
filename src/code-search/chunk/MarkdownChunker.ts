@@ -1,7 +1,8 @@
 import { Chunker, ChunkWithoutID } from "./Chunk";
 import { cleanFragment, cleanHeader } from "../../markdown/MarkdownClean";
 import { countTokens } from "../token/TokenCounter";
-import { basicChunker } from "./util/ChunkDocument";
+
+import { basicChunker } from "./util/BasicChunker";
 
 /**
  * The `MarkdownChunker` class is an implementation of the `Chunker` interface. It is used to break down a markdown
