@@ -2,6 +2,11 @@ import Parser, { SyntaxNode } from "web-tree-sitter";
 import { ChunkWithoutID } from "./Chunk";
 import { countTokens } from "../../token/TokenCounter";
 
+/**
+ * The `CollapsedCodeChunker` class provides methods to parse and chunk code into smaller pieces. It also provides
+ * methods to collapse certain parts of the code, such as statement blocks and other syntax nodes, to make the
+ * code more readable and manageable.
+ */
 export class CollapsedCodeChunker {
 	async* parsedCodeChunker(
 		parser: Parser,
@@ -105,6 +110,7 @@ export class CollapsedCodeChunker {
 		return code;
 	}
 
+	// TODO: chunk in different languages
 	constructClassDefinitionChunk(
 		node: SyntaxNode,
 		code: string,
@@ -120,6 +126,7 @@ export class CollapsedCodeChunker {
 		);
 	}
 
+	// TODO: chunk in different languages
 	constructFunctionDefinitionChunk(
 		node: SyntaxNode,
 		code: string,
@@ -160,7 +167,7 @@ export class CollapsedCodeChunker {
 		function_item: this.constructFunctionDefinitionChunk.bind(this),
 	};
 
-	* getSmartCollapsedChunks(
+	*getSmartCollapsedChunks(
 		node: SyntaxNode,
 		code: string,
 		maxChunkSize: number,
