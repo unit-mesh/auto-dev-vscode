@@ -142,38 +142,6 @@ export class TfIdf<K, V> {
 		}
 	}
 
-	addDocuments(documents: DocumentType[], restoreCache?: boolean) {
-		documents.forEach((document) => {
-			this.addDocument(document, undefined, restoreCache);
-		});
-	}
-
-	// If restoreCache is set to true, all terms idf scores currently cached will be recomputed.
-	// Otherwise, the cache will just be wiped clean
-	addFileSync(path: any, encoding: string, key: string, restoreCache: boolean) {
-		if (!encoding) {
-			encoding = 'utf8';
-		}
-		if (!isEncoding(encoding)) {
-			throw new Error('Invalid encoding: ' + encoding);
-		}
-
-		const document = fs.readFileSync(path, encoding);
-		this.documents.push(buildDocument(document, key));
-
-		// make sure the cache is invalidated when new documents arrive
-		if (restoreCache) {
-			for (const term in this._idfCache) {
-				// invoking idf with the force option set will
-				// force a recomputation of the idf, and it will
-				// automatically refresh the cache value.
-				this.idf(term, true);
-			}
-		} else {
-			this._idfCache = {};
-		}
-	}
-
 	/**
 	 * The `tfidf` method is used to calculate the Term Frequency-Inverse Document Frequency (TF-IDF) for a
 	 * given term or array of terms in a specific document. TF-IDF is a numerical statistic that reflects how
