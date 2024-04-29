@@ -1,4 +1,6 @@
-import { TfIdf, TfIdfCallback } from "natural/lib/natural/tfidf";
+import { TfIdfCallback } from "natural/lib/natural/tfidf";
+import { ChunkItem } from "../embedding/_base/Embedding";
+import { TfIdf } from "./tfidf/Tfidf";
 
 /**
  *
@@ -17,7 +19,7 @@ import { TfIdf, TfIdfCallback } from "natural/lib/natural/tfidf";
  * Example usage of the class is provided in the class description.
  */
 export class TfIdfSemanticChunkSearch {
-	private tfidf: TfIdf;
+	private tfidf: TfIdf<string, ChunkItem>;
 
 	constructor() {
 		this.tfidf = new TfIdf();

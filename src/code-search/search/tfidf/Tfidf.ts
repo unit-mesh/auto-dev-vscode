@@ -82,16 +82,13 @@ function isEncoding(encoding: string) {
 	return false;
 }
 
-export class TfIdf {
+export class TfIdf<K, V> {
 	documents: DocumentType[] = [];
 	_idfCache: Record<string, number> = {};
+	documentsMap: Map<K, V> = new Map();
 
-	constructor(deserialized: { documents: DocumentType[] } | undefined = undefined) {
-		if (deserialized) {
-			this.documents = deserialized.documents;
-		} else {
-			this.documents = [];
-		}
+	constructor() {
+		this.documents = [];
 		this._idfCache = {};
 	}
 
@@ -175,7 +172,21 @@ export class TfIdf {
 		}
 	}
 
-	tfidf(terms: string | string[], d: number) {
+	/**
+	 * The `tfidf` method is used to calculate the Term Frequency-Inverse Document Frequency (TF-IDF) for a
+	 * given term or array of terms in a specific document. TF-IDF is a numerical statistic that reflects how
+	 * important a word is to a document in a collection or corpus.
+	 *
+	 * @param terms - A string or an array of strings representing the term(s) for which the TF-IDF is to be calculated. If a string is passed, it is tokenized into an array of terms.
+	 * @param d - A number representing the index of the document in the documents array for which the TF-IDF is to be calculated.
+	 *
+	 * @returns A number representing the TF-IDF of the given term(s) in the specified document. If the term does not exist in the document, the method returns 0. If multiple terms are passed, the method returns the sum of the TF-IDF of all the terms.
+	 *
+	 * The method first checks if the `terms` parameter is an array. If not, it converts the string into an array of terms using the `tokenizer.tokenize` method. It then reduces this array to a single number by iterating over each term, calculating its TF-IDF, and adding it to the accumulator. The TF-IDF of a term is calculated as the product of its term frequency (TF) in the document and its inverse document frequency (IDF). The TF is calculated using the `TfIdf.tf` method and the IDF is calculated using the `idf` method. If the IDF is Infinity (which happens when the term does not exist in any document), it is set to 0.
+	 *
+	 * Note: The method uses the `this` keyword to refer to the instance of the class it is defined in. Therefore, it cannot be called as a standalone function.
+	 */
+	tfidf(terms: string | string[], d: number): number {
 		const _this = this;
 
 		if (!Array.isArray(terms)) {
