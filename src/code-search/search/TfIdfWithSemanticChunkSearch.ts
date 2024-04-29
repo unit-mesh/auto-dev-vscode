@@ -1,8 +1,7 @@
-import natural, { TfIdf } from "natural";
 import { TfIdfCallback } from "natural/lib/natural/tfidf";
+import { TfIdf } from "./tfidf/Tfidf";
 
 /**
- * // todo: spike for customize tfidf from: https://github.com/NaturalNode/natural/blob/master/lib/natural/tfidf/tfidf.js
  *
  * The `TfIdfWithSemanticChunkSearch` class is a utility class in TypeScript that leverages the Natural's TfIdf to calculate the similarity between two code chunks.
  * TfIdf, short for Term Frequency-Inverse Document Frequency, is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus.
@@ -22,13 +21,11 @@ export class TfIdfWithSemanticChunkSearch {
 	private tfidf: TfIdf;
 
 	constructor() {
-		this.tfidf = new natural.TfIdf();
+		this.tfidf = new TfIdf();
 	}
 
 	addDocument(chunks: string[]) {
-		chunks.forEach(chunk => {
-			this.tfidf.addDocument(chunk);
-		});
+		this.tfidf.addDocuments(chunks);
 	}
 
 	search(query: string, callback?: TfIdfCallback) {
