@@ -1,6 +1,8 @@
 import { TfIdfCallback } from "natural/lib/natural/tfidf";
 import { ChunkItem } from "../embedding/_base/Embedding";
 import { TfIdf } from "./tfidf/Tfidf";
+import { SearchOptions, SemanticSearch } from "./_base/SemanticSearch";
+import { CancellationToken } from "vscode";
 
 /**
  *
@@ -18,7 +20,7 @@ import { TfIdf } from "./tfidf/Tfidf";
  *
  * Example usage of the class is provided in the class description.
  */
-export class TfIdfSemanticChunkSearch {
+export class TfIdfSemanticChunkSearch implements SemanticSearch {
 	private tfidf: TfIdf<string, ChunkItem>;
 
 	constructor() {
@@ -27,6 +29,10 @@ export class TfIdfSemanticChunkSearch {
 
 	addDocuments(document: string[]) {
 		document.forEach(chunk => this.tfidf.addDocument(chunk));
+	}
+
+	searchChunks(items: string[], maxResults: number, options: SearchOptions, cancellationToken: CancellationToken): Promise<any[]> {
+		throw new Error("Method not implemented.");
 	}
 
 	search(query: string, callback?: TfIdfCallback) {

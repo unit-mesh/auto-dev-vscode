@@ -20,13 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/// based on: https://github.com/NaturalNode/natural/blob/master/lib/natural/tfidf/tfidf.js
-
 import { RegexpTokenizer, stopwords, WordTokenizer } from "natural";
 
 declare type DocumentType = string | string[] | Record<string, string>;
 declare type TfIdfCallback = (i: number, measure: number, key?: string | Record<string, any>) => void;
 
+/// based on: https://github.com/NaturalNode/natural/blob/master/lib/natural/tfidf/tfidf.js
 export class TfIdf<K, V> {
 	documents: DocumentType[] = [];
 	_idfCache: Record<string, number> = {};
