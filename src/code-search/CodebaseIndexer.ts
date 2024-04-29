@@ -1,9 +1,19 @@
-import { CodebaseIndex, IndexingProgressUpdate, IndexTag } from "./indexing/CodebaseIndex";
+import { CodebaseIndex, IndexingProgressUpdate } from "./indexing/CodebaseIndex";
 import { ChunkCodebaseIndex } from "./indexing/ChunkCodebaseIndex";
 import { FullTextSearchCodebaseIndex } from "./indexing/FullTextSearchCodebaseIndex";
 import { CodeSnippetsCodebaseIndex } from "./indexing/CodeSnippetsCodebaseIndex";
+import { TransformersEmbeddingProvider } from "./embedding/TransformersEmbeddingProvider";
 
 export class CodebaseIndexer {
+	async init() {
+		try {
+			let embeddingProvider = new TransformersEmbeddingProvider();
+			embeddingProvider.embed(["test"]);
+		} catch (e) {
+			console.error(e);
+		}
+	}
+
 	private async getIndexesToBuild(): Promise<CodebaseIndex[]> {
 		const indexes = [
 			new ChunkCodebaseIndex(),

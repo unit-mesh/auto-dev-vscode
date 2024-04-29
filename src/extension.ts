@@ -54,6 +54,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// setup for index
 	channel.show();
+
+	let codebaseIndexer = new CodebaseIndexer();
+	codebaseIndexer.init()
 }
 
 function bindingDocumentChange(documentManager: RecentlyDocumentManager) {
