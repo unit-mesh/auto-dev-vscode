@@ -3,7 +3,7 @@ import { TfIdf } from "./tfidf/Tfidf";
 
 /**
  *
- * The `TfIdfWithSemanticChunkSearch` class is a utility class in TypeScript that leverages the Natural's TfIdf to calculate the similarity between two code chunks.
+ * The `TfIdfSemanticChunkSearch` class is a utility class in TypeScript that leverages the Natural's TfIdf to calculate the similarity between two code chunks.
  * TfIdf, short for Term Frequency-Inverse Document Frequency, is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus.
  *
  * The class contains two main methods: `addDocument` and `search`.
@@ -17,7 +17,7 @@ import { TfIdf } from "./tfidf/Tfidf";
  *
  * Example usage of the class is provided in the class description.
  */
-export class TfIdfWithSemanticChunkSearch {
+export class TfIdfSemanticChunkSearch {
 	private tfidf: TfIdf;
 
 	constructor() {

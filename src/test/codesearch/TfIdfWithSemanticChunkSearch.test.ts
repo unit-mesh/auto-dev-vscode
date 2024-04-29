@@ -1,11 +1,11 @@
 import { expect } from 'chai';
-import { TfIdfWithSemanticChunkSearch } from '../../code-search/search/TfIdfWithSemanticChunkSearch';
+import { TfIdfSemanticChunkSearch } from '../../code-search/search/TfIdfSemanticChunkSearch';
 
 describe('TfIdfWithSemanticChunkSearch', () => {
-    let tfIdfWithSemanticChunkSearch: TfIdfWithSemanticChunkSearch;
+    let tfIdfWithSemanticChunkSearch: TfIdfSemanticChunkSearch;
 
     beforeEach(() => {
-        tfIdfWithSemanticChunkSearch = new TfIdfWithSemanticChunkSearch();
+        tfIdfWithSemanticChunkSearch = new TfIdfSemanticChunkSearch();
     });
 
     describe('addDocument', () => {

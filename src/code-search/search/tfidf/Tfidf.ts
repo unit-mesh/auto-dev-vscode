@@ -22,10 +22,10 @@ THE SOFTWARE.
 
 /// based on: https://github.com/NaturalNode/natural/blob/master/lib/natural/tfidf/tfidf.js
 
+const fs = require('fs');
 import { stopwords, WordTokenizer } from "natural";
 
 let tokenizer = new WordTokenizer();
-const fs = require('fs');
 
 declare type DocumentType = string | string[] | Record<string, string>;
 declare type TfIdfCallback = (i: number, measure: number, key?: string | Record<string, any>) => void;
