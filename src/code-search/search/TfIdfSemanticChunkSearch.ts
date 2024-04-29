@@ -1,8 +1,9 @@
 import { TfIdfCallback } from "natural/lib/natural/tfidf";
 import { ChunkItem } from "../embedding/_base/Embedding";
 import { TfIdf } from "./tfidf/Tfidf";
-import { SearchOptions, SemanticSearch } from "./_base/SemanticSearch";
+import { SemanticSearch } from "./_base/SemanticSearch";
 import { CancellationToken } from "vscode";
+import { SearchOptions } from "./_base/SearchOptions";
 
 /**
  *
@@ -39,5 +40,3 @@ export class TfIdfSemanticChunkSearch implements SemanticSearch {
 		return this.tfidf.tfidfs(query, callback);
 	}
 }
-
-

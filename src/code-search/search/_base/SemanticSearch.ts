@@ -1,8 +1,5 @@
 import { CancellationToken } from "vscode";
-
-export interface SearchOptions {
-	include: string;
-}
+import { SearchOptions } from "./SearchOptions";
 
 export interface SemanticSearch {
 	/**

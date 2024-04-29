@@ -1,15 +1,16 @@
 import { Embedding } from "./_base/Embedding";
 
 import { LocalEmbeddingProvider } from "./_base/LocalEmbeddingProvider";
+import path from "path";
 
 const { env, pipeline } = require("@xenova/transformers");
 
 env.allowLocalModels = true;
 env.allowRemoteModels = false;
-// if (typeof window === "undefined") {
-// 	// The embeddings provider should just never be called in the browser
-// 	env.localModelPath = path.join(__dirname, "..", "models");
-// }
+if (typeof window === "undefined") {
+	// The embeddings provider should just never be called in the browser
+	(env as any).localModelPath = path.join(__dirname, "..", "models");
+}
 
 class EmbeddingsPipeline {
 	static task = "feature-extraction";
