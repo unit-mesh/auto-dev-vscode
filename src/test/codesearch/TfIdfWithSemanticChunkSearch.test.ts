@@ -1,6 +1,7 @@
 const Parser = require("web-tree-sitter");
 import { expect } from 'chai';
-import { TfIdf } from "natural/lib/natural/tfidf";
+// import { TfIdf } from "natural/lib/natural/tfidf";
+import { TfIdf } from "../../code-search/search/tfidf/Tfidf";
 
 import { TfIdfSemanticChunkSearch } from '../../code-search/search/TfIdfSemanticChunkSearch';
 import { TermSplitter } from "../../code-search/search/tfidf/TermSplitter";
@@ -127,6 +128,10 @@ ${graphCode}
             expect(results).to.have.length(2);
 
             console.log(results);
+
+            // first should > 2, second will > 3
+            expect(results[0]).to.be.greaterThan(2).and.lessThan(3);
+            expect(results[1]).to.be.greaterThan(3).and.lessThan(4);
         });
     });
 });
