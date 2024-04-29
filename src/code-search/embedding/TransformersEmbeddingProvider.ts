@@ -3,14 +3,8 @@ import { Embedding } from "./_base/Embedding";
 import { LocalEmbeddingProvider } from "./_base/LocalEmbeddingProvider";
 import path from "path";
 
-const { env, pipeline } = require("@xenova/transformers");
-
-env.allowLocalModels = true;
-env.allowRemoteModels = false;
-if (typeof window === "undefined") {
-	// The embeddings provider should just never be called in the browser
-	(env as any).localModelPath = path.join(__dirname, "..", "models");
-}
+// const { env, pipeline } = require("@xenova/transformers");
+// change require a dynamic import() which is available in all CommonJS modules..
 
 class EmbeddingsPipeline {
 	static task = "feature-extraction";
@@ -18,8 +12,17 @@ class EmbeddingsPipeline {
 	static instance: any | null = null;
 
 	static async getInstance() {
+		const { env, pipeline } = await import("@xenova/transformers");
+
+		env.allowLocalModels = true;
+		env.allowRemoteModels = false;
+		if (typeof (window as any) === "undefined") {
+			// The embeddings provider should just never be called in the browser
+			(env as any).localModelPath = path.join(__dirname, "..", "models");
+		}
+
 		if (this.instance === null) {
-			this.instance = await pipeline(this.task, this.model);
+			this.instance = await pipeline(this.task as any, this.model);
 		}
 
 		return this.instance;
