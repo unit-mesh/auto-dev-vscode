@@ -57,9 +57,12 @@ export class AutoDevExtension {
 		if (this.indexingCancellationController) {
 			this.indexingCancellationController.abort();
 		}
+
+		const that = this;
+
 		this.indexingCancellationController = new AbortController();
 		for await (const update of this.indexer.refresh(dirs, this.indexingCancellationController.signal)) {
-			this.webviewProtocol.request("indexProgress", update);
+			that.webviewProtocol?.request("indexProgress", update);
 		}
 	}
 }
