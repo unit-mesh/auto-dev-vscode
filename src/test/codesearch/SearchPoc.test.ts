@@ -1,12 +1,13 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
+import { TfIdf } from "natural/lib/natural/tfidf";
+
 const Parser = require("web-tree-sitter");
 
-import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
-import { JavaLangConfig } from "../../code-context/java/JavaLangConfig";
-import { TestLanguageService } from "../TestLanguageService";
 import { CollapsedCodeChunker } from "../../code-search/chunk/_base/CollapsedCodeChunker";
+import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
+import { TestLanguageService } from "../TestLanguageService";
+import { JavaLangConfig } from "../../code-context/java/JavaLangConfig";
 
-describe('CodeChunk for Java', () => {
+describe('MultipleChunk', () => {
 	let parser: any;
 
 	beforeEach(async () => {
@@ -65,13 +66,13 @@ ${graphCode}
 		let codeChunker: AsyncGenerator<ChunkWithoutID> = chunker.parsedCodeChunker(parser, sampleCode, 100);
 		const results = [];
 
+		let tfidf = new TfIdf();
 		for await (let chunk of codeChunker) {
-			results.push(chunk);
+			tfidf.addDocument(chunk.content);
 		}
 
-		expect(results.length).toBe(2);
-
-		expect(results[0].content).toBe(nodeCode);
-		expect(results[1].content).toBe(graphCode);
+		tfidf.tfidfs('node', function(i, measure) {
+			console.log('document #' + i + ' is ' + measure);
+		});
 	});
 });

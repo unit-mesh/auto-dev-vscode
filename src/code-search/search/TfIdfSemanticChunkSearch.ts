@@ -1,5 +1,4 @@
-import { TfIdfCallback } from "natural/lib/natural/tfidf";
-import { TfIdf } from "./tfidf/Tfidf";
+import { TfIdf, TfIdfCallback } from "natural/lib/natural/tfidf";
 
 /**
  *
@@ -24,12 +23,8 @@ export class TfIdfSemanticChunkSearch {
 		this.tfidf = new TfIdf();
 	}
 
-	addChunks(chunks: Record<string, string>[]) {
-		this.tfidf.addDocuments(chunks);
-	}
-
 	addDocuments(document: string[]) {
-		this.tfidf.addDocuments(document);
+		document.forEach(chunk => this.tfidf.addDocument(chunk));
 	}
 
 	search(query: string, callback?: TfIdfCallback) {
