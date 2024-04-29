@@ -26,7 +26,7 @@ export class TermSplitter {
 	static* splitTerms(input: string) {
 		let matchAll = input.matchAll(this.allPattern);
 		for (let [match_] of matchAll) {
-			let uniqueTerms: Set<String> = new Set();
+			let uniqueTerms: Set<string> = new Set();
 			uniqueTerms.add(match_.toLowerCase());
 
 			let terms = [];
@@ -52,5 +52,16 @@ export class TermSplitter {
 
 			yield* uniqueTerms;
 		}
+	}
+
+	static syncSplitTerms(input: string) : string[] {
+		const terms = TermSplitter.splitTerms(input);
+		const result = [];
+
+		for (let term of terms) {
+			result.push(term);
+		}
+
+		return result;
 	}
 }

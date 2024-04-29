@@ -28,8 +28,8 @@ export class TfIdfSemanticChunkSearch {
 		this.tfidf.addDocuments(chunks);
 	}
 
-	addDocument(document: string[]) {
-		this.tfidf.addDocument(document);
+	addDocuments(document: string[]) {
+		this.tfidf.addDocuments(document);
 	}
 
 	search(query: string, callback?: TfIdfCallback) {
