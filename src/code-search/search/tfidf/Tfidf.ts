@@ -22,65 +22,15 @@ THE SOFTWARE.
 
 /// based on: https://github.com/NaturalNode/natural/blob/master/lib/natural/tfidf/tfidf.js
 
-const fs = require('fs');
-import { stopwords, WordTokenizer } from "natural";
-
-let tokenizer = new WordTokenizer();
+import { RegexpTokenizer, stopwords, WordTokenizer } from "natural";
 
 declare type DocumentType = string | string[] | Record<string, string>;
 declare type TfIdfCallback = (i: number, measure: number, key?: string | Record<string, any>) => void;
 
-// Returns a frequency map of word to frequency
-// Key is the document key and stored in the map that is returned as __keys
-function buildDocument(text: DocumentType, key?: Record<string, any> | any): Record<string, any> {
-	let stopOut: boolean;
-
-	if (typeof text === 'string') {
-		text = tokenizer.tokenize(text.toLowerCase());
-		stopOut = true;
-	} else if (!Array.isArray(text)) {
-		stopOut = false;
-		return text;
-	}
-
-	return text.reduce(function (document: any, term: string) {
-		// next line solves https://github.com/NaturalNode/natural/issues/119
-		if (typeof document[term] === 'function') {
-			document[term] = 0;
-		}
-		if (!stopOut || stopwords.indexOf(term) < 0) {
-			document[term] = (document[term] ? document[term] + 1 : 1);
-		}
-
-		return document;
-	}, { __key: key });
-}
-
-// backwards compatibility for < node 0.10
-function isEncoding(encoding: string) {
-	if (typeof Buffer.isEncoding !== 'undefined') {
-		return Buffer.isEncoding(encoding);
-	}
-	switch ((encoding + '').toLowerCase()) {
-		case 'hex':
-		case 'utf8':
-		case 'utf-8':
-		case 'ascii':
-		case 'binary':
-		case 'base64':
-		case 'ucs2':
-		case 'ucs-2':
-		case 'utf16le':
-		case 'utf-16le':
-		case 'raw':
-			return true;
-	}
-	return false;
-}
-
 export class TfIdf<K, V> {
 	documents: DocumentType[] = [];
 	_idfCache: Record<string, number> = {};
+	tokenizer: RegexpTokenizer = new WordTokenizer();
 	documentsMap: Map<K, V> = new Map();
 
 	constructor() {
@@ -122,10 +72,36 @@ export class TfIdf<K, V> {
 		return document[term] && document[term] > 0;
 	}
 
+	// Returns a frequency map of word to frequency
+	// Key is the document key and stored in the map that is returned as __keys
+	buildDocument(text: DocumentType, key?: Record<string, any> | any): Record<string, any> {
+		let stopOut: boolean;
+
+		if (typeof text === 'string') {
+			text = this.tokenizer.tokenize(text.toLowerCase());
+			stopOut = true;
+		} else if (!Array.isArray(text)) {
+			stopOut = false;
+			return text;
+		}
+
+		return text.reduce(function (document: any, term: string) {
+			// next line solves https://github.com/NaturalNode/natural/issues/119
+			if (typeof document[term] === 'function') {
+				document[term] = 0;
+			}
+			if (!stopOut || stopwords.indexOf(term) < 0) {
+				document[term] = (document[term] ? document[term] + 1 : 1);
+			}
+
+			return document;
+		}, { __key: key });
+	}
+
 	// If restoreCache is set to true, all terms idf scores currently cached will be recomputed.
 	// Otherwise, the cache will just be wiped clean
 	addDocument(document: DocumentType, key?: Record<string, any> | any, restoreCache?: boolean) {
-		this.documents.push(buildDocument(document, key));
+		this.documents.push(this.buildDocument(document, key));
 
 		// make sure the cache is invalidated when new documents arrive
 		if (restoreCache) {
@@ -160,7 +136,7 @@ export class TfIdf<K, V> {
 		const _this = this;
 
 		if (!Array.isArray(terms)) {
-			terms = tokenizer.tokenize(terms.toString().toLowerCase());
+			terms = this.tokenizer.tokenize(terms.toString().toLowerCase());
 		}
 
 		return terms.reduce(function (value, term) {
@@ -212,7 +188,7 @@ export class TfIdf<K, V> {
 			throw new Error('Expected a valid Tokenizer');
 		}
 
-		tokenizer = t;
+		this.tokenizer = t;
 	}
 
 	// Define a stopwords other than the default
