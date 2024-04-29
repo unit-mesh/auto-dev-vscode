@@ -18,7 +18,7 @@ class EmbeddingsPipeline {
 		env.allowRemoteModels = false;
 		if (typeof (window as any) === "undefined") {
 			// The embeddings provider should just never be called in the browser
-			(env as any).localModelPath = path.join(__dirname, "..", "models");
+			(env as any).localModelPath = path.join(__dirname, "..", "..", "..", "models");
 		}
 
 		if (this.instance === null) {
