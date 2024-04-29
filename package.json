@@ -340,7 +340,7 @@
     "preintegration-test": "tsc -p . --outDir out",
     "integration-test": "vscode-test",
     "integration-test:watch": "tsc -p . -w --outDir out",
-    "test": "vitest --run",
+    "test": "vitest --run --coverage.enabled --coverage.reporter=json-summary",
     "test:watch": "vitest --silent=false",
     "vscode:prepublish": "npm run build",
     "pa": "vsce package"
@@ -385,7 +385,7 @@
     "@types/vscode": "^1.77.0",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
-    "@vitest/coverage-v8": "^1.4.0",
+    "@vitest/coverage-v8": "^1.5.2",
     "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.3.9",
     "@vscode/vsce": "^2.25.0",

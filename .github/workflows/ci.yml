@@ -38,7 +38,7 @@ jobs:
         run: cd gui-sidebar && npm install && npm run build
 
       - name: Run unit tests
-        run: npm run test --coverage.enabled true
+        run: npm run test
 
       - name: 'Report Coverage'
         # Set if: always() to also generate the report if tests are failing
