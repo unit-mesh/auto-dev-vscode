@@ -24,8 +24,12 @@ export class TfIdfSemanticChunkSearch {
 		this.tfidf = new TfIdf();
 	}
 
-	addDocument(chunks: string[]) {
+	addChunks(chunks: Record<string, string>[]) {
 		this.tfidf.addDocuments(chunks);
+	}
+
+	addDocument(document: string[]) {
+		this.tfidf.addDocument(document);
 	}
 
 	search(query: string, callback?: TfIdfCallback) {
