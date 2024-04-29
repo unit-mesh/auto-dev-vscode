@@ -1,6 +1,4 @@
 const Parser = require("web-tree-sitter");
-import { expect } from 'chai';
-// import { TfIdf } from "natural/lib/natural/tfidf";
 import { TfIdf } from "../../code-search/search/tfidf/Tfidf";
 
 import { TfIdfSemanticChunkSearch } from '../../code-search/search/TfIdfSemanticChunkSearch';
