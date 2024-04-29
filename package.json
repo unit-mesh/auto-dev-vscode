@@ -340,7 +340,7 @@
     "preintegration-test": "tsc -p . --outDir out",
     "integration-test": "vscode-test",
     "integration-test:watch": "tsc -p . -w --outDir out",
-    "test": "vitest --run --coverage.enabled --coverage.reporter=json-summary",
+    "test": "vitest --run --coverage.enabled",
     "test:watch": "vitest --silent=false",
     "vscode:prepublish": "npm run build",
     "pa": "vsce package"
