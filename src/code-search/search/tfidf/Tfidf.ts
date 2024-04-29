@@ -51,13 +51,9 @@ function buildDocument(text: DocumentType, key?: Record<string, any> | any): Rec
 		if (!stopOut || stopwords.indexOf(term) < 0) {
 			document[term] = (document[term] ? document[term] + 1 : 1);
 		}
+
 		return document;
 	}, { __key: key });
-}
-
-function documentHasTerm(term: string, document: DocumentType) {
-	// @ts-ignore
-	return document[term] && document[term] > 0;
 }
 
 // backwards compatibility for < node 0.10
@@ -100,6 +96,7 @@ export class TfIdf<K, V> {
 	// Returns the inverse document frequency of the term
 	// If force is true the cache will be invalidated and recomputed
 	idf(term: string, force: boolean | undefined = undefined) {
+		const this_ = this;
 		// Lookup the term in the New term-IDF caching,
 		// this will cut search times down exponentially on large document sets.
 		// if (this._idfCache[term] && this._idfCache.hasOwnProperty(term) && force !== true) { return this._idfCache[term] }
@@ -109,7 +106,7 @@ export class TfIdf<K, V> {
 
 		// Count the number of documents that contain the term
 		const docsWithTerm = this.documents.reduce((count: number, document: DocumentType) =>
-			count + (documentHasTerm(term, document) ? 1 : 0), 0
+			count + (this_.documentHasTerm(term, document) ? 1 : 0), 0
 		);
 
 		// Compute the inverse document frequency
@@ -118,6 +115,11 @@ export class TfIdf<K, V> {
 		// Add the idf to the term cache and return it
 		this._idfCache[term] = idf;
 		return idf;
+	}
+
+	documentHasTerm(term: string, document: DocumentType) {
+		// @ts-ignore
+		return document[term] && document[term] > 0;
 	}
 
 	// If restoreCache is set to true, all terms idf scores currently cached will be recomputed.
