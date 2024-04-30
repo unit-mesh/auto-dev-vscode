@@ -1,7 +1,10 @@
+import path from "path";
+// @ts-ignore
+import * as ONNX_NODE from 'onnxruntime-node';
 import { Embedding } from "./_base/Embedding";
 
 import { LocalEmbeddingProvider } from "./_base/LocalEmbeddingProvider";
-import path from "path";
+import { channel } from "../../channel";
 
 // const { env, pipeline } = require("@xenova/transformers");
 // change require a dynamic import() which is available in all CommonJS modules..
@@ -12,7 +15,9 @@ class EmbeddingsPipeline {
 	static instance: any | null = null;
 
 	static async getInstance() {
+		// (window  as any).ONNX = ONNX_NODE.default;
 		const { env, pipeline } = await import("@xenova/transformers");
+		channel.appendLine("onnx backends: " + env.backends.onnx);
 
 		env.allowLocalModels = true;
 		env.allowRemoteModels = false;
