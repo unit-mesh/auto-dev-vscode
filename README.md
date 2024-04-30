@@ -45,9 +45,9 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
         - [x] Class level
         - [x] Method level
         - [x] spike for Variable level, since is not easy to implement
-    - [ ] Language Server Protocol
-        - [ ] Java
-        - [ ] Python
+    - [ ] ~~Language Server Protocol~~
+        - [ ] ~~Java~~
+        - [ ] ~~Python~~
     - [ ] Backend Worker for TreeSitter analysis
 - [ ] DevIns language support
     - [ ] Syntax Highlight
@@ -66,9 +66,9 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
         - [natural](https://naturalnode.github.io/natural/tfidf.html)
     - [x] Simple Text Embedding
 - [ ] Local Semantic Search
-    - [ ] ONNX Runtime
-    - [ ] Transformer.js
-        - [ ] [transformers](https://xenova.github.io/transformers.js/)
+    - [x] ONNX Runtime
+    - [x] Transformer.js
+        - [x] [transformers](https://xenova.github.io/transformers.js/)
     - [ ] Embedding Database
         - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike ?
             - [vectordb](https://www.npmjs.com/package/vectordb) ?
