@@ -24,6 +24,8 @@ import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolSync } from "./toolchain-context/buildtool/BuildToolSync";
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 
+(globalThis as any).self = globalThis;
+
 export async function activate(context: vscode.ExtensionContext) {
 	setExtensionContext(context);
 	const sidebar = new AutoDevWebviewViewProvider(context);
