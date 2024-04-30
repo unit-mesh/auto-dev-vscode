@@ -9,7 +9,7 @@ import { ConstructCodeChunker } from "./ConstructCodeChunker";
  * - class name
  * - method name
  */
-export class SymbolBasedCodeSplitter extends ConstructCodeChunker implements Chunker {
+export class SymbolBasedCodeChunker extends ConstructCodeChunker implements Chunker {
 	// todo: add parsed for cannocical name
 	chunk(filepath: string, contents: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
 		return this.codeChunker(filepath, contents, maxChunkSize);
