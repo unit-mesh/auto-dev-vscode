@@ -2,13 +2,18 @@ import { window } from "vscode";
 
 import { Service } from "../../service/Service";
 import { AutoDevExtension } from "../../AutoDevExtension";
+import { channel } from "../../channel";
 
 export enum SystemAction {
-	Search = "Search",
+	Indexing = "Indexing codebase",
+	Search = "Search by intention",
 }
 
 export type SystemActionHandler = (extension: AutoDevExtension) => void;
 
+/**
+ * A better example will be: [QuickInput Sample](https://github.com/microsoft/vscode-extension-samples/tree/main/quickinput-sample)
+ */
 export class SystemActionService implements Service {
 	private static instance_: SystemActionService;
 
@@ -27,6 +32,7 @@ export class SystemActionService implements Service {
 		let pick = window.createQuickPick();
 
 		const items: { [key: string]: SystemActionHandler } = {
+			[SystemAction.Indexing]: this.indexingAction.bind(this),
 			[SystemAction.Search]: this.searchAction.bind(this),
 		};
 
@@ -43,6 +49,10 @@ export class SystemActionService implements Service {
 		pick.show();
 	}
 
+	private async indexingAction(extension: AutoDevExtension) {
+		channel.append("TODO: Indexing...");
+	}
+
 	async searchAction(extension: AutoDevExtension) {
 		let inputBox = window.createInputBox();
 
@@ -50,6 +60,9 @@ export class SystemActionService implements Service {
 
 		inputBox.onDidAccept(async () => {
 			const query = inputBox.value;
+
+			// execute for similar search
+
 			extension.sidebar.webviewProtocol?.request("search", { query });
 			inputBox.hide();
 		});
