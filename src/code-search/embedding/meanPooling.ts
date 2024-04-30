@@ -62,3 +62,46 @@ export function mean_pooling(last_hidden_state: any, attention_mask: any) {
 		shape
 	);
 }
+
+/**
+ * Reshapes a 1-dimensional array into an n-dimensional array, according to the provided dimensions.
+ *
+ * @example
+ *   reshape([10                    ], [1      ]); // Type: number[]      Value: [10]
+ *   reshape([1, 2, 3, 4            ], [2, 2   ]); // Type: number[][]    Value: [[1, 2], [3, 4]]
+ *   reshape([1, 2, 3, 4, 5, 6, 7, 8], [2, 2, 2]); // Type: number[][][]  Value: [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+ *   reshape([1, 2, 3, 4, 5, 6, 7, 8], [4, 2   ]); // Type: number[][]    Value: [[1, 2], [3, 4], [5, 6], [7, 8]]
+ * @param {T[]|DataArray} data The input array to reshape.
+ * @param {DIM} dimensions The target shape/dimensions.
+ * @template T
+ * @template {[number]|number[]} DIM
+ * @returns {NestArray<T, DIM["length"]>} The reshaped array.
+ */
+export function reshape(data: any, dimensions: any[]) {
+
+	const totalElements = data.length;
+	const dimensionSize = dimensions.reduce((a, b) => a * b);
+
+	if (totalElements !== dimensionSize) {
+		throw Error(`cannot reshape array of size ${totalElements} into shape (${dimensions})`);
+	}
+
+	/** @type {any} */
+	let reshapedArray = data;
+
+	for (let i = dimensions.length - 1; i >= 0; i--) {
+		reshapedArray = reshapedArray.reduce((acc: any[], val: any) => {
+			let lastArray = acc[acc.length - 1];
+
+			if (lastArray.length < dimensions[i]) {
+				lastArray.push(val);
+			} else {
+				acc.push([val]);
+			}
+
+			return acc;
+		}, [[]]);
+	}
+
+	return reshapedArray[0];
+}

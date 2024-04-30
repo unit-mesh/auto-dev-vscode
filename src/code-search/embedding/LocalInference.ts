@@ -1,7 +1,7 @@
 import path from "path";
 
 import { InferenceSession, Tensor as ONNXTensor } from "onnxruntime-common";
-import { mean_pooling } from "./meanPooling";
+import { mean_pooling, reshape } from "./meanPooling";
 
 const ort = require('onnxruntime-node');
 
@@ -23,8 +23,6 @@ export class LocalInference {
 			executionProviders: ['cpu']
 		});
 
-		const dims = encodings.input_ids.size;
-
 		const inputIdsTensor = new ONNXTensor('int64', new BigInt64Array(encodings.input_ids.cpuData), encodings.input_ids.dims);
 		const attentionMaskTensor = new ONNXTensor('int64', new BigInt64Array(encodings.attention_mask.cpuData), encodings.attention_mask.dims);
 		const tokenTypeIdsTensor = new ONNXTensor('int64', new BigInt64Array(encodings.token_type_ids.cpuData), encodings.token_type_ids.dims);
@@ -35,15 +33,13 @@ export class LocalInference {
 			token_type_ids: tokenTypeIdsTensor
 		});
 
-		console.log(outputs);
-
 		let result = outputs.last_hidden_state ?? outputs.logits;
 		// @ts-ignore
 		let infer = new Tensor('float32', new Float32Array(result.cpuData), result.dims);
 		let output = mean_pooling(infer, encodings.attention_mask);
 
-		console.log(output);
-		return output;
+		let final = reshape(output.data, output.dims as any);
+		return final;
 	}
 }
 
