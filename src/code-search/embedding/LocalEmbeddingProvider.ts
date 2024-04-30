@@ -1,7 +1,7 @@
 import path from "path";
 
 import { InferenceSession, Tensor as ONNXTensor } from "onnxruntime-common";
-import { mean_pooling, reshape } from "./meanPooling";
+import { mean_pooling, reshape } from "./_base/EmbeddingUtils";
 import { EmbeddingsProvider } from "./_base/EmbeddingsProvider";
 import { Embedding } from "./_base/Embedding";
 

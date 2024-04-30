@@ -78,7 +78,6 @@ export function mean_pooling(last_hidden_state: any, attention_mask: any) {
  * @returns {NestArray<T, DIM["length"]>} The reshaped array.
  */
 export function reshape(data: any, dimensions: any[]) {
-
 	const totalElements = data.length;
 	const dimensionSize = dimensions.reduce((a, b) => a * b);
 
