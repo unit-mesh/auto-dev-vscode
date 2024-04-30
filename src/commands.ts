@@ -8,6 +8,7 @@ import { AutoDocActionExecutor } from "./editor/action/autodoc/AutoDocActionExec
 import { AutoTestActionExecutor } from "./editor/action/autotest/AutoTestActionExecutor";
 import { NamedElementBuilder } from "./editor/ast/NamedElementBuilder";
 import { QuickActionService } from "./editor/editor-api/QuickAction";
+import { SystemActionService } from "./editor/editor-api/SystemActionService";
 
 const commandsMap: (
   extension: AutoDevExtension
@@ -123,6 +124,13 @@ const commandsMap: (
   ) => {
     let quickActionService = QuickActionService.instance();
     await quickActionService.show(extension);
+  },
+  "autodev.systemAction": async (
+    document: vscode.TextDocument,
+    range: NamedElement,
+    edit: vscode.WorkspaceEdit
+  ) => {
+    await SystemActionService.instance().show(extension);
   },
   "autodev.git.generateCommitMessage": async () => {
     vscode.extensions.getExtension('vscode.git')?.activate().then((gitExtension) => {

@@ -47,8 +47,8 @@ export class AutoDevStatusManager {
 
 	create() {
 		const autoDevStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-		autoDevStatusBar.command = "autodev.autodevGUIView";
-		autoDevStatusBar.text = "$(autodev-icon)";
+		autoDevStatusBar.command = "autodev.systemAction";
+		autoDevStatusBar.text = "$(autodev-pair)";
 		autoDevStatusBar.show();
 		this.statusBar = autoDevStatusBar;
 	}
