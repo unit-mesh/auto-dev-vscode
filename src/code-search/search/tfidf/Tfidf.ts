@@ -30,7 +30,6 @@ export class TfIdf<K, V> {
 	documents: DocumentType[] = [];
 	_idfCache: Record<string, number> = {};
 	tokenizer: RegexpTokenizer = new WordTokenizer();
-	documentsMap: Map<K, V> = new Map();
 
 	constructor() {
 		this.documents = [];
