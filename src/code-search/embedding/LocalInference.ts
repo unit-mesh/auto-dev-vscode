@@ -1,10 +1,12 @@
 import path from "path";
 
+import { Tensor as ONNXTensor, InferenceSession } from "onnxruntime-common";
 const ort = require('onnxruntime-node');
 
 export class LocalInference {
 	async embed(sequence: string): Promise<any> {
-		const { env, AutoTokenizer } = await import('@xenova/transformers');
+		const { env, AutoTokenizer, mean_pooling, Tensor } = await import('@xenova/transformers');
+
 		env.allowLocalModels = true;
 		let modelPath = path.join(__dirname, "models", "all-MiniLM-L6-v2", "onnx", "model_quantized.onnx");
 
@@ -15,29 +17,29 @@ export class LocalInference {
 
 		let encodings = tokenizer(sequence);
 
-		let session = await ort.InferenceSession.create(modelPath);
+		let session: InferenceSession = await ort.InferenceSession.create(modelPath);
 
-		const sequenceLength = encodings.input_ids.size;
-		console.log(sequenceLength);
+		const dims = encodings.input_ids.size;
+		console.log(dims);
 
-		const inputIdsTensor = new ort.Tensor('int64', new BigInt64Array(sequenceLength), encodings.input_ids);
-		const attentionMaskTensor = new ort.Tensor('int64', new BigInt64Array(sequenceLength), encodings.attention_mask);
-		const tokenTypeIdsTensor = new ort.Tensor('int64', new BigInt64Array(sequenceLength), encodings.token_type_ids);
+		const inputIdsTensor = new ONNXTensor('int64', new BigInt64Array(encodings.input_ids.cpuData), encodings.input_ids.dims);
+		const attentionMaskTensor = new ONNXTensor('int64', new BigInt64Array(encodings.attention_mask.cpuData), encodings.attention_mask.dims);
+		const tokenTypeIdsTensor = new ONNXTensor('int64', new BigInt64Array(encodings.token_type_ids.cpuData), encodings.token_type_ids.dims);
 
-		const outputs = await session.run({
-			inputIds: inputIdsTensor,
-			attentionMask: attentionMaskTensor,
-			tokenTypeIds: tokenTypeIdsTensor
+		const outputs: InferenceSession.ReturnType = await session.run({
+			input_ids: inputIdsTensor,
+			attention_mask: attentionMaskTensor,
+			token_type_ids: tokenTypeIdsTensor
 		});
 
 		console.log(outputs);
 
-		const outputTensor = outputs[0].extractTensor();
-		const sequenceEmbedding = outputTensor.data;
-		const pooled = sequenceEmbedding.mean(); // Assuming you have a mean function for arrays
+		let result = outputs.last_hidden_state ?? outputs.logits;
+		// @ts-ignore
+		let infer = new Tensor('float32', new Float32Array(result['cpuData']), result.dims);
+		let output = mean_pooling(infer, encodings.attention_mask.data);
 
-		let results = pooled.toArray();
-		console.log(results);
-		return results;
+		console.log(output.normalize_());
+		return output.normalize_();
 	}
 }
