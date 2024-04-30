@@ -1,4 +1,4 @@
-import vscode, { TextDocument, Uri } from "vscode";
+import vscode, { TextDocument, TextEditor, Uri } from "vscode";
 
 export interface SearchElement {
 	uri: Uri,
@@ -49,5 +49,13 @@ export class SearchElementBuilder {
 		const end = new vscode.Position(cursorPosition.line, document.lineAt(cursorPosition.line).range.end.character);
 		const range = new vscode.Range(cursorPosition, end);
 		return document.getText(range);
+	}
+
+	static from(activeTextEditor: TextEditor | undefined) {
+		if (!activeTextEditor) {
+			throw new Error("No active text editor found");
+		}
+
+		return new SearchElementBuilder(activeTextEditor);
 	}
 }

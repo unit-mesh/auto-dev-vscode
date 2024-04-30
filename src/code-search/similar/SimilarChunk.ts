@@ -3,27 +3,32 @@ import path from "path";
 import { SearchElement } from "./SearchElement";
 
 export class SimilarChunk {
+	// singleton
+	private static instance_: SimilarChunk;
+	private constructor() {
+	}
+
+	public static instance(): SimilarChunk {
+		if (!SimilarChunk.instance_) {
+			SimilarChunk.instance_ = new SimilarChunk();
+		}
+
+		return SimilarChunk.instance_;
+	}
+
 	maxRelevantFiles: number = 20;
 	snippetLength: number = 60;
 
-	constructor(maxRelevantFiles: number = 20, snippetLength: number = 60) {
-		this.maxRelevantFiles = maxRelevantFiles;
-		this.snippetLength = snippetLength;
-	}
-
 	query(element: SearchElement): string[] {
-		let uri = element.uri;
-		let languageId = element.languageId;
-		let document = element.document;
-
-		let similarChunks = this.similarChunksWithPaths(document, uri);
+		let similarChunks = this.similarChunksWithPaths(element);
+		// todo: handle for length
 		return similarChunks;
 	}
 
-	private similarChunksWithPaths(element: TextDocument, uri: Uri): string [] {
+	private similarChunksWithPaths(element: SearchElement): string [] {
 		let mostRecentFiles = this.getMostRecentFiles(element.languageId);
 		let mostRecentFilesRelativePaths = mostRecentFiles.map(it => this.relativePathTo(it.uri));
-		let chunks = this.extractChunks(element, mostRecentFiles);
+		let chunks = this.extractChunks(mostRecentFiles);
 
 		let jaccardSimilarities = this.tokenLevelJaccardSimilarity(chunks, element);
 
@@ -39,7 +44,7 @@ export class SimilarChunk {
 		return chunksList;
 	}
 
-	private extractChunks(element: TextDocument, mostRecentFiles: TextDocument[]) {
+	private extractChunks(mostRecentFiles: TextDocument[]) {
 		return mostRecentFiles.map(file => {
 			return file.getText().split("\n", this.snippetLength).map(line => {
 				return line.trim();
@@ -63,8 +68,8 @@ export class SimilarChunk {
 		return path.relative(workspaceFolder.uri.fsPath, relativeFileUri.fsPath);
 	}
 
-	private tokenLevelJaccardSimilarity(chunks: string[][], element: any): number[][] {
-		const currentFileTokens: Set<string> = new Set(this.tokenize(element.containingFile.text));
+	private tokenLevelJaccardSimilarity(chunks: string[][], element: SearchElement): number[][] {
+		const currentFileTokens: Set<string> = new Set(this.tokenize(element.beforeCursor));
 		return chunks.map(list => {
 			return list.map(it => {
 				const tokenizedFile: Set<string> = new Set(this.tokenize(it));

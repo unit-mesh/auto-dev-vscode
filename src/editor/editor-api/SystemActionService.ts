@@ -3,10 +3,13 @@ import { window } from "vscode";
 import { Service } from "../../service/Service";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { channel } from "../../channel";
+import { SearchElementBuilder } from "../../code-search/similar/SearchElement";
+import { SimilarChunk } from "../../code-search/similar/SimilarChunk";
 
 export enum SystemAction {
 	Indexing = "Indexing codebase",
-	Search = "Search by intention",
+	IntentionSemanticSearch = "Intention-based semantic search",
+	SimilarCodeSearch = "Search for similar code",
 }
 
 export type SystemActionHandler = (extension: AutoDevExtension) => void;
@@ -33,7 +36,8 @@ export class SystemActionService implements Service {
 
 		const items: { [key: string]: SystemActionHandler } = {
 			[SystemAction.Indexing]: this.indexingAction.bind(this),
-			[SystemAction.Search]: this.searchAction.bind(this),
+			[SystemAction.IntentionSemanticSearch]: this.intentionSemanticSearch.bind(this),
+			[SystemAction.SimilarCodeSearch]: this.searchSimilarCode.bind(this),
 		};
 
 		pick.items = Object.keys(items).map(label => ({ label }));
@@ -53,7 +57,7 @@ export class SystemActionService implements Service {
 		channel.append("TODO: Indexing...");
 	}
 
-	async searchAction(extension: AutoDevExtension) {
+	async intentionSemanticSearch(extension: AutoDevExtension) {
 		let inputBox = window.createInputBox();
 
 		inputBox.title = "Search for similar code";
@@ -69,5 +73,11 @@ export class SystemActionService implements Service {
 
 		inputBox.onDidHide(() => inputBox.dispose());
 		inputBox.show();
+	}
+
+	async searchSimilarCode(extension: AutoDevExtension) {
+		let searchElement = SearchElementBuilder.from(window.activeTextEditor).build();
+		let queryResult = SimilarChunk.instance().query(searchElement);
+		channel.append("Similar code search result: \n" + queryResult.join("\n") + "\n");
 	}
 }
