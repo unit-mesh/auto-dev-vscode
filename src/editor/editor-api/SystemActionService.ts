@@ -4,7 +4,7 @@ import { Service } from "../../service/Service";
 import { AutoDevExtension } from "../../AutoDevExtension";
 
 export enum SystemAction {
-	Indexing = "Indexing",
+	Search = "Search",
 }
 
 export type SystemActionHandler = (extension: AutoDevExtension) => void;
@@ -27,7 +27,7 @@ export class SystemActionService implements Service {
 		let pick = window.createQuickPick();
 
 		const items: { [key: string]: SystemActionHandler } = {
-			[SystemAction.Indexing]: this.indexAction.bind(this),
+			[SystemAction.Search]: this.searchAction.bind(this),
 		};
 
 		pick.items = Object.keys(items).map(label => ({ label }));
@@ -43,7 +43,18 @@ export class SystemActionService implements Service {
 		pick.show();
 	}
 
-	async indexAction(extension: AutoDevExtension) {
-		console.log("Indexing action");
+	async searchAction(extension: AutoDevExtension) {
+		let inputBox = window.createInputBox();
+
+		inputBox.title = "Search for similar code";
+
+		inputBox.onDidAccept(async () => {
+			const query = inputBox.value;
+			extension.sidebar.webviewProtocol?.request("search", { query });
+			inputBox.hide();
+		});
+
+		inputBox.onDidHide(() => inputBox.dispose());
+		inputBox.show();
 	}
 }
