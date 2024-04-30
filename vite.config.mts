@@ -36,6 +36,10 @@ export default defineConfig((api) => {
             src: "src/semantic/**/*.scm",
             dest: "semantic",
           },
+          {
+            src: "models/",
+            dest: "",
+          },
         ],
       }),
     ],

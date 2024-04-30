@@ -12,7 +12,7 @@ export class CodebaseIndexer {
 			// embeddingProvider.embed(["test"]);
 
 			let localInference = new LocalInference();
-			localInference.embed("test");
+			localInference.embed("hello, world");
 		} catch (e) {
 			console.error(e);
 		}
