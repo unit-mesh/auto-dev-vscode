@@ -2,16 +2,15 @@ import { CodebaseIndex, IndexingProgressUpdate } from "./indexing/CodebaseIndex"
 import { ChunkCodebaseIndex } from "./indexing/ChunkCodebaseIndex";
 import { FullTextSearchCodebaseIndex } from "./indexing/FullTextSearchCodebaseIndex";
 import { CodeSnippetsCodebaseIndex } from "./indexing/CodeSnippetsCodebaseIndex";
-import { LocalInference } from "./embedding/LocalInference";
 
 export class CodebaseIndexer {
 	async init() {
-		try {
-			let localInference = new LocalInference();
-			await localInference.init();
-		} catch (e) {
-			console.error(e);
-		}
+		// try {
+		// 	let localInference = new LocalEmbeddingProvider();
+		// 	await localInference.init();
+		// } catch (e) {
+		// 	console.error(e);
+		// }
 	}
 
 	private async getIndexesToBuild(): Promise<CodebaseIndex[]> {

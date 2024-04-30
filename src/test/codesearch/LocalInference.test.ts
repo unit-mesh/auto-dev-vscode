@@ -1,8 +1,8 @@
-import { LocalInference } from "../../code-search/embedding/LocalInference";
+import { LocalEmbeddingProvider } from "../../code-search/embedding/LocalEmbeddingProvider";
 
 describe('LocalInference', () => {
 	it.skip('should encoding', async () => {
-		let localInference = new LocalInference();
+		let localInference = new LocalEmbeddingProvider();
 		await localInference.init();
 		let promise = await localInference.embed("test");
 		console.log(promise);

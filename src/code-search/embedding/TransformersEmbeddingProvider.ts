@@ -1,7 +1,7 @@
 import path from "path";
 import { Embedding } from "./_base/Embedding";
 
-import { LocalEmbeddingProvider } from "./_base/LocalEmbeddingProvider";
+import { BaseEmbeddingProvider } from "./_base/BaseEmbeddingProvider";
 import { channel } from "../../channel";
 
 class EmbeddingsPipeline {
@@ -31,7 +31,11 @@ class EmbeddingsPipeline {
 	}
 }
 
-export class TransformersEmbeddingProvider implements LocalEmbeddingProvider {
+/**
+ * @deprecated Please use @{link LocalEmbeddingProvider} instead.
+ *
+ */
+export class TransformersEmbeddingProvider implements BaseEmbeddingProvider {
 	id = "transformersJs";
 
 	static MaxGroupSize: number = 4;

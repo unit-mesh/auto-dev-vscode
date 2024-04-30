@@ -2,16 +2,19 @@ import path from "path";
 
 import { InferenceSession, Tensor as ONNXTensor } from "onnxruntime-common";
 import { mean_pooling, reshape } from "./meanPooling";
+import { EmbeddingsProvider } from "./_base/EmbeddingsProvider";
+import { Embedding } from "./_base/Embedding";
 
 const ort = require('onnxruntime-node');
 
-export class LocalInference {
+export class LocalEmbeddingProvider implements EmbeddingsProvider {
+	id: string = "local";
 	env: any;
 	tokenizer: any;
 	session: InferenceSession | undefined;
 
 	async init() {
-		const { env, AutoTokenizer, Tensor } = await import('@xenova/transformers');
+		const { env, AutoTokenizer } = await import('@xenova/transformers');
 		this.env = env;
 		env.allowLocalModels = true;
 		let modelPath = path.join(__dirname, "models", "all-MiniLM-L6-v2", "onnx", "model_quantized.onnx");
@@ -25,7 +28,18 @@ export class LocalInference {
 		});
 	}
 
-	async embed(sequence: string): Promise<any> {
+	async embed(chunks: string[]): Promise<Embedding[]> {
+		let embeddings = [];
+		for (let i = 0; i < chunks.length; i++) {
+			let chunk = chunks[i];
+			let embedding = await this.embedChunk(chunk);
+			embeddings.push(embedding);
+		}
+
+		return embeddings;
+	}
+
+	private async embedChunk(sequence: string) {
 		const { Tensor } = await import('@xenova/transformers');
 		let encodings = this.tokenizer(sequence);
 

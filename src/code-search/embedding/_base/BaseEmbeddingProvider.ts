@@ -1,7 +1,7 @@
 import { Embedding } from "./Embedding";
 import { EmbeddingsProvider } from "./EmbeddingsProvider";
 
-export class LocalEmbeddingProvider implements EmbeddingsProvider {
+export class BaseEmbeddingProvider implements EmbeddingsProvider {
 	id: string;
 
 	constructor(id: string) {
