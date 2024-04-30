@@ -15,7 +15,7 @@ class EmbeddingsPipeline {
 	static instance: any | null = null;
 
 	static async getInstance() {
-		// (window  as any).ONNX = ONNX_NODE.default;
+		(window  as any).ONNX = ONNX_NODE.default;
 		const { env, pipeline } = await import("@xenova/transformers");
 		channel.appendLine("onnx backends: " + env.backends.onnx);
 

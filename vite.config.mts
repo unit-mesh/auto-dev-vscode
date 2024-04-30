@@ -25,6 +25,10 @@ export default defineConfig((api) => {
             dest: "tree-sitter-wasms",
           },
           {
+            src: "node_modules/onnxruntime-node/bin",
+            dest: "",
+          },
+          {
             src: "node_modules/web-tree-sitter/*.wasm",
             dest: "",
           },
