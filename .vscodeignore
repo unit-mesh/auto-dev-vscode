@@ -16,5 +16,4 @@ pnpm-lock.yaml
 gui-sidebar/**
 semantic/**
 coverage/**
-extension-manual-tests
-docs/
+extension-manual-tests/

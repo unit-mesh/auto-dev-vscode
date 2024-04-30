@@ -73,11 +73,15 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
         - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike ?
             - [vectordb](https://www.npmjs.com/package/vectordb) ?
         - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike ?
-- [ ] Extensions 
-    - [x] Gradle 
+- [ ] Extensions
+    - [x] Build Tools
+        - Gradle
     - [ ] Database
     - [ ] Terminal
     - [ ] UI
+- [ ] Docs with RAG
+    - [ ] Auto Generate doc based on sourcecode
+    - [ ] Ask for AutoDev doc
 - [ ] l18n
     -  [x] init
 
