@@ -62,9 +62,9 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [ ] Custom Agent
     - [ ] Custom Agent API
 - [ ] Local Text Search
-    - [ ] TF-IDF
+    - [x] TF-IDF
         - [natural](https://naturalnode.github.io/natural/tfidf.html)
-    - [ ] Simple Text Embedding
+    - [x] Simple Text Embedding
 - [ ] Local Semantic Search
     - [ ] ONNX Runtime
     - [ ] Transformer.js
