@@ -12,9 +12,9 @@ export default defineConfig((api) => {
     plugins: [
       externalizeDeps({
         deps: false,
-        include: ["vscode"],
+        include: ["vscode", 'onnxruntime-node'],
         except: [
-          "web-tree-sitter",
+          "web-tree-sitter"
         ]
       }),
       isDev && dts(),
