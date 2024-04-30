@@ -27,7 +27,7 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
     - [x] ChatContext
     - [x] Structurer
     - [ ] RelatedCode
-    - [ ] SimilarChunk?
+    - [x] SimilarChunk
 - [ ] Chat mode
     - [x] Chat UI
     - [ ] Chat with selection
