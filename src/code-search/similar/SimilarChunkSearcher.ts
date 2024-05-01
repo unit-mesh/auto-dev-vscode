@@ -1,7 +1,7 @@
 import vscode, { TextDocument, Uri } from "vscode";
 import path from "path";
-import { SimilarSearchElement } from "./SimilarSearchElement";
-import { SimilarTokenizer } from "./SimilarTokenizer";
+import { SimilarChunkTokenizer } from "./SimilarChunkTokenizer";
+import { SimilarSearchElement } from "./SimilarSearchElementBuilder";
 
 export class SimilarChunkSearcher {
 	private static instance_: SimilarChunkSearcher;
@@ -86,7 +86,7 @@ export class SimilarChunkSearcher {
 	}
 
 	tokenize(input: string): Set<string> {
-		return SimilarTokenizer.instance().tokenize(input);
+		return SimilarChunkTokenizer.instance().tokenize(input);
 	}
 
 	private similarityScore(set1: Set<string>, set2: Set<string>): number {

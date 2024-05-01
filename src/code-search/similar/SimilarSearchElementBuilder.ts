@@ -1,5 +1,13 @@
-import vscode, { TextDocument, TextEditor } from "vscode";
-import { SimilarSearchElement } from "./SimilarSearchElement";
+import vscode, { TextDocument, TextEditor, Uri } from "vscode";
+
+export interface SimilarSearchElement {
+	uri: Uri,
+	beforeCursor: string,
+	afterCursor: string,
+	languageId: string,
+	path: string,
+	document: TextDocument
+}
 
 /**
  * The `SearchElementGenerator` class is used to generate a search element from a given text editor.

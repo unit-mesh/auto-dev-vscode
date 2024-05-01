@@ -1,10 +1,10 @@
-export class SimilarTokenizer {
+export class SimilarChunkTokenizer {
 	// singletons
-	private static instance_: SimilarTokenizer;
+	private static instance_: SimilarChunkTokenizer;
 
 	static instance() {
 		if (!this.instance_) {
-			this.instance_ = new SimilarTokenizer();
+			this.instance_ = new SimilarChunkTokenizer();
 		}
 		return this.instance_;
 	}
