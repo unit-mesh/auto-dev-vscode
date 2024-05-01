@@ -133,7 +133,7 @@ const zephyrTemplateMessages = templateFactory(
     "<|assistant|>\n",
     "</s>\n",
     undefined,
-    "<|settings|> </s>\n",
+    "<|system|> </s>\n",
 );
 
 const chatmlTemplateMessages = templateFactory(
@@ -214,7 +214,7 @@ const openchatTemplateMessages = templateFactory(
  * Chat templates used by https://huggingface.co/TheBloke/XwinCoder-13B-GPTQ
  *
 
- <settings>: You are an AI coding assistant that helps people with programming. Write a response that appropriately completes the user's request.
+ <system>: You are an AI coding assistant that helps people with programming. Write a response that appropriately completes the user's request.
  <user>: {prompt}
  <AI>:
  */
@@ -224,7 +224,7 @@ const xWinCoderTemplateMessages = templateFactory(
     "\n<AI>: ",
     "",
     undefined,
-    "<settings>: You are an AI coding assistant that helps people with programming. Write a response that appropriately completes the user's request.",
+    "<system>: You are an AI coding assistant that helps people with programming. Write a response that appropriately completes the user's request.",
 );
 
 /**
@@ -239,7 +239,7 @@ const neuralChatTemplateMessages = templateFactory(
 );
 
 /**
- '<s>Source: settings\n\n System prompt <step> Source: user\n\n First user query <step> Source: assistant\n\n Model response to first query <step> Source: user\n\n Second user query <step> Source: assistant\nDestination: user\n\n '
+ '<s>Source: system\n\n System prompt <step> Source: user\n\n First user query <step> Source: assistant\n\n Model response to first query <step> Source: user\n\n Second user query <step> Source: assistant\nDestination: user\n\n '
  */
 function codeLlama70bTemplateMessages(msgs: ChatMessage[]): string {
     let prompt = "<s>";

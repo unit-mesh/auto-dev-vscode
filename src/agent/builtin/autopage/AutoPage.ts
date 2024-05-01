@@ -4,7 +4,7 @@ import { UserProjectComponent } from "./UserProjectComponent";
 
 /**
  * FrontendFlow is an interface that represents the flow of tasks in a frontend application.
- * It provides methods for retrieving routes, components, design settings components, remote calls, and state management.
+ * It provides methods for retrieving routes, components, design system components, remote calls, and state management.
  *
  * Based on our workflow design rules: [Workflow](http://ide.unitmesh.cc/workflow)
  *
@@ -36,9 +36,9 @@ export interface AutoPage extends TaskFlow<string> {
 	getComponents(): UserProjectComponent[];
 
 	/**
-	 * Get the design settings components, like the Ant Design in React.
-	 * Which will load the design settings components from the remote
-	 * @return list of design settings components
+	 * Get the design system components, like the Ant Design in React.
+	 * Which will load the design system components from the remote
+	 * @return list of design system components
 	 */
 	getDesignSystemComponents(): UserProjectComponent[];
 

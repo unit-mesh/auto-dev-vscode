@@ -8,7 +8,7 @@ import { AutoDocActionExecutor } from "./editor/action/autodoc/AutoDocActionExec
 import { AutoTestActionExecutor } from "./editor/action/autotest/AutoTestActionExecutor";
 import { NamedElementBuilder } from "./editor/ast/NamedElementBuilder";
 import { QuickActionService } from "./editor/editor-api/QuickAction";
-import { SystemActionService } from "./editor/action/settings/SystemActionService";
+import { SystemActionService } from "./editor/editor-api/SystemActionService";
 
 const commandsMap: (
   extension: AutoDevExtension

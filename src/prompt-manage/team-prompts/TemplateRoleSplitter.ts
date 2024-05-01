@@ -6,7 +6,7 @@
  *
  * For example:
  *
- * ```settings```
+ * ```system```
  * You are a helpful assistant.
  *
  * ```user```
@@ -14,7 +14,7 @@
  *
  * Will be split to:
  * {
- *    "settings": "You are a helpful assistant.",
+ *    "system": "You are a helpful assistant.",
  *    "user": "${question}"
  * }
  *

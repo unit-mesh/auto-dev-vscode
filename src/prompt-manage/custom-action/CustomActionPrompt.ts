@@ -48,7 +48,7 @@ export class CustomActionPrompt {
 	 * key1: value1
 	 * key2: value2
 	 * ---
-	 * ```settings```
+	 * ```system```
 	 * Chat message 1
 	 * ```user```
 	 * Chat message 2
@@ -63,7 +63,7 @@ export class CustomActionPrompt {
 	 * The content is expected to have a specific format. It should start with front-matter enclosed in triple dashes (---),
 	 * followed by a newline, and then the chat messages. The front-matter should be in YAML format, with each key-value pair
 	 * on a separate line. The chat messages should be enclosed in triple backticks (```) and should have a role specifier
-	 * (e.g., "settings" or "user") followed by the message content on a new line. Each chat message should be separated by a newline.
+	 * (e.g., "system" or "user") followed by the message content on a new line. Each chat message should be separated by a newline.
 	 *
 	 * If the content does not contain front-matter, the method assumes that the entire content is chat messages and parses it accordingly.
 	 *

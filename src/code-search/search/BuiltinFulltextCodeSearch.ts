@@ -7,7 +7,7 @@ import { SearchOptions } from "./_base/SearchOptions";
  * This class is designed to perform full-text code searches in a given set of items.
  *
  * @remarks
- * This class is part of the built-in functionality of the settings and is exported for use in other modules.
+ * This class is part of the built-in functionality of the system and is exported for use in other modules.
  */
 export class BuiltinFulltextCodeSearch implements SemanticSearch {
 	searchChunks(items: string[], maxResults: number, options: SearchOptions, cancellationToken: CancellationToken): Promise<any[]> {

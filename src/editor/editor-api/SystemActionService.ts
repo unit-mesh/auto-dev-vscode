@@ -1,11 +1,18 @@
 import { window } from "vscode";
 
-import { Service } from "../../../service/Service";
-import { AutoDevExtension } from "../../../AutoDevExtension";
-import { channel } from "../../../channel";
-import { SearchElementBuilder } from "../../../code-search/similar/SearchElement";
-import { SimilarChunk } from "../../../code-search/similar/SimilarChunk";
-import { SystemAction, SystemActionHandler } from "./SystemAction";
+import { Service } from "../../service/Service";
+import { AutoDevExtension } from "../../AutoDevExtension";
+import { channel } from "../../channel";
+import { SearchElementBuilder } from "../../code-search/similar/SearchElement";
+import { SimilarChunk } from "../../code-search/similar/SimilarChunk";
+
+export enum SystemAction {
+	Indexing = "Indexing codebase",
+	IntentionSemanticSearch = "Intention-based semantic search",
+	SimilarCodeSearch = "Search for similar code",
+}
+
+export type SystemActionHandler = (extension: AutoDevExtension) => void;
 
 /**
  * A better example will be: [QuickInput Sample](https://github.com/microsoft/vscode-extension-samples/tree/main/quickinput-sample)
