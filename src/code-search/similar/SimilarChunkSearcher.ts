@@ -35,12 +35,12 @@ export class SimilarChunkSearcher {
 
 		let jaccardSimilarities = this.tokenLevelJaccardSimilarity(chunks, element);
 
-		// let paths: string[] = [];
+		let paths: string[] = [];
 		let chunksList: string[] = [];
 
 		jaccardSimilarities.forEach((jaccardList, fileIndex) => {
 			let maxIndex = jaccardList.indexOf(Math.max(...jaccardList));
-			// paths.push(mostRecentFilesRelativePaths[fileIndex]!!);
+			paths.push(mostRecentFilesRelativePaths[fileIndex]!!);
 			chunksList.push(chunks[fileIndex][maxIndex]);
 		});
 
@@ -78,14 +78,13 @@ export class SimilarChunkSearcher {
 		const currentFileTokens: Set<string> = new Set(this.tokenize(element.beforeCursor));
 		return chunks.map(list => {
 			return list.map(it => {
-				console.log(it);
 				const tokenizedFile: Set<string> = new Set(this.tokenize(it));
 				return this.similarityScore(currentFileTokens, tokenizedFile);
 			});
 		});
 	}
 
-	tokenize(input: string): Set<string> {
+	private tokenize(input: string): Set<string> {
 		return SimilarChunkTokenizer.instance().tokenize(input);
 	}
 
