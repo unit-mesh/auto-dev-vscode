@@ -39,7 +39,7 @@ $\{question}
 Thank you for using our system.
 `;
     const expectedOutput = {
-      system: 'Thank you for using our system.\n\n',
+      system: 'Thank you for using our settings.\n\n',
       user: '${question}\n\n',
     };
     const result = TemplateRoleSplitter.split(input);

@@ -661,7 +661,7 @@ export interface Config {
      * Continue will do the rest of the work to construct prompt templates, handle context items, prune context, etc.
      */
     models: (CustomLLM | ModelDescription)[];
-    /** A system message to be followed by all of your models */
+    /** A settings message to be followed by all of your models */
     systemMessage?: string;
     /** The default completion options for all models */
     completionOptions?: BaseCompletionOptions;
