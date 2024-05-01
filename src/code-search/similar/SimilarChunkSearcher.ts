@@ -1,12 +1,14 @@
 import vscode, { TextDocument, Uri } from "vscode";
 import path from "path";
-import { SimilarChunkTokenizer } from "./SimilarChunkTokenizer";
 import { SimilarSearchElement } from "./SimilarSearchElementBuilder";
+import { JaccardSimilarity } from "./algorithm/JaccardSimilarity";
+import { SimilarSearcher } from "./algorithm/SimilarSearcher";
 
-export class SimilarChunkSearcher {
+export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSearcher<TextDocument> {
 	private static instance_: SimilarChunkSearcher;
 
 	private constructor() {
+		super();
 	}
 
 	public static instance(): SimilarChunkSearcher {
@@ -33,7 +35,7 @@ export class SimilarChunkSearcher {
 
 		let chunks = this.extractChunks(mostRecentFiles);
 
-		let jaccardSimilarities = this.tokenLevelJaccardSimilarity(chunks, element);
+		let jaccardSimilarities = this.tokenLevelJaccardSimilarity(element.beforeCursor, chunks);
 
 		let paths: string[] = [];
 		let chunksList: string[] = [];
@@ -47,13 +49,13 @@ export class SimilarChunkSearcher {
 		return chunksList;
 	}
 
-	private extractChunks(mostRecentFiles: TextDocument[]) {
+	public extractChunks(mostRecentFiles: TextDocument[]) {
 		return mostRecentFiles.map(file => {
 			return file.getText().split("\n", this.snippetLength);
 		});
 	}
 
-	private getMostRecentFiles(languageId: string) {
+	public getMostRecentFiles(languageId: string) {
 		const filteredFiles = vscode.workspace.textDocuments.filter(file => {
 			return file.languageId === languageId;
 		});
@@ -72,26 +74,6 @@ export class SimilarChunkSearcher {
 		}
 
 		return path.relative(workspaceFolder.uri.fsPath, relativeFileUri.fsPath);
-	}
-
-	private tokenLevelJaccardSimilarity(chunks: string[][], element: SimilarSearchElement): number[][] {
-		const currentFileTokens: Set<string> = new Set(this.tokenize(element.beforeCursor));
-		return chunks.map(list => {
-			return list.map(it => {
-				const tokenizedFile: Set<string> = new Set(this.tokenize(it));
-				return this.similarityScore(currentFileTokens, tokenizedFile);
-			});
-		});
-	}
-
-	private tokenize(input: string): Set<string> {
-		return SimilarChunkTokenizer.instance().tokenize(input);
-	}
-
-	private similarityScore(set1: Set<string>, set2: Set<string>): number {
-		const intersectionSize: number = [...set1].filter(x => set2.has(x)).length;
-		const unionSize: number = new Set([...set1, ...set2]).size;
-		return intersectionSize / unionSize;
 	}
 }
 
