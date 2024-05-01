@@ -1,3 +1,4 @@
+import { TermSplitter } from "../search/tfidf/TermSplitter";
 
 /**
  * based on:
@@ -27,9 +28,17 @@ export class SimilarChunkTokenizer {
 	stopWordsSet = new Set([...this.stopWords, ...this.programmingKeywords, ...this.javaKeywords]);
 
 	tokenize(input: string): Set<string> {
-		return new Set(this.splitIntoWords(input).filter(word => !this.stopWordsSet.has(word)));
+		return new Set(this.splitIntoTerms(input).filter(word => !this.stopWordsSet.has(word)));
 	}
 
+	splitIntoTerms(input: string): string[] {
+		return TermSplitter.syncSplitTerms(input);
+	}
+
+	/**
+	 * @deprecated splitIntoWords is deprecated, use `splitIntoTerms` instead
+	 * @param input
+	 */
 	splitIntoWords(input: string): string[] {
 		return input.split(/[^a-zA-Z0-9]/).filter(word => word.length > 0);
 	}

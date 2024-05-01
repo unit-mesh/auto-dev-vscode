@@ -21,7 +21,7 @@ describe('SimilarChunkTokenizer', () => {
 	describe('tokenize', () => {
 		it('should return a set of unique words from the input string, excluding stop words and programming keywords', () => {
 			const input = 'this is a test function for SimilarChunkTokenizer';
-			const expectedOutput = new Set(['test', 'SimilarChunkTokenizer']);
+			const expectedOutput = new Set(['chunk', 'similar', 'tokenizer', 'test', 'similarchunktokenizer']);
 			expect(tokenizer.tokenize(input)).to.deep.equal(expectedOutput);
 		});
 
@@ -32,17 +32,17 @@ describe('SimilarChunkTokenizer', () => {
           System.out.println("Hello, World");
       }
   }`;
-      const expectedOutput: Set<string> = new Set([
-        "HelloWorld",
-        "void",
-        "main",
-        "String",
-        "args",
-        "System",
-        "println",
-        "Hello",
-        "World"
-      ]);
+			const expectedOutput: Set<string> = new Set([
+				"helloworld",
+				"void",
+				"main",
+				"string",
+				"args",
+				"system",
+				"println",
+				"hello",
+				"world"
+			]);
 			expect(tokenizer.tokenize(input)).to.deep.equal(expectedOutput);
 		});
 	});
