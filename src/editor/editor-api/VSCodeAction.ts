@@ -6,7 +6,7 @@ import { TextDecoder } from "node:util";
 import { GitAction } from "./GitAction";
 
 export class VSCodeAction implements IdeAction {
-  gitAction: GitAction = new GitAction();
+	git: GitAction = new GitAction();
 
 	async runCommand(command: string): Promise<void> {
 		if (vscode.window.terminals.length) {
@@ -50,10 +50,7 @@ export class VSCodeAction implements IdeAction {
 	}
 
 	getWorkspaceDirectories(): string[] {
-		return (
-			vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath) ||
-			[]
-		);
+		return (vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath) || []);
 	}
 
 	private static MAX_BYTES = 100000;
@@ -125,12 +122,12 @@ export class VSCodeAction implements IdeAction {
 		return this.isWindowsLocalButNotRemote() ? "/" : path.sep;
 	}
 
-  windowsToPosix(windowsPath: string): string {
-    let posixPath = windowsPath.split("\\").join("/");
-    if (posixPath[1] === ":") {
-      posixPath = posixPath.slice(2);
-    }
-    // posixPath = posixPath.replace(" ", "\\ ");
-    return posixPath;
-  }
+	windowsToPosix(windowsPath: string): string {
+		let posixPath = windowsPath.split("\\").join("/");
+		if (posixPath[1] === ":") {
+			posixPath = posixPath.slice(2);
+		}
+		// posixPath = posixPath.replace(" ", "\\ ");
+		return posixPath;
+	}
 }

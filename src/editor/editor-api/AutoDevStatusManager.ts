@@ -23,6 +23,24 @@ export class AutoDevStatusManager {
 		return AutoDevStatusManager._instance;
 	}
 
+	/**
+	 * The `setStatusBar` method is a public method that sets the status of the status bar in the application.
+	 * It takes a single parameter, `status`, which is of type `AutoDevStatus`.
+	 *
+	 * `AutoDevStatus` is an enumeration that represents the different states that the application can be in.
+	 * It includes the following states: `WAITING`, `Ready`, `InProgress`, `Error`, and `Done`.
+	 *
+	 * The method first checks if the `statusBar` exists. If it does, it sets the text of the `statusBar`
+	 * based on the `status` parameter passed to the method. The text is set using a switch statement that
+	 * checks the value of `status` and sets the text of the `statusBar` accordingly.
+	 *
+	 * If the `status` is `WAITING`, `Ready`, or `Done`, the text of the `statusBar` is set to "$(autodev-icon)".
+	 * If the `status` is `InProgress`, the text of the `statusBar` is set to "$(loading~spin)".
+	 * If the `status` is `Error`, the text of the `statusBar` is set to "$(autodev-error)".
+	 *
+	 * @param status - The status of the application, represented as a value from the `AutoDevStatus` enumeration.
+	 * @public
+	 */
 	public setStatusBar(status: AutoDevStatus) {
 		if (this.statusBar) {
 			switch (status) {

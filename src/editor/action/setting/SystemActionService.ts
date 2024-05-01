@@ -3,7 +3,7 @@ import { window } from "vscode";
 import { Service } from "../../../service/Service";
 import { AutoDevExtension } from "../../../AutoDevExtension";
 import { channel } from "../../../channel";
-import { SearchElementBuilder } from "../../../code-search/similar/SearchElement";
+import { SimilarSearchBuilder } from "../../../code-search/similar/SearchElement";
 import { SimilarChunk } from "../../../code-search/similar/SimilarChunk";
 import { SystemAction, SystemActionHandler } from "./SystemAction";
 
@@ -67,7 +67,7 @@ export class SystemActionService implements Service {
 	}
 
 	async searchSimilarCode(extension: AutoDevExtension) {
-		let searchElement = SearchElementBuilder.from(window.activeTextEditor).build();
+		let searchElement = SimilarSearchBuilder.from(window.activeTextEditor).build();
 		let queryResult = SimilarChunk.instance().query(searchElement);
 		channel.append("Similar code search result: \n" + queryResult.join("\n") + "\n");
 	}

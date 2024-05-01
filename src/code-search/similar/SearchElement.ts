@@ -13,7 +13,7 @@ export interface SearchElement {
  * The `SearchElementGenerator` class is used to generate a search element from a given text editor.
  * This class is part of the Visual Studio Code (vscode) extension API.
  */
-export class SearchElementBuilder {
+export class SimilarSearchBuilder {
 	private editor: vscode.TextEditor;
 
 	constructor(editor: vscode.TextEditor) {
@@ -56,6 +56,6 @@ export class SearchElementBuilder {
 			throw new Error("No active text editor found");
 		}
 
-		return new SearchElementBuilder(activeTextEditor);
+		return new SimilarSearchBuilder(activeTextEditor);
 	}
 }

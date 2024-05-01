@@ -3,11 +3,8 @@ import path from "path";
 import { SearchElement } from "./SearchElement";
 
 export class SimilarChunk {
-	// singleton
 	private static instance_: SimilarChunk;
-
-	private constructor() {
-	}
+	private constructor() {}
 
 	public static instance(): SimilarChunk {
 		if (!SimilarChunk.instance_) {
