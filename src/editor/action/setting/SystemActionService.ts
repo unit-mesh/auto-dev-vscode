@@ -3,9 +3,9 @@ import { window } from "vscode";
 import { Service } from "../../../service/Service";
 import { AutoDevExtension } from "../../../AutoDevExtension";
 import { channel } from "../../../channel";
-import { SimilarSearchBuilder } from "../../../code-search/similar/SearchElement";
-import { SimilarChunk } from "../../../code-search/similar/SimilarChunk";
+import { SimilarChunkSearcher } from "../../../code-search/similar/SimilarChunkSearcher";
 import { SystemAction, SystemActionHandler } from "./SystemAction";
+import { SimilarSearchElementBuilder } from "../../../code-search/similar/SimilarSearchElementBuilder";
 
 /**
  * A better example will be: [QuickInput Sample](https://github.com/microsoft/vscode-extension-samples/tree/main/quickinput-sample)
@@ -67,8 +67,8 @@ export class SystemActionService implements Service {
 	}
 
 	async searchSimilarCode(extension: AutoDevExtension) {
-		let searchElement = SimilarSearchBuilder.from(window.activeTextEditor).build();
-		let queryResult = SimilarChunk.instance().query(searchElement);
+		let searchElement = SimilarSearchElementBuilder.from(window.activeTextEditor).build();
+		let queryResult = SimilarChunkSearcher.instance().query(searchElement);
 		channel.append("Similar code search result: \n" + queryResult.join("\n") + "\n");
 	}
 }

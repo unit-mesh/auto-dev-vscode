@@ -1,29 +1,29 @@
 import vscode, { TextDocument, Uri } from "vscode";
 import path from "path";
-import { SearchElement } from "./SearchElement";
+import { SimilarSearchElement } from "./SimilarSearchElement";
 
-export class SimilarChunk {
-	private static instance_: SimilarChunk;
+export class SimilarChunkSearcher {
+	private static instance_: SimilarChunkSearcher;
 	private constructor() {}
 
-	public static instance(): SimilarChunk {
-		if (!SimilarChunk.instance_) {
-			SimilarChunk.instance_ = new SimilarChunk();
+	public static instance(): SimilarChunkSearcher {
+		if (!SimilarChunkSearcher.instance_) {
+			SimilarChunkSearcher.instance_ = new SimilarChunkSearcher();
 		}
 
-		return SimilarChunk.instance_;
+		return SimilarChunkSearcher.instance_;
 	}
 
 	maxRelevantFiles: number = 20;
 	snippetLength: number = 60;
 
-	query(element: SearchElement): string[] {
+	query(element: SimilarSearchElement): string[] {
 		let similarChunks = this.similarChunksWithPaths(element);
 		// todo: handle for length
 		return similarChunks;
 	}
 
-	private similarChunksWithPaths(element: SearchElement): string [] {
+	private similarChunksWithPaths(element: SimilarSearchElement): string [] {
 		let mostRecentFiles = this.getMostRecentFiles(element.languageId);
 		// todo: update for calculate the relative path
 		let mostRecentFilesRelativePaths = mostRecentFiles.map(it => this.relativePathTo(it.uri));
@@ -71,7 +71,7 @@ export class SimilarChunk {
 		return path.relative(workspaceFolder.uri.fsPath, relativeFileUri.fsPath);
 	}
 
-	private tokenLevelJaccardSimilarity(chunks: string[][], element: SearchElement): number[][] {
+	private tokenLevelJaccardSimilarity(chunks: string[][], element: SimilarSearchElement): number[][] {
 		const currentFileTokens: Set<string> = new Set(this.tokenize(element.beforeCursor));
 		return chunks.map(list => {
 			return list.map(it => {

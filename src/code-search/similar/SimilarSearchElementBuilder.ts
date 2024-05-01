@@ -1,26 +1,18 @@
-import vscode, { TextDocument, TextEditor, Uri } from "vscode";
-
-export interface SearchElement {
-	uri: Uri,
-	beforeCursor: string,
-	afterCursor: string,
-	languageId: string,
-	path: string,
-	document: TextDocument
-}
+import vscode, { TextDocument, TextEditor } from "vscode";
+import { SimilarSearchElement } from "./SimilarSearchElement";
 
 /**
  * The `SearchElementGenerator` class is used to generate a search element from a given text editor.
  * This class is part of the Visual Studio Code (vscode) extension API.
  */
-export class SimilarSearchBuilder {
+export class SimilarSearchElementBuilder {
 	private editor: vscode.TextEditor;
 
 	constructor(editor: vscode.TextEditor) {
 		this.editor = editor;
 	}
 
-	build(): SearchElement {
+	build(): SimilarSearchElement {
 		const document = this.editor.document;
 		const cursorPosition = this.editor.selection.active;
 		const beforeCursor = this.getBeforeCursor(document, cursorPosition);
@@ -56,6 +48,6 @@ export class SimilarSearchBuilder {
 			throw new Error("No active text editor found");
 		}
 
-		return new SimilarSearchBuilder(activeTextEditor);
+		return new SimilarSearchElementBuilder(activeTextEditor);
 	}
 }
