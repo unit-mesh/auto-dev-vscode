@@ -300,6 +300,20 @@
         }
       ]
     },
+    "languages": [
+      {
+        "id": "DevIns",
+        "aliases": ["devins", "devin"],
+        "extensions": [".devins",".devin"]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "DevIns",
+        "scopeName": "text.ref",
+        "path": "syntaxes/DevIns.tmLanguage.json"
+      }
+    ],
     "icons": {
       "autodev-icon": {
         "description": "autodev icon",

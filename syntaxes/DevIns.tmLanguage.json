@@ -1,8 +1,9 @@
 {
-  "name": "Devin",
-  "scopeName": "text.devin",
+  "name": "DevIns",
+  "scopeName": "text.ref",
   "fileTypes": [
-    ".devin"
+    ".devin",
+    ".devins"
   ],
   "folding": {
     "markers": {
