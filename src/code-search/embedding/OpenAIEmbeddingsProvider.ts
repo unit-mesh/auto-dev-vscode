@@ -1,6 +1,6 @@
 import AuthedEmbeddingsProvider, { AuthedEmbedOptions } from "./_base/AuthedEmbeddingsProvider";
 
-export class OpenAIEmbedding extends AuthedEmbeddingsProvider {
+export class OpenAIEmbeddingsProvider extends AuthedEmbeddingsProvider {
 // https://platform.openai.com/docs/api-reference/embeddings/create is 2048
 	// but Voyage is 128
 	static maxBatchSize = 128;
@@ -23,10 +23,10 @@ export class OpenAIEmbedding extends AuthedEmbeddingsProvider {
 		for (
 			let i = 0;
 			i < chunks.length;
-			i += OpenAIEmbedding.maxBatchSize
+			i += OpenAIEmbeddingsProvider.maxBatchSize
 		) {
 			batchedChunks.push(
-				chunks.slice(i, i + OpenAIEmbedding.maxBatchSize),
+				chunks.slice(i, i + OpenAIEmbeddingsProvider.maxBatchSize),
 			);
 		}
 		return (

@@ -1,7 +1,7 @@
 import path from "path";
 import { Embedding } from "./_base/Embedding";
 
-import { BaseEmbeddingProvider } from "./_base/BaseEmbeddingProvider";
+import { BaseEmbeddingsProvider } from "./_base/BaseEmbeddingsProvider";
 import { channel } from "../../channel";
 
 class EmbeddingsPipeline {
@@ -35,7 +35,7 @@ class EmbeddingsPipeline {
  * @deprecated Please use @{link LocalEmbeddingProvider} instead.
  *
  */
-export class TransformersEmbeddingProvider implements BaseEmbeddingProvider {
+export class TransformersEmbeddingsProvider implements BaseEmbeddingsProvider {
 	id = "transformersJs";
 
 	static MaxGroupSize: number = 4;
@@ -55,11 +55,11 @@ export class TransformersEmbeddingProvider implements BaseEmbeddingProvider {
 		for (
 			let i = 0;
 			i < chunks.length;
-			i += TransformersEmbeddingProvider.MaxGroupSize
+			i += TransformersEmbeddingsProvider.MaxGroupSize
 		) {
 			let chunkGroup = chunks.slice(
 				i,
-				i + TransformersEmbeddingProvider.MaxGroupSize,
+				i + TransformersEmbeddingsProvider.MaxGroupSize,
 			);
 			let output = await extractor(chunkGroup, {
 				pooling: "mean",
