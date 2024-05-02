@@ -305,7 +305,11 @@
         "id": "DevIns",
         "aliases": ["devins", "devin"],
         "extensions": [".devins",".devin"],
-        "configuration": "syntaxes/language-configuration.json"
+        "configuration": "syntaxes/language-configuration.json",
+        "icon": {
+          "light": "./media/icon.svg",
+          "dark": "./media/autodev-dark.svg"
+        }
       }
     ],
     "grammars": [
