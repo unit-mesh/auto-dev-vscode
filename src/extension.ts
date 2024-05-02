@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-// FOR Dependency Injection with Inversify
+// for Dependency Injection with InversifyJS
 import "reflect-metadata";
 
 import { registerCommands } from "./commands";
@@ -58,7 +58,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	channel.show();
 
 	let codebaseIndexer = new CodebaseIndexer();
-	codebaseIndexer.init()
+	codebaseIndexer.init();
 }
 
 function bindingDocumentChange(documentManager: RecentlyDocumentManager) {
@@ -73,6 +73,7 @@ function bindingDocumentChange(documentManager: RecentlyDocumentManager) {
 	);
 
 	vscode.workspace.onDidCloseTextDocument(async (document: vscode.TextDocument) => {
+		// todos: remove document from cache
 	});
 }
 

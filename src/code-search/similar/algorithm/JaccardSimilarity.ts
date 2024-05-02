@@ -1,5 +1,13 @@
 import { SimilarChunkTokenizer } from "../SimilarChunkTokenizer";
 
+/**
+ * `JaccardSimilarity` is a TypeScript class that provides methods to calculate the Jaccard similarity between strings.
+ * Jaccard similarity is a measure of the similarity between two sets and is defined as the size of the intersection
+ * divided by the size of the union of the two sets.
+ *
+ * @export
+ * @class JaccardSimilarity
+ */
 export class JaccardSimilarity {
 	/**
 	 * The `tokenLevelJaccardSimilarity` method calculates the Jaccard similarity between a query string and an array of string

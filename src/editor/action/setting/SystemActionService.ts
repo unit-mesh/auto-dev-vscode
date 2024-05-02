@@ -1,10 +1,10 @@
 import { window } from "vscode";
 
+import { SystemAction, SystemActionHandler } from "./SystemAction";
 import { Service } from "../../../service/Service";
 import { AutoDevExtension } from "../../../AutoDevExtension";
 import { channel } from "../../../channel";
 import { SimilarChunkSearcher } from "../../../code-search/similar/SimilarChunkSearcher";
-import { SystemAction, SystemActionHandler } from "./SystemAction";
 import { SimilarSearchElementBuilder } from "../../../code-search/similar/SimilarSearchElementBuilder";
 
 /**
@@ -46,10 +46,6 @@ export class SystemActionService implements Service {
 		pick.show();
 	}
 
-	private async indexingAction(extension: AutoDevExtension) {
-		channel.append("TODO: Indexing...");
-	}
-
 	async intentionSemanticSearch(extension: AutoDevExtension) {
 		let inputBox = window.createInputBox();
 
@@ -70,5 +66,9 @@ export class SystemActionService implements Service {
 		let searchElement = SimilarSearchElementBuilder.from(window.activeTextEditor).build();
 		let queryResult = SimilarChunkSearcher.instance().query(searchElement);
 		channel.append("Similar code search result: \n" + queryResult.join("\n") + "\n");
+	}
+
+	async indexingAction(extension: AutoDevExtension) {
+		channel.append("TODO: Indexing...");
 	}
 }

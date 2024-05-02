@@ -17,3 +17,9 @@ gui-sidebar/**
 semantic/**
 coverage/**
 extension-manual-tests/
+
+# ignore arm64 build for temporary
+dist/bin/napi-v3/linux/arm64
+dist/bin/napi-v3/win32/arm64
+
+models/
