@@ -1,4 +1,4 @@
-import { CodebaseIndex, IndexingProgressUpdate } from "./indexing/CodebaseIndex";
+import { CodebaseIndex, IndexingProgressUpdate } from "./indexing/_base/CodebaseIndex";
 import { ChunkCodebaseIndex } from "./indexing/ChunkCodebaseIndex";
 import { FullTextSearchCodebaseIndex } from "./indexing/FullTextSearchCodebaseIndex";
 import { CodeSnippetsCodebaseIndex } from "./indexing/CodeSnippetsCodebaseIndex";

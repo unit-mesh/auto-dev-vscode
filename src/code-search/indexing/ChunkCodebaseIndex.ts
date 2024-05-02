@@ -1,4 +1,4 @@
-import { CodebaseIndex, IndexTag, IndexingProgressUpdate } from "./CodebaseIndex";
+import { CodebaseIndex, IndexTag, IndexingProgressUpdate } from "./_base/CodebaseIndex";
 
 export class ChunkCodebaseIndex implements CodebaseIndex {
 	static artifactId: string = "chunks";

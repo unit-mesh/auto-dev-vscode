@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 import os from "os";
 
-import { CodebaseIndex, IndexTag, IndexingProgressUpdate, BranchAndDir } from "./CodebaseIndex";
+import { CodebaseIndex, IndexTag, IndexingProgressUpdate, BranchAndDir } from "./_base/CodebaseIndex";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { Chunk } from "../chunk/_base/Chunk";
 
@@ -39,7 +39,7 @@ export class LanceDbIndex implements CodebaseIndex {
 	}
 
 
-	update(tag: IndexTag, repoName: string | undefined): AsyncGenerator<IndexingProgressUpdate, any, unknown> {
+	update(tag: IndexTag, repoName: string | undefined): AsyncGenerator<IndexingProgressUpdate> {
 		throw new Error("Method not implemented.");
 	}
 
