@@ -374,6 +374,7 @@
     "openai": "^4.36.0",
     "reflect-metadata": "^0.2.2",
     "tokenizers": "^0.13.3",
+    "vectordb": "^0.1.19",
     "velocityjs": "^2.0.6",
     "vscode-gradle": "^3.10.1",
     "vscode-languageclient": "^9.0.1",
