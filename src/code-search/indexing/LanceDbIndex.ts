@@ -70,9 +70,7 @@ export class LanceDbIndex implements CodebaseIndex {
 			.replace(/\:/g, "");
 	}
 
-	private async* computeChunks(
-		items: PathAndCacheKey[],
-	): AsyncGenerator<| [number, LanceDbRow, {
+	private async* computeChunks(items: PathAndCacheKey[],): AsyncGenerator<| [number, LanceDbRow, {
 		startLine: number;
 		endLine: number;
 		contents: string
