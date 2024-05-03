@@ -8,9 +8,10 @@ import { PackageManger } from "./_base/PackageManger";
 import { VSCodeAction } from "../../editor/editor-api/VSCodeAction";
 import { GradleVersionInfo, parseGradleVersionInfo } from "./gradle/GradleVersionInfo";
 import { channel } from "../../channel";
+import { BaseBuildToolProvider } from "./_base/BaseBuildToolProvider";
 
 @injectable()
-export class GradleBuildToolProvider implements BuildToolProvider {
+export class GradleBuildToolProvider extends BaseBuildToolProvider {
 	moduleTarget = ["build.gradle", "build.gradle.kts"];
 
 	private gradleDepRegex: RegExp = /^([^:]+):([^:]+):(.+)$/;
@@ -26,29 +27,6 @@ export class GradleBuildToolProvider implements BuildToolProvider {
 		}
 
 		return GradleBuildToolProvider.instance_;
-	}
-
-	async isApplicable(): Promise<boolean> {
-		const workspaces = vscode.workspace.workspaceFolders;
-		if (!workspaces) {
-			return false;
-		}
-		const workspace = workspaces[0];
-		let hasTarget = false;
-		for (const target of this.moduleTarget) {
-			const targetPath = vscode.Uri.joinPath(workspace.uri, target);
-			try {
-				const targetFileType = await vscode.workspace.fs.stat(targetPath);
-				if (targetFileType.type === vscode.FileType.File) {
-					hasTarget = true;
-					break;
-				}
-			} catch (error) {
-				// do nothing
-			}
-		}
-
-		return hasTarget;
 	}
 
 	async startWatch() {

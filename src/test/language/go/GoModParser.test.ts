@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { GoModParser } from "../../../toolchain-context/buildtool/GoVersionParser";
+import { GoModParser } from "../../../toolchain-context/buildtool/go/GoVersionParser";
 import { PackageManger } from "../../../toolchain-context/buildtool/_base/PackageManger";
 
 describe('GoModParser', () => {

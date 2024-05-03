@@ -1,4 +1,4 @@
-import { goVersionParser } from "../../../toolchain-context/buildtool/GoVersionParser";
+import { goVersionParser } from "../../../toolchain-context/buildtool/go/GoVersionParser";
 
 describe('GoSupport', () => {
   describe('goVersionParser', () => {

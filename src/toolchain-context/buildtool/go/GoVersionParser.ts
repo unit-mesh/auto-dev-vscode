@@ -1,5 +1,5 @@
-import { DependencyEntry, PackageDependencies } from "./_base/Dependence";
-import { PackageManger } from "./_base/PackageManger";
+import { DependencyEntry, PackageDependencies } from "../_base/Dependence";
+import { PackageManger } from "../_base/PackageManger";
 
 /**
  * Parse the version info from `go version` command.

@@ -1,36 +1,11 @@
 import { injectable } from "inversify";
-import { BuildToolProvider } from "./_base/BuildToolProvider";
 import { PackageDependencies } from "./_base/Dependence";
-import vscode from "vscode";
-import { goVersionParser } from "./GoVersionParser";
+import { GoModParser, goVersionParser } from "./go/GoVersionParser";
+import { BaseBuildToolProvider } from "./_base/BaseBuildToolProvider";
 
 @injectable()
-export class GoBuildToolProvider implements BuildToolProvider {
+export class GoBuildToolProvider extends BaseBuildToolProvider {
 	moduleTarget: string[] = ["go.mod"];
-
-	async isApplicable(): Promise<boolean> {
-		const workspaces = vscode.workspace.workspaceFolders;
-		if (!workspaces) {
-			return false;
-		}
-		const workspace = workspaces[0];
-
-		let hasTarget = false;
-		for (const target of this.moduleTarget) {
-			const targetPath = vscode.Uri.joinPath(workspace.uri, target);
-			try {
-				const targetFileType = await vscode.workspace.fs.stat(targetPath);
-				if (targetFileType.type === vscode.FileType.File) {
-					hasTarget = true;
-					break;
-				}
-			} catch (error) {
-				// do nothing
-			}
-		}
-
-		return hasTarget;
-	}
 
 	getToolingName(): string {
 		return "Go Mod";
@@ -59,8 +34,9 @@ export class GoBuildToolProvider implements BuildToolProvider {
 		});
 	}
 
-	getDependencies(): Promise<PackageDependencies> {
-		throw new Error("Method not implemented.");
+	async getDependencies(): Promise<PackageDependencies> {
+		const source = await this.getTargetContent(this.moduleTarget[0]);
+		return new GoModParser().lookupSource(source)[0] || { dependencies: [] };
 	}
 
 	getTasks(): Promise<string[]> {
