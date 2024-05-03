@@ -14,13 +14,13 @@ export interface DomainTerm {
 }
 
 export class DomainTermService {
-	loadCsv(): DomainTerm[] {
+	from(paths: string = 'domain_terms.csv'): DomainTerm[] {
 		const workspace = vscode.workspace.workspaceFolders?.[0];
 		if (!workspace) {
 			throw new Error('No workspace found');
 		}
 
-		const csvPath = path.join(workspace.uri.fsPath, 'data', 'domain_terms.csv');
+		const csvPath = path.join(workspace.uri.fsPath, paths);
 
 		const file = fs.createReadStream(csvPath);
 
