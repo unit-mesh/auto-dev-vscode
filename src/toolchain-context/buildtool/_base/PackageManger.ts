@@ -1,6 +1,7 @@
 export enum PackageManger {
-	MAVEN,
-	GRADLE,
-	NPM,
-	YARN
+	MAVEN = "maven",
+	GRADLE = "gradle",
+	GoMod = "go_mod",
+	NPM = "npm",
+	YARN = "yarn",
 }
