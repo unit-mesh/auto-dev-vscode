@@ -3,11 +3,19 @@ import fs from "fs";
 import os from "os";
 import { v4 as uuidv4 } from "uuid";
 
-import { CodebaseIndex, IndexTag, IndexingProgressUpdate } from "./_base/CodebaseIndex";
+import {
+	CodebaseIndex,
+	IndexTag,
+	IndexingProgressUpdate,
+	tagToString,
+	PathAndCacheKey,
+	RefreshIndexResults, MarkCompleteCallback, IndexResultType
+} from "./_base/CodebaseIndex";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { Chunk } from "../chunk/_base/Chunk";
 import { MAX_CHUNK_SIZE } from "../constants";
 import { ChunkerManager } from "../chunk/ChunkerManager";
+import { Table } from "vectordb";
 
 export function getAutoDevGlobalPath(): string {
 	// This is ~/.autodev on mac/linux
@@ -30,13 +38,6 @@ export function getLanceDbPath(): string {
 	return path.join(getIndexFolderPath(), "lancedb");
 }
 
-export enum IndexResultType {
-	Compute = "compute",
-	Delete = "del",
-	AddTag = "addTag",
-	RemoveTag = "removeTag",
-}
-
 // LanceDB  converts to lowercase, so names must all be lowercase
 interface LanceDbRow {
 	uuid: string;
@@ -46,11 +47,6 @@ interface LanceDbRow {
 
 	[key: string]: any;
 }
-
-export type PathAndCacheKey = {
-	path: string;
-	cacheKey: string;
-};
 
 export function getBasename(filepath: string, n: number = 1): string {
 	return filepath.split(/[\\/]/).pop() ?? "";
@@ -65,6 +61,13 @@ export class LanceDbIndex implements CodebaseIndex {
 		private readonly embeddingsProvider: EmbeddingsProvider,
 		private readonly readFile: (filepath: string) => Promise<string>,
 	) {
+	}
+
+	private tableNameForTag(tag: IndexTag) {
+		return tagToString(tag)
+			.replace(/\//g, "")
+			.replace(/\\/g, "")
+			.replace(/\:/g, "");
 	}
 
 	private async* computeChunks(
@@ -128,8 +131,68 @@ export class LanceDbIndex implements CodebaseIndex {
 		}
 	}
 
-	update(tag: IndexTag, repoName: string | undefined): AsyncGenerator<IndexingProgressUpdate, any, unknown> {
-		throw new Error("Method not implemented.");
+	async* update(tag: IndexTag,
+	             results: RefreshIndexResults,
+	             markComplete: MarkCompleteCallback,
+	             repoName: string | undefined
+	): AsyncGenerator<IndexingProgressUpdate> {
+		const lancedb = await import("vectordb");
+		const tableName = this.tableNameForTag(tag);
+		const db = await lancedb.connect(getLanceDbPath());
+
+		// Compute
+		let table: Table<number[]> | undefined = undefined;
+		let needToCreateTable = true;
+		const existingTables = await db.tableNames();
+
+		const addComputedLanceDbRows = async (
+			pathAndCacheKey: PathAndCacheKey,
+			computedRows: LanceDbRow[],
+		) => {
+			// Create table if needed, add computed rows
+			if (table) {
+				if (computedRows.length > 0) {
+					await table.add(computedRows);
+				}
+			} else if (existingTables.includes(tableName)) {
+				table = await db.openTable(tableName);
+				needToCreateTable = false;
+				if (computedRows.length > 0) {
+					await table.add(computedRows);
+				}
+			} else if (computedRows.length > 0) {
+				table = await db.createTable(tableName, computedRows);
+				needToCreateTable = false;
+			}
+
+			markComplete([pathAndCacheKey], IndexResultType.Compute);
+		};
+
+		let computedRows: LanceDbRow[] = [];
+		for await (const update of this.computeChunks(results.compute)) {
+			if (Array.isArray(update)) {
+				const [progress, row, data, desc] = update;
+				computedRows.push(row);
+
+				yield { progress, desc };
+			} else {
+				await addComputedLanceDbRows(update, computedRows);
+				computedRows = [];
+			}
+		}
+
+		// Delete or remove tag - remove from lance table)
+		if (!needToCreateTable) {
+			for (let { path, cacheKey } of [...results.removeTag, ...results.del]) {
+				// This is where the aforementioned lowercase conversion problem shows
+				await table!.delete(`cachekey = '${cacheKey}' AND path = '${path}'`);
+			}
+		}
+
+		markComplete(results.removeTag, IndexResultType.RemoveTag);
+
+		markComplete(results.del, IndexResultType.Delete);
+		yield { progress: 1, desc: "Completed Calculating Embeddings" };
 	}
 
 }
