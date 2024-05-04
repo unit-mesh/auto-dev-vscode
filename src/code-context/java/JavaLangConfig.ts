@@ -66,6 +66,15 @@ export const JavaLangConfig: LanguageConfig = {
           @method-params)
         body: (block) @method-body
       )`),
+
+	fieldQuery: new MemoizedQuery(`
+		(field_declaration
+			(type_identifier) @field-type
+			(variable_declarator
+				(identifier) @field-name
+			)
+		) @field-declaration
+	`),
 	namespaces: [
 		[
 			// variables

@@ -1,5 +1,4 @@
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
-import { MemoizedQuery } from "../../code-context/_base/LanguageConfig";
 import { JavaLangConfig } from "../../code-context/java/JavaLangConfig";
 
 export class JavaRelevantLookup {
@@ -14,7 +13,7 @@ export class JavaRelevantLookup {
 	 * @param types
 	 * @param imports
 	 */
-	calculateRelevantClass(types: string[], imports: string[]): string[] {
+	calculateRelevantClass(types: string[], imports: string[], withFields: boolean = false): string[] {
 		const relevantImports = JavaRelevantLookup.filterByTypes(imports, types);
 
 		let calculatedImports = relevantImports.map(imp => {

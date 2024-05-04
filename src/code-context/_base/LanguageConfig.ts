@@ -36,6 +36,8 @@ export interface LanguageConfig {
   // method input and output query
   methodIOQuery?: MemoizedQuery;
 
+  fieldQuery?: MemoizedQuery;
+
   // structurer query
   structureQuery: MemoizedQuery;
 

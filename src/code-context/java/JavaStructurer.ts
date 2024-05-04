@@ -1,4 +1,4 @@
-import Parser, { Query } from "web-tree-sitter";
+import Parser, { Query, SyntaxNode } from "web-tree-sitter";
 import { injectable } from "inversify";
 
 import { createFunction, createVariable, insertLocation, Structurer } from "../_base/BaseStructurer";
@@ -8,6 +8,7 @@ import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../edito
 import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
+import { TreeSitterFile } from "../ast/TreeSitterFile";
 
 @injectable()
 export class JavaStructurer implements Structurer {
@@ -204,5 +205,35 @@ export class JavaStructurer implements Structurer {
 		});
 
 		return inputAndOutput;
+	}
+
+	async extractFields(node: SyntaxNode) {
+		const query = this.config.fieldQuery!!.query(this.language!!);
+		const captures = query!!.captures(node);
+
+		const fields: CodeVariable[] = [];
+		let fieldObj: CodeVariable = { name: '', typ: '' };
+
+		for (const element of captures) {
+			const capture: Parser.QueryCapture = element!!;
+			const text = capture.node.text;
+
+			switch (capture.name) {
+				case 'field-name':
+					fieldObj.name = text;
+					fields.push({ ...fieldObj });
+					fieldObj = { name: '', typ: '' };
+					break;
+				case 'field-type':
+					fieldObj.typ = text;
+					break;
+				case 'field-declaration':
+					break;
+				default:
+					break;
+			}
+		}
+
+		return fields;
 	}
 }
