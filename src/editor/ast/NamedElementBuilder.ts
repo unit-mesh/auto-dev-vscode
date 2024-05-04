@@ -1,4 +1,3 @@
-import vscode from "vscode";
 import Parser from "web-tree-sitter";
 
 import { NamedElement } from "./NamedElement";
@@ -6,7 +5,6 @@ import { TextInRange } from "./TextInRange";
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import { CodeElementType } from "../codemodel/CodeElementType";
-import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { previousNodesOfType } from "../../code-context/ast/TreeSitterUtil";
 
 /**
@@ -29,17 +27,12 @@ export class NamedElementBuilder {
 	parser: Parser | undefined = undefined;
 	private file: TreeSitterFile;
 
-	private constructor(file: TreeSitterFile) {
+	constructor(file: TreeSitterFile) {
 		this.langConfig = file.langConfig;
 		this.tree = file.tree;
 		this.language = file.language;
 		this.parser = file.parser;
 		this.file = file;
-	}
-
-	static async from(document: vscode.TextDocument): Promise<NamedElementBuilder> {
-		let file = await documentToTreeSitterFile(document);
-		return new NamedElementBuilder(file);
 	}
 
 	buildVariable(): NamedElement[] {

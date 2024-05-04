@@ -6,6 +6,7 @@ import { AutoDevExtension } from "../../AutoDevExtension";
 import { TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
 import { NamedElement } from "../ast/NamedElement";
 import { NamedElementBuilder } from "../ast/NamedElementBuilder";
+import { toNamedElementBuilder } from "../../code-context/ast/TreeSitterFileUtil";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 	constructor(private readonly context: AutoDevExtension) {
@@ -23,7 +24,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 				return [];
 			}
 
-			const builder = await NamedElementBuilder.from(document);
+			const builder = await toNamedElementBuilder(document);
 			const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
 			let lenses: vscode.CodeLens[] = [];
 

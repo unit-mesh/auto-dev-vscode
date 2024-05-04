@@ -5,6 +5,7 @@ import { CustomActionTemplateContext } from "./CustomActionTemplateContext";
 import { LANGUAGE_BLOCK_COMMENT_MAP, LANGUAGE_LINE_COMMENT_MAP } from "../../editor/language/LanguageCommentMap";
 import { ToolchainContextManager } from "../../toolchain-context/ToolchainContextManager";
 import { CreateToolchainContext } from "../../toolchain-context/ToolchainContextProvider";
+import { toNamedElementBuilder } from "../../code-context/ast/TreeSitterFileUtil";
 
 export class CustomActionContextBuilder {
 	public static async fromDocument(document: vscode.TextDocument): Promise<CustomActionTemplateContext> {
@@ -24,7 +25,7 @@ export class CustomActionContextBuilder {
 		const commentSymbol = LANGUAGE_LINE_COMMENT_MAP[language] || "//";
 
 		// element context
-		const elementBuilder = await NamedElementBuilder.from(document);
+		const elementBuilder = await toNamedElementBuilder(document);
 		const ranges = elementBuilder.getElementForAction(currentLine);
 		if (ranges.length === 0) {
 			throw new Error("No element found for action");

@@ -3,9 +3,9 @@ import Parser, { Language, Tree } from "web-tree-sitter";
 import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageUtil } from "./TSLanguageUtil";
 import { TreeSitterFileCacheManager } from "../../editor/cache/TreeSitterFileCacheManager";
-import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
 import { ScopeBuilder } from "../../code-search/semantic/ScopeBuilder";
 import { ScopeGraph } from "../../code-search/semantic/ScopeGraph";
+import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 
 const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 
@@ -35,7 +35,7 @@ export class TreeSitterFile {
 	static async tryBuild(
 		source: string,
 		langId: string,
-		languageService: DefaultLanguageService
+		languageService: TSLanguageService
 	): Promise<TreeSitterFile> {
 		// no scope-res for files larger than 500kb
 		let isLargerThan500kb = source.length > 500 * Math.pow(10, 3);
