@@ -8,6 +8,7 @@ import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/semantic/ScopeGraph";
 import { JavaStructurer } from "../../../code-context/java/JavaStructurer";
+import { expect } from "vitest";
 
 
 describe('RelevantClass for Java', () => {
@@ -85,8 +86,6 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 		const graph: ScopeGraph = await tsf.scopeGraph();
 
 		let imports = graph.allImports(controller);
-		console.log(imports);
-
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
 		let ios: string[] = await structurer.extractMethodInputOutput(`
@@ -97,7 +96,9 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
     `) ?? [];
 
 		let lookup = new JavaRelevantLookup(tsf);
-		lookup.calculateRelevantClass(ios, imports);
+		let relevantClasses = lookup.calculateRelevantClass(ios, imports);
+
+		expect(relevantClasses).toEqual(['cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/entity/BlogPost']);
 	});
 
 	// todo: handle for array type;

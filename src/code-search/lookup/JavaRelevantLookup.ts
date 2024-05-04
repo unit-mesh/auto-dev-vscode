@@ -14,9 +14,14 @@ export class JavaRelevantLookup {
 	 * @param types
 	 * @param imports
 	 */
-	calculateRelevantClass(types: string[], imports: string[]) {
+	calculateRelevantClass(types: string[], imports: string[]): string[] {
 		const relevantImports = JavaRelevantLookup.filterByTypes(imports, types);
-		console.log(relevantImports);
+
+		let calculatedImports = relevantImports.map(imp => {
+			return this.calculateByPackageName(imp);
+		});
+
+		return calculatedImports;
 	}
 
 	private static filterByTypes(imports: string[], types: string[]) {
