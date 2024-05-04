@@ -1,14 +1,12 @@
-import { JavaRelevantLookup } from "../../../code-search/lookup/JavaRelevantLookup";
-
 const Parser = require("web-tree-sitter");
 import 'reflect-metadata';
 
+import { JavaRelevantLookup } from "../../../code-search/lookup/JavaRelevantLookup";
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/semantic/ScopeGraph";
 import { JavaStructurer } from "../../../code-context/java/JavaStructurer";
-import { expect } from "vitest";
 import { functionToRange } from "../../../editor/codemodel/CodeFile";
 
 
@@ -65,11 +63,7 @@ public class BlogController {
 		let secondFunc = codeFile!!.classes[0].methods[0];
 		let textRange = functionToRange(secondFunc);
 
-		let ios: string[] = await structurer.extractMethodInputOutput(tsf.tree.rootNode, textRange) ?? [];
-
-		let scopes: string[] = await structurer.fetchImportsWithinScope(graph, tsf.tree.rootNode, controller) ?? [];
-		console.log("extractImportByRange:", scopes);
-
+		let ios: string[] = await structurer.extractMethodInputOutput(graph, tsf.tree.rootNode, textRange, controller) ?? [];
 		let fields = await structurer.extractFields(tsf.tree.rootNode);
 
 		expect(fields.length).toEqual(1);
@@ -118,11 +112,11 @@ public class BlogController {
 		let secondFunc = codeFile!!.classes[0].methods[0];
 		let textRange = functionToRange(secondFunc);
 
-		let ios: string[] = await structurer.extractMethodInputOutput(tsf.tree.rootNode, textRange) ?? [];
-
 		let lookup = new JavaRelevantLookup(tsf);
+
+		let ios: string[] = await structurer.extractMethodInputOutput(graph, tsf.tree.rootNode, textRange, controller) ?? [];
 		let relevantClasses = lookup.calculateRelevantClass(ios, imports);
 
-		// expect(relevantClasses).toEqual(['cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/entity/BlogPost']);
+		expect(relevantClasses).toEqual(['cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/entity/BlogPost']);
 	});
 });

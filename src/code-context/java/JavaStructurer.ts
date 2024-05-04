@@ -9,7 +9,7 @@ import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
-import { RefToDef, ScopeGraph } from "../../code-search/semantic/ScopeGraph";
+import { ImportWithRefs, RefToDef, ScopeGraph } from "../../code-search/semantic/ScopeGraph";
 import { TextInRange } from "../../editor/ast/TextInRange";
 import { TextRange } from "../../code-search/semantic/model/TextRange";
 import { Attributes } from "graphology-types";
@@ -152,7 +152,7 @@ export class JavaStructurer implements Structurer {
 		return codeFile;
 	}
 
-	async extractMethodInputOutput(node: SyntaxNode, range: TextRange): Promise<string[] | undefined> {
+	async extractMethodInputOutput(graph: ScopeGraph, node: SyntaxNode, range: TextRange, src: string): Promise<string[] | undefined> {
 		let syntaxNode = node.namedDescendantForPosition(
 			{ row: range.start.line, column: range.start.column },
 			{ row: range.end.line, column: range.end.column }
@@ -183,7 +183,9 @@ export class JavaStructurer implements Structurer {
 					methodObj.name = text;
 					break;
 				case 'method-returnType':
-					methodObj.returnType = text;
+					let imports = await this.obtainUsedImportsInScope(graph, capture.node, src);
+					console.log(imports);
+					methodObj.returnType = imports[0];
 					break;
 				case 'method-param.type':
 					paramObj.typ = text;
@@ -219,14 +221,27 @@ export class JavaStructurer implements Structurer {
 	}
 
 	async fetchImportsWithinScope(scope: ScopeGraph, node: SyntaxNode, src: string): Promise<string[]> {
-		let imports: TextRange[] = scope.allImports(src);
+		let importWithRefs = this.retrieveImportReferences(scope, src, node);
+		return importWithRefs.map((imp) => imp.text);
+	}
+
+	async obtainUsedImportsInScope(scope: ScopeGraph, node: SyntaxNode, src: string): Promise<string[]> {
+		let importWithRefs = this.retrieveImportReferences(scope, src, node);
+		return importWithRefs.map((imp) => imp.name);
+	}
+
+	private retrieveImportReferences(scope: ScopeGraph, src: string, node: SyntaxNode) {
+		let imports: ImportWithRefs[] = scope.allImports(src);
 		let range: TextRange = TextRange.from(node);
 
-		let importDebugs = imports.filter((impRange) => {
-			return range.contains(impRange);
-		});
+		let importWithRefs = imports.filter((impRange) => {
+			let containedRanges = impRange.refs.filter((ref) => {
+				return ref.contains(range);
+			});
 
-		return importDebugs.map((imp) => imp.getText());
+			return containedRanges.length > 0;
+		});
+		return importWithRefs;
 	}
 
 	async extractFields(node: SyntaxNode) {

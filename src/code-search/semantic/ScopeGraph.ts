@@ -259,7 +259,7 @@ export class ScopeGraph {
 		return imports;
 	}
 
-	allImports(src: string): TextRange[] {
+	allImports(src: string): ImportWithRefs[] {
 		const graph = this.graph;
 		return this.graph
 			.inEdges(this.rootIndex)
@@ -267,11 +267,26 @@ export class ScopeGraph {
 			.map(edge => {
 				const impNode = graph.source(edge);
 				const range = graph.getNodeAttributes(impNode).range;
-				const text = src.slice(range.start.byte, range.end.byte);
+				const name = src.slice(range.start.byte, range.end.byte);
 
-				return new TextRange(range.start, range.end, text);
+				const refs = graph
+					.inEdges(impNode)
+					.filter(edge => graph.getEdgeAttributes(edge) instanceof RefToImport)
+					.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
+					.sort();
+
+				const text = contextFromRange(range, src);
+
+				return { name: name, range, refs, text: text};
 			});
 	}
+}
+
+export interface ImportWithRefs {
+	name: string;
+	range: TextRange;
+	text: string;
+	refs: TextRange[];
 }
 
 function contextFromRange(range: TextRange, src: string): string {
