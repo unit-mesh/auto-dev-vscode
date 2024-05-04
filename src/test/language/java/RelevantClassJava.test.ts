@@ -1,14 +1,12 @@
-import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
-
 const Parser = require("web-tree-sitter");
+import 'reflect-metadata';
 
+import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
-import { testScopes } from "../../ScopeTestUtil";
-import { NamedElementBuilder } from "../../../editor/ast/NamedElementBuilder";
-import { NamedElement } from "../../../editor/ast/NamedElement";
 import { ScopeGraph } from "../../../code-search/semantic/ScopeGraph";
-import { LocalDef } from "../../../code-search/semantic/scope/LocalDef";
+import { JavaStructurer } from "../../../code-context/java/JavaStructurer";
+
 
 describe('RelevantClass for Java', () => {
 	let parser: any;
@@ -87,6 +85,15 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 		let node = graph.localDefByName("getBlog")!!;
 		console.log(node);
 		let imports = graph.allImports(node);
-		console.log(imports);
+		console.log(graph.hoverableRanges());
+
+		let structurer = new JavaStructurer();
+		await structurer.init(new TestLanguageService(parser));
+		let methodIO = await structurer.parseMethodIO(`@GetMapping("/{id}")
+    public BlogPost getBlog(@PathVariable Long id) {
+        return blogService.getBlogById(id);
+    }`);
+
+		console.log(methodIO);
 	});
 });

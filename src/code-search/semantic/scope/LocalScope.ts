@@ -1,6 +1,6 @@
 import { TextRange } from "../model/TextRange";
 import { NodeKind } from "./NodeKind";
-import { ScopeGraph, ScopeToScope } from "../ScopeGraph";
+import { ScopeToScope } from "../ScopeGraph";
 import Graph from "graphology";
 
 export class LocalScope extends NodeKind {
@@ -20,7 +20,6 @@ export class ScopeStack implements Iterable<string> {
 		this.scopeGraph = scopeGraph;
 		this.start = start;
 	}
-
 
 	[Symbol.iterator](): Iterator<string> {
 		let current = this.start;

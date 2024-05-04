@@ -37,6 +37,7 @@ export interface CodeFunction extends PositionElement, CodeElement {
 export interface CodeVariable extends CodeElement {
 	name: string;
 	typ: string;
+	isSystemType?: boolean;
 }
 
 export interface CodeElement {

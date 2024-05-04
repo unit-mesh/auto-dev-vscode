@@ -1,13 +1,14 @@
 import Parser from "web-tree-sitter";
-import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
+import { CodeFile, CodeFunction, CodeVariable } from "../../editor/codemodel/CodeFile";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
+import { PositionElement } from "../../editor/codemodel/PositionElement";
 
 export interface Structurer {
 	isApplicable(lang: SupportedLanguage): any;
 	parseFile(code: string, path: string): Promise<CodeFile | undefined>
 }
 
-export function insertLocation(model: CodeStructure, node: Parser.SyntaxNode) {
+export function insertLocation(model: PositionElement, node: Parser.SyntaxNode) {
 	model.start = { row: node.startPosition.row, column: node.startPosition.column };
 	model.end = { row: node.endPosition.row, column: node.endPosition.column };
 }
@@ -24,4 +25,11 @@ export function createFunction(capture: Parser.QueryCapture, text: string): Code
 	functionObj.start = { row: node.startPosition.row, column: node.startPosition.column };
 	functionObj.end = { row: node.endPosition.row, column: node.endPosition.column };
 	return functionObj;
+}
+
+export function createVariable(capture: Parser.QueryCapture, text: string): CodeVariable {
+	return {
+		name: text,
+		typ: ''
+	};
 }

@@ -1,10 +1,10 @@
 import Parser, { Query } from "web-tree-sitter";
 import { injectable } from "inversify";
 
-import { createFunction, insertLocation, Structurer } from "../_base/BaseStructurer";
+import { createFunction, createVariable, insertLocation, Structurer } from "../_base/BaseStructurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
+import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeFile";
 import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
@@ -141,5 +141,51 @@ export class JavaStructurer implements Structurer {
 		}
 
 		return codeFile;
+	}
+
+	async parseMethodIO(code: string): Promise<CodeFunction | undefined> {
+		const tree = this.parser!!.parse(code);
+		const query = this.config.methodIOQuery!!.query(this.language!!);
+		const captures = query!!.captures(tree.rootNode);
+
+		let methodObj: CodeFunction = {
+			name: '',
+			returnType: '',
+			vars: [],
+			start: { row: 0, column: 0 },
+			end: { row: 0, column: 0 }
+		};
+		let paramObj: CodeVariable = {
+			name: '',
+			typ: ''
+		};
+
+		for (const element of captures) {
+			const capture: Parser.QueryCapture = element!!;
+			const text = capture.node.text;
+
+			switch (capture.name) {
+				case 'method-name':
+					methodObj.name = text;
+					break;
+				case 'method-returnType':
+					methodObj.returnType = text;
+					break;
+				case 'method-param.type':
+					console.log('method-param.type');
+					paramObj.typ = text;
+					break;
+				case 'method-param.value':
+					paramObj.name = text;
+					methodObj.vars.push(paramObj);
+					// reset paramObj
+					paramObj = { name: '', typ: '' };
+					break;
+				default:
+					break;
+			}
+		}
+
+		return methodObj;
 	}
 }

@@ -52,15 +52,16 @@ export const JavaLangConfig: LanguageConfig = {
   `),
 	methodIOQuery: new MemoizedQuery(`
 		(method_declaration
-		  type: (type_identifier) @returnType
-		  name: (identifier) @id
-		  parameters: (formal_parameters
-		    (formal_parameter 
-		        (type_identifier) @param.type
-		        (identifier) @param.value)
-		        @param
-		    )
-		)`),
+        type: (_) @method-returnType
+        name: (identifier) @method-name
+        parameters: (formal_parameters
+          (formal_parameter 
+              (type_identifier) @method-param.type
+              (identifier) @method-param.value
+          )? 
+          @method-params)
+        body: (block) @method-body
+      )`),
 	namespaces: [
 		[
 			// variables
