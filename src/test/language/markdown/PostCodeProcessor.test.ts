@@ -1,4 +1,4 @@
-import { PostCodeProcessor } from "../../markdown/PostCodeProcessor";
+import { PostCodeProcessor } from "../../../markdown/PostCodeProcessor";
 
 describe('PostCodeProcessor', () => {
 	describe('execute method', () => {

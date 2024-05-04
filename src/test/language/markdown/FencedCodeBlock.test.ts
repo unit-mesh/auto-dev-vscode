@@ -1,4 +1,4 @@
-import { MarkdownCodeBlock } from "../../markdown/MarkdownCodeBlock";
+import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
 
 describe('FencedCodeBlock', () => {
 	describe('parse method', () => {

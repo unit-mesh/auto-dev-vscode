@@ -1,5 +1,5 @@
-import { CodeFile } from "../editor/codemodel/CodeFile";
-import { CommentUmlPresenter } from "../editor/codemodel/presenter/CommentUmlPresenter";
+import { CodeFile } from "../../../editor/codemodel/CodeFile";
+import { CommentUmlPresenter } from "../../../editor/codemodel/presenter/CommentUmlPresenter";
 
 describe('CommentUmlPresenter', () => {
 	it('should convert a simple file to PlantUML', () => {

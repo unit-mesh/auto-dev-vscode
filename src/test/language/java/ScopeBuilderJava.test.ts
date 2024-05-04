@@ -1,11 +1,11 @@
-import { TreeSitterFile } from "../code-context/ast/TreeSitterFile";
+import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 
 const Parser = require("web-tree-sitter");
 
-import { ScopeBuilder } from "../code-search/semantic/ScopeBuilder";
-import { JavaLangConfig } from "../code-context/java/JavaLangConfig";
-import { TestLanguageService } from "./TestLanguageService";
-import { testScopes } from "./ScopeTestUtil";
+import { ScopeBuilder } from "../../../code-search/semantic/ScopeBuilder";
+import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
+import { TestLanguageService } from "../../TestLanguageService";
+import { testScopes } from "../../ScopeTestUtil";
 import { expect } from "vitest";
 
 describe('ScopeBuilder for Java', () => {

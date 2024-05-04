@@ -1,11 +1,11 @@
 import { expect } from "vitest";
 const Parser = require("web-tree-sitter");
 
-import { TreeSitterFile } from "../code-context/ast/TreeSitterFile";
-import { ScopeBuilder } from "../code-search/semantic/ScopeBuilder";
-import { TestLanguageService } from "./TestLanguageService";
-import { testScopes } from "./ScopeTestUtil";
-import { TypeScriptLangConfig } from "../code-context/typescript/TypeScriptLangConfig";
+import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
+import { ScopeBuilder } from "../../../code-search/semantic/ScopeBuilder";
+import { TestLanguageService } from "../../TestLanguageService";
+import { testScopes } from "../../ScopeTestUtil";
+import { TypeScriptLangConfig } from "../../../code-context/typescript/TypeScriptLangConfig";
 
 describe('ScopeBuilder for TypeScript', () => {
 	let parser: any;

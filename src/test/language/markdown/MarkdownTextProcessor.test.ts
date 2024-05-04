@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { MarkdownTextProcessor } from "../../markdown/MarkdownTextProcessor";
+import { MarkdownTextProcessor } from "../../../markdown/MarkdownTextProcessor";
 
 describe('MarkdownTextProcessor', () => {
   describe('buildDocFromSuggestion', () => {
