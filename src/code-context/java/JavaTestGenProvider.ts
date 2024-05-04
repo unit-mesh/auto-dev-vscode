@@ -6,7 +6,7 @@ import { CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { GradleBuildToolProvider } from "../../toolchain-context/buildtool/GradleBuildToolProvider";
-import { ToolchainContextItem, CreateToolchainContext } from "../../toolchain-context/ToolchainContextProvider";
+import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
 import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
@@ -54,8 +54,8 @@ export class JavaTestGenProvider implements TestGenProvider {
 		return Promise.resolve(testContext);
 	}
 
-	lookupRelevantClass(element: any): Promise<CodeStructure[]> {
-		throw new Error("Method not implemented.");
+	lookupRelevantClass(element: NamedElement): Promise<CodeStructure[]> {
+		return Promise.resolve([]);
 	}
 
 	private clazzName = "JavaTestContextProvider";

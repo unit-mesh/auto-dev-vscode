@@ -80,8 +80,8 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		return context;
 	}
 
-	lookupRelevantClass(element: any): Promise<CodeStructure[]> {
-		throw new Error("Method not implemented.");
+	lookupRelevantClass(element: NamedElement): Promise<CodeStructure[]> {
+		return Promise.resolve([]);
 	}
 
 	getTestFilePath(element: vscode.TextDocument): vscode.Uri | undefined {

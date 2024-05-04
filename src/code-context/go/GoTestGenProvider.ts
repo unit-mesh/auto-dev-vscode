@@ -74,6 +74,6 @@ export class GoTestGenProvider implements TestGenProvider {
 	}
 
 	lookupRelevantClass(element: any): Promise<CodeStructure[]> {
-		return Promise.reject("Method not implemented.");
+		return Promise.resolve([]);
 	}
 }
