@@ -1,21 +1,15 @@
 import Parser, { Query, SyntaxNode } from "web-tree-sitter";
 import { injectable } from "inversify";
 
-import { createFunction, createVariable, insertLocation, Structurer } from "../_base/BaseStructurer";
+import { createFunction, insertLocation, Structurer } from "../_base/BaseStructurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeFile";
 import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
-import { TreeSitterFile } from "../ast/TreeSitterFile";
-import { ImportWithRefs, RefToDef, ScopeGraph } from "../../code-search/semantic/ScopeGraph";
-import { TextInRange } from "../../editor/ast/TextInRange";
+import { ImportWithRefs, ScopeGraph } from "../../code-search/semantic/ScopeGraph";
 import { TextRange } from "../../code-search/semantic/model/TextRange";
-import { Attributes } from "graphology-types";
-import { NodeKind } from "../../code-search/semantic/scope/NodeKind";
-import { start } from "node:repl";
-import { ImportDebug } from "../../test/ScopeDebug";
 
 @injectable()
 export class JavaStructurer implements Structurer {
@@ -184,7 +178,6 @@ export class JavaStructurer implements Structurer {
 					break;
 				case 'method-returnType':
 					let imports = await this.obtainUsedImportsInScope(graph, capture.node, src);
-					console.log(imports);
 					methodObj.returnType = imports[0];
 					break;
 				case 'method-param.type':
@@ -220,6 +213,38 @@ export class JavaStructurer implements Structurer {
 		return inputAndOutput;
 	}
 
+	async extractMethodIOImports(graph: ScopeGraph, node: SyntaxNode, range: TextRange, src: string): Promise<string[] | undefined> {
+		let syntaxNode = node.namedDescendantForPosition(
+			{ row: range.start.line, column: range.start.column },
+			{ row: range.end.line, column: range.end.column }
+		);
+
+		const query = this.config.methodIOQuery!!.query(this.language!!);
+		const captures = query!!.captures(syntaxNode);
+
+		const inputAndOutput: string[] = [];
+
+		for (const element of captures) {
+			const capture: Parser.QueryCapture = element!!;
+
+			switch (capture.name) {
+				case 'method-returnType':
+					let imports = await this.fetchImportsWithinScope(graph, capture.node, src);
+					inputAndOutput.push(...imports);
+					break;
+				case 'method-param.type':
+					let typeImports = await this.fetchImportsWithinScope(graph, capture.node, src);
+					inputAndOutput.push(...typeImports);
+					break;
+				default:
+					break;
+			}
+		}
+
+		// remove duplicates
+		return [...new Set(inputAndOutput)];
+	}
+
 	async fetchImportsWithinScope(scope: ScopeGraph, node: SyntaxNode, src: string): Promise<string[]> {
 		let importWithRefs = this.retrieveImportReferences(scope, src, node);
 		return importWithRefs.map((imp) => imp.text);
@@ -230,18 +255,28 @@ export class JavaStructurer implements Structurer {
 		return importWithRefs.map((imp) => imp.name);
 	}
 
+	/**
+	 * The `retrieveImportReferences` method is a private method that retrieves all import references from a given source
+	 * code that are within a specified syntax node.
+	 *
+	 * @param scope - An instance of `ScopeGraph`. This parameter represents the scope graph of the source code.
+	 * @param src - A string representing the source code from which to retrieve import references.
+	 * @param node - An instance of `SyntaxNode`. This parameter represents the syntax node within which to search for import references.
+	 *
+	 * @returns An array of `ImportWithRefs` objects. Each object in the array represents an import reference that is
+	 * within the specified syntax node. If no import references are found within the syntax node, an empty array is returned.
+	 */
 	private retrieveImportReferences(scope: ScopeGraph, src: string, node: SyntaxNode) {
 		let imports: ImportWithRefs[] = scope.allImports(src);
 		let range: TextRange = TextRange.from(node);
 
-		let importWithRefs = imports.filter((impRange) => {
+		return imports.filter((impRange) => {
 			let containedRanges = impRange.refs.filter((ref) => {
 				return ref.contains(range);
 			});
 
 			return containedRanges.length > 0;
 		});
-		return importWithRefs;
 	}
 
 	async extractFields(node: SyntaxNode) {

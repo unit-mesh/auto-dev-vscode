@@ -14,7 +14,7 @@ export class JavaRelevantLookup {
 	 * @param imports
 	 */
 	calculateRelevantClass(types: string[], imports: string[], withFields: boolean = false): string[] {
-		const relevantImports = JavaRelevantLookup.filterByTypes(imports, types);
+		const relevantImports = this.filterByTypes(imports, types);
 
 		let calculatedImports = relevantImports.map(imp => {
 			return this.calculateByPackageName(imp);
@@ -23,8 +23,7 @@ export class JavaRelevantLookup {
 		return calculatedImports;
 	}
 
-	private static filterByTypes(imports: string[], types: string[]) {
-		// remove `import` and `;`
+	private filterByTypes(imports: string[], types: string[]) {
 		const canonicalNames = imports.map(imp => {
 			const impArr = imp.split(' ');
 			return impArr[impArr.length - 1].replace(';', '');
