@@ -255,13 +255,6 @@ export class ScopeGraph {
 			.map(edge => {
 				const impNode = graph.source(edge);
 				const range = graph.getNodeAttributes(impNode).range;
-				const text = src.slice(range.start.byte, range.end.byte);
-
-				const refs = graph
-					.inEdges(impNode)
-					.filter(edge => graph.getEdgeAttributes(edge) instanceof RefToImport)
-					.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
-					.sort((a, b) => a.start.byte - b.start.byte);
 
 				return contextFromRange(range, src);
 			});
