@@ -43,6 +43,8 @@ export interface LanguageConfig {
   // should select parent
   // for example, in JavaScript/TypeScript, if we select function, we should also select the export keyword.
   autoSelectInsideParent: string[];
+
+  builtInTypes: string[];
 }
 
 export class MemoizedQuery {

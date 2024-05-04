@@ -20,7 +20,8 @@ export class JavaStructurer implements Structurer {
 		return lang === "java";
 	}
 
-	constructor() {}
+	constructor() {
+	}
 
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
 		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
@@ -164,6 +165,7 @@ export class JavaStructurer implements Structurer {
 			const capture: Parser.QueryCapture = element!!;
 			const text = capture.node.text;
 
+			// todo: handle for array;
 			switch (capture.name) {
 				case 'method-name':
 					methodObj.name = text;
@@ -172,12 +174,14 @@ export class JavaStructurer implements Structurer {
 					methodObj.returnType = text;
 					break;
 				case 'method-param.type':
-					console.log('method-param.type');
 					paramObj.typ = text;
 					break;
 				case 'method-param.value':
 					paramObj.name = text;
 					methodObj.vars.push(paramObj);
+					if (this.config.builtInTypes.includes(paramObj.typ)) {
+						paramObj.isSystemType = true;
+					}
 					// reset paramObj
 					paramObj = { name: '', typ: '' };
 					break;

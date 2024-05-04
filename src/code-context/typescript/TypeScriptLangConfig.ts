@@ -112,5 +112,21 @@ export const TypeScriptLangConfig: LanguageConfig = {
 			"label",
 		]
 	],
-	autoSelectInsideParent: ["export_statement"]
+	autoSelectInsideParent: ["export_statement"],
+	builtInTypes: [
+		"Array",
+		"String",
+		"Number",
+		"Boolean",
+		"Object",
+		"Symbol",
+		"Function",
+		"Promise",
+		"void",
+		"null",
+		"undefined",
+		"unknown",
+		"any",
+		"never"
+	]
 };

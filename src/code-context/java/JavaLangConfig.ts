@@ -82,5 +82,19 @@ export const JavaLangConfig: LanguageConfig = {
 			'label',
 		]
 	],
-	autoSelectInsideParent: []
+	autoSelectInsideParent: [],
+	builtInTypes: [
+		'void',
+		'boolean',
+		'byte',
+		'short',
+		'int',
+		'long',
+		'float',
+		'double',
+		'char',
+		'String',
+		'Object',
+		'Class',
+	]
 };

@@ -84,8 +84,8 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 
 		let node = graph.localDefByName("getBlog")!!;
 		console.log(node);
-		let imports = graph.allImports(node);
-		console.log(graph.hoverableRanges());
+		let imports = graph.allImports(controller);
+		console.log(imports);
 
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
@@ -96,4 +96,6 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 
 		console.log(methodIO);
 	});
+
+	// todo: handle for array type;
 });

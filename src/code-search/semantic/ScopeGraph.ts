@@ -247,7 +247,7 @@ export class ScopeGraph {
 			.find(node => true);
 	}
 
-	allImports(src: NodeIndex) : string[] {
+	allImports(src: string) : string[] {
 		let graph = this.graph;
 		const imports = graph
 			.inEdges(this.rootIndex)
