@@ -82,19 +82,17 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language);
 		const graph: ScopeGraph = await tsf.scopeGraph();
 
-		let node = graph.localDefByName("getBlog")!!;
-		console.log(node);
 		let imports = graph.allImports(controller);
 		console.log(imports);
 
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
-		let methodIO = await structurer.parseMethodIO(`@GetMapping("/{id}")
+		let ios = await structurer.extractMethodInputOutput(`@GetMapping("/{id}")
     public BlogPost getBlog(@PathVariable Long id) {
         return blogService.getBlogById(id);
     }`);
 
-		console.log(methodIO);
+		console.log(ios);
 	});
 
 	// todo: handle for array type;

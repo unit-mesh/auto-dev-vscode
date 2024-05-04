@@ -84,17 +84,8 @@ export const JavaLangConfig: LanguageConfig = {
 	],
 	autoSelectInsideParent: [],
 	builtInTypes: [
-		'void',
-		'boolean',
-		'byte',
-		'short',
-		'int',
-		'long',
-		'float',
-		'double',
-		'char',
-		'String',
-		'Object',
-		'Class',
+		"boolean", "byte", "char", "short", "int", "long", "float", "double", "void",
+		"Boolean", "Byte", "Character", "Short", "Integer", "Long", "Float", "Double", "String",
+		"Array", "List", "Map", "Set", "Collection", "Iterable", "Iterator", "Stream", "Optional",
 	]
 };

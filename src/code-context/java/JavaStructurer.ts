@@ -144,7 +144,7 @@ export class JavaStructurer implements Structurer {
 		return codeFile;
 	}
 
-	async parseMethodIO(code: string): Promise<CodeFunction | undefined> {
+	async extractMethodInputOutput(code: string): Promise<string[] | undefined> {
 		const tree = this.parser!!.parse(code);
 		const query = this.config.methodIOQuery!!.query(this.language!!);
 		const captures = query!!.captures(tree.rootNode);
@@ -179,9 +179,6 @@ export class JavaStructurer implements Structurer {
 				case 'method-param.value':
 					paramObj.name = text;
 					methodObj.vars.push(paramObj);
-					if (this.config.builtInTypes.includes(paramObj.typ)) {
-						paramObj.isSystemType = true;
-					}
 					// reset paramObj
 					paramObj = { name: '', typ: '' };
 					break;
@@ -190,6 +187,25 @@ export class JavaStructurer implements Structurer {
 			}
 		}
 
-		return methodObj;
+		const inputAndOutput: string[] = [];
+
+		const pushIfNotBuiltInType = (type: string) => {
+			if (!this.config.builtInTypes.includes(type)) {
+				inputAndOutput.push(type);
+			}
+		};
+
+		if (methodObj.returnType) {
+			pushIfNotBuiltInType(methodObj.returnType);
+		}
+
+		methodObj.vars.forEach((param) => {
+			pushIfNotBuiltInType(param.typ);
+		});
+
+		return inputAndOutput;
+	}
+
+	getIfTypeInImport() {
 	}
 }
