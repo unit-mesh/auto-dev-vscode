@@ -17,14 +17,7 @@ export class TreeSitterFile {
 	language: Parser.Language;
 	fsPath: string;
 
-	constructor(
-		src: string,
-		tree: Tree,
-		tsLanguage: LanguageConfig,
-		parser: Parser,
-		language: Language,
-		fsPath: string = ""
-	) {
+	constructor(src: string, tree: Tree, tsLanguage: LanguageConfig, parser: Parser, language: Language, fsPath: string = "") {
 		this.sourcecode = src;
 		this.tree = tree;
 		this.langConfig = tsLanguage;
@@ -35,7 +28,7 @@ export class TreeSitterFile {
 
 	private static oneSecond: number = Math.pow(10, 6);
 
-	static async tryBuild(
+	static async createTreeSitterFile(
 		source: string,
 		langId: string,
 		languageService: TSLanguageService,

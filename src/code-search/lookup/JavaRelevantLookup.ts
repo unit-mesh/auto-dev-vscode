@@ -28,8 +28,7 @@ export class JavaRelevantLookup {
 		});
 	}
 
-	currentPackageName() {
-		// this.tsfile.langConfig.packageQuery
+	extractCurrentPackageName() {
 		const query = JavaLangConfig.packageQuery!!.queryStr;
 		const rootNode = this.tsfile.tree.rootNode;
 
@@ -51,7 +50,7 @@ export class JavaRelevantLookup {
 	 */
 	calculateByPackageName(packageName: string) {
 		const packageArr = packageName.split('.');
-		const tsFilePackageArr = this.currentPackageName().split('.');
+		const tsFilePackageArr = this.extractCurrentPackageName().split('.');
 		let relevantPath = '';
 		for (let i = 0; i < tsFilePackageArr.length; i++) {
 			if (tsFilePackageArr[i] !== packageArr[i]) {
