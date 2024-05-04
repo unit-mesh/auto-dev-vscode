@@ -18,13 +18,9 @@ export async function documentToTreeSitterFile(document: vscode.TextDocument) {
 	const src = document.getText();
 	const langId = document.languageId;
 
-	const file = await TreeSitterFile.tryBuild(src, langId, new DefaultLanguageService());
+	const file = await TreeSitterFile.tryBuild(src, langId, new DefaultLanguageService(), document.uri.fsPath);
 	TreeSitterFile.cache.setDocument(document.uri, document.version, file);
 	return file;
-}
-
-export async  function stringToTree(content: string, langId: string) {
-	return await TreeSitterFile.tryBuild(content, langId, new DefaultLanguageService());
 }
 
 export async function toNamedElementBuilder(document: vscode.TextDocument): Promise<NamedElementBuilder> {

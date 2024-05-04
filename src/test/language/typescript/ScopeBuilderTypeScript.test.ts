@@ -72,7 +72,7 @@ export default function IndexPage() {
 `;
 
 		let tree = parser.parse(sourceCode);
-		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language);
+		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language, "");
 		let scopeGraph = await tsf.scopeGraph();
 		const imports = scopeGraph.allImports(sourceCode);
 

@@ -55,7 +55,7 @@ class HelloWorld {
 `;
 
 		let tree = parser.parse(sourceCode);
-		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language);
+		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language, "");
 		let output = await testScopes("java", sourceCode, "", tsf);
 
 		expect(output).toBe(`{"definitions":[{"context":"class §HelloWorld§ {","name":"HelloWorld","range":{"start":{"byte":7,"line":1,"column":6},"end":{"byte":17,"line":1,"column":16},"text":"HelloWorld"},"refs":[],"symbol":"class"}],"imports":[],"scopes":[{"definitions":[],"imports":[],"scopes":[{"definitions":[],"imports":[],"scopes":[{"definitions":[{"context":"public static void main(string[] §args§) {","name":"args","range":{"start":{"byte":57,"line":2,"column":37},"end":{"byte":61,"line":2,"column":41},"text":"args"},"refs":[{"context":"System.Out.Println(\\"Hello \\" + §args§[0]);"}],"symbol":"local"}],"imports":[],"scopes":[]}]}]}]}`);

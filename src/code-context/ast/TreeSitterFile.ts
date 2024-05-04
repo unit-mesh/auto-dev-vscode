@@ -15,19 +15,22 @@ export class TreeSitterFile {
 	langConfig: LanguageConfig;
 	readonly parser: Parser | undefined = undefined;
 	language: Parser.Language;
+	fsPath: string;
 
 	constructor(
 		src: string,
 		tree: Tree,
 		tsLanguage: LanguageConfig,
 		parser: Parser,
-		language: Language
+		language: Language,
+		fsPath: string = ""
 	) {
 		this.sourcecode = src;
 		this.tree = tree;
 		this.langConfig = tsLanguage;
 		this.parser = parser;
 		this.language = language;
+		this.fsPath = fsPath;
 	}
 
 	private static oneSecond: number = Math.pow(10, 6);
@@ -35,8 +38,8 @@ export class TreeSitterFile {
 	static async tryBuild(
 		source: string,
 		langId: string,
-		languageService: TSLanguageService
-	): Promise<TreeSitterFile> {
+		languageService: TSLanguageService,
+		fsPath: string = ""): Promise<TreeSitterFile> {
 		// no scope-res for files larger than 500kb
 		let isLargerThan500kb = source.length > 500 * Math.pow(10, 3);
 		if (isLargerThan500kb) {
@@ -69,7 +72,7 @@ export class TreeSitterFile {
 			return Promise.reject(TreeSitterFileError.parseTimeout);
 		}
 
-		return new TreeSitterFile(source, tree, tsConfig, parser, language);
+		return new TreeSitterFile(source, tree, tsConfig, parser, language, fsPath);
 	}
 
 	static cache: TreeSitterFileCacheManager = TreeSitterFileCacheManager.getInstance();

@@ -205,7 +205,4 @@ export class JavaStructurer implements Structurer {
 
 		return inputAndOutput;
 	}
-
-	getIfTypeInImport() {
-	}
 }

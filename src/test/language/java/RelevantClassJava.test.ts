@@ -1,3 +1,5 @@
+import { JavaRelevantLookup } from "../../../code-search/lookup/JavaRelevantLookup";
+
 const Parser = require("web-tree-sitter");
 import 'reflect-metadata';
 
@@ -79,7 +81,7 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 `;
 
 		let tree = parser.parse(controller);
-		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language);
+		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
 		const graph: ScopeGraph = await tsf.scopeGraph();
 
 		let imports = graph.allImports(controller);
@@ -87,12 +89,13 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
-		let ios = await structurer.extractMethodInputOutput(`@GetMapping("/{id}")
+		let ios: string[] = await structurer.extractMethodInputOutput(`@GetMapping("/{id}")
     public BlogPost getBlog(@PathVariable Long id) {
         return blogService.getBlogById(id);
-    }`);
+    }`) ?? [];
 
-		console.log(ios);
+		let lookup = new JavaRelevantLookup(tsf);
+		lookup.calculateRelevantClass(ios, imports);
 	});
 
 	// todo: handle for array type;

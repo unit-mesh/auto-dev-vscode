@@ -74,7 +74,7 @@ func main() {
 }
 `;
 		let tree = parser.parse(sourceCode);
-		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language);
+		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language, "");
 		await testScopes("go", sourceCode, "", tsf);
 	});
 });
