@@ -6,6 +6,7 @@ import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import { CodeElementType } from "../codemodel/CodeElementType";
 import { previousNodesOfType } from "../../code-context/ast/TreeSitterUtil";
+import { TestOnly } from "../../ops/TestOnly";
 
 /**
  * The `NamedElementBuilder` class is used to build named elements (such as variables, methods, and classes) from a

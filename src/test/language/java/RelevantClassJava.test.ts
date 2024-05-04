@@ -7,6 +7,8 @@ import { TestLanguageService } from "../../TestLanguageService";
 import { testScopes } from "../../ScopeTestUtil";
 import { NamedElementBuilder } from "../../../editor/ast/NamedElementBuilder";
 import { NamedElement } from "../../../editor/ast/NamedElement";
+import { ScopeGraph } from "../../../code-search/semantic/ScopeGraph";
+import { LocalDef } from "../../../code-search/semantic/scope/LocalDef";
 
 describe('RelevantClass for Java', () => {
 	let parser: any;
@@ -25,8 +27,7 @@ describe('RelevantClass for Java', () => {
 
 	it('calculate for services', async () => {
 		const controller =
-			`
-package cc.unitmesh.untitled.demo.controller;
+			`package cc.unitmesh.untitled.demo.controller;
 
 import cc.unitmesh.untitled.demo.entity.BlogPost;
 import cc.unitmesh.untitled.demo.service.BlogService;
@@ -49,9 +50,7 @@ public class BlogController {
 }
 `;
 
-		const service = `
-
-package cc.unitmesh.untitled.demo.service;
+		const service = `package cc.unitmesh.untitled.demo.service;
 
 import cc.unitmesh.untitled.demo.entity.BlogPost;
 import cc.unitmesh.untitled.demo.repository.BlogRepository;
@@ -69,8 +68,7 @@ public class BlogService {
 }
 `;
 
-		const repository = `
-package cc.unitmesh.untitled.demo.repository;
+		const repository = `package cc.unitmesh.untitled.demo.repository;
 
 import cc.unitmesh.untitled.demo.entity.BlogPost;
 import org.springframework.data.repository.CrudRepository;
@@ -84,13 +82,11 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 
 		let tree = parser.parse(controller);
 		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language);
-		const graph = await tsf.scopeGraph();
+		const graph: ScopeGraph = await tsf.scopeGraph();
 
-		// const namedElementBuilder = new NamedElementBuilder(tsf);
-		// const methods = namedElementBuilder.buildMethod();
-		// const secondMethod = methods[1];
-		// console.log(secondMethod);
-
-		console.log(graph);
+		let node = graph.localDefByName("getBlog")!!;
+		console.log(node);
+		let imports = graph.allImports(node);
+		console.log(imports);
 	});
 });

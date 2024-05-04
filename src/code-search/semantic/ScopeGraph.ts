@@ -9,6 +9,7 @@ import { Reference } from "./scope/Reference";
 import { NodeKind } from "./scope/NodeKind";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import { ScopeDebug } from "../../test/ScopeDebug";
+import { TestOnly } from "../../ops/TestOnly";
 
 export interface EdgeKind {
 }
@@ -206,6 +207,7 @@ export class ScopeGraph {
 			})
 			.find(node => {
 				const nodeKind = this.graph.getNodeAttributes(node);
+				console.log(nodeKind);
 				return nodeKind.range.start.byte >= startByte && nodeKind.range.end.byte <= endByte;
 			});
 	}
@@ -229,6 +231,22 @@ export class ScopeGraph {
 			});
 	}
 
+	@TestOnly
+	allLocalDefs(): NodeKind[] {
+		return this.graph.nodes()
+			.filter(node => this.graph.getNodeAttributes(node) instanceof LocalDef)
+			.map(node => this.graph.getNodeAttributes(node));
+	}
+
+	localDefByName(name: string): NodeIndex | undefined {
+		return this.graph.nodes()
+			.filter(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				return nodeKind instanceof LocalDef && nodeKind.range.getText() === name;
+			})
+			.find(node => true);
+	}
+
 	allImports(src: NodeIndex) : string[] {
 		let graph = this.graph;
 		const imports = graph
@@ -245,7 +263,7 @@ export class ScopeGraph {
 					.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
 					.sort((a, b) => a.start.byte - b.start.byte);
 
-				return contextFromRange(range, src)
+				return contextFromRange(range, src);
 			});
 
 		return imports;
