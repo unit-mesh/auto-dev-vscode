@@ -9,9 +9,11 @@ import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
-import { ScopeGraph } from "../../code-search/semantic/ScopeGraph";
+import { RefToDef, ScopeGraph } from "../../code-search/semantic/ScopeGraph";
 import { TextInRange } from "../../editor/ast/TextInRange";
 import { TextRange } from "../../code-search/semantic/model/TextRange";
+import { Attributes } from "graphology-types";
+import { NodeKind } from "../../code-search/semantic/scope/NodeKind";
 
 @injectable()
 export class JavaStructurer implements Structurer {
@@ -148,8 +150,7 @@ export class JavaStructurer implements Structurer {
 		return codeFile;
 	}
 
-	// TODO: refactor to use graph only
-	async extractMethodInputOutput(graph: ScopeGraph, node: SyntaxNode, range: TextRange): Promise<string[] | undefined> {
+	async extractMethodInputOutput(scope: ScopeGraph, node: SyntaxNode, range: TextRange): Promise<string[] | undefined> {
 		let syntaxNode = node.namedDescendantForPosition(
 			{ row: range.start.line, column: range.start.column },
 			{ row: range.end.line, column: range.end.column }
@@ -169,6 +170,8 @@ export class JavaStructurer implements Structurer {
 			name: '',
 			typ: ''
 		};
+
+		let nodeByRange = scope.defsByRange(syntaxNode.startIndex, syntaxNode.endIndex);
 
 		for (const element of captures) {
 			const capture: Parser.QueryCapture = element!!;

@@ -48,6 +48,10 @@ export class ScopeGraph {
 		return this.graph.getNodeAttributes(node);
 	}
 
+	getEdge(edge: string): EdgeKind {
+		return this.graph.getEdgeAttributes(edge);
+	}
+
 	insertLocalScope(scope: LocalScope) {
 		let parentScope = this.scopeByRange(scope.range, this.rootIndex);
 		if (parentScope) {
@@ -196,7 +200,9 @@ export class ScopeGraph {
 
 	public references(definitionNode: NodeIndex): NodeIndex[] {
 		const iterator = this.graph.inEdges(definitionNode);
-		return iterator.filter(edge => this.graph.getEdgeAttributes(edge) instanceof RefToDef || this.graph.getEdgeAttributes(edge) instanceof RefToImport);
+		return iterator.filter(edge =>
+			this.graph.getEdgeAttributes(edge) instanceof RefToDef || this.graph.getEdgeAttributes(edge) instanceof RefToImport
+		);
 	}
 
 	public nodeByRange(startByte: number, endByte: number): NodeIndex | undefined {
@@ -206,6 +212,27 @@ export class ScopeGraph {
 				return nodeKind instanceof LocalDef || nodeKind instanceof Reference || nodeKind instanceof LocalImport;
 			})
 			.find(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				return nodeKind.range.start.byte >= startByte && nodeKind.range.end.byte <= endByte;
+			});
+	}
+
+	public defsByRange(startByte: number, endByte: number): NodeIndex[] {
+		 // this.graph.nodes()
+			// .filter(node => {
+			// 	const nodeKind = this.graph.getNodeAttributes(node);
+			// 	return nodeKind instanceof LocalDef;
+			// })
+			// .filter(node => {
+			// 	const nodeKind = this.graph.getNodeAttributes(node);
+			// 	return nodeKind.range.start.byte >= startByte && nodeKind.range.end.byte <= endByte;
+			// });
+		return this.graph.nodes()
+			.filter(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				return nodeKind instanceof LocalDef;
+			})
+			.filter(node => {
 				const nodeKind = this.graph.getNodeAttributes(node);
 				return nodeKind.range.start.byte >= startByte && nodeKind.range.end.byte <= endByte;
 			});
@@ -237,16 +264,7 @@ export class ScopeGraph {
 			.map(node => this.graph.getNodeAttributes(node));
 	}
 
-	localDefByName(name: string): NodeIndex | undefined {
-		return this.graph.nodes()
-			.filter(node => {
-				const nodeKind = this.graph.getNodeAttributes(node);
-				return nodeKind instanceof LocalDef && nodeKind.range.getText() === name;
-			})
-			.find(node => true);
-	}
-
-	allImports(src: string) : string[] {
+	allImports(src: string): string[] {
 		let graph = this.graph;
 		const imports = graph
 			.inEdges(this.rootIndex)
@@ -254,6 +272,12 @@ export class ScopeGraph {
 			.map(edge => {
 				const impNode = graph.source(edge);
 				const range = graph.getNodeAttributes(impNode).range;
+				// const text = src.slice(range.start.byte, range.end.byte);
+				// const refs = graph
+				// 	.inEdges(impNode)
+				// 	.filter(edge => graph.getEdgeAttributes(edge) instanceof RefToImport)
+				// 	.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
+				// 	.sort((a, b) => a.start.byte - b.start.byte);
 
 				return contextFromRange(range, src);
 			});
