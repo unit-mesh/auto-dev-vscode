@@ -53,9 +53,6 @@ public class BlogController {
 		let tree = parser.parse(controller);
 		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
 		const graph: ScopeGraph = await tsf.scopeGraph();
-
-		let imports = graph.allImportsBySource(controller);
-
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
 
@@ -75,7 +72,7 @@ public class BlogController {
 		expect(fields[0].typ).toEqual('BlogService');
 	});
 
-	it.skip('calculate for services with array', async () => {
+	it('calculate for services with array', async () => {
 		const controller =
 			`package cc.unitmesh.untitled.demo.controller;
 
@@ -114,7 +111,7 @@ public class BlogController {
 		let tree = parser.parse(controller);
 		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
 		const graph: ScopeGraph = await tsf.scopeGraph();
-		let imports = graph.allImportsBySource(controller);
+
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
 		let codeFile = await structurer.parseFile(controller, "");
@@ -123,16 +120,18 @@ public class BlogController {
 		let textRange = functionToRange(firstFunc);
 		let lookup = new JavaRelevantLookup(tsf);
 		let ios: string[] = await structurer.extractMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
-		let relevantClasses = lookup.calculateRelevantClass(ios, imports);
-
+		let relevantClasses = lookup.calculateRelevantClass(ios);
 		expect(relevantClasses).toEqual(['cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/entity/BlogPost']);
 
 		// for second func
 		let secondFunc = codeFile!!.classes[0].methods[1];
 		textRange = functionToRange(secondFunc);
 		ios = await structurer.extractMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
-		relevantClasses = lookup.calculateRelevantClass(ios, imports);
+		relevantClasses = lookup.calculateRelevantClass(ios);
 
-		expect(relevantClasses).toEqual(['cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/dto/CreateBlogRequest']);
+		expect(relevantClasses).toEqual([
+			'cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/dto/CreateBlogRequest',
+			'cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/dto/CreateBlogResponse'
+		]);
 	});
 });

@@ -9,30 +9,22 @@ export class JavaRelevantLookup {
 	}
 
 	/**
-	 * Filter out the relevant class from the given types and imports
-	 * @param types
+	 * Filter out the relevant class from the given imports and imports
+	 * @param imports
 	 * @param imports
 	 */
-	calculateRelevantClass(types: string[], imports: string[], withFields: boolean = false): string[] {
-		const relevantImports = this.filterByTypes(imports, types);
+	calculateRelevantClass(imports: string[]): string[] {
+		const relevantImports = this.refineImportTypes(imports);
 
-		let calculatedImports = relevantImports.map(imp => {
+		return relevantImports.map(imp => {
 			return this.calculateByPackageName(imp);
 		});
-
-		return calculatedImports;
 	}
 
-	private filterByTypes(imports: string[], types: string[]) {
-		const canonicalNames = imports.map(imp => {
+	private refineImportTypes(imports: string[]) {
+		return imports.map(imp => {
 			const impArr = imp.split(' ');
 			return impArr[impArr.length - 1].replace(';', '');
-		});
-
-		// filter imports ending with the class name which is in types
-		return canonicalNames.filter(imp => {
-			const impArr = imp.split('.');
-			return types.includes(impArr[impArr.length - 1]);
 		});
 	}
 
