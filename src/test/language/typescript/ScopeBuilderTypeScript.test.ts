@@ -47,10 +47,10 @@ export default function IndexPage() {
 		let output = await scopeBuilder.build();
 
 		const hoverRanges = output.hoverableRanges();
-		expect(hoverRanges.length).toBe(4);
+		expect(hoverRanges.length).toBe(5);
 
 		const allText = hoverRanges.map((range) => range.getText()).join(", ");
-		expect(allText).toBe("Link, IndexPage, href, href");
+		expect(allText).toBe("Link, IndexPage, href, href, Link");
 	});
 
 	it('test for main scopes', async () => {
@@ -74,7 +74,7 @@ export default function IndexPage() {
 		let tree = parser.parse(sourceCode);
 		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language, "");
 		let scopeGraph = await tsf.scopeGraph();
-		const imports = scopeGraph.allImports(sourceCode);
+		const imports = scopeGraph.allImportsBySource(sourceCode);
 
 		expect(imports.length).toBe(1);
 		expect(imports[0]).toBe('import Link from "next/link"');

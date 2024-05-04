@@ -8,7 +8,7 @@ import { LocalDef } from "./scope/LocalDef";
 import { Reference } from "./scope/Reference";
 import { NodeKind } from "./scope/NodeKind";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
-import { ScopeDebug } from "../../test/ScopeDebug";
+import { ImportDebug, ScopeDebug } from "../../test/ScopeDebug";
 import { TestOnly } from "../../ops/TestOnly";
 
 export interface EdgeKind {
@@ -146,25 +146,7 @@ export class ScopeGraph {
 	scopeStack(start: NodeIndex): ScopeStack {
 		return new ScopeStack(this.graph, start);
 	}
-//     // The smallest scope that encompasses `range`. Start at `start` and narrow down if possible.
-//     fn scope_by_range(&self, range: TextRange, start: NodeIndex) -> Option<NodeIndex> {
-//         let target_range = self.graph[start].range();
-//         if target_range.contains(&range) {
-//             let child_scopes = self
-//                 .graph
-//                 .edges_directed(start, Direction::Incoming)
-//                 .filter(|edge| *edge.weight() == EdgeKind::ScopeToScope)
-//                 .map(|edge| edge.source())
-//                 .collect::<Vec<_>>();
-//             for child_scope in child_scopes {
-//                 if let Some(t) = self.scope_by_range(range, child_scope) {
-//                     return Some(t);
-//                 }
-//             }
-//             return Some(start);
-//         }
-//         None
-//     }
+
 	private scopeByRange(range: TextRange, start: NodeIndex): NodeIndex | null {
 		const targetRange = this.graph.getNodeAttributes(start).range;
 		if (targetRange.contains(range)) {
@@ -236,27 +218,6 @@ export class ScopeGraph {
 			});
 	}
 
-	public defsByRange(startByte: number, endByte: number): NodeIndex[] {
-		 // this.graph.nodes()
-			// .filter(node => {
-			// 	const nodeKind = this.graph.getNodeAttributes(node);
-			// 	return nodeKind instanceof LocalDef;
-			// })
-			// .filter(node => {
-			// 	const nodeKind = this.graph.getNodeAttributes(node);
-			// 	return nodeKind.range.start.byte >= startByte && nodeKind.range.end.byte <= endByte;
-			// });
-		return this.graph.nodes()
-			.filter(node => {
-				const nodeKind = this.graph.getNodeAttributes(node);
-				return nodeKind instanceof LocalDef;
-			})
-			.filter(node => {
-				const nodeKind = this.graph.getNodeAttributes(node);
-				return nodeKind.range.start.byte >= startByte && nodeKind.range.end.byte <= endByte;
-			});
-	}
-
 	debug(src: NodeIndex, language: LanguageConfig) {
 		const graph = this.graph;
 		const start = this.rootIndex;
@@ -283,7 +244,7 @@ export class ScopeGraph {
 			.map(node => this.graph.getNodeAttributes(node));
 	}
 
-	allImports(src: string): string[] {
+	allImportsBySource(src: string): string[] {
 		let graph = this.graph;
 		const imports = graph
 			.inEdges(this.rootIndex)
@@ -291,17 +252,25 @@ export class ScopeGraph {
 			.map(edge => {
 				const impNode = graph.source(edge);
 				const range = graph.getNodeAttributes(impNode).range;
-				// const text = src.slice(range.start.byte, range.end.byte);
-				// const refs = graph
-				// 	.inEdges(impNode)
-				// 	.filter(edge => graph.getEdgeAttributes(edge) instanceof RefToImport)
-				// 	.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
-				// 	.sort((a, b) => a.start.byte - b.start.byte);
 
 				return contextFromRange(range, src);
 			});
 
 		return imports;
+	}
+
+	allImports(src: string): TextRange[] {
+		const graph = this.graph;
+		return this.graph
+			.inEdges(this.rootIndex)
+			.filter(edge => graph.getEdgeAttributes(edge) instanceof ImportToScope)
+			.map(edge => {
+				const impNode = graph.source(edge);
+				const range = graph.getNodeAttributes(impNode).range;
+				const text = src.slice(range.start.byte, range.end.byte);
+
+				return new TextRange(range.start, range.end, text);
+			});
 	}
 }
 

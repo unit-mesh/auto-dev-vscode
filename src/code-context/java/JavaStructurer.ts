@@ -14,6 +14,8 @@ import { TextInRange } from "../../editor/ast/TextInRange";
 import { TextRange } from "../../code-search/semantic/model/TextRange";
 import { Attributes } from "graphology-types";
 import { NodeKind } from "../../code-search/semantic/scope/NodeKind";
+import { start } from "node:repl";
+import { ImportDebug } from "../../test/ScopeDebug";
 
 @injectable()
 export class JavaStructurer implements Structurer {
@@ -150,7 +152,7 @@ export class JavaStructurer implements Structurer {
 		return codeFile;
 	}
 
-	async extractMethodInputOutput(scope: ScopeGraph, node: SyntaxNode, range: TextRange): Promise<string[] | undefined> {
+	async extractMethodInputOutput(node: SyntaxNode, range: TextRange): Promise<string[] | undefined> {
 		let syntaxNode = node.namedDescendantForPosition(
 			{ row: range.start.line, column: range.start.column },
 			{ row: range.end.line, column: range.end.column }
@@ -170,8 +172,6 @@ export class JavaStructurer implements Structurer {
 			name: '',
 			typ: ''
 		};
-
-		let nodeByRange = scope.defsByRange(syntaxNode.startIndex, syntaxNode.endIndex);
 
 		for (const element of captures) {
 			const capture: Parser.QueryCapture = element!!;
@@ -216,6 +216,17 @@ export class JavaStructurer implements Structurer {
 		});
 
 		return inputAndOutput;
+	}
+
+	async fetchImportsWithinScope(scope: ScopeGraph, node: SyntaxNode, src: string): Promise<string[]> {
+		let imports: TextRange[] = scope.allImports(src);
+		let range: TextRange = TextRange.from(node);
+
+		let importDebugs = imports.filter((impRange) => {
+			return range.contains(impRange);
+		});
+
+		return importDebugs.map((imp) => imp.getText());
 	}
 
 	async extractFields(node: SyntaxNode) {

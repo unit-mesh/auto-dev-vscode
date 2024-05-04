@@ -56,7 +56,7 @@ public class BlogController {
 		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
 		const graph: ScopeGraph = await tsf.scopeGraph();
 
-		let imports = graph.allImports(controller);
+		let imports = graph.allImportsBySource(controller);
 
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
@@ -65,7 +65,10 @@ public class BlogController {
 		let secondFunc = codeFile!!.classes[0].methods[0];
 		let textRange = functionToRange(secondFunc);
 
-		let ios: string[] = await structurer.extractMethodInputOutput(graph, tsf.tree.rootNode, textRange) ?? [];
+		let ios: string[] = await structurer.extractMethodInputOutput(tsf.tree.rootNode, textRange) ?? [];
+
+		let scopes: string[] = await structurer.fetchImportsWithinScope(graph, tsf.tree.rootNode, controller) ?? [];
+		console.log("extractImportByRange:", scopes);
 
 		let fields = await structurer.extractFields(tsf.tree.rootNode);
 
@@ -107,7 +110,7 @@ public class BlogController {
 		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
 		const graph: ScopeGraph = await tsf.scopeGraph();
 
-		let imports = graph.allImports(controller);
+		let imports = graph.allImportsBySource(controller);
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
 
@@ -115,7 +118,7 @@ public class BlogController {
 		let secondFunc = codeFile!!.classes[0].methods[0];
 		let textRange = functionToRange(secondFunc);
 
-		let ios: string[] = await structurer.extractMethodInputOutput(graph, tsf.tree.rootNode, textRange) ?? [];
+		let ios: string[] = await structurer.extractMethodInputOutput(tsf.tree.rootNode, textRange) ?? [];
 
 		let lookup = new JavaRelevantLookup(tsf);
 		let relevantClasses = lookup.calculateRelevantClass(ios, imports);
