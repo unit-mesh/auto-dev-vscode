@@ -73,6 +73,7 @@ public class BlogController {
 		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language, "");
 		let output = await testScopes("java", sourceCode, "", tsf);
 
+
 		expect(output).to.equals(JSON.stringify({
 				"definitions": [{
 					"context": "public class §BlogController§ {",
@@ -94,7 +95,7 @@ public class BlogController {
 							"text": "BlogPost"
 						},
 						"context": "import cc.unitmesh.untitled.demo.entity.§BlogPost§;",
-						"refs": []
+						"refs": [{ "context": "public §BlogPost§ getBlog(@PathVariable Long id) {" }]
 					},
 					{
 						"name": "BlogService",
@@ -104,7 +105,7 @@ public class BlogController {
 							"text": "BlogService"
 						},
 						"context": "import cc.unitmesh.untitled.demo.service.§BlogService§;",
-						"refs": []
+						"refs": [{ "context": "§BlogService§ blogService;" }, { "context": "public BlogController(§BlogService§ blogService) {" }]
 					},
 					{
 						"name": "GetMapping",
@@ -124,7 +125,7 @@ public class BlogController {
 							"text": "PathVariable"
 						},
 						"context": "import org.springframework.web.bind.annotation.§PathVariable§;",
-						"refs": []
+						"refs": [{ "context": "public BlogPost getBlog(@§PathVariable§ Long id) {" }]
 					},
 					{
 						"name": "RestController",
@@ -135,10 +136,11 @@ public class BlogController {
 						},
 						"context": "import org.springframework.web.bind.annotation.§RestController§;",
 						"refs": [{ "context": "@§RestController§" }]
-					}],
-				"scopes": [
-					{
-						"definitions": [{
+					}
+				],
+				"scopes": [{
+					"definitions": [
+						{
 							"context": "BlogService §blogService§;",
 							"name": "blogService",
 							"range": {
@@ -152,31 +154,55 @@ public class BlogController {
 								{ "context": "return §blogService§.getBlogById(id);" }
 							],
 							"symbol": "local"
-						}],
-						"imports": [],
-						"scopes": [
-							{
+						},
+						{
+							"context": "public §BlogController§(BlogService blogService) {",
+							"name": "BlogController",
+							"range": {
+								"start": { "byte": 422, "line": 12, "column": 11 },
+								"end": { "byte": 436, "line": 12, "column": 25 },
+								"text": "BlogController"
+							},
+							"refs": [],
+							"symbol": "method"
+						}
+					],
+					"imports": [],
+					"scopes": [
+						{
+							"definitions": [{
+								"context": "public BlogController(BlogService §blogService§) {",
+								"name": "blogService",
+								"range": {
+									"start": { "byte": 449, "line": 12, "column": 38 },
+									"end": { "byte": 460, "line": 12, "column": 49 },
+									"text": "blogService"
+								},
+								"refs": [
+									{ "context": "this.§blogService§ = blogService;" },
+									{ "context": "this.blogService = §blogService§;" }
+								],
+								"symbol": "local"
+							}], "imports": [], "scopes": []
+						},
+						{
+							"definitions": [
+								{
+									"context": "public BlogPost §getBlog§(@PathVariable Long id) {",
+									"name": "getBlog",
+									"range": {
+										"start": { "byte": 556, "line": 17, "column": 20 },
+										"end": { "byte": 563, "line": 17, "column": 27 },
+										"text": "getBlog"
+									},
+									"refs": [],
+									"symbol": "method"
+								}
+							],
+							"imports": [],
+							"scopes": [{
 								"definitions": [
 									{
-										"context": "public BlogController(BlogService §blogService§) {",
-										"name": "blogService",
-										"range": {
-											"start": { "byte": 449, "line": 12, "column": 38 },
-											"end": { "byte": 460, "line": 12, "column": 49 },
-											"text": "blogService"
-										},
-										"refs": [{ "context": "this.§blogService§ = blogService;" }, { "context": "this.blogService = §blogService§;" }],
-										"symbol": "local"
-									}
-								],
-								"imports": [],
-								"scopes": []
-							},
-							{
-								"definitions": [],
-								"imports": [],
-								"scopes": [{
-									"definitions": [{
 										"context": "public BlogPost getBlog(@PathVariable Long §id§) {",
 										"name": "id",
 										"range": {
@@ -186,12 +212,10 @@ public class BlogController {
 										},
 										"refs": [{ "context": "return blogService.getBlogById(§id§);" }],
 										"symbol": "local"
-									}],
-									"imports": [],
-									"scopes": []
-								}]
+									}], "imports": [], "scopes": []
 							}]
-					}]
+						}]
+				}]
 			}
 		));
 	});

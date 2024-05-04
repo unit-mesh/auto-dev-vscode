@@ -146,18 +146,37 @@ export class ScopeGraph {
 	scopeStack(start: NodeIndex): ScopeStack {
 		return new ScopeStack(this.graph, start);
 	}
-
+//     // The smallest scope that encompasses `range`. Start at `start` and narrow down if possible.
+//     fn scope_by_range(&self, range: TextRange, start: NodeIndex) -> Option<NodeIndex> {
+//         let target_range = self.graph[start].range();
+//         if target_range.contains(&range) {
+//             let child_scopes = self
+//                 .graph
+//                 .edges_directed(start, Direction::Incoming)
+//                 .filter(|edge| *edge.weight() == EdgeKind::ScopeToScope)
+//                 .map(|edge| edge.source())
+//                 .collect::<Vec<_>>();
+//             for child_scope in child_scopes {
+//                 if let Some(t) = self.scope_by_range(range, child_scope) {
+//                     return Some(t);
+//                 }
+//             }
+//             return Some(start);
+//         }
+//         None
+//     }
 	private scopeByRange(range: TextRange, start: NodeIndex): NodeIndex | null {
 		const targetRange = this.graph.getNodeAttributes(start).range;
 		if (targetRange.contains(range)) {
-			const childScopes = this.graph.inNeighbors(start);
+			const childScopes = this.graph.inEdges(start)
+				.filter(edge => this.graph.getEdgeAttributes(edge) instanceof ScopeToScope)
+				.map(edge => this.graph.source(edge));
 			for (const childScope of childScopes) {
 				const t = this.scopeByRange(range, childScope);
-				if (t !== null) {
+				if (t) {
 					return t;
 				}
 			}
-
 			return start;
 		}
 		return null;
