@@ -24,8 +24,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 				return [];
 			}
 
-			const file = await documentToTreeSitterFile(document);
-			const builder = new NamedElementBuilder(file);
+			const builder = await NamedElementBuilder.from(document);
 			const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
 			let lenses: vscode.CodeLens[] = [];
 

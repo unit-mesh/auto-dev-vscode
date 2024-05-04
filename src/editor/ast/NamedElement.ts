@@ -1,5 +1,6 @@
 import { TextInRange } from "./TextInRange";
 import { CodeElementType } from "../codemodel/CodeElementType";
+import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 
 /**
  * Represents a named element block for AST element.
@@ -27,18 +28,19 @@ export class NamedElement {
 	codeElementType: CodeElementType;
 	blockContent: string;
 	commentRange: TextInRange | undefined;
+	file: TreeSitterFile;
 
 	constructor(
 		blockRange: TextInRange,
 		identifierRange: TextInRange,
 		codeElementType: CodeElementType,
 		blockContent: string,
-		commentRange?: TextInRange
+		file: TreeSitterFile
 	) {
 		this.blockRange = blockRange;
 		this.identifierRange = identifierRange;
-		this.commentRange = commentRange;
 		this.blockContent = blockContent;
 		this.codeElementType = codeElementType;
+		this.file = file;
 	}
 }

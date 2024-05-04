@@ -33,8 +33,7 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 			return [];
 		}
 
-		const file = await documentToTreeSitterFile(document);
-		let blockBuilder = new NamedElementBuilder(file);
+		let blockBuilder = await NamedElementBuilder.from(document);
 
 		const methodRanges: NamedElement[] = blockBuilder.buildMethod();
 		const classRanges: NamedElement[] = blockBuilder.buildClass();

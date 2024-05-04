@@ -27,12 +27,14 @@ export class NamedElementBuilder {
 	tree: Parser.Tree;
 	language: Parser.Language;
 	parser: Parser | undefined = undefined;
+	private file: TreeSitterFile;
 
-	constructor(file: TreeSitterFile) {
+	private constructor(file: TreeSitterFile) {
 		this.langConfig = file.langConfig;
 		this.tree = file.tree;
 		this.language = file.language;
 		this.parser = file.parser;
+		this.file = file;
 	}
 
 	static async from(document: vscode.TextDocument): Promise<NamedElementBuilder> {
@@ -133,23 +135,24 @@ export class NamedElementBuilder {
 					const idNode = match.captures[1].node;
 					let blockNode = match.captures[0].node;
 
-					if (this.langConfig.autoSelectInsideParent.length > 0) {
-						this.langConfig.autoSelectInsideParent.forEach((nodeType) => {
+					let insideParent = this.langConfig.autoSelectInsideParent;
+					if (insideParent.length > 0) {
+						insideParent.forEach((nodeType) => {
 							if (blockNode.parent?.type === nodeType) {
 								blockNode = blockNode.parent;
 							}
 						});
 					}
 
-					let commentNode = previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
-
 					let blockRange = new NamedElement(
 						TextInRange.fromNode(blockNode),
 						TextInRange.fromNode(idNode),
 						elementType,
 						blockNode.text,
+						this.file
 					);
 
+					let commentNode = previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
 					if (commentNode.length > 0) {
 						blockRange.commentRange = TextInRange.fromNode(commentNode[0]);
 					}
