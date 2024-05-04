@@ -9,6 +9,9 @@ import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
+import { ScopeGraph } from "../../code-search/semantic/ScopeGraph";
+import { TextInRange } from "../../editor/ast/TextInRange";
+import { TextRange } from "../../code-search/semantic/model/TextRange";
 
 @injectable()
 export class JavaStructurer implements Structurer {
@@ -145,10 +148,15 @@ export class JavaStructurer implements Structurer {
 		return codeFile;
 	}
 
-	async extractMethodInputOutput(code: string): Promise<string[] | undefined> {
-		const tree = this.parser!!.parse(code);
+	// TODO: refactor to use graph only
+	async extractMethodInputOutput(graph: ScopeGraph, node: SyntaxNode, range: TextRange): Promise<string[] | undefined> {
+		let syntaxNode = node.namedDescendantForPosition(
+			{ row: range.start.line, column: range.start.column },
+			{ row: range.end.line, column: range.end.column }
+		);
+
 		const query = this.config.methodIOQuery!!.query(this.language!!);
-		const captures = query!!.captures(tree.rootNode);
+		const captures = query!!.captures(syntaxNode);
 
 		let methodObj: CodeFunction = {
 			name: '',

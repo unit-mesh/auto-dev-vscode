@@ -1,5 +1,6 @@
 import { PositionElement } from "./PositionElement";
 import { SupportedLanguage } from "../language/SupportedLanguage";
+import { Point, TextRange } from "../../code-search/semantic/model/TextRange";
 
 export interface CodeFile extends CodeElement {
 	name: string;
@@ -32,6 +33,12 @@ export interface CodeFunction extends PositionElement, CodeElement {
 	returnType?: string;
 	start: CodePosition;
 	end: CodePosition;
+}
+
+export function functionToRange(element: CodeFunction): TextRange {
+	const startPoint: Point = { line: element.start.row, column: element.start.column, byte: 0 };
+	const endPoint: Point = { line: element.end.row, column: element.end.column, byte: 0 };
+	return new TextRange(startPoint, endPoint, "");
 }
 
 export interface CodeVariable extends CodeElement {

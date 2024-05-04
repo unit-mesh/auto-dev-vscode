@@ -9,6 +9,7 @@ import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/semantic/ScopeGraph";
 import { JavaStructurer } from "../../../code-context/java/JavaStructurer";
 import { expect } from "vitest";
+import { functionToRange } from "../../../editor/codemodel/CodeFile";
 
 
 describe('RelevantClass for Java', () => {
@@ -51,50 +52,20 @@ public class BlogController {
 }
 `;
 
-		const service = `package cc.unitmesh.untitled.demo.service;
-
-import cc.unitmesh.untitled.demo.entity.BlogPost;
-import cc.unitmesh.untitled.demo.repository.BlogRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-@Service
-public class BlogService {
-    @Autowired
-    BlogRepository blogRepository;
-
-    public BlogPost getBlogById(Long id) {
-        return blogRepository.findById(id).orElse(null);
-    }
-}
-`;
-
-		const repository = `package cc.unitmesh.untitled.demo.repository;
-
-import cc.unitmesh.untitled.demo.entity.BlogPost;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-
-@Repository
-public interface BlogRepository extends CrudRepository<BlogPost, Long> {
-
-}
-`;
-
 		let tree = parser.parse(controller);
 		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
 		const graph: ScopeGraph = await tsf.scopeGraph();
 
 		let imports = graph.allImports(controller);
+
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
 
-		let ios: string[] = await structurer.extractMethodInputOutput(`
-		@GetMapping("/{id}")
-    public BlogPost getBlog(@PathVariable Long id) {
-        return blogService.getBlogById(id);
-    }
-    `) ?? [];
+		let codeFile = await structurer.parseFile(controller, "");
+		let secondFunc = codeFile!!.classes[0].methods[0];
+		let textRange = functionToRange(secondFunc);
+
+		let ios: string[] = await structurer.extractMethodInputOutput(graph, tsf.tree.rootNode, textRange) ?? [];
 
 		let fields = await structurer.extractFields(tsf.tree.rootNode);
 
@@ -109,4 +80,46 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 	});
 
 	// todo: handle for array type;
+	it('calculate for services with array', async () => {
+		const controller =
+			`package cc.unitmesh.untitled.demo.controller;
+
+import cc.unitmesh.untitled.demo.entity.BlogPost;
+import cc.unitmesh.untitled.demo.service.BlogService;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@RestController
+public class BlogController {
+		BlogService blogService;
+
+		public BlogController(BlogService blogService) {
+				this.blogService = blogService;
+		}
+
+		@GetMapping("/{id}")
+		public BlogPost[] getBlog(@PathVariable Long id) {
+				return blogService.getBlogById(id);
+		}
+}
+`;
+
+		let tree = parser.parse(controller);
+		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
+		const graph: ScopeGraph = await tsf.scopeGraph();
+
+		let imports = graph.allImports(controller);
+		let structurer = new JavaStructurer();
+		await structurer.init(new TestLanguageService(parser));
+
+		let codeFile = await structurer.parseFile(controller, "");
+		let secondFunc = codeFile!!.classes[0].methods[0];
+		let textRange = functionToRange(secondFunc);
+
+		let ios: string[] = await structurer.extractMethodInputOutput(graph, tsf.tree.rootNode, textRange) ?? [];
+
+		let lookup = new JavaRelevantLookup(tsf);
+		let relevantClasses = lookup.calculateRelevantClass(ios, imports);
+
+		// expect(relevantClasses).toEqual(['cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/entity/BlogPost']);
+	});
 });

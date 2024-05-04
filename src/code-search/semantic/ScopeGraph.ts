@@ -207,7 +207,6 @@ export class ScopeGraph {
 			})
 			.find(node => {
 				const nodeKind = this.graph.getNodeAttributes(node);
-				console.log(nodeKind);
 				return nodeKind.range.start.byte >= startByte && nodeKind.range.end.byte <= endByte;
 			});
 	}

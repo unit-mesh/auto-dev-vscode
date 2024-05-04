@@ -15,7 +15,7 @@ export class Point {
 export class TextRange {
 	start: Point;
 	end: Point;
-	private text: string;
+	private readonly text: string;
 
 	constructor(start: Point, end: Point, text: string) {
 		this.start = start;
@@ -39,7 +39,7 @@ export class TextRange {
 				line: node.endPosition.row,
 				column: node.endPosition.column
 			},
-			node.text,
+			node.text
 		);
 	}
 
