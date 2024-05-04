@@ -1,13 +1,13 @@
 import { injectable } from "inversify";
 import vscode, { TextDocument } from "vscode";
+import path from "path";
+import fs from "fs";
 
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { TestGenProvider } from "../_base/test/TestGenProvider";
-import path from "path";
-import fs from "fs";
 
 @injectable()
 export class GoTestGenProvider implements TestGenProvider {
@@ -73,7 +73,7 @@ export class GoTestGenProvider implements TestGenProvider {
 		return vscode.Uri.file(testFilePath);
 	}
 
-	lookupRelevantClass(element: any): Promise<CodeStructure> {
+	lookupRelevantClass(element: any): Promise<CodeStructure[]> {
 		return Promise.reject("Method not implemented.");
 	}
 }

@@ -10,5 +10,5 @@ export interface TestGenProvider {
 	isApplicable(lang: SupportedLanguage): boolean;
 	setup(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext): Promise<void>;
 	findOrCreateTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext>;
-	lookupRelevantClass(element: any): Promise<CodeStructure>;
+	lookupRelevantClass(element: any): Promise<CodeStructure[]>;
 }

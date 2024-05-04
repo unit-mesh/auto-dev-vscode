@@ -54,7 +54,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		return Promise.resolve(testContext);
 	}
 
-	lookupRelevantClass(element: any): Promise<CodeStructure> {
+	lookupRelevantClass(element: any): Promise<CodeStructure[]> {
 		throw new Error("Method not implemented.");
 	}
 

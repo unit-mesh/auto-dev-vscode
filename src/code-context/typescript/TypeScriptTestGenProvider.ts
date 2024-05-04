@@ -80,7 +80,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		return context;
 	}
 
-	lookupRelevantClass(element: any): Promise<CodeStructure> {
+	lookupRelevantClass(element: any): Promise<CodeStructure[]> {
 		throw new Error("Method not implemented.");
 	}
 
