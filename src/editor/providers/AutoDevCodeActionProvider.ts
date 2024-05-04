@@ -2,9 +2,7 @@ import * as vscode from "vscode";
 
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
-import { TreeSitterFileError, } from "../../code-context/ast/TreeSitterFile";
 import { NamedElement } from "../ast/NamedElement";
-import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { NamedElementBuilder } from "../ast/NamedElementBuilder";
 import { providerContainer } from "../../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../../ProviderTypes";

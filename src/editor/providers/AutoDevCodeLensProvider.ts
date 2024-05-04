@@ -6,7 +6,6 @@ import { AutoDevExtension } from "../../AutoDevExtension";
 import { TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
 import { NamedElement } from "../ast/NamedElement";
 import { NamedElementBuilder } from "../ast/NamedElementBuilder";
-import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 	constructor(private readonly context: AutoDevExtension) {
