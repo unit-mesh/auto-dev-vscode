@@ -1,4 +1,6 @@
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
+import { MemoizedQuery } from "../../code-context/_base/LanguageConfig";
+import { JavaLangConfig } from "../../code-context/java/JavaLangConfig";
 
 export class JavaRelevantLookup {
 	tsfile: TreeSitterFile;
@@ -18,7 +20,7 @@ export class JavaRelevantLookup {
 	}
 
 	private static filterByTypes(imports: string[], types: string[]) {
-		// remove import and ;
+		// remove `import` and `;`
 		const canonicalNames = imports.map(imp => {
 			const impArr = imp.split(' ');
 			return impArr[impArr.length - 1].replace(';', '');
@@ -31,10 +33,37 @@ export class JavaRelevantLookup {
 		});
 	}
 
+	currentPackageName() {
+		// this.tsfile.langConfig.packageQuery
+		const query = JavaLangConfig.packageQuery!!.queryStr;
+		const rootNode = this.tsfile.tree.rootNode;
+
+		const matches = this.tsfile.language.query(query).matches(rootNode);
+
+		if (matches.length === 0) {
+			return '';
+		}
+
+		const packageNameNode = matches[0].captures[0].node;
+		return packageNameNode.text;
+	}
+
 	/**
 	 * Given a package name, if similar to current tsfile package, try to lookup in the codebase.
+	 *
+	 * For example, if the current file package name is `cc.unitmesh.untitled.demo.service`, the relevant package name
+	 * is `cc.unitmesh.untitled.demo.repository`, then we can be according current filepath to lookup relevant class path;
 	 */
 	calculateByPackageName(packageName: string) {
-
+		const packageArr = packageName.split('.');
+		const tsFilePackageArr = this.currentPackageName().split('.');
+		let relevantPath = '';
+		for (let i = 0; i < tsFilePackageArr.length; i++) {
+			if (tsFilePackageArr[i] !== packageArr[i]) {
+				break;
+			}
+			relevantPath += tsFilePackageArr[i] + '/';
+		}
+		return relevantPath + packageArr.join('/');
 	}
 }

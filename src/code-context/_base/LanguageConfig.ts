@@ -22,6 +22,9 @@ export interface LanguageConfig {
   // Compiled tree-sitter hoverables query
   hoverableQuery: MemoizedQuery;
 
+  // in java, the canonical name is the package name
+  packageQuery?: MemoizedQuery;
+
   // class query
   classQuery: MemoizedQuery;
 

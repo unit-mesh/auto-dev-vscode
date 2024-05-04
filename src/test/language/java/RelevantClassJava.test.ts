@@ -89,10 +89,12 @@ public interface BlogRepository extends CrudRepository<BlogPost, Long> {
 
 		let structurer = new JavaStructurer();
 		await structurer.init(new TestLanguageService(parser));
-		let ios: string[] = await structurer.extractMethodInputOutput(`@GetMapping("/{id}")
+		let ios: string[] = await structurer.extractMethodInputOutput(`
+		@GetMapping("/{id}")
     public BlogPost getBlog(@PathVariable Long id) {
         return blogService.getBlogById(id);
-    }`) ?? [];
+    }
+    `) ?? [];
 
 		let lookup = new JavaRelevantLookup(tsf);
 		lookup.calculateRelevantClass(ios, imports);

@@ -24,6 +24,10 @@ export const JavaLangConfig: LanguageConfig = {
 		((block_comment) @block_comment
 			(#match? @block_comment "^\\\\/\\\\*\\\\*")) @docComment`
 	),
+	packageQuery: new MemoizedQuery(`
+		(package_declaration
+			(scoped_identifier) @package-name)
+	`),
 	structureQuery: new MemoizedQuery(`
 			(package_declaration
 			  (scoped_identifier) @package-name)
