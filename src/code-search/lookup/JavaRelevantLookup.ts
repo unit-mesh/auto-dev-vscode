@@ -59,15 +59,20 @@ export class JavaRelevantLookup {
 	 * is `cc.unitmesh.untitled.demo.repository`, then we can be according current filepath to look up a relevant class path;
 	 */
 	pathByPackageName(packageName: string) {
-		const packageArr = packageName.split('.');
-		const tsFilePackageArr = this.extractCurrentPackageName().split('.');
-		let relevantPath = '';
-		for (let i = 0; i < tsFilePackageArr.length; i++) {
-			if (tsFilePackageArr[i] !== packageArr[i]) {
-				break;
-			}
-			relevantPath += tsFilePackageArr[i] + '/';
+		let currentPath = this.tsfile.filePath;
+		console.log(currentPath);
+		const currentPackageName = this.extractCurrentPackageName();
+		if (currentPackageName === '') {
+			return '';
 		}
-		return relevantPath + packageArr.join('/');
+
+		// let projectPath = currentPath.split('src/main/java')[0];
+		// we need to support kotlin, scala file path as well, which is src/main/kotlin
+		let projectPath = currentPath.split('src/main')[0];
+		const packagePath = packageName.replace(/\./g, '/');
+		const lang = currentPath.split('src/main')?.[1]?.split('/')?.[1] || 'java';
+
+		const classPath = `${projectPath}src/main/${lang}/${packagePath}`;
+		return classPath;
 	}
 }

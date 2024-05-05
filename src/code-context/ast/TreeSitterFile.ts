@@ -15,7 +15,7 @@ export class TreeSitterFile {
 	readonly langConfig: LanguageConfig;
 	readonly parser: Parser | undefined = undefined;
 	readonly language: Parser.Language;
-	readonly fsPath: string;
+	readonly filePath: string;
 
 	constructor(src: string, tree: Tree, tsLanguage: LanguageConfig, parser: Parser, language: Language, fsPath: string = "") {
 		this.sourcecode = src;
@@ -23,7 +23,7 @@ export class TreeSitterFile {
 		this.langConfig = tsLanguage;
 		this.parser = parser;
 		this.language = language;
-		this.fsPath = fsPath;
+		this.filePath = fsPath;
 	}
 
 	private static oneSecond: number = Math.pow(10, 6);
