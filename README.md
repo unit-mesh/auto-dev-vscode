@@ -19,6 +19,10 @@
 
 JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.com/unit-mesh/auto-dev)
 
+## Join the Community
+
+![AutoDev for Local](https://unitmesh.cc/images/qrcode.jpg)
+
 ## Todos
 
 - [ ] Custom LLM config
