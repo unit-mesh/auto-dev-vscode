@@ -18,26 +18,26 @@ export class TestTemplateFinder {
 	 * 1. Find the prompts directory
 	 */
 	lookup(templateFileName: string): string | null {
-		const promptsDir = this.workspace?.uri.with({ path: path.join(this.workspace.uri.path, "prompts") });
-		if (!promptsDir) return null;
+		let promptsDir = path.join(this.workspace?.uri.fsPath || "", "prompts");
+		if (!fs.existsSync(promptsDir)) {return null;}
 
-		const templateFile = promptsDir.with({ path: path.join(promptsDir.path, "templates") });
-		if (!templateFile) return null;
+		let templateFile = path.join(promptsDir, "templates");
+		if (!fs.existsSync(templateFile)) {return null;}
 
-		const templateFilePath = path.join(templateFile.fsPath, templateFileName);
+		const templateFilePath = path.join(templateFile, templateFileName);
 		if (fs.existsSync(templateFilePath)) {
 			return fs.readFileSync(templateFilePath, { encoding: 'utf-8' });
 		}
 
-		const vmTemplateFilePath = path.join(templateFile.fsPath, `${templateFileName}.vm`);
+		const vmTemplateFilePath = path.join(templateFile, `${templateFileName}.vm`);
 		if (fs.existsSync(vmTemplateFilePath)) {
 			return fs.readFileSync(vmTemplateFilePath, { encoding: 'utf-8' });
 		}
 
-		const files = fs.readdirSync(templateFile.fsPath);
+		const files = fs.readdirSync(templateFile);
 		const endSuffixFile = files.find(file => file.endsWith(templateFileName));
 		if (endSuffixFile) {
-			const endSuffixFilePath = path.join(templateFile.fsPath, endSuffixFile);
+			const endSuffixFilePath = path.join(templateFile, endSuffixFile);
 			return fs.readFileSync(endSuffixFilePath, { encoding: 'utf-8' });
 		}
 
