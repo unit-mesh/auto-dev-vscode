@@ -91,12 +91,6 @@ export class JavaStructurer implements Structurer {
 		const fields: CodeVariable[] = [];
 		let lastField: CodeVariable = { name: '', typ: '' };
 
-/*
-		function checkClassExistence(name: string) {
-			return codeFile.classes.some((cls) => cls.name === name);
-		}
-*/
-
 		for (const element of captures) {
 			const capture: Parser.QueryCapture = element!!;
 			const text = capture.node.text;

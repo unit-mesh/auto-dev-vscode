@@ -38,10 +38,10 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
 
 		const testContext = await provider.setupTestFile(this.document, this.namedElement);
-		let relatedClasses = await provider.lookupRelevantClass(this.namedElement);
+		let codeFiles = await provider.lookupRelevantClass(this.namedElement);
 
 		let umlPresenter = new CommentedUmlPresenter();
-		testContext.relatedClasses = relatedClasses.map((codeStructure) => {
+		testContext.relatedClasses = codeFiles.map((codeStructure) => {
 			return umlPresenter.present(codeStructure);
 		});
 

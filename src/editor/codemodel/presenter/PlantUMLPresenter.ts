@@ -19,8 +19,11 @@ export class PlantUMLPresenter implements Presenter {
 			plantUmlString += `'${importItem}\n`;
 		});
 
-		// Iterate through classes and convert them to PlantUML syntax
+		const classMap = new Map<string, CodeStructure>();
 		file.classes.forEach(classItem => {
+			classMap.set(classItem.name, classItem);
+		});
+		classMap.forEach(classItem => {
 			plantUmlString += this.convertClassToPlantUml(classItem);
 		});
 

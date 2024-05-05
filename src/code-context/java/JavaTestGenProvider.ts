@@ -104,11 +104,15 @@ export class JavaTestGenProvider implements TestGenProvider {
 		let paths = lookup.relevantImportToFilePath(ios);
 
 		// read file by path and structurer to parse it to uml
-		let codeFiles: CodeFile[] = [];
-		for (const path of paths) {
+		async function parseCodeFile(path: string): Promise<CodeFile | undefined> {
 			const uri = vscode.Uri.file(path);
 			const document = await vscode.workspace.openTextDocument(uri);
-			const codeFile = await structurer.parseFile(document.getText(), path);
+			return await structurer.parseFile(document.getText(), path);
+		}
+
+		let codeFiles: CodeFile[] = [];
+		for (const path of paths) {
+			const codeFile = await parseCodeFile(path);
 			if (codeFile !== undefined) {
 				codeFiles.push(codeFile);
 			}
