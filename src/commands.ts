@@ -155,7 +155,7 @@ const commandsMap: (
 
     const file = await structurer.parseFile(document.getText(), document.uri.path);
     if (file !== undefined) {
-      const output = new PlantUMLPresenter().convert(file);
+      const output = new PlantUMLPresenter().present(file);
 
       let relatedProvider = extension.relatedManager.getRelatedProvider(document.languageId);
 

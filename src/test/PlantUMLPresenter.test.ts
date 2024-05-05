@@ -33,7 +33,7 @@ describe('PlantUMLPresenter', () => {
     };
 
     const presenter = new PlantUMLPresenter();
-    const plantUmlString = presenter.convert(codeFile);
+    const plantUmlString = presenter.present(codeFile);
 
     expect(plantUmlString).toBe(
       `@startuml

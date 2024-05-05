@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs";
 
 import { NamedElement } from "../../editor/ast/NamedElement";
-import { CodeStructure } from "../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { TestGenProvider } from "../_base/test/TestGenProvider";
@@ -73,7 +73,7 @@ export class GoTestGenProvider implements TestGenProvider {
 		return vscode.Uri.file(testFilePath);
 	}
 
-	lookupRelevantClass(element: any): Promise<CodeStructure[]> {
+	lookupRelevantClass(element: any): Promise<CodeFile[]> {
 		return Promise.resolve([]);
 	}
 }

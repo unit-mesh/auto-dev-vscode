@@ -1,5 +1,5 @@
 import { CodeFile } from "../../../editor/codemodel/CodeFile";
-import { CommentUmlPresenter } from "../../../editor/codemodel/presenter/CommentUmlPresenter";
+import { CommentedUmlPresenter } from "../../../editor/codemodel/presenter/CommentedUmlPresenter";
 
 describe('CommentUmlPresenter', () => {
 	it('should convert a simple file to PlantUML', () => {
@@ -32,9 +32,9 @@ describe('CommentUmlPresenter', () => {
 			],
 		};
 
-		const presenter = new CommentUmlPresenter();
+		const presenter = new CommentedUmlPresenter();
 
-		const plantUmlString = presenter.convert(codeFile);
+		const plantUmlString = presenter.present(codeFile);
 
 		expect(plantUmlString).toBe(`// @startuml
 // 'package com.example

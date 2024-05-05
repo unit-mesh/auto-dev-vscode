@@ -2,7 +2,7 @@ import { CodeFile, CodeFunction, CodeStructure } from "../CodeFile";
 import { Presenter } from "./Presenter";
 
 export class PlantUMLPresenter implements Presenter {
-	convert(file: CodeFile): string {
+	present(file: CodeFile): string {
 		return this.render(file);
 	}
 

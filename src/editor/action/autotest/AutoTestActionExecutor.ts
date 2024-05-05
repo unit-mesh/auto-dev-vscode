@@ -10,6 +10,7 @@ import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "../../../prompt-manage/ActionType";
+import { CommentedUmlPresenter } from "../../codemodel/presenter/CommentedUmlPresenter";
 
 export class AutoTestActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoTest;
@@ -38,7 +39,13 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		const testContext = await provider.setupTestFile(this.document, this.namedElement);
 
-		// start time
+		let relatedClasses = await provider.lookupRelevantClass(this.namedElement);
+
+		let umlPresenter = new CommentedUmlPresenter();
+		testContext.relatedClasses = relatedClasses.map((codeStructure) => {
+			return umlPresenter.present(codeStructure);
+		});
+
 		const startTime = new Date().getTime();
 		const creationContext: CreateToolchainContext = {
 			action: "AutoDocAction",
