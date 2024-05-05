@@ -63,64 +63,77 @@ export class ScopeBuilder {
 		let localScopeCaptureIndex: number | null = null;
 		let localImportCaptureIndex: number | null = null;
 
-		for (let i = 0; i < this.query.captureNames.length; i++) {
-			const name = this.query.captureNames[i];
+		for (let index = 0; index < this.query.captureNames.length; index++) {
+			const name = this.query.captureNames[index];
 			const parts = name.split('.');
 			const partLength = parts.length;
-			switch (parts[0]) {
-				case "local":
-					switch (partLength) {
-						case 2:
-							switch (parts[1]) {
-								// like: @local.reference
-								case "reference":
-									localRefCaptures.push({ index: i, symbol: undefined });
-									break;
-								case "scope":
-									localScopeCaptureIndex = i;
-									break;
-								case "import":
-									localImportCaptureIndex = i;
-									break;
-							}
-							break;
-						case 3:
-							// like: @local.reference.import
-							switch (parts[1]) {
-								case "reference":
-									localRefCaptures.push({ index: i, symbol: parts[2] });
-									break;
-								case "definition":
-									localDefCaptures.push({
-										index: i,
-										symbol: parts[2],
-										scoping: Scoping.local,
-									});
-									break;
-								default:
-									if (!name.startsWith("_")) {
-										console.warn(`Unknown capture name: ${name}`);
-									}
-							}
-							break;
-					}
+
+			if (parts[0] === "local") {
+				handleLocalParts(parts, partLength, index);
+			} else {
+				handleDefinitionParts(parts, index);
+			}
+		}
+
+		function handleLocalParts(parts: string[], partLength: number, index: number) {
+			switch (partLength) {
+				case 2:
+					handleLocalPartsLengthTwo(parts, index);
+					break;
+				case 3:
+					handleDefinitionAndReference(parts, index);
+					break;
+			}
+		}
+
+		function handleLocalPartsLengthTwo(parts: string[], index: number) {
+			switch (parts[1]) {
+				case "reference":
+					localRefCaptures.push({ index: index, symbol: undefined });
+					break;
+				case "scope":
+					localScopeCaptureIndex = index;
+					break;
+				case "import":
+					localImportCaptureIndex = index;
+					break;
+			}
+		}
+
+		function handleDefinitionAndReference(parts: string[], index: number) {
+			switch (parts[1]) {
+				case "reference":
+					localRefCaptures.push({ index: index, symbol: parts[2] });
+					break;
+				case "definition":
+					localDefCaptures.push({
+						index: index,
+						symbol: parts[2],
+						scoping: Scoping.local,
+					});
 					break;
 				default:
-					// for Hoisted and Global
-					switch (parts[1]) {
-						case "definition":
-							localDefCaptures.push({
-								index: i,
-								symbol: parts[2] || undefined,
-								scoping: parseScoping(parts[0]),
-							});
-							break;
-						default:
-							if (!name.startsWith("_")) {
-								console.warn(`Unknown capture name: ${name}`);
-							}
-					}
+					warnUnknownCaptureName(parts[0]);
+			}
+		}
+
+		function handleDefinitionParts(parts: string[], i: number) {
+			switch (parts[1]) {
+				case "definition":
+					localDefCaptures.push({
+						index: i,
+						symbol: parts[2] || undefined,
+						scoping: parseScoping(parts[0]),
+					});
 					break;
+				default:
+					warnUnknownCaptureName(parts[0]);
+			}
+		}
+
+		function warnUnknownCaptureName(name: string) {
+			if (!name.startsWith("_")) {
+				console.warn(`Unknown capture name: ${name}`);
 			}
 		}
 
