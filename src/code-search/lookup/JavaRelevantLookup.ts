@@ -72,7 +72,6 @@ export class JavaRelevantLookup {
 		const packagePath = packageName.replace(/\./g, '/');
 		const lang = currentPath.split('src/main')?.[1]?.split('/')?.[1] || 'java';
 
-		const classPath = `${projectPath}src/main/${lang}/${packagePath}`;
-		return classPath;
+		return `${projectPath}src/main/${lang}/${packagePath}.java`;
 	}
 }
