@@ -24,6 +24,8 @@ export interface CodeStructure extends PositionElement, CodeElement {
 	fields?: CodeVariable[];
 	// in some languages, functions and methods are different names
 	methods: CodeFunction[];
+	/// for nested classes
+	classes?: CodeStructure[];
 	start: CodePosition;
 	end: CodePosition;
 }

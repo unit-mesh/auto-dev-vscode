@@ -38,6 +38,7 @@ public class ExampleClass {
 				{
 					"constant": [],
 					"extends": [],
+					"fields": [],
 					"methods": [
 						{
 							"vars": [],
@@ -95,8 +96,8 @@ public class CreateBlogRequest {
 
 		const codeFile = await structurer.parseFile(javaHelloWorld, "");
 		console.log(JSON.stringify(codeFile));
-		expect(codeFile as CodeFile).toEqual(
-			{
+
+		expect(codeFile as CodeFile).toEqual({
 				"name": "",
 				"filepath": "",
 				"language": "java",
@@ -112,26 +113,6 @@ public class CreateBlogRequest {
 					"name": "CreateBlogRequest",
 					"package": "",
 					"implements": [],
-					"start": { "row": 6, "column": 0 },
-					"end": { "row": 11, "column": 1 }
-				}, {
-					"canonicalName": "cc.unitmesh.untitled.demo.dto.CreateBlogRequest",
-					"package": "cc.unitmesh.untitled.demo.dto",
-					"implements": [],
-					"constant": [],
-					"extends": [],
-					"methods": [],
-					"name": "CreateBlogRequest",
-					"start": { "row": 6, "column": 0 },
-					"end": { "row": 11, "column": 1 }
-				}, {
-					"canonicalName": "cc.unitmesh.untitled.demo.dto.CreateBlogRequest",
-					"package": "cc.unitmesh.untitled.demo.dto",
-					"implements": [],
-					"constant": [],
-					"extends": [],
-					"methods": [],
-					"name": "CreateBlogRequest",
 					"start": { "row": 6, "column": 0 },
 					"end": { "row": 11, "column": 1 },
 					"fields": [{ "name": "title", "typ": "String" }, { "name": "content", "typ": "String" }, {

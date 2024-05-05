@@ -56,10 +56,10 @@ export class JavaStructurer implements Structurer {
 		const captures = query!!.captures(tree.rootNode);
 
 		// check include lombok: `import lombok.Data;`;
-		let usedLombok = false;
-		if (code.includes("import lombok.Data;")) {
-			usedLombok = true;
-		}
+		// let usedLombok = false;
+		// if (code.includes("import lombok.Data;")) {
+		// 	usedLombok = true;
+		// }
 
 		let filename = filepath.split('/')[filepath.split('/').length - 1];
 		const codeFile: CodeFile = {
@@ -167,16 +167,34 @@ export class JavaStructurer implements Structurer {
 			}
 		}
 
-		if (usedLombok) {
-			classObj.fields = fields;
-		}
-
+		classObj.fields = fields;
 		classObj.methods = methods;
 
 		if (isLastNode && classObj.name !== '') {
 			codeFile.classes.push({ ...classObj });
 		}
 
+		/// in current version TreeSitter Java, has a bug for Lombok like, will had multiple same classes, we should find
+		/// all same' classes and merge all methods and fields
+		let classMap = new Map<string, CodeStructure>();
+		codeFile.classes.forEach((classItem) => {
+			if (classMap.has(classItem.name)) {
+				const oldClass = classMap.get(classItem.name)!!;
+				oldClass.methods.push(...classItem.methods);
+				// oldClass.fields?.push(...classItem.fields ?? []);
+				if (classItem.fields) {
+					if (oldClass.fields) {
+						oldClass.fields.push(...classItem.fields);
+					} else {
+						oldClass.fields = classItem.fields;
+					}
+				}
+			} else {
+				classMap.set(classItem.name, classItem);
+			}
+		});
+
+		codeFile.classes = Array.from(classMap.values());
 		return codeFile;
 	}
 
