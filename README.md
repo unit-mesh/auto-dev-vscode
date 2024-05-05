@@ -21,7 +21,11 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
 
 ## Join the Community
 
-![AutoDev for Local](https://unitmesh.cc/images/qrcode.jpg)
+<img src="https://unitmesh.cc/images/qrcode.jpg" height="400px" alt="wechat qrcode" />
+
+If you are interested in AutoDev, you can join our WeChat group by scanning the QR code above.
+
+（如果群二维码过期，可以添加我的微信号：`phodal02`，注明 `AutoDev`，我拉你入群）
 
 ## Todos
 
