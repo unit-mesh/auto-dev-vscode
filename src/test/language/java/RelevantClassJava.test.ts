@@ -6,7 +6,7 @@ import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/scope-graph/ScopeGraph";
-import { JavaStructurer } from "../../../code-context/java/JavaStructurer";
+import { JavaStructurerProvider } from "../../../code-context/java/JavaStructurerProvider";
 import { functionToRange } from "../../../editor/codemodel/CodeFile";
 
 
@@ -53,7 +53,7 @@ public class BlogController {
 		let tree = parser.parse(controller);
 		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
 		const graph: ScopeGraph = await tsf.scopeGraph();
-		let structurer = new JavaStructurer();
+		let structurer = new JavaStructurerProvider();
 		await structurer.init(new TestLanguageService(parser));
 
 		let codeFile = await structurer.parseFile(controller, "");
@@ -112,7 +112,7 @@ public class BlogController {
 		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
 		const graph: ScopeGraph = await tsf.scopeGraph();
 
-		let structurer = new JavaStructurer();
+		let structurer = new JavaStructurerProvider();
 		await structurer.init(new TestLanguageService(parser));
 		let codeFile = await structurer.parseFile(controller, "");
 

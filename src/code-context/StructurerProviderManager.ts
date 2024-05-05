@@ -1,5 +1,5 @@
 import { SupportedLanguage } from "../editor/language/SupportedLanguage";
-import { Structurer } from "./_base/BaseStructurer";
+import { StructurerProvider } from "./_base/BaseStructurer";
 import { providerContainer } from "../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../ProviderTypes";
 
@@ -16,8 +16,8 @@ export class StructurerProviderManager {
 		return StructurerProviderManager.instance;
 	}
 
-	getStructurer(lang: SupportedLanguage): Structurer | undefined {
-		let testProviders = providerContainer.getAll<Structurer>(PROVIDER_TYPES.Structurer);
+	getStructurer(lang: SupportedLanguage): StructurerProvider | undefined {
+		let testProviders = providerContainer.getAll<StructurerProvider>(PROVIDER_TYPES.StructurerProvider);
 		let provider = testProviders.find((provider) => {
 			return provider.isApplicable(lang);
 		});

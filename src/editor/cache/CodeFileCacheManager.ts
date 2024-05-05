@@ -4,7 +4,7 @@ import { CodeFile, CodeStructure } from "../codemodel/CodeFile";
 import { SupportedLanguage } from "../language/SupportedLanguage";
 import { EXT_LANGUAGE_MAP } from "../language/ExtensionLanguageMap";
 import { StructurerProviderManager } from "../../code-context/StructurerProviderManager";
-import { Structurer } from "../../code-context/_base/BaseStructurer";
+import { StructurerProvider } from "../../code-context/_base/BaseStructurer";
 
 export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 	private documentMap: Map<Uri, Map<number, CodeFile>>;
@@ -54,7 +54,7 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 		return files[0];
 	}
 
-	private lookupFromRecently(lang: string, canonicalName: string, structurer: Structurer): Promise<CodeStructure>[] {
+	private lookupFromRecently(lang: string, canonicalName: string, structurer: StructurerProvider): Promise<CodeStructure>[] {
 		let textDocuments = vscode.workspace.textDocuments.filter((doc) => {
 			const ext = doc.uri.path.split('.').pop();
 			if (ext === undefined) {

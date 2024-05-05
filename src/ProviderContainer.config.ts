@@ -15,8 +15,8 @@ import { GradleBuildToolProvider } from "./toolchain-context/buildtool/GradleBui
 import { JavaTestGenProvider } from "./code-context/java/JavaTestGenProvider";
 import { TestGenProvider } from "./code-context/_base/test/TestGenProvider";
 import { TypeScriptTestGenProvider } from "./code-context/typescript/TypeScriptTestGenProvider";
-import { Structurer } from "./code-context/_base/BaseStructurer";
-import { JavaStructurer } from "./code-context/java/JavaStructurer";
+import { StructurerProvider } from "./code-context/_base/BaseStructurer";
+import { JavaStructurerProvider } from "./code-context/java/JavaStructurerProvider";
 import { TypeScriptStructurer } from "./code-context/typescript/TypeScriptStructurer";
 import { ActionCreator } from "./editor/action/_base/ActionCreator";
 import { AutoDocActionCreator } from "./editor/action/autodoc/AutoDocActionCreator";
@@ -48,12 +48,12 @@ providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContext
 providerContainer.bind<RelatedCodeProvider>(PROVIDER_TYPES.RelatedCodeProvider).to(JavaRelatedProvider);
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(JavaTestGenProvider);
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GradleBuildToolProvider);
-providerContainer.bind<Structurer>(PROVIDER_TYPES.Structurer).to(JavaStructurer);
+providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(JavaStructurerProvider);
 
 // TypeScript
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(NpmBuildToolProvider);
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(TypeScriptTestGenProvider);
-providerContainer.bind<Structurer>(PROVIDER_TYPES.Structurer).to(TypeScriptStructurer);
+providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(TypeScriptStructurer);
 
 // Golang
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GoBuildToolProvider);

@@ -1,7 +1,7 @@
 const Parser = require("web-tree-sitter");
 import "reflect-metadata";
 
-import { JavaStructurer } from "../../../code-context/java/JavaStructurer";
+import { JavaStructurerProvider } from "../../../code-context/java/JavaStructurerProvider";
 import { TestLanguageService } from "../../TestLanguageService";
 import { CodeFile } from "../../../editor/codemodel/CodeFile";
 
@@ -20,7 +20,7 @@ public class ExampleClass {
 		const parser = new Parser();
 		const languageService = new TestLanguageService(parser);
 
-		const structurer = new JavaStructurer();
+		const structurer = new JavaStructurerProvider();
 		await structurer.init(languageService);
 
 		const codeFile = await structurer.parseFile(javaHelloWorld, "");
@@ -91,7 +91,7 @@ public class CreateBlogRequest {
 		const parser = new Parser();
 		const languageService = new TestLanguageService(parser);
 
-		const structurer = new JavaStructurer();
+		const structurer = new JavaStructurerProvider();
 		await structurer.init(languageService);
 
 		const codeFile = await structurer.parseFile(javaHelloWorld, "");

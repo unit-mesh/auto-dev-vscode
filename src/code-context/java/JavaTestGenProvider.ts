@@ -11,7 +11,7 @@ import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
-import { JavaStructurer } from "./JavaStructurer";
+import { JavaStructurerProvider } from "./JavaStructurerProvider";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
@@ -89,7 +89,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 	}
 
 	async lookupRelevantClass(element: NamedElement): Promise<CodeFile[]> {
-		let structurer = new JavaStructurer();
+		let structurer = new JavaStructurerProvider();
 		await structurer.init(this.languageService!!);
 
 		if (this.tsfile === undefined || this.graph === undefined) {

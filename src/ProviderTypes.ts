@@ -3,7 +3,7 @@ const PROVIDER_TYPES = {
 	RelatedCodeProvider: "RelatedCodeProvider",
 	BuildToolProvider: "BuildToolProvider",
 	TestGenProvider: "TestGenProvider",
-	Structurer: "Structurer",
+	StructurerProvider: "StructurerProvider",
 	ActionCreator: "ActionCreator"
 };
 

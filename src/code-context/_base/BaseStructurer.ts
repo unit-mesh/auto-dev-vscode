@@ -3,7 +3,7 @@ import { CodeFile, CodeFunction, CodeVariable } from "../../editor/codemodel/Cod
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { PositionElement } from "../../editor/codemodel/PositionElement";
 
-export interface Structurer {
+export interface StructurerProvider {
 	isApplicable(lang: SupportedLanguage): any;
 	parseFile(code: string, path: string): Promise<CodeFile | undefined>
 }

@@ -1,10 +1,10 @@
 import { injectable } from "inversify";
 
 import { CodeFile } from "../../editor/codemodel/CodeFile";
-import { Structurer } from "../_base/BaseStructurer";
+import { StructurerProvider } from "../_base/BaseStructurer";
 
 @injectable()
-export class TypeScriptStructurer implements Structurer {
+export class TypeScriptStructurer implements StructurerProvider {
 	isApplicable(lang: string) {
 		return false;
 		// return lang === "typescript" || lang === "javascript" || lang === "typescriptreact" || lang === "javascriptreact";

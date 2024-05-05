@@ -1,7 +1,7 @@
 import Parser, { Query, SyntaxNode } from "web-tree-sitter";
 import { injectable } from "inversify";
 
-import { createFunction, insertLocation, Structurer } from "../_base/BaseStructurer";
+import { createFunction, insertLocation, StructurerProvider } from "../_base/BaseStructurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeFile";
@@ -13,7 +13,7 @@ import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRefs";
 
 @injectable()
-export class JavaStructurer implements Structurer {
+export class JavaStructurerProvider implements StructurerProvider {
 	protected langId: SupportedLanguage = "java";
 	protected config: LanguageConfig = JavaLangConfig;
 	protected parser: Parser | undefined;
