@@ -31,7 +31,7 @@ export class AutoTestActionCreator extends CodeActionCreator {
 		codeAction.isPreferred = false;
 		codeAction.edit = new vscode.WorkspaceEdit();
 		codeAction.command = {
-			command: "autodev.autoComment",
+			command: "autodev.autoTest",
 			title: title,
 			arguments: [document, namedElement, codeAction.edit]
 		};
