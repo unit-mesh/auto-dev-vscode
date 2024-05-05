@@ -43,9 +43,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		let umlPresenter = new CommentedUmlPresenter();
 		testContext.relatedClasses = codeFiles.map((codeStructure) => {
 			return umlPresenter.present(codeStructure);
-		});
-
-		console.log(testContext);
+		}).join("\n");
 
 		const startTime = new Date().getTime();
 		const creationContext: CreateToolchainContext = {
@@ -58,7 +56,6 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		// TODO: spike better way to improve performance
 		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);
-		console.log(contextItems);
 		if (contextItems.length > 0) {
 			testContext.chatContext = contextItems.map(item => item.text).join("\n - ");
 			console.info(`chat context: ${testContext.chatContext}`);
@@ -69,8 +66,6 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		console.info(`Time taken to collect context: ${endTime - startTime}ms`);
 
 		let content = await PromptManager.getInstance().templateToPrompt(ActionType.AutoTest, testContext);
-		console.info(`request: ${content}`);
-
 		let msg: ChatMessage = {
 			role: ChatRole.User,
 			content: content
@@ -88,12 +83,14 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Error);
 			return;
 		}
+
 		console.info(`result: ${doc}`);
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
 		const output = MarkdownCodeBlock.parse(doc).text;
 
 		console.info(`FencedCodeBlock parsed output: ${output}`);
+
 		// write to output file
 		const outputFile = testContext.targetPath;
 		await vscode.workspace.fs.writeFile(vscode.Uri.file(outputFile!!), Buffer.from(output));

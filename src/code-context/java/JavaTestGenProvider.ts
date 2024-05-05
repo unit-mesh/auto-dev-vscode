@@ -78,7 +78,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 			targetPath: targetPath,
 			testClassName: element.identifierRange.text,
 			sourceCode: element.blockRange.text,
-			relatedClasses: [],
+			relatedClasses: "",
 			chatContext: "",
 			imports: [],
 		};

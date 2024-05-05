@@ -54,7 +54,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 				filename: sourceFile.fileName,
 				currentClass: undefined,
 				language: "",
-				relatedClasses: [],
+				relatedClasses: "",
 				testClassName: "",
 				imports: imports,
 				targetPath: testFilePath.fsPath
@@ -71,7 +71,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 			currentClass: undefined,
 			isNewFile: true,
 			language: language,
-			relatedClasses: [],
+			relatedClasses: "",
 			testClassName: elementName,
 			imports: imports,
 			targetPath: testFilePath.fsPath

@@ -38,7 +38,7 @@ export class GoTestGenProvider implements TestGenProvider {
 				filename: sourceFile.fileName,
 				currentClass: undefined,
 				language: "",
-				relatedClasses: [],
+				relatedClasses: "",
 				testClassName: "",
 				imports: [],
 				targetPath: testFilePath.fsPath
@@ -53,7 +53,7 @@ export class GoTestGenProvider implements TestGenProvider {
 			filename: sourceFile.fileName,
 			currentClass: undefined,
 			language: "",
-			relatedClasses: [],
+			relatedClasses: "",
 			testClassName: elementName,
 			imports: [],
 			targetPath: testFilePath.fsPath

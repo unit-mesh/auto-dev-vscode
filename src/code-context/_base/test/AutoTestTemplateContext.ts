@@ -5,7 +5,7 @@ import { ToolchainContextItem } from "../../../toolchain-context/ToolchainContex
 export interface AutoTestTemplateContext extends TemplateContext {
 	filename: string,
 	isNewFile?: boolean,
-	relatedClasses: string[],
+	relatedClasses: string,
 	testClassName: string,
 	currentClass?: CodeStructure,
 	imports?: string[],
