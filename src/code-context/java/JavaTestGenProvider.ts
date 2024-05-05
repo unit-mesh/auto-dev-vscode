@@ -58,7 +58,8 @@ export class JavaTestGenProvider implements TestGenProvider {
 			imports: [],
 		};
 
-		const targetUri = vscode.Uri.file(targetPath);
+		const targetUri = vscode.Uri.file(targetPath.replace("src/main/java", "src/test/java"));
+
 		await vscode.workspace.fs.writeFile(targetUri, new Uint8Array());
 
 		return Promise.resolve(testContext);

@@ -48,7 +48,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		const startTime = new Date().getTime();
 		const creationContext: CreateToolchainContext = {
-			action: "AutoDocAction",
+			action: "AutoTestAction",
 			filename: this.document.fileName,
 			language: this.language,
 			content: this.document.getText(),
