@@ -1,7 +1,9 @@
-import { Uri, WorkspaceFolder } from 'vscode';
+const ignore = require('ignore');
+const fs = require('fs');
 const isBinaryFile = require("isbinaryfile").isBinaryFile;
-var ignore = require('ignore');
-var fs = require('fs');
+
+import { Uri, WorkspaceFolder } from 'vscode';
+
 /**
  * Example usage:
  * ```javascript

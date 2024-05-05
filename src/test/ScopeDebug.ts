@@ -4,7 +4,6 @@ import { TextRange } from "../code-search/semantic/model/TextRange";
 import { LanguageConfig } from "../code-context/_base/LanguageConfig";
 import { NodeKind } from "../code-search/semantic/node/NodeKind";
 import { LocalDef } from "../code-search/semantic/node/LocalDef";
-import { nameOfSymbol } from "../code-search/semantic/model/Namespace";
 import {
 	DefToScope,
 	EdgeKind,
@@ -13,6 +12,7 @@ import {
 	RefToImport,
 	ScopeToScope
 } from "../code-search/semantic/edge/EdgeKind";
+import { nameOfSymbol } from "../code-search/semantic/model/SymbolId";
 
 export class RefDebug {
 	context: string;

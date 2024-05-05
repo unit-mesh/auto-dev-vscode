@@ -1,6 +1,6 @@
 import { TextRange } from "../model/TextRange";
-import { SymbolId } from "../model/Namespace";
 import { NodeKind } from "./NodeKind";
+import { SymbolId } from "../model/SymbolId";
 
 export class Reference extends NodeKind {
 	range: TextRange;

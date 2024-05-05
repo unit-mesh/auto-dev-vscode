@@ -6,8 +6,8 @@ import { LocalImport } from "./node/LocalImport";
 import { LocalScope } from "./node/LocalScope";
 import { LocalDef } from "./node/LocalDef";
 import { Reference } from "./node/Reference";
-import { symbolIdOf } from "./model/Namespace";
 import { ScopeGraph } from "./ScopeGraph";
+import { symbolIdOf } from "./model/SymbolId";
 
 export enum Scoping {
 	global = "global",
