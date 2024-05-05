@@ -36,7 +36,7 @@ export class GoBuildToolProvider extends BaseBuildToolProvider {
 
 	async getDependencies(): Promise<PackageDependencies> {
 		const source = await this.getTargetContent(this.moduleTarget[0]);
-		return new GoModParser().lookupSource(source)[0] || { dependencies: [] };
+		return new GoModParser().retrieveDependencyData(source)[0] || { dependencies: [] };
 	}
 
 	getTasks(): Promise<string[]> {

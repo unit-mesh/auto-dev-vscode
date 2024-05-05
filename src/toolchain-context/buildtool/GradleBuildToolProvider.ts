@@ -9,6 +9,7 @@ import { VSCodeAction } from "../../editor/editor-api/VSCodeAction";
 import { GradleVersionInfo, parseGradleVersionInfo } from "./gradle/GradleVersionInfo";
 import { channel } from "../../channel";
 import { BaseBuildToolProvider } from "./_base/BaseBuildToolProvider";
+import { GradleVersionParser } from "./gradle/GradleVersionParser";
 
 @injectable()
 export class GradleBuildToolProvider extends BaseBuildToolProvider {
@@ -47,7 +48,17 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 			return this.deps;
 		}
 
-		return await this.buildDeps();
+		let dependencies = await this.assembleGradleExtensionDependencies();
+		// check moduleTarget in rootDir
+		for (const target of this.moduleTarget) {
+			const source = await this.getTargetContent(target);
+			const deps = new GradleVersionParser().retrieveDependencyData(source)?.[0];
+			if (deps.dependencies.length > 0) {
+				dependencies = deps;
+			}
+		}
+
+		return dependencies;
 	}
 
 	getToolingName(): string {
@@ -58,7 +69,7 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 		return this.gradleInfo?.gradleVersion ?? "unknown";
 	}
 
-	private async buildDeps(): Promise<PackageDependencies> {
+	private async assembleGradleExtensionDependencies(): Promise<PackageDependencies> {
 		let extension = GradleBuildToolProvider.getExtension();
 		return await extension?.activate().then(async () => {
 			const action = new VSCodeAction();

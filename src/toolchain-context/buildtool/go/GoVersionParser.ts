@@ -21,7 +21,7 @@ export class GoModParser implements PackageVersionParser {
 	private goVersionRegex: RegExp = new RegExp("go\\s+([0-9\\.]+)");
 	private moduleTag: string = "go.mod";
 
-	lookupSource(content: string): PackageDependencies[] {
+	retrieveDependencyData(content: string): PackageDependencies[] {
 		let moduleName: string = "";
 		let goVersion: string = "";
 		let deps: DependencyEntry[] = [];

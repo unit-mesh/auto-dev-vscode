@@ -1,5 +1,5 @@
 import { PackageDependencies } from "./Dependence";
 
 export interface PackageVersionParser {
-	lookupSource(content: string): PackageDependencies[];
+	retrieveDependencyData(content: string): PackageDependencies[];
 }

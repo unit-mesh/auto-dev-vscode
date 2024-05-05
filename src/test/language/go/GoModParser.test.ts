@@ -19,7 +19,7 @@ describe('GoModParser', () => {
       )
     `;
 
-    const result = parser.lookupSource(content);
+    const result = parser.retrieveDependencyData(content);
 
     expect(result).to.have.length(1);
     expect(result[0].version).to.equal('1.16');
