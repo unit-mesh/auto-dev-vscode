@@ -1,6 +1,7 @@
 import { BuildToolProvider } from "./BuildToolProvider";
 import { PackageDependencies } from "./Dependence";
 import vscode from "vscode";
+import { CreateToolchainContext } from "../../ToolchainContextProvider";
 
 export abstract class BaseBuildToolProvider implements BuildToolProvider {
 	moduleTarget: string[] = [];
@@ -13,7 +14,7 @@ export abstract class BaseBuildToolProvider implements BuildToolProvider {
 
 	abstract getTasks(): Promise<string[]>;
 
-	async isApplicable(): Promise<boolean> {
+	async isApplicable(context?: CreateToolchainContext): Promise<boolean> {
 		const workspaces = vscode.workspace.workspaceFolders || [];
 		const workspace = workspaces[0];
 

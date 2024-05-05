@@ -7,14 +7,18 @@ import { getExtensionContext } from "../../../context";
 import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
 import { NpmBuildToolProvider } from "../../buildtool/NpmBuildToolProvider";
 
+export function isJavaScriptEnv(context: CreateToolchainContext) {
+	return context.language === "javascript" || context.language === "typescript" || context.language === "javascriptreact" || context.language === "typescriptreact";
+}
+
 @injectable()
 export class JavaScriptContextProvider implements ToolchainContextProvider {
 	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
-		return context.language === "javascript" || context.language === "typescript" || context.language === "javascriptreact" || context.language === "typescriptreact";
+		return isJavaScriptEnv(context);
 	}
 
 	async collect(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
-		let isApplicable = await NpmBuildToolProvider.instance().isApplicable();
+		let isApplicable = await NpmBuildToolProvider.instance().isApplicable(context);
 		if (!isApplicable) {
 			return [];
 		}

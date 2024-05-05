@@ -6,7 +6,7 @@ import { GradleBuildToolProvider } from "../buildtool/GradleBuildToolProvider";
 @injectable()
 export class JavaSdkVersionProvider implements ToolchainContextProvider {
 	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
-		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable();
+		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable(context);
 	}
 
 	async collect(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
@@ -14,7 +14,7 @@ export class JavaSdkVersionProvider implements ToolchainContextProvider {
 		try {
 			gradleInfo = await GradleBuildToolProvider.instance().getGradleVersion();
 		} catch (e) {
-			console.error(e);
+			console.info(e);
 			return [];
 		}
 

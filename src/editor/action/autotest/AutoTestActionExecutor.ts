@@ -55,9 +55,12 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		};
 
 		// TODO: spike better way to improve performance
-		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);
-		if (contextItems.length > 0) {
-			testContext.chatContext = contextItems.map(item => item.text).join("\n - ");
+		let toolchainContextItems = await PromptManager.getInstance().collectToolchain(creationContext);
+		let languageContextItems = await provider.collect(testContext);
+
+		const toolchainItems = toolchainContextItems.concat(languageContextItems);
+		if (toolchainItems.length > 0) {
+			testContext.chatContext = toolchainItems.map(item => item.text).join("\n - ");
 			console.info(`chat context: ${testContext.chatContext}`);
 		}
 
@@ -66,6 +69,8 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		console.info(`Time taken to collect context: ${endTime - startTime}ms`);
 
 		let content = await PromptManager.getInstance().templateToPrompt(ActionType.AutoTest, testContext);
+		console.info(`user prompt: ${content}`);
+
 		let msg: ChatMessage = {
 			role: ChatRole.User,
 			content: content

@@ -9,6 +9,7 @@ import { TSLanguageService } from "../../editor/language/service/TSLanguageServi
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
+import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
 
 
 @injectable()
@@ -23,8 +24,12 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 	constructor() {
 	}
 
-	async setupContext(defaultLanguageService: TSLanguageService) {
+	async setupLanguage(defaultLanguageService: TSLanguageService) {
 		this.languageService = defaultLanguageService;
+	}
+
+	collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
+		return Promise.resolve([]);
 	}
 
 	async setupTestFile(sourceFile: vscode.TextDocument, block: NamedElement): Promise<AutoTestTemplateContext> {

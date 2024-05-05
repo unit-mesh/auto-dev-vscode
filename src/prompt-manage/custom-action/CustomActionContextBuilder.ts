@@ -48,6 +48,7 @@ export class CustomActionContextBuilder {
 			content: document.getText(),
 			element: element
 		};
+
 		const contextItems = await ToolchainContextManager.instance().collectContextItems(creationContext);
 		let toolchainContext = "";
 		if (contextItems.length > 0) {

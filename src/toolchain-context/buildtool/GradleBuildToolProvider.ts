@@ -34,8 +34,12 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 			return;
 		}
 
-		this.deps = await this.getDependencies();
-		this.gradleInfo = await this.getGradleVersion();
+		try {
+			this.deps = await this.getDependencies();
+			this.gradleInfo = await this.getGradleVersion();
+		} catch (e) {
+			console.info(e);
+		}
 	}
 
 	async getDependencies(): Promise<PackageDependencies> {
@@ -94,7 +98,7 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 				dependencies: results,
 				packageManager: PackageManger.GRADLE
 			};
-		}) ?? await Promise.reject("Gradle not found");
+		}) ?? { name: this.getToolingName(), version: "unknown", path: "", dependencies: [], packageManager: PackageManger.GRADLE };
 	}
 
 	static getExtension(): Extension<any> | undefined {

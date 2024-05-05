@@ -36,7 +36,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 	constructor() {
 	}
 
-	async setupContext(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext) {
+	async setupLanguage(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext) {
 		this.languageService = defaultLanguageService;
 		this.context = context;
 	}
@@ -127,11 +127,19 @@ export class JavaTestGenProvider implements TestGenProvider {
 	async collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
 		const fileName = context.filename;
 
+		if (context && context.imports === undefined) {
+			context.imports = [];
+		}
+
 		let isSpringRelated = true;
 		if (context) {
 			const imports = this.importRegex.exec(context.sourceCode!!);
 			const importStrings = imports?.map((imp) => imp[1]) ?? [];
-			this.context!!.imports = imports?.map((imp) => imp[1]) ?? [];
+			context!!.imports = imports?.map((imp) => imp[1]) ?? [];
+			if (this.context) {
+				this.context.imports = context.imports;
+			}
+
 			isSpringRelated = this.checkIsSpringRelated(importStrings) ?? false;
 		}
 

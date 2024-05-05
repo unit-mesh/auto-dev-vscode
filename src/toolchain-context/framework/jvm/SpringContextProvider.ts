@@ -9,7 +9,7 @@ import { DependencyEntry } from "../../buildtool/_base/Dependence";
 @injectable()
 export class SpringContextProvider implements ToolchainContextProvider {
 	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
-		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable();
+		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable(context);
 	}
 
 	async collect(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {

@@ -16,14 +16,22 @@ export class ToolchainContextManager {
 	}
 
 	async collectContextItems(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
-		let map: Promise<ToolchainContextItem[]>[] = providerContainer.getAll<ToolchainContextProvider>(PROVIDER_TYPES.ChatContextProvider).filter(async (provider) => {
-			return await provider.isApplicable(context);
-		}).map(async (provider) => {
-			return (await provider.collect(context)).flat();
-		});
+		let map: Promise<ToolchainContextItem[]>[] = providerContainer.getAll<ToolchainContextProvider>(PROVIDER_TYPES.ChatContextProvider)
+			.filter(async (provider) => {
+				return await provider.isApplicable(context);
+			}).map(async (provider) => {
+				try {
+					return await provider.collect(context);
+				} catch (e) {
+					return [];
+				}
+			});
 
-		return Promise.all(map).then((values) => {
-			return values.flat();
-		});
+		try {
+			let results = await Promise.all(map);
+			return results.reduce((acc, val) => acc.concat(val), []);
+		} catch (e) {
+			return [];
+		}
 	}
 }

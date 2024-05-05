@@ -10,6 +10,9 @@ import {
 } from "../framework/javascript/JsDependenciesSnapshot";
 import { getExtensionContext } from "../../context";
 import { injectable } from "inversify";
+import fs from "fs";
+import { CreateToolchainContext } from "../ToolchainContextProvider";
+import { isJavaScriptEnv } from "../framework/javascript/JavaScriptContextProvider";
 
 @injectable()
 export class NpmBuildToolProvider implements BuildToolProvider {
@@ -26,7 +29,11 @@ export class NpmBuildToolProvider implements BuildToolProvider {
 
 	moduleTarget = ["package.json"];
 
-	isApplicable(): Promise<boolean> {
+	isApplicable(context: CreateToolchainContext): Promise<boolean> {
+		if (!isJavaScriptEnv(context)) {
+			return Promise.resolve(false);
+		}
+
 		return new Promise((resolve, reject) => {
 			const workspaces = vscode.workspace.workspaceFolders?.[0];
 			if (!workspaces) {
@@ -36,14 +43,15 @@ export class NpmBuildToolProvider implements BuildToolProvider {
 			try {
 				let hasTarget = false;
 				for (const target of this.moduleTarget) {
-					const targetPath = vscode.Uri.joinPath(workspaces.uri, target);
-					vscode.workspace.fs.stat(targetPath).then((targetFileType) => {
-						if (targetFileType.type === vscode.FileType.File) {
+					let targetPath = path.join(workspaces.uri.fsPath, target);
+					fs.stat(targetPath, (err, stats) => {
+						if (!err && stats.isFile()) {
 							hasTarget = true;
 							resolve(true);
 						}
 					});
 				}
+
 				resolve(hasTarget);
 			} catch(e) {
 				resolve(false);

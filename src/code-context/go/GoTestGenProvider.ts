@@ -8,6 +8,7 @@ import { CodeFile } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { TestGenProvider } from "../_base/test/TestGenProvider";
+import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
 
 @injectable()
 export class GoTestGenProvider implements TestGenProvider {
@@ -18,9 +19,8 @@ export class GoTestGenProvider implements TestGenProvider {
 		return lang === "go";
 	}
 
-	setupContext(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext | undefined): Promise<void> {
+	setupLanguage(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext | undefined): Promise<void> {
 		this.languageService = defaultLanguageService;
-
 		return Promise.resolve();
 	}
 
@@ -74,6 +74,10 @@ export class GoTestGenProvider implements TestGenProvider {
 	}
 
 	lookupRelevantClass(element: any): Promise<CodeFile[]> {
+		return Promise.resolve([]);
+	}
+
+	collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
 		return Promise.resolve([]);
 	}
 }
