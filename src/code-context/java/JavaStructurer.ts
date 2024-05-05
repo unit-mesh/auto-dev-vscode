@@ -55,6 +55,12 @@ export class JavaStructurer implements Structurer {
 		const query = this.config.structureQuery.query(this.language!!);
 		const captures = query!!.captures(tree.rootNode);
 
+		// check include lombok: `import lombok.Data;`;
+		let usedLombok = false;
+		if (code.includes("import lombok.Data;")) {
+			usedLombok = true;
+		}
+
 		let filename = filepath.split('/')[filepath.split('/').length - 1];
 		const codeFile: CodeFile = {
 			name: filename,
@@ -82,6 +88,15 @@ export class JavaStructurer implements Structurer {
 		let methodReturnType = '';
 		let methodName = '';
 
+		const fields: CodeVariable[] = [];
+		let lastField: CodeVariable = { name: '', typ: '' };
+
+/*
+		function checkClassExistence(name: string) {
+			return codeFile.classes.some((cls) => cls.name === name);
+		}
+*/
+
 		for (const element of captures) {
 			const capture: Parser.QueryCapture = element!!;
 			const text = capture.node.text;
@@ -98,12 +113,17 @@ export class JavaStructurer implements Structurer {
 						codeFile.classes.push({ ...classObj });
 						classObj = {
 							canonicalName: "",
-							package: codeFile.package, implements: [],
-							constant: [], extends: [], methods: [], name: '',
+							package: codeFile.package,
+							implements: [],
+							constant: [],
+							extends: [],
+							methods: [],
+							name: '',
 							start: { row: 0, column: 0 },
 							end: { row: 0, column: 0 }
 						};
 					}
+
 					classObj.name = text;
 					classObj.canonicalName = codeFile.package + "." + classObj.name;
 					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
@@ -137,6 +157,14 @@ export class JavaStructurer implements Structurer {
 					methodReturnType = '';
 					methodName = '';
 					break;
+				case 'field-type':
+					lastField.typ = text;
+					break;
+				case 'field-decl':
+					lastField.name = text;
+					fields.push({ ...lastField });
+					lastField = { name: '', typ: '' };
+					break;
 				case 'impl-name':
 					classObj.implements.push(text);
 					break;
@@ -145,9 +173,13 @@ export class JavaStructurer implements Structurer {
 			}
 		}
 
+		if (usedLombok) {
+			classObj.fields = fields;
+		}
+
 		classObj.methods = methods;
 
-		if (isLastNode) {
+		if (isLastNode && classObj.name !== '') {
 			codeFile.classes.push({ ...classObj });
 		}
 

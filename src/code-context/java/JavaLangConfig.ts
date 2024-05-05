@@ -48,10 +48,18 @@ export const JavaLangConfig: LanguageConfig = {
       )
 
 			(program
-			    (class_declaration
-			      name: (identifier) @class-name
-			        interfaces: (super_interfaces (type_list (type_identifier)  @impl-name))?
-			    ) @class-body
+		    (class_declaration
+		      name: ((identifier) @class-name)  
+	        interfaces: (super_interfaces (type_list (type_identifier) @impl-name))?
+	        body: 
+	          (class_body 
+	            (field_declaration 
+                (modifiers) @field-modifiers
+                (type_identifier) @field-type
+                (variable_declarator) @field-decl
+              )?
+            ) 
+		    )
 			)
   `),
 	methodIOQuery: new MemoizedQuery(`
