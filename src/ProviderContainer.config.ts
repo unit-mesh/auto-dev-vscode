@@ -32,9 +32,9 @@ providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoTestA
 providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(GenApiDataActionCreator);
 
 // ChatContextProvider
-providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(SpringContextProvider);
-providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(JavaSdkVersionProvider);
-providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ChatContextProvider).to(JavaScriptContextProvider);
+providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(SpringContextProvider);
+providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(JavaSdkVersionProvider);
+providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(JavaScriptContextProvider);
 
 /**
  * A Language need to have a:

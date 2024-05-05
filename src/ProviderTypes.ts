@@ -1,5 +1,5 @@
 const PROVIDER_TYPES = {
-	ChatContextProvider: "ChatContextProvider",
+	ToolchainContextProvider: "ToolchainContextProvider",
 	RelatedCodeProvider: "RelatedCodeProvider",
 	BuildToolProvider: "BuildToolProvider",
 	TestGenProvider: "TestGenProvider",

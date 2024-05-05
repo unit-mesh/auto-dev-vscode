@@ -16,7 +16,7 @@ export class ToolchainContextManager {
 	}
 
 	async collectContextItems(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
-		let map: Promise<ToolchainContextItem[]>[] = providerContainer.getAll<ToolchainContextProvider>(PROVIDER_TYPES.ChatContextProvider)
+		let map: Promise<ToolchainContextItem[]>[] = providerContainer.getAll<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider)
 			.filter(async (provider) => {
 				return await provider.isApplicable(context);
 			}).map(async (provider) => {
