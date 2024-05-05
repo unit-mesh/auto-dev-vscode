@@ -17,7 +17,7 @@ export class JavaRelevantLookup {
 		const relevantImports = this.refineImportTypes(imports);
 
 		return relevantImports.map(imp => {
-			return this.calculateByPackageName(imp);
+			return this.pathByPackageName(imp);
 		});
 	}
 
@@ -43,12 +43,12 @@ export class JavaRelevantLookup {
 	}
 
 	/**
-	 * Given a package name, if similar to current tsfile package, try to lookup in the codebase.
+	 * Given a package name, if similar to the current tsfile package, try to look up in the codebase.
 	 *
 	 * For example, if the current file package name is `cc.unitmesh.untitled.demo.service`, the relevant package name
-	 * is `cc.unitmesh.untitled.demo.repository`, then we can be according current filepath to lookup relevant class path;
+	 * is `cc.unitmesh.untitled.demo.repository`, then we can be according current filepath to look up a relevant class path;
 	 */
-	calculateByPackageName(packageName: string) {
+	pathByPackageName(packageName: string) {
 		const packageArr = packageName.split('.');
 		const tsFilePackageArr = this.extractCurrentPackageName().split('.');
 		let relevantPath = '';

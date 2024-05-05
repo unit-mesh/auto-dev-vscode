@@ -36,11 +36,18 @@ export class JavaStructurer implements Structurer {
 	}
 
 	/**
-	 * Parses the given code string and generates a CodeFile object representing the structurer of the code.
+	 * The `parseFile` method is an asynchronous function that parses a given code string and generates a CodeFile object. This object represents the structure of the code.
 	 *
-	 * @param code The code string to be parsed.
-	 * @param filepath
-	 * @returns A Promise that resolves to the generated CodeFile object, or undefined if the parsing fails.
+	 * @param code - A string representing the code to be parsed.
+	 * @param filepath - A string representing the path of the file.
+	 *
+	 * @returns A Promise that resolves to a CodeFile object. This object contains information about the structure of the parsed code, including the name, filepath, language, functions, path, package, imports, and classes. If the parsing fails, the Promise resolves to undefined.
+	 *
+	 * The method uses a parser to parse the code and a query to capture the structure of the code. It then iterates over the captures to extract information about the package, imports, classes, methods, and other elements of the code. This information is used to populate the CodeFile object.
+	 *
+	 * The method also handles nested classes and methods, ensuring that each class and method is correctly associated with its parent class or method.
+	 *
+	 * Note: This method assumes that the code string is written in a language that the parser can parse. If the parser cannot parse the code, the method may fail or return incorrect results.
 	 */
 	async parseFile(code: string, filepath: string): Promise<CodeFile | undefined> {
 		const tree = this.parser!!.parse(code);
@@ -146,73 +153,23 @@ export class JavaStructurer implements Structurer {
 		return codeFile;
 	}
 
-	async extractMethodInputOutput(graph: ScopeGraph, node: SyntaxNode, range: TextRange, src: string): Promise<string[] | undefined> {
-		let syntaxNode = node.namedDescendantForPosition(
-			{ row: range.start.line, column: range.start.column },
-			{ row: range.end.line, column: range.end.column }
-		);
-
-		const query = this.config.methodIOQuery!!.query(this.language!!);
-		const captures = query!!.captures(syntaxNode);
-
-		let methodObj: CodeFunction = {
-			name: '',
-			returnType: '',
-			vars: [],
-			start: { row: 0, column: 0 },
-			end: { row: 0, column: 0 }
-		};
-		let paramObj: CodeVariable = {
-			name: '',
-			typ: ''
-		};
-
-		for (const element of captures) {
-			const capture: Parser.QueryCapture = element!!;
-			const text = capture.node.text;
-
-			// todo: handle for array;
-			switch (capture.name) {
-				case 'method-name':
-					methodObj.name = text;
-					break;
-				case 'method-returnType':
-					let imports = await this.obtainUsedImportsInScope(graph, capture.node, src);
-					methodObj.returnType = imports[0];
-					break;
-				case 'method-param.type':
-					paramObj.typ = text;
-					break;
-				case 'method-param.value':
-					paramObj.name = text;
-					methodObj.vars.push(paramObj);
-					// reset paramObj
-					paramObj = { name: '', typ: '' };
-					break;
-				default:
-					break;
-			}
-		}
-
-		const inputAndOutput: string[] = [];
-
-		const pushIfNotBuiltInType = (type: string) => {
-			if (!this.config.builtInTypes.includes(type)) {
-				inputAndOutput.push(type);
-			}
-		};
-
-		if (methodObj.returnType) {
-			pushIfNotBuiltInType(methodObj.returnType);
-		}
-
-		methodObj.vars.forEach((param) => {
-			pushIfNotBuiltInType(param.typ);
-		});
-
-		return inputAndOutput;
-	}
-
+	/**
+	 * `extractMethodIOImports` is an asynchronous method that extracts the import statements related to the input and output
+	 * types of a given method from the source code.
+	 *
+	 * @param {ScopeGraph} graph - The scope graph of the source code.
+	 * @param {SyntaxNode} node - The syntax node representing the method in the source code.
+	 * @param {TextRange} range - The range of the method in the source code.
+	 * @param {string} src - The source code as a string.
+	 *
+	 * @returns {Promise<string[] | undefined>} A promise that resolves to an array of import statements or undefined if no import statements are found.
+	 *
+	 * The method works by first finding the syntax node that corresponds to the given range in the source code. It then uses a query to capture the return type and parameter types of the method. For each captured element, it fetches the corresponding import statements from the source code and adds them to an array. Finally, it removes any duplicate import statements from the array before returning it.
+	 *
+	 * The method uses the `fetchImportsWithinScope` method to fetch the import statements for a given syntax node from the source code.
+	 *
+	 * Note: The method assumes that the `methodIOQuery` and `language` properties of the `config` object are defined.
+	 */
 	async extractMethodIOImports(graph: ScopeGraph, node: SyntaxNode, range: TextRange, src: string): Promise<string[] | undefined> {
 		let syntaxNode = node.namedDescendantForPosition(
 			{ row: range.start.line, column: range.start.column },
@@ -248,11 +205,6 @@ export class JavaStructurer implements Structurer {
 	async fetchImportsWithinScope(scope: ScopeGraph, node: SyntaxNode, src: string): Promise<string[]> {
 		let importWithRefs = this.retrieveImportReferences(scope, src, node);
 		return importWithRefs.map((imp) => imp.text);
-	}
-
-	async obtainUsedImportsInScope(scope: ScopeGraph, node: SyntaxNode, src: string): Promise<string[]> {
-		let importWithRefs = this.retrieveImportReferences(scope, src, node);
-		return importWithRefs.map((imp) => imp.name);
 	}
 
 	/**
