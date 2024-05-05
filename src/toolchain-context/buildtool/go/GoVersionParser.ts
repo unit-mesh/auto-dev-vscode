@@ -1,5 +1,6 @@
 import { DependencyEntry, PackageDependencies } from "../_base/Dependence";
 import { PackageManger } from "../_base/PackageManger";
+import { PackageVersionParser } from "../_base/PackageVersionParser";
 
 /**
  * Parse the version info from `go version` command.
@@ -15,7 +16,7 @@ export function goVersionParser(stdout: string) {
 	return "";
 }
 
-export class GoModParser {
+export class GoModParser implements PackageVersionParser {
 	private goDependenceRegex: RegExp = new RegExp("([a-zA-Z0-9\\.\-\/]+)\\s+v([a-zA-Z0-9\\.\-\/]+)");
 	private goVersionRegex: RegExp = new RegExp("go\\s+([0-9\\.]+)");
 	private moduleTag: string = "go.mod";
