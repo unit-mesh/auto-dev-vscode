@@ -1,10 +1,9 @@
+const Parser = require("web-tree-sitter");
 import "reflect-metadata";
 
 import { JavaStructurer } from "../../../code-context/java/JavaStructurer";
 import { TestLanguageService } from "../../TestLanguageService";
 import { CodeFile } from "../../../editor/codemodel/CodeFile";
-
-const Parser = require("web-tree-sitter");
 
 describe('JavaStructure', () => {
 	it('should convert a simple file to CodeFile', async () => {

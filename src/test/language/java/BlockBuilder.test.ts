@@ -1,9 +1,8 @@
-import { expect } from "vitest";
+const Parser = require("web-tree-sitter");
+
 import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
 import { previousNodesOfType } from "../../../code-context/ast/TreeSitterUtil";
-
-const Parser = require("web-tree-sitter");
 
 describe('BlockBuilder for Java', () => {
 	let parser: any;

@@ -1,12 +1,10 @@
-import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
-
 const Parser = require("web-tree-sitter");
 
 import { ScopeBuilder } from "../../../code-search/semantic/ScopeBuilder";
 import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
 import { testScopes } from "../../ScopeTestUtil";
-import { expect } from "vitest";
+import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 
 describe('ScopeBuilder for Java', () => {
 	let parser: any;

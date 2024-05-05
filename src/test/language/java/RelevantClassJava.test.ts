@@ -116,6 +116,7 @@ public class BlogController {
 		await structurer.init(new TestLanguageService(parser));
 		let codeFile = await structurer.parseFile(controller, "");
 
+		// first func
 		let firstFunc = codeFile!!.classes[0].methods[0];
 		let textRange = functionToRange(firstFunc);
 		let lookup = new JavaRelevantLookup(tsf);
@@ -128,7 +129,6 @@ public class BlogController {
 		textRange = functionToRange(secondFunc);
 		ios = await structurer.extractMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
 		relevantClasses = lookup.calculateRelevantClass(ios);
-
 		expect(relevantClasses).toEqual([
 			'cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/dto/CreateBlogRequest',
 			'cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/dto/CreateBlogResponse'
