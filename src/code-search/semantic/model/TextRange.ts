@@ -53,13 +53,6 @@ export class TextRange {
 		return this.start.line <= other.start.line && other.end.line <= this.end.line;
 	}
 
-
-	//     fn cmp(&self, other: &Self) -> Ordering {
-	//         let compare_start_byte = self.start.byte.cmp(&other.start.byte);
-	//         let compare_size = self.size().cmp(&other.size());
-	//
-	//         compare_start_byte.then(compare_size)
-	//     }
 	public compare(other: TextRange): number {
 		const compareStartByte = this.start.byte - other.start.byte;
 		const compareSize = this.size() - other.size();
@@ -71,10 +64,34 @@ export class TextRange {
 		return compareStartByte;
 	}
 
-	//     pub fn size(&self) -> usize {
-	//         self.end.byte.saturating_sub(self.start.byte)
-	//     }
 	public size(): number {
 		return this.end.byte - this.start.byte;
+	}
+
+	contentFromRange(src: string): string {
+		const contextStart = (() => {
+			for (let i = this.start.byte - 1; i >= 0; i--) {
+				if (src[i] === "\n") {
+					return i + 1;
+				}
+			}
+			return 0;
+		})();
+
+		// first new line after end
+		const contextEnd = (() => {
+			for (let i = this.end.byte; i < src.length; i++) {
+				if (src[i] === "\n") {
+					return i;
+				}
+			}
+			return src.length;
+		})();
+
+		return [
+			src.slice(contextStart, this.start.byte).trimStart(),
+			src.slice(this.start.byte, this.end.byte),
+			src.slice(this.end.byte, contextEnd).trimEnd(),
+		].join("");
 	}
 }

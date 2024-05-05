@@ -21,7 +21,7 @@ describe('ScopeBuilder for Java', () => {
 		parser.setLogger(null);
 	});
 
-	it('build for scope', async () => {
+	it('build for node', async () => {
 		const javaHelloWorld = `
 class HelloWorld {
     public static void main(string[] args) {

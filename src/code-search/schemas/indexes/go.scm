@@ -1,6 +1,6 @@
 ;; scopes
 
-;; function declarations create a scope for
+;; function declarations create a node for
 ;; their args, and another for their bodies
 ;;
 ;;     func f(x uint64, y uint64) {
@@ -9,11 +9,11 @@
 ;;
 ;; should resolve to:
 ;;
-;;     scope: {
+;;     node: {
 ;;       defs: f
-;;       scope: {
+;;       node: {
 ;;         defs: x, y
-;;         scope: {
+;;         node: {
 ;;           defs: z
 ;;         }
 ;;       }
@@ -32,7 +32,7 @@
 ;; to create scopes, without using blocks
 ;;
 ;; select {
-;;    case x := <- channel:   // creates a scope and defines `x`
+;;    case x := <- channel:   // creates a node and defines `x`
 ;;      doThing(x)
 ;;    case y := <- channel:
 ;;      doThing(y)

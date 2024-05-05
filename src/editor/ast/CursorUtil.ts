@@ -5,7 +5,7 @@ import { PositionUtil } from "./PositionUtil";
 
 export namespace CursorUtil {
 	/**
-	 * Todo: add by scope?
+	 * Todo: add by node?
 	 */
 	export async function selectionFromNode(): Promise<Selection> {
 		let editor = vscode.window.activeTextEditor;

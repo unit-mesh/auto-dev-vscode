@@ -24,7 +24,7 @@ If you want to add a new language support, you can follow the steps below:
 
 ```typescript
 export interface LanguageConfig {
-	// A list of language names that can be processed by these scope queries
+	// A list of language names that can be processed by these node queries
 	// e.g.: ["typescript", "typescriptreact"], ["rust"]
 	languageIds: string[];
 
@@ -34,7 +34,7 @@ export interface LanguageConfig {
 	// tree-sitter grammar for this language
 	grammar: (langService: TSLanguageService, langId: SupportedLanguage) => Promise<Language | undefined>;
 
-	// Compiled tree-sitter scope query for this language.
+	// Compiled tree-sitter node query for this language.
 	scopeQuery: MemoizedQuery;
 
 	// Compiled tree-sitter hoverables query

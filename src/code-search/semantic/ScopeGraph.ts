@@ -2,32 +2,16 @@ import Graph from "graphology";
 import { SyntaxNode } from "web-tree-sitter";
 
 import { TextRange } from "./model/TextRange";
-import { LocalScope, ScopeStack } from "./scope/LocalScope";
-import { LocalImport } from "./scope/LocalImport";
-import { LocalDef } from "./scope/LocalDef";
-import { Reference } from "./scope/Reference";
-import { NodeKind } from "./scope/NodeKind";
+import { LocalScope, ScopeStack } from "./node/LocalScope";
+import { LocalImport } from "./node/LocalImport";
+import { LocalDef } from "./node/LocalDef";
+import { Reference } from "./node/Reference";
+import { NodeKind } from "./node/NodeKind";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
-import { ImportDebug, ScopeDebug } from "../../test/ScopeDebug";
+import { ScopeDebug } from "../../test/ScopeDebug";
 import { TestOnly } from "../../ops/TestOnly";
-
-export interface EdgeKind {
-}
-
-export class ScopeToScope implements EdgeKind {
-}
-
-export class DefToScope implements EdgeKind {
-}
-
-export class ImportToScope implements EdgeKind {
-}
-
-export class RefToDef implements EdgeKind {
-}
-
-export class RefToImport implements EdgeKind {
-}
+import { ImportWithRefs } from "./model/ImportWithRefs";
+import { DefToScope, EdgeKind, ImportToScope, RefToDef, RefToImport, ScopeToScope } from "./edge/EdgeKind";
 
 export type NodeIndex = string;
 
@@ -253,7 +237,7 @@ export class ScopeGraph {
 				const impNode = graph.source(edge);
 				const range = graph.getNodeAttributes(impNode).range;
 
-				return contextFromRange(range, src);
+				return range.contentFromRange(src);
 			});
 
 		return imports;
@@ -275,62 +259,10 @@ export class ScopeGraph {
 					.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
 					.sort();
 
-				const text = contextFromRange(range, src);
+				const text = range.contentFromRange(src);
 
 				return { name: name, range, refs, text: text};
 			});
 	}
 }
 
-/**
- * The `ImportWithRefs` interface in TypeScript is used to represent an import statement with its references in the code.
- * It contains information about the import name, the range of the import text, the original import text, and the usage of the import text.
- *
- * @interface
- *
- * @property {string} name - Represents the name of the import, such as `List`.
- *
- * @property {TextRange} range - Represents the range of the import text in the code. The `TextRange` object typically includes the start and end positions of the import text.
- *
- * @property {string} text - Represents the original import text, like `import java.util.List;`. This is the exact text that appears in the code.
- *
- * @property {TextRange[]} refs - An array of `TextRange` objects that represent the usage of the import text in the code, like `new List<String>();`. Each `TextRange` object in the array typically includes the start and end positions of the usage of the import text.
- *
- */
-export interface ImportWithRefs {
-	/// the import name, like `List`
-	name: string;
-	/// the range of the import text
-	range: TextRange;
-	/// origin import text, like `import java.util.List;`
-	text: string;
-	/// use import text, like `new List<String>();`
-	refs: TextRange[];
-}
-
-function contextFromRange(range: TextRange, src: string): string {
-	const contextStart = (() => {
-		for (let i = range.start.byte - 1; i >= 0; i--) {
-			if (src[i] === "\n") {
-				return i + 1;
-			}
-		}
-		return 0;
-	})();
-
-	// first new line after end
-	const contextEnd = (() => {
-		for (let i = range.end.byte; i < src.length; i++) {
-			if (src[i] === "\n") {
-				return i;
-			}
-		}
-		return src.length;
-	})();
-
-	return [
-		src.slice(contextStart, range.start.byte).trimStart(),
-		src.slice(range.start.byte, range.end.byte),
-		src.slice(range.end.byte, contextEnd).trimEnd(),
-	].join("");
-}

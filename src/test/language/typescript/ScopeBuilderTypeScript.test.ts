@@ -22,7 +22,7 @@ describe('ScopeBuilder for TypeScript', () => {
 		parser.setLogger(null);
 	});
 
-	it('build for scope', async () => {
+	it('build for node', async () => {
 		const javaHelloWorld = `
 import Link from "next/link"
 

@@ -10,7 +10,7 @@
 ;;    impl<'a, T> Trait for Struct { .. }
 ;;
 ;; in order to constrain those to the impl block,
-;; we add a local scope here:
+;; we add a local node here:
 (impl_item) @local.scope
 (struct_item) @local.scope
 (enum_item) @local.scope
@@ -24,7 +24,7 @@
    (let_chain)]) @local.scope
 
 ;; each match arm can bind variables with
-;; patterns, without creating a block scope;
+;; patterns, without creating a block node;
 ;;
 ;;     match _ {
 ;;        (a, b) => a,
@@ -35,14 +35,14 @@
 (match_arm) @local.scope
 
 ;; loop labels are defs that are available only
-;; within the scope they create:
+;; within the node they create:
 ;;
 ;;     'outer: loop {
 ;;         let x = 2;
 ;;     };
 ;;     let y = 2;
 ;; 
-;; Produces a scope graph like so:
+;; Produces a node graph like so:
 ;;
 ;; { 
 ;;   defs: [ y ],

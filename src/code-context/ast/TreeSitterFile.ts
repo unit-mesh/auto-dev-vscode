@@ -33,7 +33,7 @@ export class TreeSitterFile {
 		langId: string,
 		languageService: TSLanguageService,
 		fsPath: string = ""): Promise<TreeSitterFile> {
-		// no scope-res for files larger than 500kb
+		// no node-res for files larger than 500kb
 		let isLargerThan500kb = source.length > 500 * Math.pow(10, 3);
 		if (isLargerThan500kb) {
 			return Promise.reject(TreeSitterFileError.fileTooLarge);
@@ -71,24 +71,24 @@ export class TreeSitterFile {
 	static cache: TreeSitterFileCacheManager = TreeSitterFileCacheManager.getInstance();
 
 	/**
-	 * The `scopeGraph` method is an asynchronous function that generates a scope graph for the current instance.
-	 * A scope graph is a representation of the scopes and their relationships in a program.
-	 * This method uses a `ScopeBuilder` to build the scope graph.
+	 * The `scopeGraph` method is an asynchronous function that generates a node graph for the current instance.
+	 * A node graph is a representation of the scopes and their relationships in a program.
+	 * This method uses a `ScopeBuilder` to build the node graph.
 	 *
 	 * The method first checks if a graph already exists in the cache (`graphCache`) for the current instance (`this`).
 	 * If it does, it immediately returns a promise that resolves to the cached graph.
 	 *
-	 * If a graph does not exist in the cache, the method creates a new query using the language and the scope query string
+	 * If a graph does not exist in the cache, the method creates a new query using the language and the node query string
 	 * from the language configuration (`this.langConfig.scopeQuery.queryStr`).
 	 * It then creates a new `ScopeBuilder` with the query, the root node of the tree (`this.tree.rootNode`),
 	 * the source code (`this.sourcecode`), and the language configuration (`this.langConfig`).
 	 *
-	 * The method then awaits the building of the scope graph by the `ScopeBuilder`.
-	 * Once the scope graph is built, it is added to the cache and returned as a promise.
+	 * The method then awaits the building of the node graph by the `ScopeBuilder`.
+	 * Once the node graph is built, it is added to the cache and returned as a promise.
 	 *
 	 * @returns {Promise<ScopeGraph>} A promise that resolves to a `ScopeGraph` object.
 	 *
-	 * @throws {Error} If the `ScopeBuilder` fails to build the scope graph.
+	 * @throws {Error} If the `ScopeBuilder` fails to build the node graph.
 	 *
 	 * @async
 	 */

@@ -2,10 +2,10 @@ import { Query, SyntaxNode } from "web-tree-sitter";
 
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import { TextRange } from "./model/TextRange";
-import { LocalImport } from "./scope/LocalImport";
-import { LocalScope } from "./scope/LocalScope";
-import { LocalDef } from "./scope/LocalDef";
-import { Reference } from "./scope/Reference";
+import { LocalImport } from "./node/LocalImport";
+import { LocalScope } from "./node/LocalScope";
+import { LocalDef } from "./node/LocalDef";
+import { Reference } from "./node/Reference";
 import { symbolIdOf } from "./model/Namespace";
 import { ScopeGraph } from "./ScopeGraph";
 

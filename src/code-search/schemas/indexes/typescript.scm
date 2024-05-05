@@ -36,7 +36,7 @@
 
   ;; type signatures in properties may contain parameter
   ;; definitions, which can never have references. this
-  ;; scope "seals" off this definitions.
+  ;; node "seals" off this definitions.
   ;;
   ;;     type S = {
   ;;        getter: (f: string) => string;

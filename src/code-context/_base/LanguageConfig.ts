@@ -6,7 +6,7 @@ import { NameSpaces } from "../../code-search/semantic/model/Namespace";
 
 // Languages based on tree-sitter grammars
 export interface LanguageConfig {
-  // A list of language names that can be processed by these scope queries
+  // A list of language names that can be processed by these node queries
   // e.g.: ["Typescript", "TSX"], ["Rust"]
   languageIds: string[];
 
@@ -16,7 +16,7 @@ export interface LanguageConfig {
   // tree-sitter grammar for this language
   grammar: (langService: TSLanguageService, langId: SupportedLanguage) => Promise<Language | undefined>;
 
-  // Compiled tree-sitter scope query for this language.
+  // Compiled tree-sitter node query for this language.
   scopeQuery: MemoizedQuery;
 
   // Compiled tree-sitter hoverables query

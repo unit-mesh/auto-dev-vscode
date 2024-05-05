@@ -14,7 +14,7 @@ export function depScopeFromString(str: string): DEP_SCOPE {
 	switch (str.toLowerCase()) {
 		case "test":
 			return DEP_SCOPE.TEST;
-		// Add cases for other scope types as needed
+		// Add cases for other node types as needed
 		default:
 			return DEP_SCOPE.NORMAL;
 	}
@@ -36,7 +36,7 @@ export interface DepMetadata {
 
 /**
  * DependencyEntry is an interface that represents a single dependency in a project's dependency graph.
- * It contains information about the dependency, such as its name, groupId, artifactId, version, scope, source, and metadata.
+ * It contains information about the dependency, such as its name, groupId, artifactId, version, node, source, and metadata.
  * The aliasName is an optional field that can be used to specify an alternative name for the dependency in the configuration file.
  */
 export interface DependencyEntry {

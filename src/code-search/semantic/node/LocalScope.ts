@@ -1,7 +1,7 @@
 import { TextRange } from "../model/TextRange";
 import { NodeKind } from "./NodeKind";
-import { ScopeToScope } from "../ScopeGraph";
 import Graph from "graphology";
+import { ScopeToScope } from "../edge/EdgeKind";
 
 export class LocalScope extends NodeKind {
 	range: TextRange;

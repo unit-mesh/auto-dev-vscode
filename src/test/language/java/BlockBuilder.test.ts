@@ -19,7 +19,7 @@ describe('BlockBuilder for Java', () => {
 		parser.setLogger(null);
 	});
 
-	it('build for scope', async () => {
+	it('build for node', async () => {
 		const sourceCode = `
 /**
  * This is a comment of Class Level.

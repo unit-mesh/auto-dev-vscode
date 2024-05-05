@@ -8,8 +8,9 @@ import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../edito
 import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
-import { ImportWithRefs, ScopeGraph } from "../../code-search/semantic/ScopeGraph";
+import { ScopeGraph } from "../../code-search/semantic/ScopeGraph";
 import { TextRange } from "../../code-search/semantic/model/TextRange";
+import { ImportWithRefs } from "../../code-search/semantic/model/ImportWithRefs";
 
 @injectable()
 export class JavaStructurer implements Structurer {
@@ -157,7 +158,7 @@ export class JavaStructurer implements Structurer {
 	 * `extractMethodIOImports` is an asynchronous method that extracts the import statements related to the input and output
 	 * types of a given method from the source code.
 	 *
-	 * @param {ScopeGraph} graph - The scope graph of the source code.
+	 * @param {ScopeGraph} graph - The node graph of the source code.
 	 * @param {SyntaxNode} node - The syntax node representing the method in the source code.
 	 * @param {TextRange} range - The range of the method in the source code.
 	 * @param {string} src - The source code as a string.
@@ -211,7 +212,7 @@ export class JavaStructurer implements Structurer {
 	 * The `retrieveImportReferences` method is a private method that retrieves all import references from a given source
 	 * code that are within a specified syntax node.
 	 *
-	 * @param scope - An instance of `ScopeGraph`. This parameter represents the scope graph of the source code.
+	 * @param scope - An instance of `ScopeGraph`. This parameter represents the node graph of the source code.
 	 * @param src - A string representing the source code from which to retrieve import references.
 	 * @param node - An instance of `SyntaxNode`. This parameter represents the syntax node within which to search for import references.
 	 *
