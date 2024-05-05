@@ -1,6 +1,6 @@
 const Parser = require("web-tree-sitter");
 
-import { ScopeBuilder } from "../../../code-search/semantic/ScopeBuilder";
+import { ScopeBuilder } from "../../../code-search/scope-graph/ScopeBuilder";
 import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
 import { testScopes } from "../../ScopeTestUtil";

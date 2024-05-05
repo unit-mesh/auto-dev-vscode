@@ -5,7 +5,7 @@ import { JavaRelevantLookup } from "../../../code-search/lookup/JavaRelevantLook
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
-import { ScopeGraph } from "../../../code-search/semantic/ScopeGraph";
+import { ScopeGraph } from "../../../code-search/scope-graph/ScopeGraph";
 import { JavaStructurer } from "../../../code-context/java/JavaStructurer";
 import { functionToRange } from "../../../editor/codemodel/CodeFile";
 

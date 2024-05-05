@@ -8,9 +8,9 @@ import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../edito
 import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
-import { ScopeGraph } from "../../code-search/semantic/ScopeGraph";
-import { TextRange } from "../../code-search/semantic/model/TextRange";
-import { ImportWithRefs } from "../../code-search/semantic/model/ImportWithRefs";
+import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
+import { TextRange } from "../../code-search/scope-graph/model/TextRange";
+import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRefs";
 
 @injectable()
 export class JavaStructurer implements Structurer {

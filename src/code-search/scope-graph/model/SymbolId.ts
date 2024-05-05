@@ -5,7 +5,7 @@ export interface SymbolId {
 	symbolIndex: number;
 }
 
-export function nameOfSymbol(symbolId: SymbolId, namespaces: NameSpaces): string {
+export function nameOfSymbol(namespaces: NameSpaces, symbolId: SymbolId): string {
 	return namespaces[symbolId.namespaceIndex][symbolId.symbolIndex];
 }
 
@@ -25,5 +25,6 @@ export function symbolIdOf(namespaces: NameSpaces, symbol: string): SymbolId | u
 			};
 		}
 	}
+
 	return undefined;
 }

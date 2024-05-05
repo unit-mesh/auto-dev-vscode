@@ -1,6 +1,6 @@
 import { PositionElement } from "./PositionElement";
 import { SupportedLanguage } from "../language/SupportedLanguage";
-import { Point, TextRange } from "../../code-search/semantic/model/TextRange";
+import { Point, TextRange } from "../../code-search/scope-graph/model/TextRange";
 
 export interface CodeFile extends CodeElement {
 	name: string;

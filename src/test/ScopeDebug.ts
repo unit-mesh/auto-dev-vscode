@@ -1,9 +1,9 @@
 import Graph from "graphology";
 
-import { TextRange } from "../code-search/semantic/model/TextRange";
+import { TextRange } from "../code-search/scope-graph/model/TextRange";
 import { LanguageConfig } from "../code-context/_base/LanguageConfig";
-import { NodeKind } from "../code-search/semantic/node/NodeKind";
-import { LocalDef } from "../code-search/semantic/node/LocalDef";
+import { NodeKind } from "../code-search/scope-graph/node/NodeKind";
+import { LocalDef } from "../code-search/scope-graph/node/LocalDef";
 import {
 	DefToScope,
 	EdgeKind,
@@ -11,8 +11,8 @@ import {
 	RefToDef,
 	RefToImport,
 	ScopeToScope
-} from "../code-search/semantic/edge/EdgeKind";
-import { nameOfSymbol } from "../code-search/semantic/model/SymbolId";
+} from "../code-search/scope-graph/edge/EdgeKind";
+import { nameOfSymbol } from "../code-search/scope-graph/model/SymbolId";
 
 export class RefDebug {
 	context: string;
@@ -117,7 +117,7 @@ export class ScopeDebug {
 				let localDef = graph.getNodeAttributes(defNode) as LocalDef;
 				let symbol;
 				if (localDef.symbolId) {
-					symbol = nameOfSymbol(localDef.symbolId, this.language.namespaces);
+					symbol = nameOfSymbol(this.language.namespaces, localDef.symbolId);
 				} else {
 					symbol = "none";
 				}

@@ -3,8 +3,8 @@ import Parser, { Language, Tree } from "web-tree-sitter";
 import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageUtil } from "./TSLanguageUtil";
 import { TreeSitterFileCacheManager } from "../../editor/cache/TreeSitterFileCacheManager";
-import { ScopeBuilder } from "../../code-search/semantic/ScopeBuilder";
-import { ScopeGraph } from "../../code-search/semantic/ScopeGraph";
+import { ScopeBuilder } from "../../code-search/scope-graph/ScopeBuilder";
+import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 
 const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();

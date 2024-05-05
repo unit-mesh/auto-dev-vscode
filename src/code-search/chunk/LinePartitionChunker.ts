@@ -1,4 +1,4 @@
-import { TextRange } from "../semantic/model/TextRange";
+import { TextRange } from "../scope-graph/model/TextRange";
 import { ChunkWithoutID, Chunker } from "./_base/Chunk";
 
 /**

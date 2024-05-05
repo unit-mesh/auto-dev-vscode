@@ -1,5 +1,5 @@
 import { NamedElement } from "../editor/ast/NamedElement";
-import { ScopeGraph } from "../code-search/semantic/ScopeGraph";
+import { ScopeGraph } from "../code-search/scope-graph/ScopeGraph";
 
 export interface ToolchainContextItem {
 	/// for recording and debugging
