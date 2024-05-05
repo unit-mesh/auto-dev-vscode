@@ -2,7 +2,7 @@
   "name": "autodev",
   "displayName": "AutoDev - 🧙 The AI-powered coding wizard.",
   "description": " 🧙‍AutoDev: The AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀 ",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "repository": "https://github.com/unit-mesh/auto-dev-vscode",
   "publisher": "Phodal",
   "l10n": "./l10n",
