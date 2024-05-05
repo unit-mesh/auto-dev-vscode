@@ -98,6 +98,7 @@ Inspired and based on：
 - AI-based conversational search [Bloop](https://github.com/BloopAI/bloop) for indexes and code search.
 - AI-powered coding wizard [AutoDev](https://github.com/unit-mesh/auto-dev) for AutoTasking.
 - TreeSitter-based architecture analysis: [Guarding](https://github.com/modernizing/guarding)
+- Static SCA analyser: [ArchGuard](https://github.com/archguard/archguard)
 - DevIns parser based
   on [VSCode Markdown](https://github.com/microsoft/vscode/blob/main/extensions/markdown-basics/syntaxes/markdown.tmLanguage.json)
 
