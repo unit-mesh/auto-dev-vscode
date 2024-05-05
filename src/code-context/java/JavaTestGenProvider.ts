@@ -2,7 +2,7 @@ import vscode, { l10n } from "vscode";
 import { injectable } from "inversify";
 
 import { TestGenProvider } from "../_base/test/TestGenProvider";
-import { CodeFile, CodeStructure } from "../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { GradleBuildToolProvider } from "../../toolchain-context/buildtool/GradleBuildToolProvider";
@@ -41,16 +41,40 @@ export class JavaTestGenProvider implements TestGenProvider {
 		this.context = context;
 	}
 
+	/**
+	 * The `setupTestFile` method is an asynchronous function that sets up a test file for a given document and named element.
+	 *
+	 * @param {vscode.TextDocument} document - The document for which the test file is to be set up.
+	 * @param {NamedElement} element - The named element for which the test file is to be set up.
+	 *
+	 * @returns {Promise<AutoTestTemplateContext>} - Returns a promise that resolves to an AutoTestTemplateContext object.
+	 *
+	 * The method first converts the document to a TreeSitterFile and generates a scope graph for it. It then constructs a target path for the test file by replacing ".java" with "Test.java" and "src/main/java" with "src/test/java" in the document's file name.
+	 *
+	 * An AutoTestTemplateContext object is then created with the following properties:
+	 * - filename: The file name of the document.
+	 * - language: The language ID of the document.
+	 * - targetPath: The target path for the test file.
+	 * - testClassName: The text of the identifier range of the named element.
+	 * - sourceCode: The text of the block range of the named element.
+	 * - relatedClasses: An empty array.
+	 * - imports: An empty array.
+	 *
+	 * The method then creates a URI for the target path and writes an empty file to it in the workspace's file system.
+	 *
+	 * Finally, the method returns a promise that resolves to the created AutoTestTemplateContext object.
+	 */
 	async setupTestFile(document: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
-		const language = document.languageId;
-
 		this.tsfile = await documentToTreeSitterFile(document);
+		this.graph = await this.tsfile.scopeGraph();
 
-		const targetPath = document.fileName.replace(".java", "Test.java");
+		const targetPath = document.fileName
+			.replace(".java", "Test.java")
+			.replace("src/main/java", "src/test/java");
 
 		const testContext: AutoTestTemplateContext = {
 			filename: document.fileName,
-			language: language,
+			language: document.languageId,
 			targetPath: targetPath,
 			testClassName: element.identifierRange.text,
 			sourceCode: element.blockRange.text,
@@ -58,10 +82,8 @@ export class JavaTestGenProvider implements TestGenProvider {
 			imports: [],
 		};
 
-		const targetUri = vscode.Uri.file(targetPath.replace("src/main/java", "src/test/java"));
-
+		const targetUri = vscode.Uri.file(targetPath);
 		await vscode.workspace.fs.writeFile(targetUri, new Uint8Array());
-
 		return Promise.resolve(testContext);
 	}
 

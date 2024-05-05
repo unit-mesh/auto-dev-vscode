@@ -38,7 +38,6 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
 
 		const testContext = await provider.setupTestFile(this.document, this.namedElement);
-
 		let relatedClasses = await provider.lookupRelevantClass(this.namedElement);
 
 		let umlPresenter = new CommentedUmlPresenter();
@@ -46,17 +45,20 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			return umlPresenter.present(codeStructure);
 		});
 
+		console.log(testContext);
+
 		const startTime = new Date().getTime();
 		const creationContext: CreateToolchainContext = {
 			action: "AutoTestAction",
 			filename: this.document.fileName,
 			language: this.language,
 			content: this.document.getText(),
-			element: this.namedElement
+			element: this.namedElement,
 		};
 
 		// TODO: spike better way to improve performance
 		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);
+		console.log(contextItems);
 		if (contextItems.length > 0) {
 			testContext.chatContext = contextItems.map(item => item.text).join("\n - ");
 			console.info(`chat context: ${testContext.chatContext}`);
