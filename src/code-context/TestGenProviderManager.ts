@@ -28,7 +28,7 @@ export class TestGenProviderManager {
 		}
 
 		let langService = new DefaultLanguageService();
-		await provider.setup(langService);
+		await provider.setupContext(langService);
 
 		return provider;
 	}

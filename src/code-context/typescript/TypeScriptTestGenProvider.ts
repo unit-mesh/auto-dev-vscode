@@ -23,11 +23,11 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 	constructor() {
 	}
 
-	async setup(defaultLanguageService: TSLanguageService) {
+	async setupContext(defaultLanguageService: TSLanguageService) {
 		this.languageService = defaultLanguageService;
 	}
 
-	async findOrCreateTestFile(sourceFile: vscode.TextDocument, block: NamedElement): Promise<AutoTestTemplateContext> {
+	async setupTestFile(sourceFile: vscode.TextDocument, block: NamedElement): Promise<AutoTestTemplateContext> {
 		const language = sourceFile.languageId;
 		const testFilePath: vscode.Uri | undefined = this.getTestFilePath(sourceFile);
 		if (!testFilePath) {

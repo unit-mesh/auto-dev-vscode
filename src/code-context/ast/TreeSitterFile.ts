@@ -10,12 +10,12 @@ import { TSLanguageService } from "../../editor/language/service/TSLanguageServi
 const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 
 export class TreeSitterFile {
-	private sourcecode: string;
-	tree: Tree;
-	langConfig: LanguageConfig;
+	readonly sourcecode: string;
+	readonly tree: Tree;
+	readonly langConfig: LanguageConfig;
 	readonly parser: Parser | undefined = undefined;
-	language: Parser.Language;
-	fsPath: string;
+	readonly language: Parser.Language;
+	readonly fsPath: string;
 
 	constructor(src: string, tree: Tree, tsLanguage: LanguageConfig, parser: Parser, language: Language, fsPath: string = "") {
 		this.sourcecode = src;

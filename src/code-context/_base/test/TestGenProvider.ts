@@ -8,7 +8,7 @@ import { NamedElement } from "../../../editor/ast/NamedElement";
 
 export interface TestGenProvider {
 	isApplicable(lang: SupportedLanguage): boolean;
-	setup(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext): Promise<void>;
-	findOrCreateTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext>;
+	setupContext(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext): Promise<void>;
+	setupTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext>;
 	lookupRelevantClass(element: NamedElement): Promise<CodeStructure[]>;
 }

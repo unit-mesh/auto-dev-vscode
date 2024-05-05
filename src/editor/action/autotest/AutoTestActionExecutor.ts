@@ -36,7 +36,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
 
-		const testContext = await provider.findOrCreateTestFile(this.document, this.namedElement);
+		const testContext = await provider.setupTestFile(this.document, this.namedElement);
 
 		// start time
 		const startTime = new Date().getTime();

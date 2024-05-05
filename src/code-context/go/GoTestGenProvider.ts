@@ -18,13 +18,13 @@ export class GoTestGenProvider implements TestGenProvider {
 		return lang === "go";
 	}
 
-	setup(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext | undefined): Promise<void> {
+	setupContext(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext | undefined): Promise<void> {
 		this.languageService = defaultLanguageService;
 
 		return Promise.resolve();
 	}
 
-	async findOrCreateTestFile(sourceFile: TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
+	async setupTestFile(sourceFile: TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
 		const testFilePath: vscode.Uri | undefined = this.getTestFilePath(sourceFile);
 
 		if (!testFilePath) {

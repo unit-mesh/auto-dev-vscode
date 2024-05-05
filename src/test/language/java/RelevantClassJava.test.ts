@@ -121,14 +121,14 @@ public class BlogController {
 		let textRange = functionToRange(firstFunc);
 		let lookup = new JavaRelevantLookup(tsf);
 		let ios: string[] = await structurer.extractMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
-		let relevantClasses = lookup.calculateRelevantClass(ios);
+		let relevantClasses = lookup.relevantImportToFilePath(ios);
 		expect(relevantClasses).toEqual(['cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/entity/BlogPost']);
 
 		// for second func
 		let secondFunc = codeFile!!.classes[0].methods[1];
 		textRange = functionToRange(secondFunc);
 		ios = await structurer.extractMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
-		relevantClasses = lookup.calculateRelevantClass(ios);
+		relevantClasses = lookup.relevantImportToFilePath(ios);
 		expect(relevantClasses).toEqual([
 			'cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/dto/CreateBlogRequest',
 			'cc/unitmesh/untitled/demo/cc/unitmesh/untitled/demo/dto/CreateBlogResponse'

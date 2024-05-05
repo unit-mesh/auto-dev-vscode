@@ -11,12 +11,20 @@ import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
+import { JavaStructurer } from "./JavaStructurer";
+import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
+import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
+import { TreeSitterFile } from "../ast/TreeSitterFile";
+import { TextRange } from "../../code-search/scope-graph/model/TextRange";
+import { JavaRelevantLookup } from "../../code-search/lookup/JavaRelevantLookup";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
 	baseTestPrompt: string = `${l10n.t("lang.java.prompt.basicTestTemplate")}`.trim();
 	// write a regex for java import statement
 	importRegex = /import\s+([\w.]+);/g;
+	private graph: ScopeGraph | undefined;
+	private tsfile: TreeSitterFile | undefined;
 
 	isApplicable(lang: SupportedLanguage): boolean {
 		return lang === "java";
@@ -28,18 +36,20 @@ export class JavaTestGenProvider implements TestGenProvider {
 	constructor() {
 	}
 
-	async setup(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext) {
+	async setupContext(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext) {
 		this.languageService = defaultLanguageService;
 		this.context = context;
 	}
 
-	async findOrCreateTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
-		const language = sourceFile.languageId;
+	async setupTestFile(document: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
+		const language = document.languageId;
 
-		const targetPath = sourceFile.fileName.replace(".java", "Test.java");
+		this.tsfile = await documentToTreeSitterFile(document);
+
+		const targetPath = document.fileName.replace(".java", "Test.java");
 
 		const testContext: AutoTestTemplateContext = {
-			filename: sourceFile.fileName,
+			filename: document.fileName,
 			language: language,
 			targetPath: targetPath,
 			testClassName: element.identifierRange.text,
@@ -54,9 +64,35 @@ export class JavaTestGenProvider implements TestGenProvider {
 		return Promise.resolve(testContext);
 	}
 
-	lookupRelevantClass(element: NamedElement): Promise<CodeStructure[]> {
-		return Promise.resolve([]);
+	async lookupRelevantClass(element: NamedElement): Promise<CodeStructure[]> {
+		let structurer = new JavaStructurer();
+		await structurer.init(this.languageService!!);
+
+		if (this.tsfile === undefined || this.graph === undefined) {
+			return [];
+		}
+
+		const textRange: TextRange = element.blockRange.toTextRange();
+		const source = this.tsfile.sourcecode;
+		let ios: string[] = await structurer.extractMethodIOImports(this.graph, this.tsfile.tree.rootNode, textRange, source) ?? [];
+
+		let lookup = new JavaRelevantLookup(this.tsfile);
+		let paths = lookup.relevantImportToFilePath(ios);
+
+		// read file by path and structurer to parse it to uml
+		let codeStructures: CodeStructure[] = [];
+		for (const path of paths) {
+			const uri = vscode.Uri.file(path);
+			const document = await vscode.workspace.openTextDocument(uri);
+			const codeFile = await structurer.parseFile(document.getText(), path);
+			if (codeFile) {
+				codeStructures.push(codeFile.classes[0]);
+			}
+		}
+
+		return codeStructures;
 	}
+
 
 	private clazzName = "JavaTestContextProvider";
 

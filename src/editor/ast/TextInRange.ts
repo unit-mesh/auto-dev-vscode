@@ -1,5 +1,6 @@
 import { SyntaxNode } from "web-tree-sitter";
 import { Position, Range } from "vscode";
+import { Point, TextRange } from "../../code-search/scope-graph/model/TextRange";
 
 export class TextInRange extends Range {
 	text: string;
@@ -27,5 +28,11 @@ export class TextInRange extends Range {
 		const endIndex = id.endIndex;
 
 		return new TextInRange(id.text, startPosition, endPosition, startIndex, endIndex);
+	}
+
+	toTextRange() : TextRange {
+		const start = new Point(this.start.line, this.start.character, this.startIndex);
+		const end = new Point(this.end.line, this.end.character, this.endIndex);
+		return new TextRange(start, end, this.text);
 	}
 }

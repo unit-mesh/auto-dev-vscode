@@ -9,11 +9,21 @@ export class JavaRelevantLookup {
 	}
 
 	/**
-	 * Filter out the relevant class from the given imports and imports
-	 * @param imports
-	 * @param imports
+	 * The `relevantImportToFilePath` method is used to filter out the relevant class from the given imports and return their file paths.
+	 *
+	 * @param imports This is an array of strings where each string represents an import statement.
+	 *
+	 * @returns This method returns an array of strings where each string is the file path of the relevant import.
+	 *
+	 * The method first refines the import types by calling the `refineImportTypes` method on the `imports` parameter. The `refineImportTypes` method is expected to return an array of relevant imports.
+	 *
+	 * Then, it maps over the array of relevant imports and for each import, it calls the `pathByPackageName` method. The `pathByPackageName` method is expected to return the file path of the import.
+	 *
+	 * The resulting array of file paths is then returned by the `relevantImportToFilePath` method.
+	 *
+	 * Note: The `refineImportTypes` and `pathByPackageName` methods are not defined in this snippet. They should be defined elsewhere in the code and should be used as per the requirements.
 	 */
-	calculateRelevantClass(imports: string[]): string[] {
+	relevantImportToFilePath(imports: string[]): string[] {
 		const relevantImports = this.refineImportTypes(imports);
 
 		return relevantImports.map(imp => {
