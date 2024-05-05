@@ -14,7 +14,7 @@
     </a>
 </p>
 
-> 🧙‍AutoDev: The AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful
+> 🧙‍AutoDev: the AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful
 > bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀
 
 JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.com/unit-mesh/auto-dev)
