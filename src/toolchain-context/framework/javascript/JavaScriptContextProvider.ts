@@ -38,7 +38,6 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 			results.push(mostPopularPackagesContext);
 		}
 
-		console.log(`Tech stack: ${JSON.stringify(techStack)}`);
 		if (techStack.coreFrameworksList().length > 0) {
 			let element = {
 				clazz: JavaScriptContextProvider.name,

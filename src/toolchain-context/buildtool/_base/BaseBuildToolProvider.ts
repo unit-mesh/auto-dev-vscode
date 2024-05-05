@@ -2,6 +2,8 @@ import { BuildToolProvider } from "./BuildToolProvider";
 import { PackageDependencies } from "./Dependence";
 import vscode from "vscode";
 import { CreateToolchainContext } from "../../ToolchainContextProvider";
+import path from "path";
+import fs from "fs";
 
 export abstract class BaseBuildToolProvider implements BuildToolProvider {
 	moduleTarget: string[] = [];
@@ -20,15 +22,9 @@ export abstract class BaseBuildToolProvider implements BuildToolProvider {
 
 		let hasTarget = false;
 		for (const target of this.moduleTarget) {
-			const targetPath = vscode.Uri.joinPath(workspace.uri, target);
-			try {
-				const targetFileType = await vscode.workspace.fs.stat(targetPath);
-				if (targetFileType.type === vscode.FileType.File) {
-					hasTarget = true;
-					break;
-				}
-			} catch (error) {
-				// do nothing
+			const targetPath = path.join(workspace.uri.fsPath, target);
+			if (fs.existsSync(targetPath)) {
+				hasTarget = true;
 			}
 		}
 
@@ -36,10 +32,10 @@ export abstract class BaseBuildToolProvider implements BuildToolProvider {
 	}
 
 	async getTargetContent(target: string): Promise<string> {
-		const workspaces = vscode.workspace.workspaceFolders || [];
+		let workspaces = vscode.workspace.workspaceFolders || [];
 		const workspace = workspaces[0];
-		const targetPath = vscode.Uri.joinPath(workspace.uri, target);
-		const targetContent = await vscode.workspace.fs.readFile(targetPath);
-		return Buffer.from(targetContent).toString();
+
+		const targetPath = path.join(workspace!!.uri.fsPath, target);
+		return fs.readFileSync(targetPath, "utf-8");
 	}
 }

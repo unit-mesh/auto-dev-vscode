@@ -3,7 +3,6 @@ import { ExtensionApi as GradleApi, RunTaskOpts, Output } from "vscode-gradle";
 import { injectable } from "inversify";
 
 import { DependencyEntry, PackageDependencies } from "./_base/Dependence";
-import { BuildToolProvider } from "./_base/BuildToolProvider";
 import { PackageManger } from "./_base/PackageManger";
 import { VSCodeAction } from "../../editor/editor-api/VSCodeAction";
 import { GradleVersionInfo, parseGradleVersionInfo } from "./gradle/GradleVersionInfo";
@@ -49,6 +48,10 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 		}
 
 		let dependencies = await this.assembleGradleExtensionDependencies();
+		if (dependencies.dependencies.length > 0) {
+			return dependencies;
+		}
+
 		// check moduleTarget in rootDir
 		for (const target of this.moduleTarget) {
 			const source = await this.getTargetContent(target);

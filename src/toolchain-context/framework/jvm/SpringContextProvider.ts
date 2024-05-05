@@ -49,7 +49,7 @@ export class SpringContextProvider implements ToolchainContextProvider {
 			return [
 				{
 					clazz: SpringContextProvider.name,
-					text: `You are working on a project that uses ${Array.from(techStacks.coreFrameworks.keys()).join(",")} to build business logic.`
+					text: `You are working on a project that uses ${Array.from(techStacks.coreFrameworks.keys()).join(",")}to build business logic.`
 				}
 			];
 		}
