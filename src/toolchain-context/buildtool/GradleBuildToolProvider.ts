@@ -52,6 +52,8 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 			return dependencies;
 		}
 
+		channel.appendLine("Not found vscode-gradle extension, try to parse build.gradle file.");
+
 		// check moduleTarget in rootDir
 		for (const target of this.moduleTarget) {
 			const source = await this.getTargetContent(target);
