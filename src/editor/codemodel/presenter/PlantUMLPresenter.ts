@@ -6,6 +6,23 @@ export class PlantUMLPresenter implements Presenter {
 		return this.render(file);
 	}
 
+	/**
+	 * The `render` method is a protected method in TypeScript that generates a PlantUML string representation of a given `CodeFile` object.
+	 *
+	 * @param {CodeFile} file - The `CodeFile` object that needs to be converted into a PlantUML string.
+	 *
+	 * @returns {string} - Returns a string that represents the PlantUML diagram of the given `CodeFile` object.
+	 *
+	 * The method starts by initializing a PlantUML string with `@startuml\n`. If the `CodeFile` object has a package, it is added to the PlantUML string.
+	 *
+	 * The method then iterates through the imports in the `CodeFile` object and adds them to the PlantUML string as comments.
+	 *
+	 * A new Map object, `classMap`, is created to store the classes in the `CodeFile` object. The method then iterates through the classes in the `CodeFile` object, and for each class, it adds the class to the `classMap` with the class name as the key and the class object as the value.
+	 *
+	 * The method then iterates through the `classMap` and for each class, it converts the class into a PlantUML string using the `convertClassToPlantUml` method and adds it to the PlantUML string.
+	 *
+	 * Finally, the method ends the PlantUML string with `@enduml\n` and returns the PlantUML string.
+	 */
 	protected render(file: CodeFile): string {
 		let plantUmlString = `@startuml\n`;
 
@@ -19,11 +36,8 @@ export class PlantUMLPresenter implements Presenter {
 			plantUmlString += `'${importItem}\n`;
 		});
 
-		const classMap = new Map<string, CodeStructure>();
+		// Create a map to store classes
 		file.classes.forEach(classItem => {
-			classMap.set(classItem.name, classItem);
-		});
-		classMap.forEach(classItem => {
 			plantUmlString += this.convertClassToPlantUml(classItem);
 		});
 
@@ -33,6 +47,11 @@ export class PlantUMLPresenter implements Presenter {
 
 	private convertClassToPlantUml(classItem: CodeStructure): string {
 		let plantUmlString = `class ${classItem.name} {\n`;
+
+		// Iterate through fields and convert them to PlantUML syntax
+		classItem.fields?.forEach(field => {
+			plantUmlString += `  ${field.name}: ${field.typ}\n`;
+		});
 
 		// Iterate through methods and convert them to PlantUML syntax
 		classItem.methods.forEach(method => {
