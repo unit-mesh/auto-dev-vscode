@@ -26,12 +26,11 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
 - [ ] Provider API design
     - [x] ChatContext
     - [x] Structurer
-    - [ ] RelatedCode
+    - [x] RelatedCode
     - [x] SimilarChunk
 - [ ] Chat mode
     - [x] Chat UI
-    - [ ] Chat with selection
-    - [ ] Chat with code
+    - [x] Chat with selection
 - [ ] Touch Point
     - [X] QuickPick
     - [x] ContextMenu
@@ -75,10 +74,11 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
         - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike ?
 - [ ] Extensions
     - [x] Build Tools
-        - Gradle
+        - [x] Gradle
+        - [x] Go Mod
+        - [x] NPM
     - [ ] Database
     - [ ] Terminal
-    - [ ] UI
 - [ ] Docs with RAG
     - [ ] Auto Generate doc based on sourcecode
     - [ ] Ask for AutoDev doc
@@ -98,6 +98,7 @@ Inspired and based on：
 - AI-based conversational search [Bloop](https://github.com/BloopAI/bloop) for indexes and code search.
 - AI-powered coding wizard [AutoDev](https://github.com/unit-mesh/auto-dev) for AutoTasking.
 - TreeSitter-based architecture analysis: [Guarding](https://github.com/modernizing/guarding)
-- DevIns parser based on [VSCode Markdown](https://github.com/microsoft/vscode/blob/main/extensions/markdown-basics/syntaxes/markdown.tmLanguage.json)
+- DevIns parser based
+  on [VSCode Markdown](https://github.com/microsoft/vscode/blob/main/extensions/markdown-basics/syntaxes/markdown.tmLanguage.json)
 
 AutoDev VSCode is licensed under the `Apache 2.0` license as defined in [LICENSE](./LICENSE).
