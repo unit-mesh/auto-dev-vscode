@@ -3,12 +3,10 @@ import { PackageVersionParser } from "../_base/PackageVersionParser";
 import { PackageManger } from "../_base/PackageManger";
 
 // implementation "joda-time:joda-time:2.2"
-const GRADLE_SHORT_IMPL_REGEX = /([a-zA-Z]+)?(?:\(|\s)\s*['"](([^\\s,@'":\/\\]+):([^\\s,@'":\/\\]+):([^\\s,'":\/\\]+))['"]/g;
+const GRADLE_SHORT_IMPL_REGEX = /([a-zA-Z]+)?(?:\(|\s)\s*['"](([^\s,@'":\/\\]+):([^\s,@'":\/\\]+):([^\s,'":\/\\]+))['"]/g;
 
-// private val SHORT_IMPL_REGEX_NO_VERSION =
-//     "([a-zA-Z]+)?(?:\\(|\\s)\\s*['\"](([^\\s,@'\":\\/\\\\]+):([^\\s,@'\":\\/\\\\]+))['\"]".toRegex()
 // implementation "joda-time:joda-time"
-const SHORT_IMPL_REGEX_NO_VERSION = /([a-zA-Z]+)?(?:\(|\s)\s*['"](([^\\s,@'":\/\\]+):([^\\s,@'":\/\\]+))['"]/g;
+const SHORT_IMPL_REGEX_NO_VERSION = /([a-zA-Z]+)?(?:\(|\s)\s*['"](([^\s,@'":\/\\]+):([^\s,@'":\/\\]+))['"]/g;
 
 // gradle version catalog
 // implementation(libs.bundles.openai)
@@ -114,6 +112,7 @@ export class GradleVersionParser implements PackageVersionParser {
 		}
 
 		while ((match = SHORT_IMPL_REGEX_NO_VERSION.exec(content)) !== null) {
+			console.log(match.length);
 			if (match.length === 5) {
 				try {
 					const [, scope, , group, artifact] = match;
