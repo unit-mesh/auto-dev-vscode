@@ -175,7 +175,7 @@
       {
         "command": "autodev.autoTest",
         "category": "AutoDev",
-        "title": "%autodev.command.autoTests%",
+        "title": "%AutoTest%",
         "group": "AutoDev"
       },
       {

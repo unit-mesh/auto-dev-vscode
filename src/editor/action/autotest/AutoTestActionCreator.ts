@@ -25,7 +25,7 @@ export class AutoTestActionCreator extends CodeActionCreator {
 		return this.createAutoTestAction(title, context.document, nameBlock);
 	}
 
-	private createAutoTestAction(title: string, document: vscode.TextDocument, result: NamedElement): vscode.CodeAction {
+	private createAutoTestAction(title: string, document: vscode.TextDocument, namedElement: NamedElement): vscode.CodeAction {
 		const codeAction = new vscode.CodeAction(title, AutoTestActionCreator.providedCodeActionKinds[0]);
 
 		codeAction.isPreferred = false;
@@ -33,7 +33,7 @@ export class AutoTestActionCreator extends CodeActionCreator {
 		codeAction.command = {
 			command: "autodev.autoComment",
 			title: title,
-			arguments: [document, result, codeAction.edit]
+			arguments: [document, namedElement, codeAction.edit]
 		};
 
 		return codeAction;

@@ -4,5 +4,5 @@
   "autodev.command.quickChat": "AutoDev Quick Chat",
   "autodev.command.explain": "Explain This",
   "autodev.command.fixThis": "AutoDev Fix this",
-  "autodev.command.autoTests": "Generate Test"
+  "AutoTest": "Generate Test"
 }

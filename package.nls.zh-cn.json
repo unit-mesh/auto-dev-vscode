@@ -4,5 +4,5 @@
   "autodev.command.quickChat": "AutoDev 快速聊天",
   "autodev.command.explain": "解释此代码",
   "autodev.command.fixThis": "修复此代码",
-  "autodev.command.autoTests": "生成测试"
+  "AutoTest": "生成测试"
 }
