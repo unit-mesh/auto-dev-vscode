@@ -2,7 +2,7 @@ import vscode, { l10n } from "vscode";
 import { injectable } from "inversify";
 
 import { TestGenProvider } from "../_base/test/TestGenProvider";
-import { CodeStructure } from "../../editor/codemodel/CodeFile";
+import { CodeFile, CodeStructure } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { GradleBuildToolProvider } from "../../toolchain-context/buildtool/GradleBuildToolProvider";
@@ -64,7 +64,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		return Promise.resolve(testContext);
 	}
 
-	async lookupRelevantClass(element: NamedElement): Promise<CodeStructure[]> {
+	async lookupRelevantClass(element: NamedElement): Promise<CodeFile[]> {
 		let structurer = new JavaStructurer();
 		await structurer.init(this.languageService!!);
 
@@ -80,17 +80,17 @@ export class JavaTestGenProvider implements TestGenProvider {
 		let paths = lookup.relevantImportToFilePath(ios);
 
 		// read file by path and structurer to parse it to uml
-		let codeStructures: CodeStructure[] = [];
+		let codeFiles: CodeFile[] = [];
 		for (const path of paths) {
 			const uri = vscode.Uri.file(path);
 			const document = await vscode.workspace.openTextDocument(uri);
 			const codeFile = await structurer.parseFile(document.getText(), path);
-			if (codeFile) {
-				codeStructures.push(codeFile.classes[0]);
+			if (codeFile !== undefined) {
+				codeFiles.push(codeFile);
 			}
 		}
 
-		return codeStructures;
+		return codeFiles;
 	}
 
 
