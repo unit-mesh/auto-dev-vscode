@@ -28,7 +28,7 @@ export class JavaRelatedProvider implements RelatedCodeProvider {
 		this.fileManager = fileManager;
 	}
 
-	async inputOutputs(file: CodeFile, method: CodeFunction): Promise<CodeStructure[]> {
+	async inputAndOutput(file: CodeFile, method: CodeFunction): Promise<CodeStructure[]> {
 		// split type and check in imports
 		const maybeRelated = file.imports.filter(imp => {
 			const parts = imp.split(".");

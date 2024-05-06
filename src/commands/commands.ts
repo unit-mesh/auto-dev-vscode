@@ -163,10 +163,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 
 			let relatedProvider = extension.relatedManager.getRelatedProvider(document.languageId);
 
-			channel.append(`current uml: ${output}`);
-
-			// todo: replace method to really method
-			let outputs = await relatedProvider?.inputOutputs(file, file.classes[0].methods[0]);
+			let outputs = await relatedProvider?.inputAndOutput(file, file.classes[0].methods[0]);
 			if (outputs !== undefined) {
 				outputs.map((output) => {
 					channel.append(`current outputs: ${JSON.stringify(output)}\n`);

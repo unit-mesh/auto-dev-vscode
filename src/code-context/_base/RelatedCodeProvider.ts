@@ -30,5 +30,5 @@ export interface RelatedCodeProvider {
 	 * @returns will be CodeMethod, since `getMethodById` does not have any input parameters,
 	 * and the return type is `CodeMethod`.
 	 */
-	inputOutputs(file: CodeFile, method: CodeFunction): Promise<CodeStructure[]>;
+	inputAndOutput(file: CodeFile, method: CodeFunction): Promise<CodeStructure[]>;
 }
