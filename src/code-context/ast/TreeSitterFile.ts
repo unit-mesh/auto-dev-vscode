@@ -2,7 +2,6 @@ import Parser, { Language, Tree } from "web-tree-sitter";
 
 import { LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageUtil } from "./TSLanguageUtil";
-import { TreeSitterFileCacheManager } from "../../editor/cache/TreeSitterFileCacheManager";
 import { ScopeBuilder } from "../../code-search/scope-graph/ScopeBuilder";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
@@ -28,11 +27,7 @@ export class TreeSitterFile {
 
 	private static oneSecond: number = Math.pow(10, 6);
 
-	static async createTreeSitterFile(
-		source: string,
-		langId: string,
-		languageService: TSLanguageService,
-		fsPath: string = ""): Promise<TreeSitterFile> {
+	static async create(source: string, langId: string, languageService: TSLanguageService, fsPath: string = ""): Promise<TreeSitterFile> {
 		// no node-res for files larger than 500kb
 		let isLargerThan500kb = source.length > 500 * Math.pow(10, 3);
 		if (isLargerThan500kb) {
@@ -67,8 +62,6 @@ export class TreeSitterFile {
 
 		return new TreeSitterFile(source, tree, tsConfig, parser, language, fsPath);
 	}
-
-	static cache: TreeSitterFileCacheManager = TreeSitterFileCacheManager.getInstance();
 
 	/**
 	 * The `scopeGraph` method is an asynchronous function that generates a node graph for the current instance.
