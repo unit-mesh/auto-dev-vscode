@@ -3,7 +3,6 @@ import * as vscode from "vscode";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import { NamedElement } from "../ast/NamedElement";
-import { NamedElementBuilder } from "../ast/NamedElementBuilder";
 import { providerContainer } from "../../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../../ProviderTypes";
 import { ActionCreator } from "../action/_base/ActionCreator";

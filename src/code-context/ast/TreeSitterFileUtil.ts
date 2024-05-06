@@ -2,7 +2,7 @@ import vscode from "vscode";
 import { TreeSitterFile } from "./TreeSitterFile";
 import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
 import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
-import { TreeSitterFileCacheManager } from "../../editor/cache/TreeSitterFileCacheManager";
+import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
 
 /**
  * Converts a given VSCode {@link TextDocument} into a TreeSitterFile.
@@ -11,7 +11,7 @@ import { TreeSitterFileCacheManager } from "../../editor/cache/TreeSitterFileCac
  * @returns The TreeSitterFile representation of the document, or null if the conversion fails.
  */
 export async function documentToTreeSitterFile(document: vscode.TextDocument) {
-	const cached = TreeSitterFileCacheManager.getInstance().getDocument(document.uri, document.version);
+	const cached = TreeSitterFileManager.getInstance().getDocument(document.uri);
 	if (cached) {
 		return cached;
 	}
@@ -20,7 +20,7 @@ export async function documentToTreeSitterFile(document: vscode.TextDocument) {
 	const langId = document.languageId;
 
 	const file = await TreeSitterFile.create(src, langId, new DefaultLanguageService(), document.uri.fsPath);
-	TreeSitterFileCacheManager.getInstance().setDocument(document.uri, document.version, file);
+	TreeSitterFileManager.getInstance().setDocument(document.uri,file);
 	return file;
 }
 

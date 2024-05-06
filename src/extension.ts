@@ -24,6 +24,7 @@ import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
+import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";
 
 (globalThis as any).self = globalThis;
 
@@ -46,6 +47,8 @@ export async function activate(context: vscode.ExtensionContext) {
 			registerAutoDevProviders(extension);
 			registerQuickFixProvider(extension);
 			registerCommands(extension);
+
+			TreeSitterFileManager.getInstance();
 
 			await new BuildToolObserver().startWatch();
 		}
