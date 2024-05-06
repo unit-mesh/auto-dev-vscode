@@ -25,17 +25,23 @@ export abstract class CodeActionCreator implements ActionCreator {
 	 * Note: This method is part of the Visual Studio Code Extension API and is used for creating code actions that can be provided by a `CodeActionProvider`.
 	 */
 	buildActions(context: ActionCreatorContext): Promise<vscode.CodeAction[]> {
-		let apisDocActions: vscode.CodeAction[] = [];
+		let actions: vscode.CodeAction[] = [];
 		for (let nameBlock of context.namedElementBlocks) {
 			switch (nameBlock.codeElementType) {
 				case CodeElementType.Structure:
 					if (nameBlock.identifierRange.contains(context.range)) {
-						apisDocActions.push(this.buildClassAction(context, nameBlock));
+						let classAction = this.buildClassAction(context, nameBlock);
+						if (classAction)  {
+							actions.push(classAction);
+						}
 					}
 					break;
 				case CodeElementType.Method:
 					if (nameBlock.blockRange.contains(context.range)) {
-						apisDocActions.push(this.buildMethodAction(context, nameBlock));
+						let methodAction = this.buildMethodAction(context, nameBlock);
+						if (methodAction) {
+							actions.push(methodAction);
+						}
 					}
 					break;
 				default:
@@ -43,10 +49,10 @@ export abstract class CodeActionCreator implements ActionCreator {
 			}
 		}
 
-		return Promise.resolve(apisDocActions);
+		return Promise.resolve(actions);
 	}
 
-	abstract buildClassAction(context: ActionCreatorContext, elementBlock: NamedElement): vscode.CodeAction;
+	abstract buildClassAction(context: ActionCreatorContext, elementBlock: NamedElement): vscode.CodeAction | undefined;
 
-	abstract buildMethodAction(context: ActionCreatorContext, elementBlock: NamedElement): vscode.CodeAction;
+	abstract buildMethodAction(context: ActionCreatorContext, elementBlock: NamedElement): vscode.CodeAction | undefined;
 }

@@ -34,18 +34,23 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 		})();
 	}
 
-	private setupDocIfNoExist(methodRanges: NamedElement[], document: vscode.TextDocument) {
+	private setupDocIfNoExist(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
 		return methodRanges.map((namedElement) => {
+			if (namedElement.isTestFile()) {
+				return;
+			}
+
 			const title = l10n.t("AutoTest");
 			return new vscode.CodeLens(namedElement.identifierRange, {
 				title,
 				command: "autodev.autoTest",
 				arguments: [document, namedElement, new vscode.WorkspaceEdit()],
 			});
-		});
+		})
+			.filter((lens): lens is vscode.CodeLens => !!lens);
 	}
 
-	private setupQuickChat(methodRanges: NamedElement[], document: vscode.TextDocument) {
+	private setupQuickChat(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
 		return methodRanges.map((range) => {
 			const title = `$(autodev-icon)$(chevron-down)`;
 			return new vscode.CodeLens(range.identifierRange, {

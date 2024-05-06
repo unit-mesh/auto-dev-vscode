@@ -43,4 +43,8 @@ export class NamedElement {
 		this.codeElementType = codeElementType;
 		this.file = file;
 	}
+
+	isTestFile(): boolean {
+		return this.file.isTestFile();
+	}
 }

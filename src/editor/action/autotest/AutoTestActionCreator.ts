@@ -15,12 +15,19 @@ export class AutoTestActionCreator extends CodeActionCreator {
 		return true;
 	}
 
-	buildClassAction(context: ActionCreatorContext, nameBlock: NamedElement): vscode.CodeAction {
+	buildClassAction(context: ActionCreatorContext, nameBlock: NamedElement): vscode.CodeAction | undefined {
+		if (nameBlock.isTestFile()) {
+			return;
+		}
+
 		const title = `AutoTest for class \`${nameBlock.identifierRange.text}\` (AutoDev)`;
 		return this.createAutoTestAction(title, context.document, nameBlock);
 	}
 
-	buildMethodAction(context: ActionCreatorContext, nameBlock: NamedElement): vscode.CodeAction {
+	buildMethodAction(context: ActionCreatorContext, nameBlock: NamedElement): vscode.CodeAction | undefined {
+		if (nameBlock.isTestFile()) {
+			return;
+		}
 		const title = `AutoTest for method \`${nameBlock.identifierRange.text}\` (AutoDev)`;
 		return this.createAutoTestAction(title, context.document, nameBlock);
 	}

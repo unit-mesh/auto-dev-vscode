@@ -9,6 +9,7 @@ import { PositionUtil } from "../ast/PositionUtil";
 export class TreeSitterFileManager implements vscode.Disposable {
 	private documentUpdateListener: vscode.Disposable;
 
+	private cache: Map<Uri, TreeSitterFile>;
 	private static instance: TreeSitterFileManager;
 
 	public static getInstance(): TreeSitterFileManager {
@@ -19,8 +20,6 @@ export class TreeSitterFileManager implements vscode.Disposable {
 		return TreeSitterFileManager.instance;
 	}
 
-	private cache: Map<Uri, TreeSitterFile>;
-
 	constructor() {
 		this.cache = new Map<Uri, TreeSitterFile>();
 
@@ -28,7 +27,6 @@ export class TreeSitterFileManager implements vscode.Disposable {
 			if (!isSupportedLanguage(event.document.languageId)) {
 				return;
 			}
-
 			await this.updateCacheOnChange(event);
 		});
 	}
@@ -52,7 +50,7 @@ export class TreeSitterFileManager implements vscode.Disposable {
 		}
 	}
 
-	createEditParams(change: vscode.TextDocumentContentChangeEvent, document: vscode.TextDocument) : Edit {
+	createEditParams(change: vscode.TextDocumentContentChangeEvent, document: vscode.TextDocument): Edit {
 		const startIndex = change.rangeOffset;
 		const oldEndIndex = change.rangeOffset + change.rangeLength;
 		const newEndIndex = change.rangeOffset + change.text.length;

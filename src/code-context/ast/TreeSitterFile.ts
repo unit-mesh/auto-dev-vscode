@@ -126,6 +126,28 @@ export class TreeSitterFile {
 		graphCache.set(this, scopeGraphPromise);
 		return scopeGraphPromise;
 	}
+
+	isTestFile() {
+		// for java, test files are suffixed with Test, for example, HelloWorldTest.java, path should include test path
+		let isJavaTest = this.filePath.endsWith("Test.java") && this.filePath.includes("test");
+
+		// for python, test files are suffixed with _test, for example, test_hello_world.py
+		let isPythonTest = this.filePath.endsWith("_test.py");
+
+		// for javascript, test files are suffixed with .test, for example, hello-world.test.js
+		let isJavaScriptTest = this.filePath.endsWith(".test.js") || this.filePath.endsWith(".spec.ts");
+
+		// for typescript, test files are suffixed with .spec, for example, hello-world.spec.ts
+		let isTypeScriptTest = this.filePath.endsWith(".test.js") || this.filePath.endsWith(".spec.ts");
+
+		// for go, test files are suffixed with _test, for example, hello_world_test.go
+		let isGoTest = this.filePath.endsWith("_test.go");
+
+		// for ruby, test files are suffixed with _test, for example, hello_world_test.rb
+		let isRubyTest = this.filePath.endsWith("_test.rb");
+
+		return isJavaTest || isPythonTest || isJavaScriptTest || isTypeScriptTest || isGoTest || isRubyTest;
+	}
 }
 
 export enum TreeSitterFileError {
