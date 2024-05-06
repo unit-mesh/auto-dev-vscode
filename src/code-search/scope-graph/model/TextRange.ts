@@ -28,6 +28,8 @@ export class TextRange {
 	}
 
 	static from(node: SyntaxNode): TextRange {
+		let text = this.extracted(node);
+
 		return new TextRange(
 			{
 				byte: node.startIndex,
@@ -39,8 +41,16 @@ export class TextRange {
 				line: node.endPosition.row,
 				column: node.endPosition.column
 			},
-			node.text
+			text
 		);
+	}
+
+	private static extracted(node: SyntaxNode) {
+		if (node.type === "interpreted_string_literal") {
+			return JSON.parse(node.text);
+		}
+
+		return node.text;
 	}
 
 	/**

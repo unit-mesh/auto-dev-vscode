@@ -137,6 +137,7 @@ export class ScopeGraph {
 			const childScopes = this.graph.inEdges(start)
 				.filter(edge => this.graph.getEdgeAttributes(edge) instanceof ScopeToScope)
 				.map(edge => this.graph.source(edge));
+
 			for (const childScope of childScopes) {
 				const t = this.scopeByRange(range, childScope);
 				if (t) {

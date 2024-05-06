@@ -154,6 +154,9 @@
 (import_spec 
   (package_identifier) @local.import)
 
+(import_spec
+  (interpreted_string_literal) @local.import)
+
 ;; switch t := q.(type)
 (type_switch_statement
   (expression_list
