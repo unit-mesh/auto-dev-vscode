@@ -17,7 +17,7 @@ export class GenApiDataActionCreator implements ActionCreator {
 		vscode.CodeActionKind.RefactorRewrite,
 	];
 
-	build(context: ActionCreatorContext): Promise<vscode.CodeAction[]> {
+	buildActions(context: ActionCreatorContext): Promise<vscode.CodeAction[]> {
 		let apisDocActions: vscode.CodeAction[] = [];
 		for (let nameBlock of context.namedElementBlocks) {
 			switch (nameBlock.codeElementType) {
