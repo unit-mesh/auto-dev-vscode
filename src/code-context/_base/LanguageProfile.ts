@@ -5,7 +5,7 @@ import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NameSpaces } from "../../code-search/scope-graph/model/Namespace";
 
 // Languages based on tree-sitter grammars
-export interface LanguageConfig {
+export interface LanguageProfile {
   // A list of language names that can be processed by these node queries
   // e.g.: ["Typescript", "TSX"], ["Rust"]
   languageIds: string[];

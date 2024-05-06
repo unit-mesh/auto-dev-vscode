@@ -1,6 +1,6 @@
 import { Query, SyntaxNode } from "web-tree-sitter";
 
-import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
+import { LanguageProfile } from "../../code-context/_base/LanguageProfile";
 import { TextRange } from "./model/TextRange";
 import { LocalImport } from "./node/LocalImport";
 import { LocalScope } from "./node/LocalScope";
@@ -45,10 +45,10 @@ function parseScoping(s: string): Scoping {
 export class ScopeBuilder {
 	private rootNode: SyntaxNode;
 	private sourceCode: string;
-	private languageConfig: LanguageConfig;
+	private languageConfig: LanguageProfile;
 	private query: Query;
 
-	constructor(query: Query, rootNode: SyntaxNode, sourceCode: string, languageConfig: LanguageConfig) {
+	constructor(query: Query, rootNode: SyntaxNode, sourceCode: string, languageConfig: LanguageProfile) {
 		this.query = query;
 		this.rootNode = rootNode;
 		this.sourceCode = sourceCode;

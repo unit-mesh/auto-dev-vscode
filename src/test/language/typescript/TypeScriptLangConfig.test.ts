@@ -1,9 +1,9 @@
+const Parser = require("web-tree-sitter");
 import { SyntaxNode } from "web-tree-sitter";
+import 'reflect-metadata';
 
 import { TestLanguageService } from "../../TestLanguageService";
 import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
-
-const Parser = require("web-tree-sitter");
 
 describe('TypeScriptLangConfig', () => {
 	let parser: any;

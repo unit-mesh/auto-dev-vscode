@@ -4,7 +4,7 @@ import { TSLanguageUtil } from "../../code-context/ast/TSLanguageUtil";
 const Parser = require("web-tree-sitter");
 
 import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
-import { JavaLangConfig } from "../../code-context/java/JavaLangConfig";
+import { JavaProfile } from "../../code-context/java/JavaProfile";
 import { TestLanguageService } from "../TestLanguageService";
 import { CollapsedCodeChunker } from "../../code-search/chunk/_base/CollapsedCodeChunker";
 

@@ -1,6 +1,6 @@
 import Parser, { Language, Tree } from "web-tree-sitter";
 
-import { LanguageConfig } from "../_base/LanguageConfig";
+import { LanguageProfile } from "../_base/LanguageProfile";
 import { TSLanguageUtil } from "./TSLanguageUtil";
 import { ScopeBuilder } from "../../code-search/scope-graph/ScopeBuilder";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
@@ -11,12 +11,12 @@ const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 export class TreeSitterFile {
 	readonly sourcecode: string;
 	readonly tree: Tree;
-	readonly langConfig: LanguageConfig;
+	readonly langConfig: LanguageProfile;
 	readonly parser: Parser | undefined = undefined;
 	readonly language: Parser.Language;
 	readonly filePath: string;
 
-	constructor(src: string, tree: Tree, tsLanguage: LanguageConfig, parser: Parser, language: Language, fsPath: string = "") {
+	constructor(src: string, tree: Tree, tsLanguage: LanguageProfile, parser: Parser, language: Language, fsPath: string = "") {
 		this.sourcecode = src;
 		this.tree = tree;
 		this.langConfig = tsLanguage;

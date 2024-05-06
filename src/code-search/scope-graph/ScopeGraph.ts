@@ -7,7 +7,7 @@ import { LocalImport } from "./node/LocalImport";
 import { LocalDef } from "./node/LocalDef";
 import { Reference } from "./node/Reference";
 import { NodeKind } from "./node/NodeKind";
-import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
+import { LanguageProfile } from "../../code-context/_base/LanguageProfile";
 import { ScopeDebug } from "../../test/ScopeDebug";
 import { TestOnly } from "../../ops/TestOnly";
 import { ImportWithRefs } from "./model/ImportWithRefs";
@@ -203,7 +203,7 @@ export class ScopeGraph {
 			});
 	}
 
-	debug(src: NodeIndex, language: LanguageConfig) {
+	debug(src: NodeIndex, language: LanguageProfile) {
 		const graph = this.graph;
 		const start = this.rootIndex;
 		return ScopeDebug.new(graph, start, src, language);

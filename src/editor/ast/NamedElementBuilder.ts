@@ -3,7 +3,7 @@ import Parser from "web-tree-sitter";
 import { NamedElement } from "./NamedElement";
 import { TextInRange } from "./TextInRange";
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
-import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
+import { LanguageProfile } from "../../code-context/_base/LanguageProfile";
 import { CodeElementType } from "../codemodel/CodeElementType";
 import { TreeSitterUtil } from "../../code-context/ast/TreeSitterUtil";
 
@@ -14,14 +14,14 @@ import { TreeSitterUtil } from "../../code-context/ast/TreeSitterUtil";
  * - Method
  * - Variable
  *
- * @property {LanguageConfig} langConfig - The language configuration for the TypeScript file.
+ * @property {LanguageProfile} langConfig - The language configuration for the TypeScript file.
  * @property {Parser.Tree} tree - The syntax tree of the TypeScript file.
  * @property {Parser.Language} language - The language of the TypeScript file.
  * @property {Parser | undefined} parser - The parser used to parse the TypeScript file.
  *
  */
 export class NamedElementBuilder {
-	langConfig: LanguageConfig;
+	langConfig: LanguageProfile;
 	tree: Parser.Tree;
 	language: Parser.Language;
 	parser: Parser | undefined = undefined;

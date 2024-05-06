@@ -1,10 +1,10 @@
 import Parser, { Query, SyntaxNode } from "web-tree-sitter";
 import { injectable } from "inversify";
 
-import { JavaLangConfig } from "./JavaLangConfig";
+import { JavaProfile } from "./JavaProfile";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
-import { LanguageConfig } from "../_base/LanguageConfig";
+import { LanguageProfile } from "../_base/LanguageProfile";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { BaseStructurerProvider } from "../_base/BaseStructurerProvider";
@@ -13,7 +13,7 @@ import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 @injectable()
 export class JavaStructurerProvider extends BaseStructurerProvider {
 	protected langId: SupportedLanguage = "java";
-	protected config: LanguageConfig = TSLanguageUtil.for(this.langId)!!;
+	protected config: LanguageProfile = TSLanguageUtil.for(this.langId)!!;
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 

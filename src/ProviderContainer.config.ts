@@ -24,6 +24,10 @@ import { AutoTestActionCreator } from "./editor/action/autotest/AutoTestActionCr
 import { GenApiDataActionCreator } from "./editor/action/test-data/GenApiDataActionCreator";
 import { GoBuildToolProvider } from "./toolchain-context/buildtool/GoBuildToolProvider";
 import { GoStructurerProvider } from "./code-context/go/GoStructurerProvider";
+import { LanguageProfile } from "./code-context/_base/LanguageProfile";
+import { JavaProfile } from "./code-context/java/JavaProfile";
+import { TypeScriptProfile } from "./code-context/typescript/TypeScriptProfile";
+import { GolangProfile } from "./code-context/go/GolangProfile";
 
 const providerContainer = new Container();
 
@@ -47,15 +51,19 @@ providerContainer.bind<RelevantCodeProvider>(PROVIDER_TYPES.RelevantCodeProvider
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(JavaTestGenProvider);
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GradleBuildToolProvider);
 providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(JavaStructurerProvider);
+providerContainer.bind<LanguageProfile>(PROVIDER_TYPES.LanguageProfile).to(JavaProfile);
 
 // TypeScript
 providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(JavaScriptContextProvider);
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(NpmBuildToolProvider);
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(TypeScriptTestGenProvider);
 providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(TypeScriptStructurer);
+providerContainer.bind<LanguageProfile>(PROVIDER_TYPES.LanguageProfile).to(TypeScriptProfile);
+
 
 // Golang
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GoBuildToolProvider);
 providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(GoStructurerProvider);
+providerContainer.bind<LanguageProfile>(PROVIDER_TYPES.LanguageProfile).to(GolangProfile);
 
 export { providerContainer };

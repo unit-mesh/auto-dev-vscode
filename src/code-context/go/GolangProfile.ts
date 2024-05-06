@@ -1,8 +1,10 @@
-import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
+import { MemoizedQuery, LanguageProfile } from "../_base/LanguageProfile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import goscm from '../../code-search/schemas/indexes/go.scm?raw';
+import { injectable } from "inversify";
 
-export class GoLangConfig implements LanguageConfig {
+@injectable()
+export class GolangProfile implements LanguageProfile {
 	languageIds = ["Go"];
 	fileExtensions = ["go"];
 	grammar = (langService: TSLanguageService) => langService.getLanguage('go');
@@ -16,12 +18,12 @@ export class GoLangConfig implements LanguageConfig {
 	classQuery = new MemoizedQuery(`
 	    (type_declaration
 			  (type_spec 
-			    name= (_) @type-name
-			    type= (struct_type 
+			    name: (_) @type-name
+			    type: (struct_type 
 			      (field_declaration_list 
 			        (field_declaration 
-			           name= (_)? @field-name
-			           type= (_)? @field-type
+			           name: (_)? @field-name
+			           type: (_)? @field-type
 			        )
 			      )
 			    )
@@ -31,14 +33,14 @@ export class GoLangConfig implements LanguageConfig {
 	methodQuery = new MemoizedQuery(`
       (
 				(function_declaration
-			    name= (identifier) @function-name)
+			    name: (identifier) @function-name)
 		    @function-body
 	    )
 			
 		  (
 		    (method_declaration
-          receiver= (_)? @receiver-struct-name
-          name= (_)? @method-name)
+          receiver: (_)? @receiver-struct-name
+          name: (_)? @method-name)
         @method-body
       )
 
@@ -48,8 +50,8 @@ export class GoLangConfig implements LanguageConfig {
 	`);
 	methodIOQuery = new MemoizedQuery(`
 		(function_declaration
-      name= (identifier) @method-name
-      result= (
+      name: (identifier) @method-name
+      result: (
           (slice_type (qualified_type)  @method-returnType))?
     )
 	`);
@@ -59,34 +61,34 @@ export class GoLangConfig implements LanguageConfig {
 
 			(import_declaration
 			  (import_spec
-			    path= (_) @import-name))
+			    path: (_) @import-name))
 			                  
       (import_declaration
         (import_spec_list
 	  		  (import_spec
-				    path= (_) @import-name)))
+				    path: (_) @import-name)))
 
 			(
 				(function_declaration
-			    name= (identifier) @function-name)
+			    name: (identifier) @function-name)
 		    @function-body
 	    )
 			
 		  (
 		    (method_declaration
-          receiver= (_)? @receiver-struct-name
-          name= (_)? @method-name)
+          receiver: (_)? @receiver-struct-name
+          name: (_)? @method-name)
         @method-body
       )
             
 			(type_declaration
 			  (type_spec 
-			    name= (_) @type-name
-			    type= (struct_type 
+			    name: (_) @type-name
+			    type: (struct_type 
 			      (field_declaration_list 
 			        (field_declaration 
-			           name= (_)? @field-name
-			           type= (_)? @field-type
+			           name: (_)? @field-name
+			           type: (_)? @field-type
 			        )
 			      )
 			    )

@@ -1,7 +1,7 @@
 import Graph from "graphology";
 
 import { TextRange } from "../code-search/scope-graph/model/TextRange";
-import { LanguageConfig } from "../code-context/_base/LanguageConfig";
+import { LanguageProfile } from "../code-context/_base/LanguageProfile";
 import { NodeKind } from "../code-search/scope-graph/node/NodeKind";
 import { LocalDef } from "../code-search/scope-graph/node/LocalDef";
 import {
@@ -78,9 +78,9 @@ export class ScopeDebug {
 	defs: DefDebug[];
 	imports: ImportDebug[];
 	scopes: ScopeDebug[];
-	private language: LanguageConfig;
+	private language: LanguageProfile;
 
-	constructor(range: TextRange, language: LanguageConfig) {
+	constructor(range: TextRange, language: LanguageProfile) {
 		this.range = range;
 		this.defs = [];
 		this.imports = [];
@@ -92,7 +92,7 @@ export class ScopeDebug {
 		graph: Graph<NodeKind, EdgeKind>,
 		start: string,
 		src: string,
-		language: LanguageConfig,
+		language: LanguageProfile,
 	): ScopeDebug {
 		const scopeDebug = new ScopeDebug(graph.getNodeAttributes(start).range, language);
 		scopeDebug.build(graph, start, src);

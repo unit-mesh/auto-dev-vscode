@@ -5,7 +5,7 @@ import 'reflect-metadata';
 
 import { JavaRelevantLookup } from "../../../code-search/lookup/JavaRelevantLookup";
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
-import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
+import { JavaProfile } from "../../../code-context/java/JavaProfile";
 import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/scope-graph/ScopeGraph";
 import { JavaStructurerProvider } from "../../../code-context/java/JavaStructurerProvider";

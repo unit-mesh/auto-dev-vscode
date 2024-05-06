@@ -9,11 +9,11 @@ import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRe
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
-import { LanguageConfig } from "./LanguageConfig";
+import { LanguageProfile } from "./LanguageProfile";
 
 export abstract class BaseStructurerProvider implements StructurerProvider {
 	protected abstract langId: SupportedLanguage;
-	protected abstract config: LanguageConfig;
+	protected abstract config: LanguageProfile;
 	protected abstract parser: Parser | undefined;
 	protected abstract language: Parser.Language | undefined;
 

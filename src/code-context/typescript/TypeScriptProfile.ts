@@ -1,9 +1,12 @@
-import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
+import { injectable } from "inversify";
+
+import { MemoizedQuery, LanguageProfile } from "../_base/LanguageProfile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import tsscm from '../../code-search/schemas/indexes/typescript.scm?raw';
 
-export class TypeScriptLangConfig implements LanguageConfig {
+@injectable()
+export class TypeScriptProfile implements LanguageProfile {
 	languageIds = ["typescript", "typescriptreact"];
 	fileExtensions = ["ts", "tsx"];
 	grammar = (langService: TSLanguageService, langId: SupportedLanguage) => {
@@ -30,14 +33,14 @@ export class TypeScriptLangConfig implements LanguageConfig {
         (identifier) @name.definition.method) @definition.method
 
 			(generator_function_declaration
-				name= (identifier) @name.identifier.method
+				name: (identifier) @name.identifier.method
 			) @definition.method
 
       (class_declaration
-        name= (type_identifier)
-        body= (class_body
+        name: (type_identifier)
+        body: (class_body
           ((method_definition
-            name= (property_identifier) @name.definition.method
+            name: (property_identifier) @name.definition.method
           ) @definition.method) 
         )
       )
@@ -51,8 +54,8 @@ export class TypeScriptLangConfig implements LanguageConfig {
       (import_clause
         (named_imports
           (import_specifier
-            name= (identifier)? @source-name
-            alias= (identifier)? @as-name
+            name: (identifier)? @source-name
+            alias: (identifier)? @as-name
           )
         )
       )
@@ -60,35 +63,35 @@ export class TypeScriptLangConfig implements LanguageConfig {
     
     (import_statement
       (import_clause (identifier)?  @use-name)
-      source= (string)? @import-source
+      source: (string)? @import-source
     )
     
     (import_statement
-      source= (_)? @import-source
+      source: (_)? @import-source
     )
 
     (class_declaration
-      name= (type_identifier) @class-name
-      body= (class_body
+      name: (type_identifier) @class-name
+      body: (class_body
         (method_definition
-          name= (property_identifier) @class-method-name
-          parameters= (formal_parameters (required_parameter)? @parameter)
+          name: (property_identifier) @class-method-name
+          parameters: (formal_parameters (required_parameter)? @parameter)
         )
       )
     )
 		
 	  (interface_declaration
-	     name= (type_identifier) @interface-name
-	     body= (interface_body (
+	     name: (type_identifier) @interface-name
+	     body: (interface_body (
 	       method_signature
-	         name= (property_identifier) @interface.method.id
-	         parameters= (formal_parameters (required_parameter)? @parameter)
-	         return_type= (type_annotation)? @interface.returnType
+	         name: (property_identifier) @interface.method.id
+	         parameters: (formal_parameters (required_parameter)? @parameter)
+	         return_type: (type_annotation)? @interface.returnType
 	     ))
 	  )
 					
 		(program (function_declaration
-          name= (identifier) @function-name))
+          name: (identifier) @function-name))
 		`);
 	namespaces = [
 		[

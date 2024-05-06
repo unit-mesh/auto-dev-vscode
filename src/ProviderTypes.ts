@@ -1,3 +1,5 @@
+import { LanguageProfile } from "./code-context/_base/LanguageProfile";
+
 /**
  * The PROVIDER_TYPES object is a collection of string constants that represent different types of providers
  * in the system. Each property in the object corresponds to a specific provider type.
@@ -28,7 +30,12 @@ const PROVIDER_TYPES = {
 	/**
 	 * {@link ActionCreator#buildActions} is a provider to create VSCode action by Syntax node
 	 */
-	ActionCreator: "ActionCreator"
+	ActionCreator: "ActionCreator",
+
+	/**
+	 * {@link LanguageProfile} is a provider to get language specific information
+	 */
+	LanguageProfile: "LanguageProfile",
 };
 
 export { PROVIDER_TYPES };

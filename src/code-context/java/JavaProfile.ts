@@ -1,8 +1,12 @@
-import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
+import { injectable } from "inversify";
+import 'reflect-metadata';
+
+import { MemoizedQuery, LanguageProfile } from "../_base/LanguageProfile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import javascm from '../../code-search/schemas/indexes/java.scm?raw';
 
-export class JavaLangConfig implements LanguageConfig {
+@injectable()
+export class JavaProfile implements LanguageProfile {
 	languageIds = ['java'];
 	fileExtensions = ['java'];
 	grammar = (langService: TSLanguageService) => langService.getLanguage('java');
