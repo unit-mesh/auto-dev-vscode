@@ -1,4 +1,4 @@
-import Parser, { SyntaxNode } from "web-tree-sitter";
+import Parser, { Query, SyntaxNode } from "web-tree-sitter";
 
 import { BaseStructurerProvider } from "../_base/BaseStructurerProvider";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
@@ -7,6 +7,8 @@ import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { GoLangConfig } from "./GoLangConfig";
+import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
+import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 
 export class GoStructurerProvider extends BaseStructurerProvider {
 	protected langId: SupportedLanguage = "go";
@@ -18,12 +20,58 @@ export class GoStructurerProvider extends BaseStructurerProvider {
 		super();
 	}
 
+	async init(langService: TSLanguageService): Promise<Query | undefined> {
+		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
+		const _parser = langService.getParser() ?? new Parser();
+		const language = await tsConfig.grammar(langService, this.langId);
+		_parser.setLanguage(language);
+		this.parser = _parser;
+		this.language = language;
+		return language?.query(tsConfig.structureQuery.queryStr);
+	}
+
 	isApplicable(lang: string) {
 		return lang === this.langId;
 	}
 
-	parseFile(code: string, path: string): Promise<CodeFile | undefined> {
-		throw new Error("Method not implemented.");
+	parseFile(code: string, filepath: string): Promise<CodeFile | undefined> {
+		const tree = this.parser!!.parse(code);
+		const query = this.config.structureQuery.query(this.language!!);
+		const captures = query!!.captures(tree.rootNode);
+
+		let filename = filepath.split('/')[filepath.split('/').length - 1];
+		const codeFile: CodeFile = {
+			name: filename,
+			filepath: filepath,
+			language: this.langId,
+			functions: [],
+			path: "",
+			package: '',
+			imports: [],
+			classes: []
+		};
+
+		// method-name, method-body and function-name, function-body
+		for (const element of captures) {
+			const capture: Parser.QueryCapture = element!!;
+
+			switch (capture.name) {
+				case 'function-name':
+					const functionObj = this.createFunction(capture.node, capture.node.text);
+					codeFile.functions!!.push(functionObj);
+					break;
+				case 'function-body':
+					break;
+				case 'method-name':
+					const methodObj = this.createFunction(capture.node, capture.node.text);
+					codeFile.classes[0].methods.push(methodObj);
+					break;
+				case 'method-body':
+					break;
+			}
+		}
+
+		return Promise.resolve(codeFile);
 	}
 
 	/**
