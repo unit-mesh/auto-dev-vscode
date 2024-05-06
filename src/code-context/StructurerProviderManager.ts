@@ -1,5 +1,5 @@
 import { SupportedLanguage } from "../editor/language/SupportedLanguage";
-import { StructurerProvider } from "./_base/BaseStructurer";
+import { StructurerProvider } from "./_base/StructurerProvider";
 import { providerContainer } from "../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../ProviderTypes";
 

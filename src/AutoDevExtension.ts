@@ -5,7 +5,7 @@ import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
 import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { StructurerProviderManager } from "./code-context/StructurerProviderManager";
-import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
+import { RelevantCodeProviderManager } from "./code-context/RelevantCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 import { AutoDevWebviewProtocol } from "./editor/webview/AutoDevWebviewProtocol";
@@ -18,7 +18,7 @@ export class AutoDevExtension {
 	documentManager: RecentlyDocumentManager;
 	extensionContext: vscode.ExtensionContext;
 	structureProvider: StructurerProviderManager | undefined;
-	relatedManager: RelatedCodeProviderManager;
+	relatedManager: RelevantCodeProviderManager;
 	fileCacheManager: CodeFileCacheManager;
 	indexer: CodebaseIndexer;
 	private webviewProtocol: AutoDevWebviewProtocol;
@@ -28,7 +28,7 @@ export class AutoDevExtension {
 		action: VSCodeAction,
 		documentManager: RecentlyDocumentManager,
 		diffManager: DiffManager,
-		relatedManager: RelatedCodeProviderManager,
+		relatedManager: RelevantCodeProviderManager,
 		fileCacheManager: CodeFileCacheManager,
 		context: vscode.ExtensionContext) {
 		this.sidebar = sidebar;

@@ -17,7 +17,7 @@ import {
 	registerWebViewProvider
 } from "./editor/providers/ProviderUtils";
 import { channel } from "./channel";
-import { RelatedCodeProviderManager } from "./code-context/RelatedCodeProviderManager";
+import { RelevantCodeProviderManager } from "./code-context/RelevantCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolSync } from "./toolchain-context/buildtool/BuildToolSync";
@@ -33,7 +33,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const documentManager = new RecentlyDocumentManager();
 	const diffManager = new DiffManager();
 	const fileCacheManager = new CodeFileCacheManager();
-	const relatedManager = new RelatedCodeProviderManager();
+	const relatedManager = new RelevantCodeProviderManager();
 	const extension = new AutoDevExtension(
 		sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
 	);

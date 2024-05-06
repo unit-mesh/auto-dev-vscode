@@ -11,7 +11,7 @@ import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "../../../prompt-manage/ActionType";
 import { CommentedUmlPresenter } from "../../codemodel/presenter/CommentedUmlPresenter";
-import { RelatedCodeProviderManager } from "../../../code-context/RelatedCodeProviderManager";
+import { RelevantCodeProviderManager } from "../../../code-context/RelevantCodeProviderManager";
 import { documentToTreeSitterFile } from "../../../code-context/ast/TreeSitterFileUtil";
 import { DefaultLanguageService } from "../../language/service/DefaultLanguageService";
 import { CodeFile } from "../../codemodel/CodeFile";
@@ -107,10 +107,10 @@ export class AutoTestActionExecutor implements ActionExecutor {
 	}
 
 	private async relatedClassesContext(file: TreeSitterFile) {
-		let relatedProvider = RelatedCodeProviderManager.getInstance().provider(this.language, new DefaultLanguageService());
+		let relatedProvider = RelevantCodeProviderManager.getInstance().provider(this.language, new DefaultLanguageService());
 		let relatedFiles: CodeFile[] = [];
 		if (relatedProvider) {
-			relatedFiles = await relatedProvider.inputAndOutput(file, this.namedElement);
+			relatedFiles = await relatedProvider.getMethodFanInAndFanOut(file, this.namedElement);
 		}
 
 		let umlPresenter = new CommentedUmlPresenter();

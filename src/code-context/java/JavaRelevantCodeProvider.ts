@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import vscode from "vscode";
 
-import { RelatedCodeProvider } from "../_base/RelatedCodeProvider";
+import { RelevantCodeProvider } from "../_base/RelevantCodeProvider";
 import { CodeFile } from "../../editor/codemodel/CodeFile";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { JavaStructurerProvider } from "./JavaStructurerProvider";
@@ -12,7 +12,7 @@ import { TreeSitterFile } from "../ast/TreeSitterFile";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 
 @injectable()
-export class JavaRelatedProvider implements RelatedCodeProvider {
+export class JavaRelevantCodeProvider implements RelevantCodeProvider {
 	name = "JavaRelatedProvider";
 	language = "java";
 	languageService: TSLanguageService | undefined;
@@ -21,7 +21,7 @@ export class JavaRelatedProvider implements RelatedCodeProvider {
 		this.languageService = defaultLanguageService;
 	}
 
-	async inputAndOutput(file: TreeSitterFile, method: NamedElement): Promise<CodeFile[]> {
+	async getMethodFanInAndFanOut(file: TreeSitterFile, method: NamedElement): Promise<CodeFile[]> {
 		let graph = await file.scopeGraph();
 		return await this.lookupRelevantClass(method, file, graph);
 	}

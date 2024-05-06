@@ -1,14 +1,9 @@
 import { SyntaxNode } from "web-tree-sitter";
 
-import { CodeFile, CodeFunction, CodeVariable } from "../../editor/codemodel/CodeFile";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
+import { CodeFile, CodeFunction, CodeVariable } from "../../editor/codemodel/CodeFile";
 import { PositionElement } from "../../editor/codemodel/PositionElement";
-
-export interface StructurerProvider {
-	isApplicable(lang: SupportedLanguage): any;
-
-	parseFile(code: string, path: string): Promise<CodeFile | undefined>
-}
+import { StructurerProvider } from "./StructurerProvider";
 
 export abstract class BaseStructurerProvider implements StructurerProvider {
 	abstract isApplicable(lang: SupportedLanguage): boolean;

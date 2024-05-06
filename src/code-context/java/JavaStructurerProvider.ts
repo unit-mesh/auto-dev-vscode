@@ -1,7 +1,6 @@
 import Parser, { Query, SyntaxNode } from "web-tree-sitter";
 import { injectable } from "inversify";
 
-import { BaseStructurerProvider, } from "../_base/BaseStructurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeFile";
@@ -11,6 +10,7 @@ import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRefs";
+import { BaseStructurerProvider } from "../_base/BaseStructurerProvider";
 
 @injectable()
 export class JavaStructurerProvider extends BaseStructurerProvider {

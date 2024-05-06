@@ -162,7 +162,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		let relatedProvider = extension.relatedManager.provider(document.languageId, langService);
 		let file = await documentToTreeSitterFile(document);
 
-		let outputs = await relatedProvider?.inputAndOutput(file, range);
+		let outputs = await relatedProvider?.getMethodFanInAndFanOut(file, range);
 		if (outputs !== undefined) {
 			outputs.map((output) => {
 				channel.append(`current outputs: ${JSON.stringify(output)}\n`);

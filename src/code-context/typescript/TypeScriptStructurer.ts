@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 
 import { CodeFile } from "../../editor/codemodel/CodeFile";
-import { StructurerProvider } from "../_base/BaseStructurer";
+import { StructurerProvider } from "../_base/StructurerProvider";
 
 @injectable()
 export class TypeScriptStructurer implements StructurerProvider {

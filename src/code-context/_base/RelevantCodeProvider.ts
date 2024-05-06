@@ -10,12 +10,13 @@ import { TSLanguageService } from "../../editor/language/service/TSLanguageServi
  * An input structure is a code file that is used as input to the symbol, while an output structure is a code
  * file that receives output from the symbol.
  *
- * @interface RelatedCodeProvider
+ * @interface RelevantCodeProvider
  */
-export interface RelatedCodeProvider {
+export interface RelevantCodeProvider {
 	language: SupportedLanguage;
 
 	setupLanguage(defaultLanguageService: TSLanguageService): void;
+
 	/**
 	 * Returns the fan-in and fan-out of the given method.
 	 * For example:
@@ -35,5 +36,5 @@ export interface RelatedCodeProvider {
 	 * @returns will be CodeMethod, since `getMethodById` does not have any input parameters,
 	 * and the return type is `CodeMethod`.
 	 */
-	inputAndOutput(file: TreeSitterFile, method: NamedElement): Promise<CodeFile[]>;
+	getMethodFanInAndFanOut(file: TreeSitterFile, method: NamedElement): Promise<CodeFile[]>;
 }

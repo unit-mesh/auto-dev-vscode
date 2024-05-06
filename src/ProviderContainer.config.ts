@@ -6,8 +6,8 @@ import { SpringContextProvider } from "./toolchain-context/framework/jvm/SpringC
 import { JavaSdkVersionProvider } from "./toolchain-context/sdk/JavaSdkVersionProvider";
 import { JavaScriptContextProvider } from "./toolchain-context/framework/javascript/JavaScriptContextProvider";
 
-import { RelatedCodeProvider } from "./code-context/_base/RelatedCodeProvider";
-import { JavaRelatedProvider } from "./code-context/java/JavaRelatedProvider";
+import { RelevantCodeProvider } from "./code-context/_base/RelevantCodeProvider";
+import { JavaRelevantCodeProvider } from "./code-context/java/JavaRelevantCodeProvider";
 import { BuildToolProvider } from "./toolchain-context/buildtool/_base/BuildToolProvider";
 import { NpmBuildToolProvider } from "./toolchain-context/buildtool/NpmBuildToolProvider";
 import { GradleBuildToolProvider } from "./toolchain-context/buildtool/GradleBuildToolProvider";
@@ -15,7 +15,7 @@ import { GradleBuildToolProvider } from "./toolchain-context/buildtool/GradleBui
 import { JavaTestGenProvider } from "./code-context/java/JavaTestGenProvider";
 import { TestGenProvider } from "./code-context/_base/test/TestGenProvider";
 import { TypeScriptTestGenProvider } from "./code-context/typescript/TypeScriptTestGenProvider";
-import { StructurerProvider } from "./code-context/_base/BaseStructurer";
+import { StructurerProvider } from "./code-context/_base/StructurerProvider";
 import { JavaStructurerProvider } from "./code-context/java/JavaStructurerProvider";
 import { TypeScriptStructurer } from "./code-context/typescript/TypeScriptStructurer";
 import { ActionCreator } from "./editor/action/_base/ActionCreator";
@@ -42,7 +42,7 @@ providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(GenApiDat
 // Java
 providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(SpringContextProvider);
 providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(JavaSdkVersionProvider);
-providerContainer.bind<RelatedCodeProvider>(PROVIDER_TYPES.RelatedCodeProvider).to(JavaRelatedProvider);
+providerContainer.bind<RelevantCodeProvider>(PROVIDER_TYPES.RelevantCodeProvider).to(JavaRelevantCodeProvider);
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(JavaTestGenProvider);
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GradleBuildToolProvider);
 providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(JavaStructurerProvider);
