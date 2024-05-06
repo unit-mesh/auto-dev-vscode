@@ -1,4 +1,5 @@
 import { injectable } from "inversify";
+
 import { PackageDependencies } from "./_base/Dependence";
 import { GoModParser, goVersionParser } from "./go/GoVersionParser";
 import { BaseBuildToolProvider } from "./_base/BaseBuildToolProvider";

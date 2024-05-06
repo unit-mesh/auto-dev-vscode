@@ -22,7 +22,7 @@ import { channel } from "./channel";
 import { RelevantCodeProviderManager } from "./code-context/RelevantCodeProviderManager";
 import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
-import { BuildToolSync } from "./toolchain-context/buildtool/BuildToolSync";
+import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 
 (globalThis as any).self = globalThis;
@@ -47,7 +47,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			registerQuickFixProvider(extension);
 			registerCommands(extension);
 
-			await new BuildToolSync().startWatch();
+			await new BuildToolObserver().startWatch();
 		}
 	);
 

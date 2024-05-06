@@ -1,6 +1,6 @@
 import { GradleBuildToolProvider } from "./GradleBuildToolProvider";
 
-export class BuildToolSync {
+export class BuildToolObserver {
 	async startWatch() {
 		try {
 			if (await GradleBuildToolProvider.instance().isApplicable()) {

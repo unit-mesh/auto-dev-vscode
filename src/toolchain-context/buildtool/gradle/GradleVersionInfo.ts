@@ -83,22 +83,3 @@ export function parseGradleVersionInfo(info: string): GradleVersionInfo {
 
 	return gradleInfo;
 }
-
-//
-// const gradleInfoString = `
-// // ------------------------------------------------------------
-// // Gradle 8.3
-// // ------------------------------------------------------------
-//
-// // Build time:   2023-08-17 07:06:47 UTC
-// // Revision:     8afbf24b469158b714b36e84c6f4d4976c86fcd5
-//
-// // Kotlin:       1.9.0
-// // Groovy:       3.0.17
-// // Ant:          Apache Ant(TM) version 1.10.13 compiled on January 4 2023
-// // JVM:          21.0.2 (Homebrew 21.0.2)
-// // OS:           Mac OS X 14.4.1 x86_64
-// `;
-//
-// const parsedInfo = parseGradleInfo(gradleInfoString);
-// console.log(parsedInfo);

@@ -5,8 +5,7 @@ import { PROVIDER_TYPES } from "../ProviderTypes";
 export class ToolchainContextManager {
 	private static instance_: ToolchainContextManager;
 
-	private constructor() {
-	}
+	private constructor() {}
 
 	static instance(): ToolchainContextManager {
 		if (!ToolchainContextManager.instance_) {

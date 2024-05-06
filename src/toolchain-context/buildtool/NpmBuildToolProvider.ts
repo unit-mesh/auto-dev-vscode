@@ -1,16 +1,17 @@
+import path from "path";
+import vscode from "vscode";
+import { injectable } from "inversify";
+import fs from "fs";
+
 import { BuildToolProvider } from "./_base/BuildToolProvider";
 import { DEP_SCOPE, DependencyEntry, PackageDependencies } from "./_base/Dependence";
 import { PackageManger } from "./_base/PackageManger";
-import path from "path";
-import vscode from "vscode";
 import {
 	JsDependenciesSnapshot,
 	PackageJsonDependency,
 	PackageJsonDependencyEntry
 } from "../framework/javascript/JsDependenciesSnapshot";
 import { getExtensionContext } from "../../context";
-import { injectable } from "inversify";
-import fs from "fs";
 import { CreateToolchainContext } from "../ToolchainContextProvider";
 import { isJavaScriptEnv } from "../framework/javascript/JavaScriptContextProvider";
 

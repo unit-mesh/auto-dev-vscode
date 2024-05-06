@@ -54,12 +54,14 @@ export class GoModParser implements PackageVersionParser {
 			}
 		});
 
-		return [{
-			name: moduleName,
-			version: goVersion,
-			path: this.moduleTag,
-			packageManager: PackageManger.GoMod,
-			dependencies: deps
-		}] as PackageDependencies[];
+		return [
+			{
+				name: moduleName,
+				version: goVersion,
+				path: this.moduleTag,
+				packageManager: PackageManger.GoMod,
+				dependencies: deps
+			}
+		] as PackageDependencies[];
 	}
 }
