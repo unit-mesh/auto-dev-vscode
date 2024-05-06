@@ -2,33 +2,33 @@ import { MemoizedQuery, LanguageConfig } from "../_base/LanguageConfig";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import javascm from '../../code-search/schemas/indexes/java.scm?raw';
 
-export const JavaLangConfig: LanguageConfig = {
-	languageIds: ['java'],
-	fileExtensions: ['java'],
-	grammar: (langService: TSLanguageService) => langService.getLanguage('java'),
+export class JavaLangConfig implements LanguageConfig {
+	languageIds = ['java'];
+	fileExtensions = ['java'];
+	grammar = (langService: TSLanguageService) => langService.getLanguage('java');
 	// todo: load from `.scm` file
-	scopeQuery: new MemoizedQuery(javascm),
-	hoverableQuery: new MemoizedQuery(`
+	scopeQuery = new MemoizedQuery(javascm);
+	hoverableQuery = new MemoizedQuery(`
       [(identifier)
        (type_identifier)] @hoverable
-    `),
-	methodQuery: new MemoizedQuery(`
+    `);
+	methodQuery = new MemoizedQuery(`
       (method_declaration
         name: (identifier) @name.definition.method) @definition.method
-    `),
-	classQuery: new MemoizedQuery(`
+    `);
+	classQuery = new MemoizedQuery(`
       (class_declaration
         name: (identifier) @name.definition.class) @definition.class
-    `),
-	blockCommentQuery: new MemoizedQuery(`
+    `);
+	blockCommentQuery = new MemoizedQuery(`
 		((block_comment) @block_comment
 			(#match? @block_comment "^\\\\/\\\\*\\\\*")) @docComment`
-	),
-	packageQuery: new MemoizedQuery(`
+	);
+	packageQuery = new MemoizedQuery(`
 		(package_declaration
 			(scoped_identifier) @package-name)
-	`),
-	structureQuery: new MemoizedQuery(`
+	`);
+	structureQuery = new MemoizedQuery(`
 			(package_declaration
 			  (scoped_identifier) @package-name)
 			
@@ -61,8 +61,8 @@ export const JavaLangConfig: LanguageConfig = {
             ) 
 		    )
 			)
-  `),
-	methodIOQuery: new MemoizedQuery(`
+  `);
+	methodIOQuery = new MemoizedQuery(`
 		(method_declaration
         type: (_) @method-returnType
         name: (identifier) @method-name
@@ -73,17 +73,17 @@ export const JavaLangConfig: LanguageConfig = {
           )? 
           @method-params)
         body: (block) @method-body
-      )`),
+      )`);
 
-	fieldQuery: new MemoizedQuery(`
+	fieldQuery = new MemoizedQuery(`
 		(field_declaration
 			(type_identifier) @field-type
 			(variable_declarator
 				(identifier) @field-name
 			)
 		) @field-declaration
-	`),
-	namespaces: [
+	`);
+	namespaces = [
 		[
 			// variables
 			'local',
@@ -102,9 +102,9 @@ export const JavaLangConfig: LanguageConfig = {
 			// misc.
 			'label',
 		]
-	],
-	autoSelectInsideParent: [],
-	builtInTypes: [
+	];
+	autoSelectInsideParent = [];
+	builtInTypes = [
 		"boolean", "byte", "char", "short", "int", "long", "float", "double", "void",
 		"Boolean", "Byte", "Character", "Short", "Integer", "Long", "Float", "Double", "String",
 		"Array", "List", "Map", "Set", "Collection", "Iterable", "Iterator", "Stream", "Optional",

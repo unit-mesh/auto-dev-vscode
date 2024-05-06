@@ -1,3 +1,5 @@
+import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
+
 const Parser = require("web-tree-sitter");
 import 'reflect-metadata';
 
@@ -13,14 +15,14 @@ import { functionToRange } from "../../../editor/codemodel/CodeElement";
 describe('RelevantClass for Java', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = JavaLangConfig;
+	let langConfig = TSLanguageUtil.for("java")!!;
 
 	beforeEach(async () => {
 		await Parser.init();
 		parser = new Parser();
 		const languageService = new TestLanguageService(parser);
 
-		language = await JavaLangConfig.grammar(languageService, "java")!!;
+		language = await langConfig.grammar(languageService, "java")!!;
 		parser.setLanguage(language);
 		parser.setLogger(null);
 	});

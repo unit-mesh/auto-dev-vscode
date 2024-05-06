@@ -1,4 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
+import { TSLanguageUtil } from "../../code-context/ast/TSLanguageUtil";
+
 const Parser = require("web-tree-sitter");
 
 import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
@@ -14,7 +16,7 @@ describe('CodeChunk for Java', () => {
 		parser = new Parser();
 
 		const languageService = new TestLanguageService(parser);
-		const language = await JavaLangConfig.grammar(languageService, "java")!!;
+		const language = await TSLanguageUtil.for("java")!!.grammar(languageService, "java")!!;
 		parser.setLanguage(language);
 	});
 

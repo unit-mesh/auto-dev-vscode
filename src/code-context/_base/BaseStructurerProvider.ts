@@ -22,7 +22,7 @@ export abstract class BaseStructurerProvider implements StructurerProvider {
 	abstract parseFile(code: string, path: string): Promise<CodeFile | undefined>;
 
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
-		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
+		const tsConfig = TSLanguageUtil.for(this.langId)!!;
 		const _parser = langService.getParser() ?? new Parser();
 		const language = await tsConfig.grammar(langService, this.langId);
 		_parser.setLanguage(language);

@@ -4,13 +4,13 @@ import { TypeScriptLangConfig } from "../typescript/TypeScriptLangConfig";
 import { GoLangConfig } from "../go/GoLangConfig";
 
 export const ALL_LANGUAGES: LanguageConfig[] = [
-  JavaLangConfig,
+  new JavaLangConfig(),
   GoLangConfig,
   TypeScriptLangConfig,
 ];
 
 export class TSLanguageUtil {
-  static fromId(langId: string): LanguageConfig | undefined {
+  static for(langId: string): LanguageConfig | undefined {
     return ALL_LANGUAGES.find((target) => {
       return target.languageIds.some(
         (id) => id.toLowerCase() === langId.toLowerCase()

@@ -61,7 +61,7 @@ export class TreeSitterFile {
 			return Promise.reject(TreeSitterFileError.fileTooLarge);
 		}
 
-		const tsConfig = TSLanguageUtil.fromId(langId);
+		const tsConfig = TSLanguageUtil.for(langId);
 		if (tsConfig === undefined) {
 			return Promise.reject(TreeSitterFileError.unsupportedLanguage);
 		}

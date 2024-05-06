@@ -1,10 +1,11 @@
+import { TSLanguageUtil } from "../../code-context/ast/TSLanguageUtil";
+
 const Parser = require("web-tree-sitter");
 import { TfIdf } from "../../code-search/search/tfidf/Tfidf";
 
 import { TfIdfSemanticChunkSearch } from '../../code-search/search/TfIdfSemanticChunkSearch';
 import { TermSplitter } from "../../code-search/search/tfidf/TermSplitter";
 import { TestLanguageService } from "../TestLanguageService";
-import { JavaLangConfig } from "../../code-context/java/JavaLangConfig";
 import { CollapsedCodeChunker } from "../../code-search/chunk/_base/CollapsedCodeChunker";
 import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
 
@@ -67,7 +68,7 @@ describe('TfIdfWithSemanticChunkSearch', () => {
             parser = new Parser();
 
             const languageService = new TestLanguageService(parser);
-            const language = await JavaLangConfig.grammar(languageService, "java")!!;
+            const language = await TSLanguageUtil.for("java")!!.grammar(languageService, "java")!!;
             parser.setLanguage(language);
         });
 
