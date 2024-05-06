@@ -2,7 +2,6 @@ import vscode, { l10n } from "vscode";
 import { injectable } from "inversify";
 
 import { TestGenProvider } from "../_base/test/TestGenProvider";
-import { CodeFile } from "../../editor/codemodel/CodeFile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { GradleBuildToolProvider } from "../../toolchain-context/buildtool/GradleBuildToolProvider";
@@ -11,12 +10,9 @@ import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
-import { JavaStructurerProvider } from "./JavaStructurerProvider";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
-import { TextRange } from "../../code-search/scope-graph/model/TextRange";
-import { JavaRelevantLookup } from "../../code-search/lookup/JavaRelevantLookup";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
@@ -86,39 +82,6 @@ export class JavaTestGenProvider implements TestGenProvider {
 		const targetUri = vscode.Uri.file(targetPath);
 		await vscode.workspace.fs.writeFile(targetUri, new Uint8Array());
 		return Promise.resolve(testContext);
-	}
-
-	async lookupRelevantClass(element: NamedElement): Promise<CodeFile[]> {
-		let structurer = new JavaStructurerProvider();
-		await structurer.init(this.languageService!!);
-
-		if (this.tsfile === undefined || this.graph === undefined) {
-			return [];
-		}
-
-		const textRange: TextRange = element.blockRange.toTextRange();
-		const source = this.tsfile.sourcecode;
-		let ios: string[] = await structurer.extractMethodIOImports(this.graph, this.tsfile.tree.rootNode, textRange, source) ?? [];
-
-		let lookup = new JavaRelevantLookup(this.tsfile);
-		let paths = lookup.relevantImportToFilePath(ios);
-
-		// read file by path and structurer to parse it to uml
-		async function parseCodeFile(path: string): Promise<CodeFile | undefined> {
-			const uri = vscode.Uri.file(path);
-			const document = await vscode.workspace.openTextDocument(uri);
-			return await structurer.parseFile(document.getText(), path);
-		}
-
-		let codeFiles: CodeFile[] = [];
-		for (const path of paths) {
-			const codeFile = await parseCodeFile(path);
-			if (codeFile !== undefined) {
-				codeFiles.push(codeFile);
-			}
-		}
-
-		return codeFiles;
 	}
 
 	async collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {

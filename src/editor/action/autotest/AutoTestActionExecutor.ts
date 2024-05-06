@@ -11,6 +11,11 @@ import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "../../../prompt-manage/ActionType";
 import { CommentedUmlPresenter } from "../../codemodel/presenter/CommentedUmlPresenter";
+import { RelatedCodeProviderManager } from "../../../code-context/RelatedCodeProviderManager";
+import { documentToTreeSitterFile } from "../../../code-context/ast/TreeSitterFileUtil";
+import { DefaultLanguageService } from "../../language/service/DefaultLanguageService";
+import { CodeFile } from "../../codemodel/CodeFile";
+import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 
 export class AutoTestActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoTest;
@@ -29,23 +34,22 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 	async execute(): Promise<void> {
 		let testGen = TestGenProviderManager.getInstance();
-		let provider = await testGen.provide(this.language);
+		let testgen = await testGen.provide(this.language);
 
-		if (provider?.isApplicable(this.language) !== true) {
+		if (testgen?.isApplicable(this.language) !== true) {
 			return;
 		}
 
 		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
 
-		const testContext = await provider.setupTestFile(this.document, this.namedElement);
-		let codeFiles = await provider.lookupRelevantClass(this.namedElement);
+		const testContext = await testgen.setupTestFile(this.document, this.namedElement);
 
-		let umlPresenter = new CommentedUmlPresenter();
-		testContext.relatedClasses = codeFiles.map((codeStructure) => {
-			return umlPresenter.present(codeStructure);
-		}).join("\n");
+		let file = await documentToTreeSitterFile(this.document);
+		testContext.relatedClasses = await this.relatedClassesContext(file);
 
 		const startTime = new Date().getTime();
+		console.log("startTime: ", startTime);
+
 		const creationContext: CreateToolchainContext = {
 			action: "AutoTestAction",
 			filename: this.document.fileName,
@@ -56,7 +60,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		// TODO: spike better way to improve performance
 		let toolchainContextItems = await PromptManager.getInstance().collectToolchain(creationContext);
-		let languageContextItems = await provider.collect(testContext);
+		let languageContextItems = await testgen.collect(testContext);
 
 		const toolchainItems = toolchainContextItems.concat(languageContextItems);
 		if (toolchainItems.length > 0) {
@@ -66,6 +70,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		// end time
 		const endTime = new Date().getTime();
+		console.log("endTime: ", startTime);
 		console.info(`Time taken to collect context: ${endTime - startTime}ms`);
 
 		let content = await PromptManager.getInstance().templateToPrompt(ActionType.AutoTest, testContext);
@@ -99,5 +104,18 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		// write to output file
 		const outputFile = testContext.targetPath;
 		await vscode.workspace.fs.writeFile(vscode.Uri.file(outputFile!!), Buffer.from(output));
+	}
+
+	private async relatedClassesContext(file: TreeSitterFile) {
+		let relatedProvider = RelatedCodeProviderManager.getInstance().provider(this.language, new DefaultLanguageService());
+		let relatedFiles: CodeFile[] = [];
+		if (relatedProvider) {
+			relatedFiles = await relatedProvider.inputAndOutput(file, this.namedElement);
+		}
+
+		let umlPresenter = new CommentedUmlPresenter();
+		return relatedFiles.map((codeStructure) => {
+			return umlPresenter.present(codeStructure);
+		}).join("\n");
 	}
 }

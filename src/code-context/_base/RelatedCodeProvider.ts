@@ -1,5 +1,8 @@
-import { CodeFile, CodeFunction, CodeStructure } from "../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../editor/codemodel/CodeFile";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
+import { TreeSitterFile } from "../ast/TreeSitterFile";
+import { NamedElement } from "../../editor/ast/NamedElement";
+import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 
 /**
  * The `RelatedProvider` class provides methods for retrieving input and output structures related to a given symbol.
@@ -11,6 +14,8 @@ import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
  */
 export interface RelatedCodeProvider {
 	language: SupportedLanguage;
+
+	setupLanguage(defaultLanguageService: TSLanguageService): void;
 	/**
 	 * Returns the fan-in and fan-out of the given method.
 	 * For example:
@@ -30,5 +35,5 @@ export interface RelatedCodeProvider {
 	 * @returns will be CodeMethod, since `getMethodById` does not have any input parameters,
 	 * and the return type is `CodeMethod`.
 	 */
-	inputAndOutput(file: CodeFile, method: CodeFunction): Promise<CodeStructure[]>;
+	inputAndOutput(file: TreeSitterFile, method: NamedElement): Promise<CodeFile[]>;
 }

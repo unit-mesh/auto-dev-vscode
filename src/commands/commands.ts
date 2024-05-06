@@ -9,9 +9,10 @@ import { AutoTestActionExecutor } from "../editor/action/autotest/AutoTestAction
 import { NamedElementBuilder } from "../editor/ast/NamedElementBuilder";
 import { QuickActionService } from "../editor/editor-api/QuickAction";
 import { SystemActionService } from "../editor/action/setting/SystemActionService";
-import { toNamedElementBuilder } from "../code-context/ast/TreeSitterFileUtil";
+import { documentToTreeSitterFile, toNamedElementBuilder } from "../code-context/ast/TreeSitterFileUtil";
 import { AutoDevCommandOperation } from "./autoDevCommandOperation";
 import { AutoDevCommand } from "./autoDevCommand";
+import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
@@ -157,18 +158,15 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 			return;
 		}
 
-		const file = await structurer.parseFile(document.getText(), document.uri.path);
-		if (file !== undefined) {
-			const output = new PlantUMLPresenter().present(file);
+		let langService = new DefaultLanguageService();
+		let relatedProvider = extension.relatedManager.provider(document.languageId, langService);
+		let file = await documentToTreeSitterFile(document);
 
-			let relatedProvider = extension.relatedManager.getRelatedProvider(document.languageId);
-
-			let outputs = await relatedProvider?.inputAndOutput(file, file.classes[0].methods[0]);
-			if (outputs !== undefined) {
-				outputs.map((output) => {
-					channel.append(`current outputs: ${JSON.stringify(output)}\n`);
-				});
-			}
+		let outputs = await relatedProvider?.inputAndOutput(file, range);
+		if (outputs !== undefined) {
+			outputs.map((output) => {
+				channel.append(`current outputs: ${JSON.stringify(output)}\n`);
+			});
 		}
 	}
 });
