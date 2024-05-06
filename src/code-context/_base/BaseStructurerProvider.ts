@@ -10,7 +10,9 @@ import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { LanguageProfile } from "./LanguageProfile";
+import { injectable } from "inversify";
 
+@injectable()
 export abstract class BaseStructurerProvider implements StructurerProvider {
 	protected abstract langId: SupportedLanguage;
 	protected abstract config: LanguageProfile;

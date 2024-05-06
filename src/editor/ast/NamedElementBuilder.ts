@@ -125,8 +125,8 @@ export class NamedElementBuilder {
 
 			return (
 				matches?.flatMap((match) => {
-					const idNode = match.captures[1].node;
 					let blockNode = match.captures[0].node;
+					const idNode = match.captures[1].node;
 
 					let insideParent = this.langConfig.autoSelectInsideParent;
 					if (insideParent.length > 0) {

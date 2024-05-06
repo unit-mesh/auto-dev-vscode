@@ -81,9 +81,20 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		let llm = LlmProvider.instance();
 		let doc: string = "";
 
+		// navigate to test file
+		await vscode.window.showTextDocument(vscode.Uri.file(testContext.targetPath!!));
+
 		try {
 			for await (const chunk of llm._streamChat([msg])) {
 				doc += chunk.content;
+
+				const output = MarkdownCodeBlock.parse(doc).text;
+
+				if (output) {
+					// write to output file
+					const outputFile = testContext.targetPath;
+					await vscode.workspace.fs.writeFile(vscode.Uri.file(outputFile!!), Buffer.from(output));
+				}
 			}
 		} catch (e) {
 			console.error(e);
@@ -91,15 +102,9 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			return;
 		}
 
-		console.info(`result: ${doc}`);
-
 		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
+
 		const output = MarkdownCodeBlock.parse(doc).text;
-
 		console.info(`FencedCodeBlock parsed output: ${output}`);
-
-		// write to output file
-		const outputFile = testContext.targetPath;
-		await vscode.workspace.fs.writeFile(vscode.Uri.file(outputFile!!), Buffer.from(output));
 	}
 }
