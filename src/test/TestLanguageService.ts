@@ -7,6 +7,9 @@ const Parser = require("web-tree-sitter");
 import { TSLanguageService } from "../editor/language/service/TSLanguageService";
 import { ROOT_DIR } from "./TestUtil";
 
+/**
+ * TestOnly: Language service for tree-sitter languages, used in test code.
+ */
 export class TestLanguageService extends TSLanguageService {
 	_parser: any;
 

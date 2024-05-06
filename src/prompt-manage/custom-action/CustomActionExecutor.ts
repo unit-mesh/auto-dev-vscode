@@ -10,7 +10,7 @@ import { AutoDevExtension } from "../../AutoDevExtension";
 
 export class CustomActionExecutor {
 	public static async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt, extension: AutoDevExtension) {
-		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
 		const compiler = new TemplateRender();
 		const messages = prompt.messages.map((msg) => {
 			return {
@@ -30,12 +30,12 @@ export class CustomActionExecutor {
 			}
 		} catch (e) {
 			console.error(e);
-			AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Error);
+			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
 			return Promise.reject(e);
 		}
 		console.info(`result: ${output}`);
 
-		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
 
 		await CustomActionExecutor.handleOutput(prompt, output, extension);
 	}

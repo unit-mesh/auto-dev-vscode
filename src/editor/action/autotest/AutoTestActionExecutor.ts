@@ -40,7 +40,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			return;
 		}
 
-		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
 
 		const testContext = await testgen.setupTestFile(this.document, this.namedElement);
 
@@ -90,13 +90,13 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			}
 		} catch (e) {
 			console.error(e);
-			AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Error);
+			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
 			return;
 		}
 
 		console.info(`result: ${doc}`);
 
-		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
 		const output = MarkdownCodeBlock.parse(doc).text;
 
 		console.info(`FencedCodeBlock parsed output: ${output}`);

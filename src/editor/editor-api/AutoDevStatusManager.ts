@@ -41,7 +41,7 @@ export class AutoDevStatusManager {
 	 * @param status - The status of the application, represented as a value from the `AutoDevStatus` enumeration.
 	 * @public
 	 */
-	public setStatusBar(status: AutoDevStatus) {
+	public setStatus(status: AutoDevStatus) {
 		if (this.statusBar) {
 			switch (status) {
 				case AutoDevStatus.WAITING:

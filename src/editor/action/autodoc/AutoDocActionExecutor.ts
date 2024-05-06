@@ -47,7 +47,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			templateContext.originalComments.push(this.document.getText(this.range.commentRange));
 		}
 
-		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.InProgress);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
 
 		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
 		if (this.range.commentRange) {
@@ -85,12 +85,12 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			}
 		} catch (e) {
 			console.error(e);
-			AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Error);
+			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
 			return;
 		}
 		console.info(`result: ${doc}`);
 
-		AutoDevStatusManager.instance.setStatusBar(AutoDevStatus.Done);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
 		const finalText = MarkdownCodeBlock.parse(doc).text;
 
 		console.info(`FencedCodeBlock parsed output: ${finalText}`);
