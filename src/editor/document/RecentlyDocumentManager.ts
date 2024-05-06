@@ -1,4 +1,4 @@
-import { TextDocument } from "vscode";
+import vscode, { TextDocument } from "vscode";
 import { SupportedLanguage } from "../language/SupportedLanguage";
 
 export class RecentlyDocumentManager {
@@ -32,11 +32,27 @@ export class RecentlyDocumentManager {
 	}
 
 	updateCurrentDocument(document: TextDocument) {
-      if (this.currentDocument) {
-        this.closedTextDocuments.push(this.currentDocument);
-      }
+		if (this.currentDocument) {
+			this.closedTextDocuments.push(this.currentDocument);
+		}
 
-      this.pushTextDocument(document);
-      this.currentDocument = document;
+		this.pushTextDocument(document);
+		this.currentDocument = document;
+	}
+
+	bindChanges() {
+		vscode.window.onDidChangeActiveTextEditor(
+			async (editor: vscode.TextEditor | undefined) => {
+				if (!editor) {
+					return;
+				}
+
+				this.updateCurrentDocument(editor.document);
+			}
+		);
+
+		vscode.workspace.onDidCloseTextDocument(async (document: vscode.TextDocument) => {
+			// todos: remove document from cache
+		});
 	}
 }

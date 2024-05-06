@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
 // for Dependency Injection with InversifyJS
 import "reflect-metadata";
-import Parser from "web-tree-sitter";
+
+const Parser = require("web-tree-sitter");
+
 
 import { registerCommands } from "./commands/commands";
 import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
@@ -34,6 +36,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const diffManager = new DiffManager();
 	const fileCacheManager = new CodeFileCacheManager();
 	const relatedManager = new RelevantCodeProviderManager();
+
 	const extension = new AutoDevExtension(
 		sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
 	);
@@ -42,38 +45,22 @@ export async function activate(context: vscode.ExtensionContext) {
 			registerCodeLensProviders(extension);
 			registerAutoDevProviders(extension);
 			registerQuickFixProvider(extension);
+			registerCommands(extension);
 
 			await new BuildToolSync().startWatch();
 		}
 	);
 
-	registerCommands(extension);
 	registerWebViewProvider(extension);
-	bindingDocumentChange(documentManager);
+	documentManager.bindChanges();
 
 	AutoDevStatusManager.instance.create();
 
-	// setup for index
 	channel.show();
 
+	// setup for index
 	let codebaseIndexer = new CodebaseIndexer();
 	codebaseIndexer.init();
-}
-
-function bindingDocumentChange(documentManager: RecentlyDocumentManager) {
-	vscode.window.onDidChangeActiveTextEditor(
-		async (editor: vscode.TextEditor | undefined) => {
-			if (!editor) {
-				return;
-			}
-
-			documentManager.updateCurrentDocument(editor.document);
-		}
-	);
-
-	vscode.workspace.onDidCloseTextDocument(async (document: vscode.TextDocument) => {
-		// todos: remove document from cache
-	});
 }
 
 export function deactivate() {
