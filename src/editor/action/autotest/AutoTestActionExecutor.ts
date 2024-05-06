@@ -10,16 +10,11 @@ import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "../../../prompt-manage/ActionType";
-import { CommentedUmlPresenter } from "../../codemodel/presenter/CommentedUmlPresenter";
 import { RelevantCodeProviderManager } from "../../../code-context/RelevantCodeProviderManager";
 import { documentToTreeSitterFile } from "../../../code-context/ast/TreeSitterFileUtil";
-import { DefaultLanguageService } from "../../language/service/DefaultLanguageService";
-import { CodeFile } from "../../codemodel/CodeElement";
-import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 
 export class AutoTestActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoTest;
-
 	private document: vscode.TextDocument;
 	private namedElement: NamedElement;
 	private edit: vscode.WorkspaceEdit;
@@ -45,7 +40,9 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		const testContext = await testgen.setupTestFile(this.document, this.namedElement);
 
 		let file = await documentToTreeSitterFile(this.document);
-		testContext.relatedClasses = await this.relatedClassesContext(file);
+
+		let relevantCodeProviderManager = RelevantCodeProviderManager.getInstance();
+		testContext.relatedClasses = await relevantCodeProviderManager.relatedClassesContext(this.language, file, this.namedElement);
 
 		const startTime = new Date().getTime();
 		console.log("startTime: ", startTime);
@@ -104,18 +101,5 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		// write to output file
 		const outputFile = testContext.targetPath;
 		await vscode.workspace.fs.writeFile(vscode.Uri.file(outputFile!!), Buffer.from(output));
-	}
-
-	private async relatedClassesContext(file: TreeSitterFile) {
-		let relatedProvider = RelevantCodeProviderManager.getInstance().provider(this.language, new DefaultLanguageService());
-		let relatedFiles: CodeFile[] = [];
-		if (relatedProvider) {
-			relatedFiles = await relatedProvider.getMethodFanInAndFanOut(file, this.namedElement);
-		}
-
-		let umlPresenter = new CommentedUmlPresenter();
-		return relatedFiles.map((codeStructure) => {
-			return umlPresenter.present(codeStructure);
-		}).join("\n");
 	}
 }
