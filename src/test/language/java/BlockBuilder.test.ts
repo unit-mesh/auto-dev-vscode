@@ -2,7 +2,6 @@ import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
 
 const Parser = require("web-tree-sitter");
 
-import { JavaProfile } from "../../../code-context/java/JavaProfile";
 import { TestLanguageService } from "../../TestLanguageService";
 import { TreeSitterUtil } from "../../../code-context/ast/TreeSitterUtil";
 

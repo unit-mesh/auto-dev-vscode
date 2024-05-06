@@ -2,7 +2,6 @@ import { expect } from "vitest";
 
 const Parser = require("web-tree-sitter");
 
-import { GolangProfile } from "../../../code-context/go/GolangProfile";
 import { ScopeBuilder } from "../../../code-search/scope-graph/ScopeBuilder";
 import { TestLanguageService } from "../../TestLanguageService";
 import { testScopes } from "../../ScopeTestUtil";

@@ -1,11 +1,9 @@
-import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
-
 const Parser = require("web-tree-sitter");
 import 'reflect-metadata';
 
+import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
 import { JavaRelevantLookup } from "../../../code-search/lookup/JavaRelevantLookup";
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
-import { JavaProfile } from "../../../code-context/java/JavaProfile";
 import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/scope-graph/ScopeGraph";
 import { JavaStructurerProvider } from "../../../code-context/java/JavaStructurerProvider";

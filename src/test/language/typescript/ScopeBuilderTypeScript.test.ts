@@ -1,4 +1,3 @@
-import { expect } from "vitest";
 const Parser = require("web-tree-sitter");
 
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";

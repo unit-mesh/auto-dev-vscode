@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { MarkdownTextProcessor } from "../../../markdown/MarkdownTextProcessor";
 
 describe('MarkdownTextProcessor', () => {
