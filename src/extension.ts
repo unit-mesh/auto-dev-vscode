@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
 // for Dependency Injection with InversifyJS
 import "reflect-metadata";
-
-const Parser = require("web-tree-sitter");
-
+import Parser from "web-tree-sitter";
 
 import { registerCommands } from "./commands/commands";
 import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";

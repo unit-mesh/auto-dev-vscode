@@ -1,5 +1,5 @@
 import { Edit } from "web-tree-sitter";
-import vscode, { Uri } from "vscode";
+import vscode, { TextDocumentChangeEvent, Uri } from "vscode";
 
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { isSupportedLanguage } from "../language/SupportedLanguage";
@@ -29,23 +29,27 @@ export class TreeSitterFileManager implements vscode.Disposable {
 				return;
 			}
 
-			const uri = event.document.uri;
-			// get from cache
-			const tree = this.getDocument(uri)?.tree;
-			if (!tree) {
-				if (!this.cache.has(uri)) {
-					const file = await documentToTreeSitterFile(event.document);
-					this.setDocument(uri, file);
-				}
-
-				return;
-			}
-
-			for (const change of event.contentChanges) {
-				const editParams = this.createEditParams(change, event.document);
-				tree.edit(editParams);
-			}
+			await this.updateCacheOnChange(event);
 		});
+	}
+
+	private async updateCacheOnChange(event: TextDocumentChangeEvent) {
+		const uri = event.document.uri;
+		// get from cache
+		const tree = this.getDocument(uri)?.tree;
+		if (!tree) {
+			if (!this.cache.has(uri)) {
+				const file = await documentToTreeSitterFile(event.document);
+				this.setDocument(uri, file);
+			}
+
+			return;
+		}
+
+		for (const change of event.contentChanges) {
+			const editParams = this.createEditParams(change, event.document);
+			tree.edit(editParams);
+		}
 	}
 
 	createEditParams(change: vscode.TextDocumentContentChangeEvent, document: vscode.TextDocument) : Edit {
