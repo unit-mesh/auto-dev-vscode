@@ -24,6 +24,10 @@ export async function documentToTreeSitterFile(document: vscode.TextDocument) {
 	return file;
 }
 
+export async function textToTreeSitterFile(src: string, langId: string, fsPath: string = "") {
+	return TreeSitterFile.create(src, langId, new DefaultLanguageService(), fsPath);
+}
+
 export async function toNamedElementBuilder(document: vscode.TextDocument): Promise<NamedElementBuilder> {
 	let file = await documentToTreeSitterFile(document);
 	return new NamedElementBuilder(file);

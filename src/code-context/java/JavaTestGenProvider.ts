@@ -10,7 +10,7 @@ import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
-import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
+import { documentToTreeSitterFile, textToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
 import { channel } from "../../channel";
 
@@ -97,7 +97,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 	 * after test file is created, try to fix the code, like packageName and className, etc.
 	 */
 	async postProcessCodeFix(document: vscode.TextDocument, output: string): Promise<void> {
-		let tsfile = await documentToTreeSitterFile(document);
+		let tsfile = await textToTreeSitterFile(output, "java", "");
 
 		if (!tsfile) {
 			return Promise.reject(`Failed to find tree-sitter file for: ${document.uri}`);
@@ -107,10 +107,8 @@ export class JavaTestGenProvider implements TestGenProvider {
 		let query = tsfile.languageProfile.classQuery.query(tsfile.tsLanguage);
 		const captures = query!!.captures(tsfile.tree.rootNode);
 
-		channel.appendLine(JSON.stringify(captures));
-
 		// find the class declaration
-		const queryCapture = captures.find((c) => c.name === "@name.definition.class");
+		const queryCapture = captures.find((c) => c.name === "name.definition.class");
 
 		if (queryCapture) {
 			// compare targetClassName to queryCapture.text if they are different, replace queryCapture.text with targetClassName
