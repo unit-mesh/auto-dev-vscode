@@ -39,7 +39,7 @@ export class GoTestGenProvider implements TestGenProvider {
 				currentClass: undefined,
 				language: "",
 				relatedClasses: "",
-				testClassName: "",
+				underTestClassName: "",
 				imports: [],
 				targetPath: testFilePath.fsPath
 			};
@@ -54,7 +54,7 @@ export class GoTestGenProvider implements TestGenProvider {
 			currentClass: undefined,
 			language: "",
 			relatedClasses: "",
-			testClassName: elementName,
+			underTestClassName: elementName,
 			imports: [],
 			targetPath: testFilePath.fsPath
 		};
@@ -79,5 +79,9 @@ export class GoTestGenProvider implements TestGenProvider {
 
 	collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
 		return Promise.resolve([]);
+	}
+
+	async postProcessCodeFix(document: vscode.TextDocument, output: string): Promise<void> {
+		return Promise.resolve();
 	}
 }

@@ -48,4 +48,9 @@ export interface TestGenProvider {
 	 * Creates a test file for the given source file and element, and init context if not already done.
 	 */
 	setupTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext>;
+
+	/**
+	 * after test file is created, try to fix the code, like imports and package and className, etc.
+	 */
+	postProcessCodeFix(document: vscode.TextDocument, output: string): Promise<void>;
 }

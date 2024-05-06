@@ -84,6 +84,9 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		// navigate to test file
 		await vscode.window.showTextDocument(vscode.Uri.file(testContext.targetPath!!));
 
+		const outputFile = testContext.targetPath;
+		let newDocUri = vscode.Uri.file(outputFile!!);
+
 		try {
 			for await (const chunk of llm._streamChat([msg])) {
 				doc += chunk.content;
@@ -92,8 +95,8 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 				if (output) {
 					// write to output file
-					const outputFile = testContext.targetPath;
-					await vscode.workspace.fs.writeFile(vscode.Uri.file(outputFile!!), Buffer.from(output));
+					// refactor change to append line
+					await vscode.workspace.fs.writeFile(newDocUri, Buffer.from(output));
 				}
 			}
 		} catch (e) {
@@ -106,5 +109,8 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		const output = MarkdownCodeBlock.parse(doc).text;
 		console.info(`FencedCodeBlock parsed output: ${output}`);
+
+		const newDoc = await vscode.workspace.openTextDocument(newDocUri);
+		testgen.postProcessCodeFix(newDoc, output);
 	}
 }

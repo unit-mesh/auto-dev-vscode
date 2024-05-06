@@ -11,17 +11,17 @@ const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 export class TreeSitterFile {
 	readonly sourcecode: string;
 	readonly tree: Tree;
-	readonly langConfig: LanguageProfile;
+	readonly languageProfile: LanguageProfile;
 	readonly parser: Parser | undefined = undefined;
-	readonly language: Parser.Language;
+	readonly tsLanguage: Parser.Language;
 	readonly filePath: string;
 
 	constructor(src: string, tree: Tree, tsLanguage: LanguageProfile, parser: Parser, language: Language, fsPath: string = "") {
 		this.sourcecode = src;
 		this.tree = tree;
-		this.langConfig = tsLanguage;
+		this.languageProfile = tsLanguage;
 		this.parser = parser;
-		this.language = language;
+		this.tsLanguage = language;
 		this.filePath = fsPath;
 	}
 
@@ -117,10 +117,10 @@ export class TreeSitterFile {
 			return Promise.resolve(graphCache.get(this)!);
 		}
 
-		let query = this.langConfig.scopeQuery.query(this.language);
+		let query = this.languageProfile.scopeQuery.query(this.tsLanguage);
 		let rootNode = this.tree.rootNode;
 
-		let scopeBuilder = new ScopeBuilder(query, rootNode, this.sourcecode, this.langConfig);
+		let scopeBuilder = new ScopeBuilder(query, rootNode, this.sourcecode, this.languageProfile);
 		let scopeGraphPromise = await scopeBuilder.build();
 
 		graphCache.set(this, scopeGraphPromise);

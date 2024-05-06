@@ -60,7 +60,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 				currentClass: undefined,
 				language: "",
 				relatedClasses: "",
-				testClassName: "",
+				underTestClassName: "",
 				imports: imports,
 				targetPath: testFilePath.fsPath
 			};
@@ -77,7 +77,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 			isNewFile: true,
 			language: language,
 			relatedClasses: "",
-			testClassName: elementName,
+			underTestClassName: elementName,
 			imports: imports,
 			targetPath: testFilePath.fsPath
 		};
@@ -135,5 +135,9 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		}
 
 		return vscode.Uri.file(testFilePath);
+	}
+
+	async postProcessCodeFix(document: vscode.TextDocument, output: string): Promise<void> {
+		return Promise.resolve();
 	}
 }

@@ -12,17 +12,19 @@ import { NamedElement } from "../../editor/ast/NamedElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
+import { channel } from "../../channel";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
 	baseTestPrompt: string = `${l10n.t("lang.java.prompt.basicTestTemplate")}`.trim();
 	importRegex = /import\s+([\w.]+);/g;
 
-	private clazzName = "JavaTestContextProvider";
+	private clazzName = "JavaTestGenProvider";
 	private graph: ScopeGraph | undefined;
 	private tsfile: TreeSitterFile | undefined;
 	private context: AutoTestTemplateContext | undefined;
 	private languageService: TSLanguageService | undefined;
+	private packageName = "";
 
 	constructor() {
 	}
@@ -63,6 +65,12 @@ export class JavaTestGenProvider implements TestGenProvider {
 		this.tsfile = await documentToTreeSitterFile(document);
 		this.graph = await this.tsfile.scopeGraph();
 
+		let query = this.tsfile.languageProfile.packageQuery!!.query(this.tsfile.tsLanguage);
+		let matches = query.captures(this.tsfile.tree.rootNode);
+		if (matches.length > 0) {
+			this.packageName = matches[0].node.text;
+		}
+
 		const targetPath = document.fileName
 			.replace(".java", "Test.java")
 			.replace("src/main/java", "src/test/java");
@@ -71,7 +79,8 @@ export class JavaTestGenProvider implements TestGenProvider {
 			filename: document.fileName,
 			language: document.languageId,
 			targetPath: targetPath,
-			testClassName: element.identifierRange.text,
+			underTestClassName: element.identifierRange.text,
+			genTestClassName: document.fileName.replace(".java", "Test.java"),
 			sourceCode: element.blockRange.text,
 			relatedClasses: "",
 			chatContext: "",
@@ -80,7 +89,49 @@ export class JavaTestGenProvider implements TestGenProvider {
 
 		const targetUri = vscode.Uri.file(targetPath);
 		await vscode.workspace.fs.writeFile(targetUri, new Uint8Array());
+		this.context = testContext;
 		return Promise.resolve(testContext);
+	}
+
+	/**
+	 * after test file is created, try to fix the code, like packageName and className, etc.
+	 */
+	async postProcessCodeFix(document: vscode.TextDocument, output: string): Promise<void> {
+		let tsfile = await documentToTreeSitterFile(document);
+
+		if (!tsfile) {
+			return Promise.reject(`Failed to find tree-sitter file for: ${document.uri}`);
+		}
+
+		let targetClassName = this.context!!.genTestClassName;
+		let query = tsfile.languageProfile.classQuery.query(tsfile.tsLanguage);
+		const captures = query!!.captures(tsfile.tree.rootNode);
+
+		channel.appendLine(JSON.stringify(captures));
+
+		// find the class declaration
+		const queryCapture = captures.find((c) => c.name === "@name.definition.class");
+
+		if (queryCapture) {
+			// compare targetClassName to queryCapture.text if they are different, replace queryCapture.text with targetClassName
+			let classNode = queryCapture.node;
+			if (targetClassName !== classNode.text) {
+				let range = tsfile.tree.rootNode.text.slice(classNode.startIndex, classNode.endIndex);
+				let newText = tsfile.tree.rootNode.text.replace(range, targetClassName!!);
+				await vscode.workspace.fs.writeFile(document.uri, Buffer.from(newText));
+			}
+		}
+
+		// fix packageName
+		let packageQuery = tsfile.languageProfile.packageQuery!!.query(tsfile.tsLanguage);
+		const packageCapture = packageQuery!!.captures(tsfile.tree.rootNode);
+
+		// if package is not found, add package to the top of the file
+		if (packageCapture.length === 0) {
+			let content = "package " + this.packageName + ";\n";
+			let newText = content + output;
+			await vscode.workspace.fs.writeFile(document.uri, Buffer.from(newText));
+		}
 	}
 
 	async collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {

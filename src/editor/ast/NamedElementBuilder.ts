@@ -28,9 +28,9 @@ export class NamedElementBuilder {
 	private file: TreeSitterFile;
 
 	constructor(file: TreeSitterFile) {
-		this.langConfig = file.langConfig;
+		this.langConfig = file.languageProfile;
 		this.tree = file.tree;
-		this.language = file.language;
+		this.language = file.tsLanguage;
 		this.parser = file.parser;
 		this.file = file;
 	}
