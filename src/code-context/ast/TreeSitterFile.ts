@@ -117,7 +117,7 @@ export class TreeSitterFile {
 			return Promise.resolve(graphCache.get(this)!);
 		}
 
-		let query = this.language.query(this.langConfig.scopeQuery.queryStr);
+		let query = this.langConfig.scopeQuery.query(this.language);
 		let rootNode = this.tree.rootNode;
 
 		let scopeBuilder = new ScopeBuilder(query, rootNode, this.sourcecode, this.langConfig);

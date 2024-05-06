@@ -37,7 +37,8 @@ class HelloWorld {
 
 		let tree = parser.parse(sourceCode);
 
-		const query = language.query(langConfig.methodQuery.queryStr);
+		const query = langConfig.methodQuery.query(language);
+
 		const root = tree.rootNode;
 		const matches = query?.matches(root);
 

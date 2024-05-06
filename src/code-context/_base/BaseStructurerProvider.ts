@@ -28,7 +28,7 @@ export abstract class BaseStructurerProvider implements StructurerProvider {
 		_parser.setLanguage(language);
 		this.parser = _parser;
 		this.language = language;
-		return language?.query(tsConfig.structureQuery.queryStr);
+		return tsConfig.structureQuery.query(language!!);
 	}
 
 

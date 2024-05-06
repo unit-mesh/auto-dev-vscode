@@ -3,7 +3,7 @@ import Parser from "web-tree-sitter";
 import { NamedElement } from "./NamedElement";
 import { TextInRange } from "./TextInRange";
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
-import { LanguageProfile } from "../../code-context/_base/LanguageProfile";
+import { LanguageProfile, MemoizedQuery } from "../../code-context/_base/LanguageProfile";
 import { CodeElementType } from "../codemodel/CodeElementType";
 import { TreeSitterUtil } from "../../code-context/ast/TreeSitterUtil";
 
@@ -40,11 +40,11 @@ export class NamedElementBuilder {
 	}
 
 	buildMethod(): NamedElement[] {
-		return this.buildBlock(this.langConfig.methodQuery.queryStr, CodeElementType.Method);
+		return this.buildBlock(this.langConfig.methodQuery, CodeElementType.Method);
 	}
 
 	buildClass(): NamedElement[] {
-		return this.buildBlock(this.langConfig.classQuery.queryStr, CodeElementType.Structure);
+		return this.buildBlock(this.langConfig.classQuery, CodeElementType.Structure);
 	}
 
 	/**
@@ -113,13 +113,13 @@ export class NamedElementBuilder {
 	/**
 	 * Searches the syntax tree for matches to the given query string and returns a list of identifier-block ranges.
 	 *
-	 * @param queryString The query string to match against the syntax tree.
+	 * @param memoizedQuery The memoized query object to use for the search.
 	 * @param elementType The type of code element that the query string represents.
 	 * @returns An array of `IdentifierBlockRange` objects representing the matches, or a `TreeSitterFileError` if an error occurs.
 	 */
-	buildBlock(queryString: string, elementType: CodeElementType): NamedElement[] {
+	buildBlock(memoizedQuery: MemoizedQuery, elementType: CodeElementType): NamedElement[] {
 		try {
-			const query = this.language.query(queryString);
+			const query = memoizedQuery.query(this.language);
 			const root = this.tree.rootNode;
 			const matches = query?.matches(root);
 

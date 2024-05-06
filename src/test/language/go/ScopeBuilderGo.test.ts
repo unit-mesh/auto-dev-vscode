@@ -54,7 +54,7 @@ type eleven interface {}
 		parser.setTimeoutMicros(10 ** 6);
 		let tree = parser.parse(sourceCode);
 		const rootNode = tree.rootNode;
-		const query = language.query(langConfig.scopeQuery.queryStr);
+		const query = langConfig.scopeQuery.query(language);
 		let scopeBuilder = new ScopeBuilder(query!!, rootNode, sourceCode, langConfig);
 		let output = await scopeBuilder.build();
 

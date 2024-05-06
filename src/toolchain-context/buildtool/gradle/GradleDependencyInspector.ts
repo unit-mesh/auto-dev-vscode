@@ -112,7 +112,6 @@ export class GradleDependencyInspector implements DependencyInspector {
 		}
 
 		while ((match = SHORT_IMPL_REGEX_NO_VERSION.exec(content)) !== null) {
-			console.log(match.length);
 			if (match.length === 5) {
 				try {
 					const [, scope, , group, artifact] = match;

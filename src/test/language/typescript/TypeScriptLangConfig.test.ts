@@ -36,7 +36,7 @@ class Greeter {
 }
 `;
 
-		const query = grammar!!.query(langConfig.methodQuery.queryStr);
+		const query = langConfig.methodQuery.query(grammar);
 		const root = parser.parse(sampleCode).rootNode;
 		const matches = query!!.matches(root);
 

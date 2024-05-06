@@ -39,10 +39,10 @@ export class JavaRelevantLookup {
 	}
 
 	extractCurrentPackageName() {
-		const query = TSLanguageUtil.for("java")!!.packageQuery!!.queryStr;
-		const rootNode = this.tsfile.tree.rootNode;
+		let languageProfile = TSLanguageUtil.for("java")!!;
 
-		const matches = this.tsfile.language.query(query).matches(rootNode);
+		const query = languageProfile.packageQuery?.query(this.tsfile.language)!!;
+		const matches = query.matches(this.tsfile.tree.rootNode);
 
 		if (matches.length === 0) {
 			return '';

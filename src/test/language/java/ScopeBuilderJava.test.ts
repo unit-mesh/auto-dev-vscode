@@ -32,7 +32,8 @@ class HelloWorld {
 
 		parser.setTimeoutMicros(10 ** 6);
 		const rootNode = parser.parse(javaHelloWorld).rootNode;
-		const query = language.query(langConfig.scopeQuery.queryStr);
+		const query = langConfig.scopeQuery.query(language);
+
 		let scopeBuilder = new ScopeBuilder(query!!, rootNode, javaHelloWorld, langConfig);
 		let output = await scopeBuilder.build();
 
