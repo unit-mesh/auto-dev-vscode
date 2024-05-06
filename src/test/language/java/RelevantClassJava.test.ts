@@ -7,7 +7,7 @@ import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/scope-graph/ScopeGraph";
 import { JavaStructurerProvider } from "../../../code-context/java/JavaStructurerProvider";
-import { functionToRange } from "../../../editor/codemodel/CodeFile";
+import { functionToRange } from "../../../editor/codemodel/CodeElement";
 
 
 describe('RelevantClass for Java', () => {
@@ -60,7 +60,7 @@ public class BlogController {
 		let secondFunc = codeFile!!.classes[0].methods[0];
 		let textRange = functionToRange(secondFunc);
 
-		let ios: string[] = await structurer.extractMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
+		let ios: string[] = await structurer.retrieveMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
 		expect(ios).toEqual([
 			'import cc.unitmesh.untitled.demo.entity.BlogPost;',
 			'import org.springframework.web.bind.annotation.PathVariable;'
@@ -120,14 +120,14 @@ public class BlogController {
 		let firstFunc = codeFile!!.classes[0].methods[0];
 		let textRange = functionToRange(firstFunc);
 		let lookup = new JavaRelevantLookup(tsf);
-		let ios: string[] = await structurer.extractMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
+		let ios: string[] = await structurer.retrieveMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
 		let relevantClasses = lookup.relevantImportToFilePath(ios);
 		expect(relevantClasses).toEqual(['src/main/java/cc/unitmesh/untitled/demo/entity/BlogPost.java']);
 
 		// for second func
 		let secondFunc = codeFile!!.classes[0].methods[1];
 		textRange = functionToRange(secondFunc);
-		ios = await structurer.extractMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
+		ios = await structurer.retrieveMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
 		relevantClasses = lookup.relevantImportToFilePath(ios);
 		expect(relevantClasses).toEqual([
 			'src/main/java/cc/unitmesh/untitled/demo/dto/CreateBlogRequest.java',

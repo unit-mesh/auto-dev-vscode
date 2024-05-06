@@ -14,7 +14,7 @@ import { CommentedUmlPresenter } from "../../codemodel/presenter/CommentedUmlPre
 import { RelevantCodeProviderManager } from "../../../code-context/RelevantCodeProviderManager";
 import { documentToTreeSitterFile } from "../../../code-context/ast/TreeSitterFileUtil";
 import { DefaultLanguageService } from "../../language/service/DefaultLanguageService";
-import { CodeFile } from "../../codemodel/CodeFile";
+import { CodeFile } from "../../codemodel/CodeElement";
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 
 export class AutoTestActionExecutor implements ActionExecutor {

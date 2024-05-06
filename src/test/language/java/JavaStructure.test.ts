@@ -3,7 +3,7 @@ import "reflect-metadata";
 
 import { JavaStructurerProvider } from "../../../code-context/java/JavaStructurerProvider";
 import { TestLanguageService } from "../../TestLanguageService";
-import { CodeFile } from "../../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../../editor/codemodel/CodeElement";
 
 describe('JavaStructure', () => {
 	it('should convert a simple file to CodeFile', async () => {

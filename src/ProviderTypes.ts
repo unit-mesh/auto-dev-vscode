@@ -4,10 +4,14 @@ const PROVIDER_TYPES = {
 	BuildToolProvider: "BuildToolProvider",
 	TestGenProvider: "TestGenProvider",
 	/**
-	 * Code structure analysis, for, see in [StructurerProvider](StructurerProvider.ts)
+	 * Code structure analysis, parse source code to structure data
+	 * see in {@link StructurerProvider#parseFile}
+	 * structure data for {@link CodeElement} which can be {@link CodeFile}, {@link CodeFunction}, {@link CodeVariable}
  	 */
 	StructurerProvider: "StructurerProvider",
-	/// Create VSCode action by Syntax node
+	/**
+	 * {@link ActionCreator#build} is a provider to create VSCode action by Syntax node
+	 */
 	ActionCreator: "ActionCreator"
 };
 

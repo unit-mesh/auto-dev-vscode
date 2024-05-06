@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { CodeFile } from "../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { StructurerProvider } from "../_base/StructurerProvider";
 
 @injectable()

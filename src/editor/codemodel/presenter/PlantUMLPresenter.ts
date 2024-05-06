@@ -1,4 +1,4 @@
-import { CodeFile, CodeFunction, CodeStructure } from "../CodeFile";
+import { CodeFile, CodeFunction, CodeStructure } from "../CodeElement";
 import { Presenter } from "./Presenter";
 
 export class PlantUMLPresenter implements Presenter {

@@ -4,7 +4,7 @@ import vscode from "vscode";
 import { injectable } from "inversify";
 
 import { TestGenProvider } from "../_base/test/TestGenProvider";
-import { CodeFile } from "../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { NamedElement } from "../../editor/ast/NamedElement";

@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs";
 
 import { NamedElement } from "../../editor/ast/NamedElement";
-import { CodeFile } from "../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { TestGenProvider } from "../_base/test/TestGenProvider";

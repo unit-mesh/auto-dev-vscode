@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import vscode from "vscode";
 
 import { RelevantCodeProvider } from "../_base/RelevantCodeProvider";
-import { CodeFile } from "../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { JavaStructurerProvider } from "./JavaStructurerProvider";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
@@ -32,7 +32,7 @@ export class JavaRelevantCodeProvider implements RelevantCodeProvider {
 
 		const textRange: TextRange = element.blockRange.toTextRange();
 		const source = tsfile.sourcecode;
-		let ios: string[] = await structurer.extractMethodIOImports(graph, tsfile.tree.rootNode, textRange, source) ?? [];
+		let ios: string[] = await structurer.retrieveMethodIOImports(graph, tsfile.tree.rootNode, textRange, source) ?? [];
 
 		let lookup = new JavaRelevantLookup(tsfile);
 		let paths = lookup.relevantImportToFilePath(ios);

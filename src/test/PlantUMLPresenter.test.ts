@@ -1,4 +1,4 @@
-import { CodeFile } from "../editor/codemodel/CodeFile";
+import { CodeFile } from "../editor/codemodel/CodeElement";
 import { PlantUMLPresenter } from "../editor/codemodel/presenter/PlantUMLPresenter";
 
 describe('PlantUMLPresenter', () => {

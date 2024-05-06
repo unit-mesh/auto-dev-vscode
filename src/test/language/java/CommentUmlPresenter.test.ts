@@ -1,4 +1,4 @@
-import { CodeFile } from "../../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../../editor/codemodel/CodeElement";
 import { CommentedUmlPresenter } from "../../../editor/codemodel/presenter/CommentedUmlPresenter";
 
 describe('CommentUmlPresenter', () => {

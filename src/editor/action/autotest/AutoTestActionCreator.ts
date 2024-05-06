@@ -1,9 +1,9 @@
 import vscode from "vscode";
 import { injectable } from "inversify";
 
-import { CodeActionCreator } from "../_base/ActionCreator";
 import { ActionCreatorContext } from "../_base/ActionCreatorContext";
 import { NamedElement } from "../../ast/NamedElement";
+import { CodeActionCreator } from "../_base/CodeActionCreator";
 
 @injectable()
 export class AutoTestActionCreator extends CodeActionCreator {

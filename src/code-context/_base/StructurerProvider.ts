@@ -1,4 +1,4 @@
-import { CodeFile } from "../../editor/codemodel/CodeFile";
+import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 
 export interface StructurerProvider {

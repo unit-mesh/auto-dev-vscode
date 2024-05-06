@@ -1,7 +1,7 @@
 import { SyntaxNode } from "web-tree-sitter";
 
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { CodeFile, CodeFunction, CodeVariable } from "../../editor/codemodel/CodeFile";
+import { CodeFile, CodeFunction, CodeVariable } from "../../editor/codemodel/CodeElement";
 import { PositionElement } from "../../editor/codemodel/PositionElement";
 import { StructurerProvider } from "./StructurerProvider";
 

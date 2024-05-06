@@ -1,4 +1,4 @@
-import { CodeStructure } from "../../../editor/codemodel/CodeFile";
+import { CodeStructure } from "../../../editor/codemodel/CodeElement";
 import { TemplateContext } from "../../../prompt-manage/template/TemplateContext";
 import { ToolchainContextItem } from "../../../toolchain-context/ToolchainContextProvider";
 
