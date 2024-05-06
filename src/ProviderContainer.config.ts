@@ -5,13 +5,11 @@ import { ToolchainContextProvider } from "./toolchain-context/ToolchainContextPr
 import { SpringContextProvider } from "./toolchain-context/framework/jvm/SpringContextProvider";
 import { JavaSdkVersionProvider } from "./toolchain-context/sdk/JavaSdkVersionProvider";
 import { JavaScriptContextProvider } from "./toolchain-context/framework/javascript/JavaScriptContextProvider";
-
 import { RelevantCodeProvider } from "./code-context/_base/RelevantCodeProvider";
 import { JavaRelevantCodeProvider } from "./code-context/java/JavaRelevantCodeProvider";
 import { BuildToolProvider } from "./toolchain-context/buildtool/_base/BuildToolProvider";
 import { NpmBuildToolProvider } from "./toolchain-context/buildtool/NpmBuildToolProvider";
 import { GradleBuildToolProvider } from "./toolchain-context/buildtool/GradleBuildToolProvider";
-
 import { JavaTestGenProvider } from "./code-context/java/JavaTestGenProvider";
 import { TestGenProvider } from "./code-context/_base/test/TestGenProvider";
 import { TypeScriptTestGenProvider } from "./code-context/typescript/TypeScriptTestGenProvider";
@@ -25,9 +23,6 @@ import { GenApiDataActionCreator } from "./editor/action/test-data/GenApiDataAct
 import { GoBuildToolProvider } from "./toolchain-context/buildtool/GoBuildToolProvider";
 import { GoStructurerProvider } from "./code-context/go/GoStructurerProvider";
 import { LanguageProfile } from "./code-context/_base/LanguageProfile";
-import { JavaProfile } from "./code-context/java/JavaProfile";
-import { TypeScriptProfile } from "./code-context/typescript/TypeScriptProfile";
-import { GolangProfile } from "./code-context/go/GolangProfile";
 import { languageContainer } from "./ProviderLanguageProfile.config";
 
 const providerContainer = new Container();
