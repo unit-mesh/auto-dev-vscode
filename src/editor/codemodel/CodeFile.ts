@@ -44,9 +44,9 @@ export function functionToRange(element: CodeFunction): TextRange {
 	return new TextRange(startPoint, endPoint, "");
 }
 
-export interface CodeVariable extends CodeElement {
+export interface CodeVariable extends CodeElement, PositionElement {
 	name: string;
-	typ: string;
+	type: string;
 	isSystemType?: boolean;
 }
 

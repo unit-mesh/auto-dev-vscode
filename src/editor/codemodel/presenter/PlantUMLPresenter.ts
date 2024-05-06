@@ -50,7 +50,7 @@ export class PlantUMLPresenter implements Presenter {
 
 		// Iterate through fields and convert them to PlantUML syntax
 		classItem.fields?.forEach(field => {
-			plantUmlString += `  ${field.name}: ${field.typ}\n`;
+			plantUmlString += `  ${field.name}: ${field.type}\n`;
 		});
 
 		// Iterate through methods and convert them to PlantUML syntax
@@ -68,7 +68,7 @@ export class PlantUMLPresenter implements Presenter {
 
 		// Iterate through function parameters and convert them to PlantUML syntax
 		functionItem.vars.forEach((variable, index) => {
-			plantUmlString += `${variable.name}: ${variable.typ}${index !== functionItem.vars.length - 1 ? ', ' : ''}`;
+			plantUmlString += `${variable.name}: ${variable.type}${index !== functionItem.vars.length - 1 ? ', ' : ''}`;
 		});
 
 		plantUmlString += `)`;

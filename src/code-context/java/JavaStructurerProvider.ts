@@ -83,7 +83,7 @@ export class JavaStructurerProvider implements StructurerProvider {
 		let methodName = '';
 
 		const fields: CodeVariable[] = [];
-		let lastField: CodeVariable = { name: '', typ: '' };
+		let lastField: CodeVariable = { name: '', type: '' };
 
 		for (const element of captures) {
 			const capture: Parser.QueryCapture = element!!;
@@ -116,7 +116,7 @@ export class JavaStructurerProvider implements StructurerProvider {
 					classObj.canonicalName = codeFile.package + "." + classObj.name;
 					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
 					if (classNode !== null) {
-						insertLocation(classObj, classNode);
+						insertLocation(classNode, classObj);
 						if (!isLastNode) {
 							isLastNode = true;
 						}
@@ -131,12 +131,12 @@ export class JavaStructurerProvider implements StructurerProvider {
 				case 'method-body':
 					if (methodName !== '') {
 						const methodNode = capture.node;
-						const methodObj = createFunction(capture, methodName);
+						const methodObj = createFunction(capture.node, methodName);
 						if (methodReturnType !== '') {
 							methodObj.returnType = methodReturnType;
 						}
 						if (methodNode !== null) {
-							insertLocation(classObj, methodNode);
+							insertLocation(methodNode, classObj);
 						}
 
 						methods.push(methodObj);
@@ -146,12 +146,12 @@ export class JavaStructurerProvider implements StructurerProvider {
 					methodName = '';
 					break;
 				case 'field-type':
-					lastField.typ = text;
+					lastField.type = text;
 					break;
 				case 'field-decl':
 					lastField.name = text;
 					fields.push({ ...lastField });
-					lastField = { name: '', typ: '' };
+					lastField = { name: '', type: '' };
 					break;
 				case 'impl-name':
 					classObj.implements.push(text);
@@ -279,7 +279,7 @@ export class JavaStructurerProvider implements StructurerProvider {
 		const captures = query!!.captures(node);
 
 		const fields: CodeVariable[] = [];
-		let fieldObj: CodeVariable = { name: '', typ: '' };
+		let fieldObj: CodeVariable = { name: '', type: '' };
 
 		for (const element of captures) {
 			const capture: Parser.QueryCapture = element!!;
@@ -289,10 +289,10 @@ export class JavaStructurerProvider implements StructurerProvider {
 				case 'field-name':
 					fieldObj.name = text;
 					fields.push({ ...fieldObj });
-					fieldObj = { name: '', typ: '' };
+					fieldObj = { name: '', type: '' };
 					break;
 				case 'field-type':
-					fieldObj.typ = text;
+					fieldObj.type = text;
 					break;
 				case 'field-declaration':
 					break;

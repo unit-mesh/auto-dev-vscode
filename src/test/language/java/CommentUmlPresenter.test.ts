@@ -22,7 +22,7 @@ describe('CommentUmlPresenter', () => {
 					methods: [
 						{
 							name: 'exampleMethod',
-							vars: [{ name: 'param1', typ: 'string' }, { name: 'param2', typ: 'int' }],
+							vars: [{ name: 'param1', type: 'string' }, { name: 'param2', type: 'int' }],
 							returnType: 'void',
 							start: { row: 1, column: 1 },
 							end: { row: 1, column: 1 }

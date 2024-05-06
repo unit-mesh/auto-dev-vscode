@@ -69,7 +69,7 @@ public class BlogController {
 		let fields = await structurer.extractFields(tsf.tree.rootNode);
 		expect(fields.length).toEqual(1);
 		expect(fields[0].name).toEqual('blogService');
-		expect(fields[0].typ).toEqual('BlogService');
+		expect(fields[0].type).toEqual('BlogService');
 	});
 
 	it('calculate for services with array', async () => {
