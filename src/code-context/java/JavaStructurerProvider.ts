@@ -55,12 +55,6 @@ export class JavaStructurerProvider implements StructurerProvider {
 		const query = this.config.structureQuery.query(this.language!!);
 		const captures = query!!.captures(tree.rootNode);
 
-		// check include lombok: `import lombok.Data;`;
-		// let usedLombok = false;
-		// if (code.includes("import lombok.Data;")) {
-		// 	usedLombok = true;
-		// }
-
 		let filename = filepath.split('/')[filepath.split('/').length - 1];
 		const codeFile: CodeFile = {
 			name: filename,
@@ -174,8 +168,12 @@ export class JavaStructurerProvider implements StructurerProvider {
 			codeFile.classes.push({ ...classObj });
 		}
 
-		/// in current version TreeSitter Java, has a bug for Lombok like, will had multiple same classes, we should find
-		/// all same' classes and merge all methods and fields
+		return this.combineSimilarClasses(codeFile);
+	}
+
+	/// in current version TreeSitter Java, has a bug for Lombok like, will have multiple same classes, we should find
+	/// all same' classes and merge all methods and fields
+	private combineSimilarClasses(codeFile: CodeFile) {
 		let classMap = new Map<string, CodeStructure>();
 		codeFile.classes.forEach((classItem) => {
 			if (classMap.has(classItem.name)) {

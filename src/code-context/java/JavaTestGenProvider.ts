@@ -21,19 +21,19 @@ import { JavaRelevantLookup } from "../../code-search/lookup/JavaRelevantLookup"
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
 	baseTestPrompt: string = `${l10n.t("lang.java.prompt.basicTestTemplate")}`.trim();
-	// write a regex for java import statement
 	importRegex = /import\s+([\w.]+);/g;
+
+	private clazzName = "JavaTestContextProvider";
 	private graph: ScopeGraph | undefined;
 	private tsfile: TreeSitterFile | undefined;
-
-	isApplicable(lang: SupportedLanguage): boolean {
-		return lang === "java";
-	}
-
 	private context: AutoTestTemplateContext | undefined;
 	private languageService: TSLanguageService | undefined;
 
 	constructor() {
+	}
+
+	isApplicable(lang: SupportedLanguage): boolean {
+		return lang === "java";
 	}
 
 	async setupLanguage(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext) {
@@ -121,9 +121,6 @@ export class JavaTestGenProvider implements TestGenProvider {
 		return codeFiles;
 	}
 
-
-	private clazzName = "JavaTestContextProvider";
-
 	async collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
 		const fileName = context.filename;
 
@@ -143,7 +140,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 			isSpringRelated = this.checkIsSpringRelated(importStrings) ?? false;
 		}
 
-		let prompt = this.baseTestPrompt + await this.junitRule();
+		let prompt = this.baseTestPrompt + await this.determineJUnitVersion();
 
 		const testPrompt = new TestTemplateFinder();
 		let finalPrompt: ToolchainContextItem;
@@ -185,7 +182,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		return fileName !== null && MvcUtil.isController(fileName, "java");
 	}
 
-	async junitRule(): Promise<string> {
+	async determineJUnitVersion(): Promise<string> {
 		let dependencies = await GradleBuildToolProvider.instance().getDependencies();
 		let rule = "";
 		let hasJunit5 = false;
