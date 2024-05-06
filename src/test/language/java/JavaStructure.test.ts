@@ -95,8 +95,6 @@ public class CreateBlogRequest {
 		await structurer.init(languageService);
 
 		const codeFile = await structurer.parseFile(javaHelloWorld, "");
-		console.log(JSON.stringify(codeFile));
-
 		expect(codeFile as CodeFile).toEqual({
 				"name": "",
 				"filepath": "",
@@ -115,10 +113,21 @@ public class CreateBlogRequest {
 					"implements": [],
 					"start": { "row": 6, "column": 0 },
 					"end": { "row": 11, "column": 1 },
-					"fields": [{ "name": "title", "typ": "String" }, { "name": "content", "typ": "String" }, {
-						"name": "user",
-						"typ": "User"
-					}]
+					"fields": [{
+						"name": "title",
+						"start": { "row": 0, "column": 0 },
+						"end": { "row": 0, "column": 0 },
+						"type": "String"
+					}, {
+						"name": "content",
+						"start": { "row": 0, "column": 0 },
+						"end": { "row": 0, "column": 0 },
+						"type": "String"
+					},
+						{
+							"name": "user", "start": { "row": 0, "column": 0 }, "end": { "row": 0, "column": 0 }, "type": "User"
+						}
+					]
 				}]
 			}
 		);
