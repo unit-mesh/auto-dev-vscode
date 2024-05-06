@@ -1,12 +1,12 @@
 import { expect } from 'chai';
-import { GoModParser } from "../../../toolchain-context/buildtool/go/GoVersionParser";
 import { PackageManger } from "../../../toolchain-context/buildtool/_base/PackageManger";
+import { GoModDependencyInspector } from "../../../toolchain-context/buildtool/go/GoModDependencyInspector";
 
 describe('GoModParser', () => {
-  let parser: GoModParser;
+  let parser: GoModDependencyInspector;
 
   beforeEach(() => {
-    parser = new GoModParser();
+    parser = new GoModDependencyInspector();
   });
 
   it('should parse go.mod content correctly', () => {
@@ -19,7 +19,7 @@ describe('GoModParser', () => {
       )
     `;
 
-    const result = parser.retrieveDependencyData(content);
+    const result = parser.parseDependency(content);
 
     expect(result).to.have.length(1);
     expect(result[0].version).to.equal('1.16');

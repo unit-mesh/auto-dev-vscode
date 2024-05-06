@@ -1,5 +1,5 @@
 import { DEP_SCOPE, DependencyEntry, PackageDependencies } from "../_base/Dependence";
-import { PackageVersionParser } from "../_base/PackageVersionParser";
+import { DependencyInspector } from "../_base/DependencyInspector";
 import { PackageManger } from "../_base/PackageManger";
 
 // implementation "joda-time:joda-time:2.2"
@@ -21,14 +21,14 @@ const DEPENDENCY_SET_START_REGEX = /(?:^|\s)dependencySet\(([^)]+)\)\s*{/;
 //     entry 'slf4j-api'
 const ENTRY_REGEX = /\s+entry\s+['"]([^\s,@'":\/]+)['"]/;
 
-export class GradleVersionParser implements PackageVersionParser {
+export class GradleDependencyInspector implements DependencyInspector {
 	versionCatalogs: { [key: string]: DependencyEntry; } = {};
 
 	constructor() {
 		this.versionCatalogs = {};
 	}
 
-	retrieveDependencyData(content: string): PackageDependencies[] {
+	parseDependency(content: string): PackageDependencies[] {
 		const deps = [];
 		deps.push(...this.parseShortForm(content));
 		deps.push(...this.parseKeywordArg(content));

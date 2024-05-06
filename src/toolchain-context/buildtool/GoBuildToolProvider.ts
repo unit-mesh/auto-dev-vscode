@@ -1,8 +1,9 @@
 import { injectable } from "inversify";
 
 import { PackageDependencies } from "./_base/Dependence";
-import { GoModParser, goVersionParser } from "./go/GoVersionParser";
+import { goVersionParser } from "./go/GoVersionParser";
 import { BaseBuildToolProvider } from "./_base/BaseBuildToolProvider";
+import { GoModDependencyInspector } from "./go/GoModDependencyInspector";
 
 @injectable()
 export class GoBuildToolProvider extends BaseBuildToolProvider {
@@ -37,7 +38,7 @@ export class GoBuildToolProvider extends BaseBuildToolProvider {
 
 	async getDependencies(): Promise<PackageDependencies> {
 		const source = await this.getTargetContent(this.moduleTarget[0]);
-		return new GoModParser().retrieveDependencyData(source)[0] || { dependencies: [] };
+		return new GoModDependencyInspector().parseDependency(source)[0] || { dependencies: [] };
 	}
 
 	getTasks(): Promise<string[]> {

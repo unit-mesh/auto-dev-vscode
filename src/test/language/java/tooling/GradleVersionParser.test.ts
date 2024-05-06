@@ -1,11 +1,11 @@
-import { GradleVersionParser } from "../../../../toolchain-context/buildtool/gradle/GradleVersionParser";
+import { GradleDependencyInspector } from "../../../../toolchain-context/buildtool/gradle/GradleDependencyInspector";
 import { DEP_SCOPE } from "../../../../toolchain-context/buildtool/_base/Dependence";
 
 describe('GradleVersionParser', () => {
-	let parser: GradleVersionParser;
+	let parser: GradleDependencyInspector;
 
 	beforeEach(() => {
-		parser = new GradleVersionParser();
+		parser = new GradleDependencyInspector();
 	});
 
 	test('normal_match', () => {
@@ -19,7 +19,7 @@ dependencies {
 }
     `;
 
-		const dependencies = parser.retrieveDependencyData(gradleSample)[0].dependencies;
+		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(2);
 		expect(dependencies[0].name).toBe("joda-time:joda-time");
@@ -41,7 +41,7 @@ dependencies {
 }
 `;
 
-		const dependencies = parser.retrieveDependencyData(gradleSample)[0].dependencies;
+		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(1);
 		expect(dependencies[0].group).toBe("org.springframework");
@@ -57,7 +57,7 @@ dependencySet(group:'org.slf4j', version: '1.7.7') {
 }
 `;
 
-		const dependencies = parser.retrieveDependencyData(gradleSample)[0].dependencies;
+		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(1);
 		expect(dependencies[0].artifact).toBe("slf4j-api");
@@ -71,7 +71,7 @@ dependencySet(group:'org.slf4j', version: '1.7.7') {
     entry 'slf4j-simple'
 }`;
 
-		const dependencies = parser.retrieveDependencyData(gradleSample)[0].dependencies;
+		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(2);
 		expect(dependencies[0].artifact).toBe("slf4j-api");
@@ -86,7 +86,7 @@ dependencySet(group:'org.slf4j', version: '1.7.7') {
 libraries.junitJupiterApi = "org.junit.jupiter:junit-jupiter-api:4.4.0"
 `;
 
-		const dependencies = parser.retrieveDependencyData(gradleSample)[0].dependencies;
+		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 		expect(dependencies.length).toBe(0);
 	});
 
@@ -106,7 +106,7 @@ dependencies {
     testRuntimeOnly(libs.test.junit.engine)
 }
 `;
-		const dependencies = parser.retrieveDependencyData(gradleSample)[0].dependencies;
+		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(7);
 		expect(dependencies[0].name).toBe("libs.kotlin.stdlib");
@@ -138,7 +138,7 @@ subprojects {
     }
 }
 `;
-		const dependencies = parser.retrieveDependencyData(gradleSample)[0].dependencies;
+		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(18);
 		dependencies.sort((a, b) => a.name.localeCompare(b.name));

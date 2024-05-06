@@ -8,7 +8,7 @@ import { VSCodeAction } from "../../editor/editor-api/VSCodeAction";
 import { GradleVersionInfo, parseGradleVersionInfo } from "./gradle/GradleVersionInfo";
 import { channel } from "../../channel";
 import { BaseBuildToolProvider } from "./_base/BaseBuildToolProvider";
-import { GradleVersionParser } from "./gradle/GradleVersionParser";
+import { GradleDependencyInspector } from "./gradle/GradleDependencyInspector";
 
 @injectable()
 export class GradleBuildToolProvider extends BaseBuildToolProvider {
@@ -57,7 +57,7 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 		// check moduleTarget in rootDir
 		for (const target of this.moduleTarget) {
 			const source = await this.getTargetContent(target);
-			const deps = new GradleVersionParser().retrieveDependencyData(source)?.[0];
+			const deps = new GradleDependencyInspector().parseDependency(source)?.[0];
 			if (deps.dependencies.length > 0) {
 				dependencies = deps;
 			}
