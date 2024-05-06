@@ -1,37 +1,19 @@
 import * as vscode from "vscode";
 
-import { AutoDevExtension } from "./AutoDevExtension";
-import { NamedElement } from "./editor/ast/NamedElement";
-import { channel } from "./channel";
-import { PlantUMLPresenter } from "./editor/codemodel/presenter/PlantUMLPresenter";
-import { AutoDocActionExecutor } from "./editor/action/autodoc/AutoDocActionExecutor";
-import { AutoTestActionExecutor } from "./editor/action/autotest/AutoTestActionExecutor";
-import { NamedElementBuilder } from "./editor/ast/NamedElementBuilder";
-import { QuickActionService } from "./editor/editor-api/QuickAction";
-import { SystemActionService } from "./editor/action/setting/SystemActionService";
-import { toNamedElementBuilder } from "./code-context/ast/TreeSitterFileUtil";
+import { AutoDevExtension } from "../AutoDevExtension";
+import { NamedElement } from "../editor/ast/NamedElement";
+import { channel } from "../channel";
+import { PlantUMLPresenter } from "../editor/codemodel/presenter/PlantUMLPresenter";
+import { AutoDocActionExecutor } from "../editor/action/autodoc/AutoDocActionExecutor";
+import { AutoTestActionExecutor } from "../editor/action/autotest/AutoTestActionExecutor";
+import { NamedElementBuilder } from "../editor/ast/NamedElementBuilder";
+import { QuickActionService } from "../editor/editor-api/QuickAction";
+import { SystemActionService } from "../editor/action/setting/SystemActionService";
+import { toNamedElementBuilder } from "../code-context/ast/TreeSitterFileUtil";
+import { AutoDevCommandOperation } from "./autoDevCommandOperation";
+import { AutoDevCommand } from "./autoDevCommand";
 
-export enum AutoDevCommand {
-	QuickFix = "autodev.quickFix",
-	SendToTerminal = "autodev.sendToTerminal",
-	DebugTerminal = "autodev.debugTerminal",
-	AutoComment = "autodev.autoComment",
-	AutoTest = "autodev.autoTest",
-	Explain = "autodev.explain",
-	FixThis = "autodev.fixThis",
-	MenuAutoComment = "autodev.menu.autoComment",
-	TerminalExplainContextMenu = "autodev.terminal.explainTerminalSelectionContextMenu",
-	ActionQuickAction = "autodev.action.quickAction",
-	SystemAction = "autodev.systemAction",
-	GenerateCommitMessage = "autodev.git.generateCommitMessage",
-	GenApiData = "autodev.genApiData",
-}
-
-type CommandsMap = {
-	[command in AutoDevCommand]: (...args: any[]) => any;
-};
-
-const commandsMap: (extension: AutoDevExtension) => CommandsMap = (extension) => ({
+const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
 			prompt: `${

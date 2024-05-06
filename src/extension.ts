@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 // for Dependency Injection with InversifyJS
 import "reflect-metadata";
 
-import { registerCommands } from "./commands";
+import { registerCommands } from "./commands/commands";
 import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
 import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
 import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
