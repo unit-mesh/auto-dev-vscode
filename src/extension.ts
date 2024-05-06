@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 // for Dependency Injection with InversifyJS
 import "reflect-metadata";
+import Parser from "web-tree-sitter";
 
 import { registerCommands } from "./commands/commands";
 import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
@@ -8,8 +9,6 @@ import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
 import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
-import Parser from "web-tree-sitter";
-
 import { removeExtensionContext, setExtensionContext } from './context';
 import {
 	registerAutoDevProviders,
@@ -34,7 +33,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const documentManager = new RecentlyDocumentManager();
 	const diffManager = new DiffManager();
 	const fileCacheManager = new CodeFileCacheManager();
-	const relatedManager = new RelatedCodeProviderManager(fileCacheManager);
+	const relatedManager = new RelatedCodeProviderManager();
 	const extension = new AutoDevExtension(
 		sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
 	);
