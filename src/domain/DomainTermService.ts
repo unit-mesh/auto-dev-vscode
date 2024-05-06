@@ -1,19 +1,14 @@
 import vscode from "vscode";
 import path from "path";
 import fs from "fs";
-
 import { parse } from 'csv-parse';
+import { injectable } from "inversify";
 
-export interface DomainTerm {
-	id?: string;
-	// origin language, like Chinese
-	localized: string;
-	// english translation, like `function`
-	// - `永远的神` will be `yyds`
-	term: string;
-}
+import { Service } from "../service/Service";
+import { DomainTerm } from "./DomainTerm";
 
-export class DomainTermService {
+@injectable()
+export class DomainTermService implements Service {
 	from(paths: string = 'domain_terms.csv'): DomainTerm[] {
 		const workspace = vscode.workspace.workspaceFolders?.[0];
 		if (!workspace) {
@@ -45,11 +40,11 @@ export class DomainTermService {
 		});
 
 		parser.on('error', function (err) {
-			console.error(err.message);
+			console.info(err.message);
 		});
 
 		parser.on('end', function () {
-			console.log('Parsing finished successfully');
+			console.info('Parsing finished successfully');
 		});
 
 		return terms;

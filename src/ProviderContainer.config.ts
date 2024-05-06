@@ -24,6 +24,9 @@ import { GoBuildToolProvider } from "./toolchain-context/buildtool/GoBuildToolPr
 import { GoStructurerProvider } from "./code-context/go/GoStructurerProvider";
 import { LanguageProfile } from "./code-context/_base/LanguageProfile";
 import { languageContainer } from "./ProviderLanguageProfile.config";
+import { ProjectService } from "./service/ProjectService";
+import { DomainTermService } from "./domain/DomainTermService";
+import { Service } from "./service/Service";
 
 const providerContainer = new Container();
 
@@ -72,5 +75,7 @@ providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to
 languageContainer.getAll<LanguageProfile>(PROVIDER_TYPES.LanguageProfile).forEach((profile: LanguageProfile) => {
 	providerContainer.bind(PROVIDER_TYPES.LanguageProfile).toConstantValue(profile);
 });
+
+providerContainer.bind<Service>(PROVIDER_TYPES.ProjectService).to(DomainTermService);
 
 export { providerContainer };

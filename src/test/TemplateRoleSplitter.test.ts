@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { TemplateRoleSplitter } from "../prompt-manage/team-prompts/TemplateRoleSplitter";
 
 describe('TemplateRoleSplitter', () => {

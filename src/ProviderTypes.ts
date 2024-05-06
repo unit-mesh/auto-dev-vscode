@@ -34,6 +34,11 @@ const PROVIDER_TYPES = {
 	 * {@link LanguageProfile} is a provider to get language specific information
 	 */
 	LanguageProfile: "LanguageProfile",
+
+	/**
+	 * {@link ProjectService} is a provider to get language specific information
+	 */
+	ProjectService: "ProjectService",
 };
 
 export { PROVIDER_TYPES };
