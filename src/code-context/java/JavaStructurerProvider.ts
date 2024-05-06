@@ -9,7 +9,6 @@ import { TSLanguageService } from "../../editor/language/service/TSLanguageServi
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
-import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRefs";
 import { BaseStructurerProvider } from "../_base/BaseStructurerProvider";
 
 @injectable()
@@ -172,30 +171,6 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 		return this.combineSimilarClasses(codeFile);
 	}
 
-	/// in current version TreeSitter Java, has a bug for Lombok like, will have multiple same classes, we should find
-	/// all same' classes and merge all methods and fields
-	private combineSimilarClasses(codeFile: CodeFile) {
-		let classMap = new Map<string, CodeStructure>();
-		codeFile.classes.forEach((classItem) => {
-			if (classMap.has(classItem.name)) {
-				const oldClass = classMap.get(classItem.name)!!;
-				oldClass.methods.push(...classItem.methods);
-				// oldClass.fields?.push(...classItem.fields ?? []);
-				if (classItem.fields) {
-					if (oldClass.fields) {
-						oldClass.fields.push(...classItem.fields);
-					} else {
-						oldClass.fields = classItem.fields;
-					}
-				}
-			} else {
-				classMap.set(classItem.name, classItem);
-			}
-		});
-
-		codeFile.classes = Array.from(classMap.values());
-		return codeFile;
-	}
 
 	/**
 	 * `extractMethodIOImports` is an asynchronous method that extracts the import statements related to the input and output
@@ -244,35 +219,6 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 
 		// remove duplicates
 		return [...new Set(inputAndOutput)];
-	}
-
-	async fetchImportsWithinScope(scope: ScopeGraph, node: SyntaxNode, src: string): Promise<string[]> {
-		let importWithRefs = this.retrieveImportReferences(scope, src, node);
-		return importWithRefs.map((imp) => imp.text);
-	}
-
-	/**
-	 * The `retrieveImportReferences` method is a private method that retrieves all import references from a given source
-	 * code that are within a specified syntax node.
-	 *
-	 * @param scope - An instance of `ScopeGraph`. This parameter represents the node graph of the source code.
-	 * @param src - A string representing the source code from which to retrieve import references.
-	 * @param node - An instance of `SyntaxNode`. This parameter represents the syntax node within which to search for import references.
-	 *
-	 * @returns An array of `ImportWithRefs` objects. Each object in the array represents an import reference that is
-	 * within the specified syntax node. If no import references are found within the syntax node, an empty array is returned.
-	 */
-	private retrieveImportReferences(scope: ScopeGraph, src: string, node: SyntaxNode) {
-		let imports: ImportWithRefs[] = scope.allImports(src);
-		let range: TextRange = TextRange.from(node);
-
-		return imports.filter((impRange) => {
-			let containedRanges = impRange.refs.filter((ref) => {
-				return ref.contains(range);
-			});
-
-			return containedRanges.length > 0;
-		});
 	}
 
 	async extractFields(node: SyntaxNode) {
