@@ -1,7 +1,7 @@
 import Parser, { Query, SyntaxNode } from "web-tree-sitter";
 import { injectable } from "inversify";
 
-import { createFunction, insertLocation, StructurerProvider } from "../_base/BaseStructurer";
+import { BaseStructurerProvider, } from "../_base/BaseStructurer";
 import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeFile";
@@ -13,7 +13,7 @@ import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRefs";
 
 @injectable()
-export class JavaStructurerProvider implements StructurerProvider {
+export class JavaStructurerProvider extends BaseStructurerProvider {
 	protected langId: SupportedLanguage = "java";
 	protected config: LanguageConfig = JavaLangConfig;
 	protected parser: Parser | undefined;
@@ -24,6 +24,7 @@ export class JavaStructurerProvider implements StructurerProvider {
 	}
 
 	constructor() {
+		super();
 	}
 
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
@@ -83,7 +84,7 @@ export class JavaStructurerProvider implements StructurerProvider {
 		let methodName = '';
 
 		const fields: CodeVariable[] = [];
-		let lastField: CodeVariable = { name: '', type: '' };
+		let lastField: CodeVariable = this.initVariable();
 
 		for (const element of captures) {
 			const capture: Parser.QueryCapture = element!!;
@@ -116,7 +117,7 @@ export class JavaStructurerProvider implements StructurerProvider {
 					classObj.canonicalName = codeFile.package + "." + classObj.name;
 					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
 					if (classNode !== null) {
-						insertLocation(classNode, classObj);
+						this.insertLocation(classNode, classObj);
 						if (!isLastNode) {
 							isLastNode = true;
 						}
@@ -131,12 +132,12 @@ export class JavaStructurerProvider implements StructurerProvider {
 				case 'method-body':
 					if (methodName !== '') {
 						const methodNode = capture.node;
-						const methodObj = createFunction(capture.node, methodName);
+						const methodObj = this.createFunction(capture.node, methodName);
 						if (methodReturnType !== '') {
 							methodObj.returnType = methodReturnType;
 						}
 						if (methodNode !== null) {
-							insertLocation(methodNode, classObj);
+							this.insertLocation(methodNode, classObj);
 						}
 
 						methods.push(methodObj);
@@ -151,7 +152,7 @@ export class JavaStructurerProvider implements StructurerProvider {
 				case 'field-decl':
 					lastField.name = text;
 					fields.push({ ...lastField });
-					lastField = { name: '', type: '' };
+					lastField = this.initVariable();
 					break;
 				case 'impl-name':
 					classObj.implements.push(text);
@@ -279,7 +280,7 @@ export class JavaStructurerProvider implements StructurerProvider {
 		const captures = query!!.captures(node);
 
 		const fields: CodeVariable[] = [];
-		let fieldObj: CodeVariable = { name: '', type: '' };
+		let fieldObj: CodeVariable = this.initVariable();
 
 		for (const element of captures) {
 			const capture: Parser.QueryCapture = element!!;
@@ -289,7 +290,7 @@ export class JavaStructurerProvider implements StructurerProvider {
 				case 'field-name':
 					fieldObj.name = text;
 					fields.push({ ...fieldObj });
-					fieldObj = { name: '', type: '' };
+					fieldObj = this.initVariable();
 					break;
 				case 'field-type':
 					fieldObj.type = text;
