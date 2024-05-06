@@ -1,7 +1,6 @@
-import Parser, { Query, SyntaxNode } from "web-tree-sitter";
+import Parser, { SyntaxNode } from "web-tree-sitter";
 import { injectable } from "inversify";
 
-import { JavaProfile } from "./JavaProfile";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
 import { LanguageProfile } from "../_base/LanguageProfile";

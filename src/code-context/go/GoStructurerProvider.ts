@@ -10,7 +10,7 @@ import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 
 export class GoStructurerProvider extends BaseStructurerProvider {
 	protected langId: SupportedLanguage = "go";
-	protected config: LanguageProfile = TSLanguageUtil.for("go")!!;
+	protected config: LanguageProfile = TSLanguageUtil.for(this.langId)!!;
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 

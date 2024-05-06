@@ -6,7 +6,6 @@ import { TSLanguageService } from "../../editor/language/service/TSLanguageServi
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { GradleBuildToolProvider } from "../../toolchain-context/buildtool/GradleBuildToolProvider";
 import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
-import { MvcUtil } from "./JavaMvcUtil";
 import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
@@ -181,5 +180,19 @@ export class JavaTestGenProvider implements TestGenProvider {
 				return true;
 			}
 		}
+	}
+}
+
+export namespace MvcUtil {
+	export function isController(fileName: string, lang: string): boolean {
+		return fileName.endsWith(`Controller.${lang.toLowerCase()}`);
+	}
+
+	export function isService(fileName: string, lang: string): boolean {
+		return fileName.endsWith(`Service.${lang.toLowerCase()}`) || fileName.endsWith(`ServiceImpl.${lang.toLowerCase()}`);
+	}
+
+	export function isRepository(fileName: string, lang: string): boolean {
+		return fileName.endsWith(`Repository.${lang.toLowerCase()}`) || fileName.endsWith(`Repo.${lang.toLowerCase()}`);
 	}
 }

@@ -17,7 +17,7 @@ export interface LanguageProfile {
 	fileExtensions: string[];
 
 	// tree-sitter grammar for this language
-	grammar: (langService: TSLanguageService, langId: SupportedLanguage) => Promise<Language | undefined>;
+	grammar: (langService: TSLanguageService, langId?: SupportedLanguage) => Promise<Language | undefined>;
 
 	// Compiled tree-sitter node query for this language.
 	scopeQuery: MemoizedQuery;
@@ -56,7 +56,7 @@ export interface LanguageProfile {
 }
 
 export class MemoizedQuery {
-	private queryStr: string;
+	private readonly queryStr: string;
 	private cachedMap: Map<Language, Query> = new Map();
 
 	constructor(scopeQuery: string) {

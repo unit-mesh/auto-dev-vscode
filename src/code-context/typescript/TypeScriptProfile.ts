@@ -9,10 +9,11 @@ import tsscm from '../../code-search/schemas/indexes/typescript.scm?raw';
 export class TypeScriptProfile implements LanguageProfile {
 	languageIds = ["typescript", "typescriptreact"];
 	fileExtensions = ["ts", "tsx"];
-	grammar = (langService: TSLanguageService, langId: SupportedLanguage) => {
+	grammar = (langService: TSLanguageService, langId?: SupportedLanguage) => {
 		if (langId === "typescriptreact") {
 			return langService.getLanguage('typescriptreact');
 		}
+
 		return langService.getLanguage('typescript');
 	};
 	scopeQuery = new MemoizedQuery(tsscm);

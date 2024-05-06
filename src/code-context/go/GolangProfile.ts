@@ -1,7 +1,8 @@
+import { injectable } from "inversify";
+
 import { MemoizedQuery, LanguageProfile } from "../_base/LanguageProfile";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import goscm from '../../code-search/schemas/indexes/go.scm?raw';
-import { injectable } from "inversify";
 
 @injectable()
 export class GolangProfile implements LanguageProfile {
@@ -97,11 +98,15 @@ export class GolangProfile implements LanguageProfile {
 			`);
 	namespaces = [
 		// variables
-		["const", "var", "func", "module"],		// types
-		["struct", "interface", "type"],		// misc.
-		["member"], ["label"],];
+		["const", "var", "func", "module"],
+		// types
+		["struct", "interface", "type"],
+		// misc.
+		["member"], ["label"],
+	];
 	autoSelectInsideParent = [];
 	builtInTypes = [
-		"bool", "byte", "complex64", "complex128", "error", "float32", "float64", "int", "int8", "int16", "int32", "int64", "rune", "string", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr"
+		"bool", "byte", "complex64", "complex128", "error", "float32", "float64", "int", "int8", "int16", "int32", "int64",
+		"rune", "string", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr"
 	];
 }
