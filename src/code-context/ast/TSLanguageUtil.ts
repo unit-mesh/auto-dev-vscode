@@ -5,7 +5,7 @@ import { GoLangConfig } from "../go/GoLangConfig";
 
 export const ALL_LANGUAGES: LanguageConfig[] = [
   new JavaLangConfig(),
-  GoLangConfig,
+  new GoLangConfig(),
   TypeScriptLangConfig,
 ];
 

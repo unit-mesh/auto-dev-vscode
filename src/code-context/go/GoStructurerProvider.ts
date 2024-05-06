@@ -6,11 +6,11 @@ import { LanguageConfig } from "../_base/LanguageConfig";
 import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
-import { GoLangConfig } from "./GoLangConfig";
+import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 
 export class GoStructurerProvider extends BaseStructurerProvider {
 	protected langId: SupportedLanguage = "go";
-	protected config: LanguageConfig = GoLangConfig;
+	protected config: LanguageConfig = TSLanguageUtil.for("go")!!;
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 

@@ -9,18 +9,19 @@ import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/scope-graph/ScopeGraph";
 import { functionToRange } from "../../../editor/codemodel/CodeElement";
 import { GoStructurerProvider } from "../../../code-context/go/GoStructurerProvider";
+import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
 
 describe('RelevantClass for Golang', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = GoLangConfig;
+	let langConfig = TSLanguageUtil.for("go")!!;
 
 	beforeEach(async () => {
 		await Parser.init();
 		parser = new Parser();
 		const languageService = new TestLanguageService(parser);
 
-		language = await GoLangConfig.grammar(languageService, "go")!!;
+		language = await langConfig.grammar(languageService, "go")!!;
 		parser.setLanguage(language);
 		parser.setLogger(null);
 	});

@@ -108,5 +108,5 @@ export class JavaLangConfig implements LanguageConfig {
 		"boolean", "byte", "char", "short", "int", "long", "float", "double", "void",
 		"Boolean", "Byte", "Character", "Short", "Integer", "Long", "Float", "Double", "String",
 		"Array", "List", "Map", "Set", "Collection", "Iterable", "Iterator", "Stream", "Optional",
-	]
-};
+	];
+}
