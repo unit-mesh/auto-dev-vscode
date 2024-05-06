@@ -33,12 +33,16 @@ providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(AutoTestA
 providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(GenApiDataActionCreator);
 
 /**
- * A Language need to have a:
- * - RelatedCodeProvider (optional)
- * - TestGenProvider
- * - BuildToolProvider
- * - Structurer
+ * The `LanguageProvider` interface in TypeScript is used to define the structure of a language provider.
+ * A language provider is an object that provides various functionalities related to a specific programming language.
  */
+export interface LanguageProvider {
+	relatedCodeProvider?: RelevantCodeProvider;
+	testGenProvider?: TestGenProvider;
+	buildToolProvider?: BuildToolProvider;
+	structurer?: StructurerProvider;
+	toolchainContextProvider?: ToolchainContextProvider[];
+}
 
 providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(SpringContextProvider);
 providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(JavaSdkVersionProvider);
