@@ -1,20 +1,16 @@
 import { LanguageProfile } from "../_base/LanguageProfile";
-import { JavaProfile } from "../java/JavaProfile";
-import { TypeScriptProfile } from "../typescript/TypeScriptProfile";
-import { GolangProfile } from "../go/GolangProfile";
-
-export const ALL_LANGUAGES: LanguageProfile[] = [
-	new JavaProfile(),
-	new GolangProfile(),
-	new TypeScriptProfile(),
-];
+import { PROVIDER_TYPES } from "../../ProviderTypes";
+import { languageContainer } from "../../ProviderLanguageProfile.config";
 
 export class TSLanguageUtil {
 	static for(langId: string): LanguageProfile | undefined {
-		return ALL_LANGUAGES.find((target) => {
+		let languageProfiles = languageContainer.getAll<LanguageProfile>(PROVIDER_TYPES.LanguageProfile);
+
+		return languageProfiles.find((target) => {
 			return target.languageIds.some(
 				(id) => id.toLowerCase() === langId.toLowerCase()
 			);
 		});
 	}
 }
+

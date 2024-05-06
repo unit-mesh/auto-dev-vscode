@@ -28,6 +28,7 @@ import { LanguageProfile } from "./code-context/_base/LanguageProfile";
 import { JavaProfile } from "./code-context/java/JavaProfile";
 import { TypeScriptProfile } from "./code-context/typescript/TypeScriptProfile";
 import { GolangProfile } from "./code-context/go/GolangProfile";
+import { languageContainer } from "./ProviderLanguageProfile.config";
 
 const providerContainer = new Container();
 
@@ -44,26 +45,33 @@ providerContainer.bind<ActionCreator>(PROVIDER_TYPES.ActionCreator).to(GenApiDat
  * - Structurer
  */
 
-// Java
 providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(SpringContextProvider);
 providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(JavaSdkVersionProvider);
+
 providerContainer.bind<RelevantCodeProvider>(PROVIDER_TYPES.RelevantCodeProvider).to(JavaRelevantCodeProvider);
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(JavaTestGenProvider);
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GradleBuildToolProvider);
 providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(JavaStructurerProvider);
-providerContainer.bind<LanguageProfile>(PROVIDER_TYPES.LanguageProfile).to(JavaProfile);
 
 // TypeScript
 providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(JavaScriptContextProvider);
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(NpmBuildToolProvider);
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(TypeScriptTestGenProvider);
 providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(TypeScriptStructurer);
-providerContainer.bind<LanguageProfile>(PROVIDER_TYPES.LanguageProfile).to(TypeScriptProfile);
 
 
 // Golang
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GoBuildToolProvider);
 providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(GoStructurerProvider);
-providerContainer.bind<LanguageProfile>(PROVIDER_TYPES.LanguageProfile).to(GolangProfile);
+
+
+/**
+ * TODO: improve the design for LanguageProfile
+ * In current design, since the unit test slowly in VSCode env, we separate some design out vscode env,
+ * So the {@link LanguageProfile} should manual register in {@link TSLanguageUtil}
+ */
+languageContainer.getAll<LanguageProfile>(PROVIDER_TYPES.LanguageProfile).forEach((profile: LanguageProfile) => {
+	providerContainer.bind(PROVIDER_TYPES.LanguageProfile).toConstantValue(profile);
+});
 
 export { providerContainer };
