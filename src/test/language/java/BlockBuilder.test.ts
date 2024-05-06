@@ -2,7 +2,7 @@ const Parser = require("web-tree-sitter");
 
 import { JavaLangConfig } from "../../../code-context/java/JavaLangConfig";
 import { TestLanguageService } from "../../TestLanguageService";
-import { previousNodesOfType } from "../../../code-context/ast/TreeSitterUtil";
+import { TreeSitterUtil } from "../../../code-context/ast/TreeSitterUtil";
 
 describe('BlockBuilder for Java', () => {
 	let parser: any;
@@ -42,7 +42,7 @@ class HelloWorld {
 
 		const blockNode = matches[0].captures[0].node;
 
-		let commentNode = previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
+		let commentNode = TreeSitterUtil.previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
 
 		expect(commentNode.length).toBe(1);
 		expect(commentNode[0].text).includes("This is a method comment");

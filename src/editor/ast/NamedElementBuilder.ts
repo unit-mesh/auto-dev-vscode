@@ -5,8 +5,7 @@ import { TextInRange } from "./TextInRange";
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { LanguageConfig } from "../../code-context/_base/LanguageConfig";
 import { CodeElementType } from "../codemodel/CodeElementType";
-import { previousNodesOfType } from "../../code-context/ast/TreeSitterUtil";
-import { TestOnly } from "../../ops/TestOnly";
+import { TreeSitterUtil } from "../../code-context/ast/TreeSitterUtil";
 
 /**
  * The `NamedElementBuilder` class is used to build named elements (such as variables, methods, and classes) from a
@@ -146,7 +145,7 @@ export class NamedElementBuilder {
 						this.file
 					);
 
-					let commentNode = previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
+					let commentNode = TreeSitterUtil.previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
 					if (commentNode.length > 0) {
 						blockRange.commentRange = TextInRange.fromNode(commentNode[0]);
 					}
