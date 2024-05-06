@@ -1,19 +1,20 @@
 import { SyntaxNode } from "web-tree-sitter";
 
 import { TestLanguageService } from "../../TestLanguageService";
-import { TypeScriptLangConfig } from "../../../code-context/typescript/TypeScriptLangConfig";
+import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
 
 const Parser = require("web-tree-sitter");
 
 describe('TypeScriptLangConfig', () => {
 	let parser: any;
 	let grammar: any;
+	let langConfig = TSLanguageUtil.for("typescript")!!;
 
 	beforeEach(async () => {
 		await Parser.init();
 		parser = new Parser();
 		const languageService = new TestLanguageService(parser);
-		grammar = await TypeScriptLangConfig.grammar(languageService, "typescript")!!;
+		grammar = await langConfig.grammar(languageService, "typescript")!!;
 		parser.setLanguage(grammar);
 	});
 
@@ -35,7 +36,7 @@ class Greeter {
 }
 `;
 
-		const query = grammar!!.query(TypeScriptLangConfig.methodQuery.queryStr);
+		const query = grammar!!.query(langConfig.methodQuery.queryStr);
 		const root = parser.parse(sampleCode).rootNode;
 		const matches = query!!.matches(root);
 

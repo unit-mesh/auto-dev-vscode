@@ -4,20 +4,19 @@ const Parser = require("web-tree-sitter");
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 import { ScopeBuilder } from "../../../code-search/scope-graph/ScopeBuilder";
 import { TestLanguageService } from "../../TestLanguageService";
-import { testScopes } from "../../ScopeTestUtil";
-import { TypeScriptLangConfig } from "../../../code-context/typescript/TypeScriptLangConfig";
+import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
 
 describe('ScopeBuilder for TypeScript', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = TypeScriptLangConfig;
+	let langConfig = TSLanguageUtil.for("typescript")!!;
 
 	beforeEach(async () => {
 		await Parser.init();
 		parser = new Parser();
 		const languageService = new TestLanguageService(parser);
 
-		language = await TypeScriptLangConfig.grammar(languageService, "java")!!;
+		language = await langConfig.grammar(languageService, "java")!!;
 		parser.setLanguage(language);
 		parser.setLogger(null);
 	});
@@ -42,8 +41,8 @@ export default function IndexPage() {
 
 		parser.setTimeoutMicros(10 ** 6);
 		const rootNode = parser.parse(javaHelloWorld).rootNode;
-		const query = language.query(TypeScriptLangConfig.scopeQuery.queryStr);
-		let scopeBuilder = new ScopeBuilder(query!!, rootNode, javaHelloWorld, TypeScriptLangConfig);
+		const query = language.query(langConfig.scopeQuery.queryStr);
+		let scopeBuilder = new ScopeBuilder(query!!, rootNode, javaHelloWorld, langConfig);
 		let output = await scopeBuilder.build();
 
 		const hoverRanges = output.hoverableRanges();
