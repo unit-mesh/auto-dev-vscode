@@ -1,4 +1,4 @@
-import { SyntaxNode } from "web-tree-sitter";
+import Parser, { Query, SyntaxNode } from "web-tree-sitter";
 
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
@@ -7,11 +7,30 @@ import { StructurerProvider } from "./StructurerProvider";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRefs";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
+import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
+import { TSLanguageUtil } from "../ast/TSLanguageUtil";
+import { LanguageConfig } from "./LanguageConfig";
 
 export abstract class BaseStructurerProvider implements StructurerProvider {
+	protected abstract langId: SupportedLanguage;
+	protected abstract config: LanguageConfig;
+	protected abstract parser: Parser | undefined;
+	protected abstract language: Parser.Language | undefined;
+
 	abstract isApplicable(lang: SupportedLanguage): boolean;
 
 	abstract parseFile(code: string, path: string): Promise<CodeFile | undefined>;
+
+	async init(langService: TSLanguageService): Promise<Query | undefined> {
+		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
+		const _parser = langService.getParser() ?? new Parser();
+		const language = await tsConfig.grammar(langService, this.langId);
+		_parser.setLanguage(language);
+		this.parser = _parser;
+		this.language = language;
+		return language?.query(tsConfig.structureQuery.queryStr);
+	}
+
 
 	public insertLocation(node: SyntaxNode, model: PositionElement) {
 		model.start = { row: node.startPosition.row, column: node.startPosition.column };

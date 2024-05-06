@@ -5,8 +5,6 @@ import { JavaLangConfig } from "./JavaLangConfig";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
 import { LanguageConfig } from "../_base/LanguageConfig";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { BaseStructurerProvider } from "../_base/BaseStructurerProvider";
@@ -24,16 +22,6 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 
 	constructor() {
 		super();
-	}
-
-	async init(langService: TSLanguageService): Promise<Query | undefined> {
-		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
-		const _parser = langService.getParser() ?? new Parser();
-		const language = await tsConfig.grammar(langService, this.langId);
-		_parser.setLanguage(language);
-		this.parser = _parser;
-		this.language = language;
-		return language?.query(tsConfig.structureQuery.queryStr);
 	}
 
 	/**

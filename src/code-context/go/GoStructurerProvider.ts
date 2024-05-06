@@ -1,4 +1,4 @@
-import Parser, { Query, SyntaxNode } from "web-tree-sitter";
+import Parser, { SyntaxNode } from "web-tree-sitter";
 
 import { BaseStructurerProvider } from "../_base/BaseStructurerProvider";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
@@ -7,8 +7,6 @@ import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { GoLangConfig } from "./GoLangConfig";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 
 export class GoStructurerProvider extends BaseStructurerProvider {
 	protected langId: SupportedLanguage = "go";
@@ -18,16 +16,6 @@ export class GoStructurerProvider extends BaseStructurerProvider {
 
 	constructor() {
 		super();
-	}
-
-	async init(langService: TSLanguageService): Promise<Query | undefined> {
-		const tsConfig = TSLanguageUtil.fromId(this.langId)!!;
-		const _parser = langService.getParser() ?? new Parser();
-		const language = await tsConfig.grammar(langService, this.langId);
-		_parser.setLanguage(language);
-		this.parser = _parser;
-		this.language = language;
-		return language?.query(tsConfig.structureQuery.queryStr);
 	}
 
 	isApplicable(lang: string) {
