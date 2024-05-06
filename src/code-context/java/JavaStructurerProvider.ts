@@ -19,7 +19,7 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 	protected language: Parser.Language | undefined;
 
 	isApplicable(lang: string) {
-		return lang === "java";
+		return lang === this.langId;
 	}
 
 	constructor() {

@@ -46,6 +46,13 @@ export const GoLangConfig: LanguageConfig = {
 	blockCommentQuery: new MemoizedQuery(`
 		((comment)+) @docComment
 	`),
+	methodIOQuery: new MemoizedQuery(`
+		(function_declaration
+		  name: (identifier) @method-name
+		  parameters: (parameter_list) @method-parameters
+		  return_type: (type) @method-returnType
+		)
+	`),
 	structureQuery: new MemoizedQuery(`
 			(package_clause
 			  (package_identifier) @package-name)

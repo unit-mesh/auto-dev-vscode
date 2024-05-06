@@ -23,6 +23,7 @@ import { AutoDocActionCreator } from "./editor/action/autodoc/AutoDocActionCreat
 import { AutoTestActionCreator } from "./editor/action/autotest/AutoTestActionCreator";
 import { GenApiDataActionCreator } from "./editor/action/test-data/GenApiDataActionCreator";
 import { GoBuildToolProvider } from "./toolchain-context/buildtool/GoBuildToolProvider";
+import { GoStructurerProvider } from "./code-context/go/GoStructurerProvider";
 
 const providerContainer = new Container();
 
@@ -55,5 +56,6 @@ providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to
 
 // Golang
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GoBuildToolProvider);
+providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(GoStructurerProvider);
 
 export { providerContainer };
