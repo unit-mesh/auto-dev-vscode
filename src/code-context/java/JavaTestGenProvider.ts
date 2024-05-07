@@ -1,5 +1,6 @@
 import vscode, { l10n } from "vscode";
 import { injectable } from "inversify";
+import path from "path";
 
 import { TestGenProvider } from "../_base/test/TestGenProvider";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
@@ -10,12 +11,11 @@ import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
-import { documentToTreeSitterFile, textToTreeSitterFile } from "../ast/TreeSitterFileUtil";
+import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
-import { channel } from "../../channel";
-import { PositionUtil } from "../../editor/ast/PositionUtil";
 import { JavaCodeCorrector } from "./utils/JavaCodeCorrector";
-import path from "path";
+import { JavaStructurerProvider } from "./JavaStructurerProvider";
+import { CommentedUmlPresenter } from "../../editor/codemodel/presenter/CommentedUmlPresenter";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
@@ -79,16 +79,21 @@ export class JavaTestGenProvider implements TestGenProvider {
 			.replace("src/main/java", "src/test/java");
 
 		let filename = path.basename(document.uri.fsPath);
-		let testClassName = filename.replace(".java", "");
+		let classname = filename.replace(".java", "");
+
+		let structurerProvider = new JavaStructurerProvider();
+		let codeFile = await structurerProvider.parseFile(document.getText(), document.fileName);
+		let currentClass = codeFile?.classes.find((clazz) => clazz.name === classname);
 
 		const testContext: AutoTestTemplateContext = {
 			filename: filename,
 			language: document.languageId,
 			targetPath: targetPath,
-			underTestClassName: testClassName,
-			targetTestClassName: testClassName + "Test",
+			underTestClassName: classname,
+			targetTestClassName: classname + "Test",
 			sourceCode: element.blockRange.text,
 			relatedClasses: "",
+			currentClass: new CommentedUmlPresenter().presentClass(currentClass!!, "java"),
 			chatContext: "",
 			imports: [],
 		};

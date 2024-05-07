@@ -7,7 +7,7 @@ export interface AutoTestTemplateContext extends TemplateContext {
 	isNewFile?: boolean,
 	relatedClasses: string,
 	/// means the class which you want to test
-	currentClass?: CodeStructure,
+	currentClass?: string,
 	underTestClassName: string,
 	/// the generated test class name
 	targetTestClassName?: string,

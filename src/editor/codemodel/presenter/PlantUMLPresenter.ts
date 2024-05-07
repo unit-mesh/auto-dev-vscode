@@ -45,6 +45,10 @@ export class PlantUMLPresenter implements Presenter {
 		return plantUmlString;
 	}
 
+	protected renderClass(clazz: CodeStructure): string {
+		return this.convertClassToPlantUml(clazz);
+	}
+
 	private convertClassToPlantUml(classItem: CodeStructure): string {
 		let plantUmlString = `class ${classItem.name} {\n`;
 
