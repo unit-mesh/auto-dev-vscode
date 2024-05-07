@@ -104,13 +104,17 @@ export class JavaTestGenProvider implements TestGenProvider {
 			return Promise.reject(`Failed to find tree-sitter file for: ${document.uri}`);
 		}
 
+		await this.fixIncorrectClassName(tsfile, document);
+		await this.fixIncorrectPackageName(tsfile, output, document);
+	}
+
+	private async fixIncorrectClassName(tsfile: TreeSitterFile, document: vscode.TextDocument) {
 		let targetClassName = this.context!!.genTestClassName;
 		let query = tsfile.languageProfile.classQuery.query(tsfile.tsLanguage);
 		const captures = query!!.captures(tsfile.tree.rootNode);
 
 		// find the class declaration
 		const queryCapture = captures.find((c) => c.name === "name.definition.class");
-
 		if (queryCapture) {
 			// compare targetClassName to queryCapture.text if they are different, replace queryCapture.text with targetClassName
 			let classNode = queryCapture.node;
@@ -120,15 +124,13 @@ export class JavaTestGenProvider implements TestGenProvider {
 				await vscode.workspace.fs.writeFile(document.uri, Buffer.from(newText));
 			}
 		}
-
-		await this.fixLostPackageName(tsfile, output, document);
 	}
 
 	/**
 	 * Fix LLM generated test file lost package name issue
 	 * FIXME: fix package name not equal
 	 */
-	private async fixLostPackageName(tsfile: TreeSitterFile, output: string, document: vscode.TextDocument) {
+	private async fixIncorrectPackageName(tsfile: TreeSitterFile, output: string, document: vscode.TextDocument) {
 		let packageQuery = tsfile.languageProfile.packageQuery!!.query(tsfile.tsLanguage);
 		const packageCapture = packageQuery!!.captures(tsfile.tree.rootNode);
 
