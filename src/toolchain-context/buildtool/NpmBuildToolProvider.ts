@@ -1,9 +1,7 @@
 import path from "path";
 import vscode from "vscode";
 import { injectable } from "inversify";
-import fs from "fs";
 
-import { BuildToolProvider } from "./_base/BuildToolProvider";
 import { DEP_SCOPE, DependencyEntry, PackageDependencies } from "./_base/Dependence";
 import { PackageManger } from "./_base/PackageManger";
 import {
@@ -12,12 +10,10 @@ import {
 	PackageJsonDependencyEntry
 } from "../framework/javascript/JsDependenciesSnapshot";
 import { getExtensionContext } from "../../context";
-import { CreateToolchainContext } from "../ToolchainContextProvider";
-
-import { applyJavaScript } from "../framework/javascript/utils/JavaScriptUtils";
+import { BaseBuildToolProvider } from "./_base/BaseBuildToolProvider";
 
 @injectable()
-export class NpmBuildToolProvider implements BuildToolProvider {
+export class NpmBuildToolProvider extends BaseBuildToolProvider {
 	// singleton
 	private static instance_: NpmBuildToolProvider;
 
@@ -30,36 +26,6 @@ export class NpmBuildToolProvider implements BuildToolProvider {
 	}
 
 	moduleTarget = ["package.json"];
-
-	isApplicable(context: CreateToolchainContext): Promise<boolean> {
-		if (!applyJavaScript(context)) {
-			return Promise.resolve(false);
-		}
-
-		return new Promise((resolve, reject) => {
-			const workspaces = vscode.workspace.workspaceFolders?.[0];
-			if (!workspaces) {
-				return resolve(false);
-			}
-
-			try {
-				let hasTarget = false;
-				for (const target of this.moduleTarget) {
-					let targetPath = path.join(workspaces.uri.fsPath, target);
-					fs.stat(targetPath, (err, stats) => {
-						if (!err && stats.isFile()) {
-							hasTarget = true;
-							resolve(true);
-						}
-					});
-				}
-
-				resolve(hasTarget);
-			} catch(e) {
-				resolve(false);
-			}
-		});
-	}
 
 	depTypeMap: { [key: string]: DEP_SCOPE } = {
 		'dependencies': DEP_SCOPE.NORMAL,
