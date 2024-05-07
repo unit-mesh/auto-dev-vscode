@@ -12,7 +12,13 @@ export class SpringContextProvider implements ToolchainContextProvider {
 		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable(context);
 	}
 
+	private cacheContextItem: Map<CreateToolchainContext, ToolchainContextItem[]> = new Map();
+
 	async collect(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
+		if (this.cacheContextItem.has(context)) {
+			return this.cacheContextItem.get(context) || [];
+		}
+
 		let deps;
 		try {
 			deps = await GradleBuildToolProvider.instance().getDependencies();
@@ -36,22 +42,16 @@ export class SpringContextProvider implements ToolchainContextProvider {
 			return fileName.endsWith("Service.java") || fileName.endsWith("ServiceImpl.java") || fileName.endsWith("Service.kt") || fileName.endsWith("ServiceImpl.kt");
 		};
 
-		if (isController()) {
-			return [
+		if (isController() || isService()) {
+			let prompts = [
 				{
 					clazz: SpringContextProvider.name,
 					text: `You are working on a project that uses ${Array.from(techStacks.coreFrameworks.keys()).join(",")} to build RESTful APIs.`
 				}
 			];
-		}
 
-		if (isService()) {
-			return [
-				{
-					clazz: SpringContextProvider.name,
-					text: `You are working on a project that uses ${Array.from(techStacks.coreFrameworks.keys()).join(",")}to build business logic.`
-				}
-			];
+			this.cacheContextItem.set(context, prompts);
+			return prompts;
 		}
 
 		return [];

@@ -49,6 +49,7 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 
 		let dependencies = await this.assembleGradleExtensionDependencies();
 		if (dependencies.dependencies.length > 0) {
+			this.deps = dependencies;
 			return dependencies;
 		}
 
