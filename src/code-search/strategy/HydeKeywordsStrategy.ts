@@ -2,9 +2,17 @@ import { HydeStrategy, HydeQuery } from "./_base/HydeStrategy";
 import { ChunkItem, Embedding } from "../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
 
-export class HydeKeywordPolicy implements HydeStrategy<string[]> {
+/**
+ * Generate keywords from the query, and then used to retrieve similar code by symbols.
+ *
+ * Should set prioritize for the text code aka {@link TextDocument}.
 
-	instruction(): string {
+ * - High: Current Document
+ * - Medium: Recently Documents
+ * - Low: All Documents
+ */
+export class HydeKeywordsStrategy implements HydeStrategy<string[]> {
+	instruction(userInput: string): string {
 		return "";
 	}
 
@@ -23,5 +31,4 @@ export class HydeKeywordPolicy implements HydeStrategy<string[]> {
 	retrieveChunks(condition: HydeQuery): ChunkItem[] {
 		return [];
 	}
-
 }

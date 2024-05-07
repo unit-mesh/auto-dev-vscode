@@ -29,7 +29,7 @@ export interface HydeStrategy<T> {
 	/**
 	 * the Instruction prompt for executing by LLM;
 	 */
-	instruction: () => string;
+	instruction: (userInput: string) => string;
 
 	/**
 	 * Generate Hyde doc can be Code, Keyword[], or any text,

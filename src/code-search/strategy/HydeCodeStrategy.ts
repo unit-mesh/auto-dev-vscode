@@ -2,8 +2,11 @@ import { Embedding, ChunkItem } from "../embedding/_base/Embedding";
 import { HydeStrategy, HydeQuery } from "./_base/HydeStrategy";
 import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
 
-export class HydeCodePolicy implements HydeStrategy<string> {
-	instruction(): string {
+/**
+ * Generate hypothetical document base on user input, and then used to retrieve similar code by symbols.
+ */
+export class HydeCodeStrategy implements HydeStrategy<string> {
+	instruction(userInput: string): string {
 		return "";
 	}
 
