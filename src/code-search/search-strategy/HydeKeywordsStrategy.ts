@@ -51,15 +51,4 @@ export class HydeKeywordsStrategy implements HydeStrategy<string[]> {
 	clusterChunks(docs: HydeDocument<string[]>[]): Embedding[] {
 		return [];
 	}
-
-	/**
-	 * Parse string keyword to array, for example:
-	 *
-	 * input the string "['a', 'b', 'c', 'd']",
-	 * output will be: ['a', 'b', 'c', 'd']
-	 *
-	 */
-	parseKeywords(content: string): string[] {
-		return JSON.parse(content);
-	}
 }
