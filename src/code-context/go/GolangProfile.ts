@@ -8,7 +8,10 @@ import goscm from '../../code-search/schemas/indexes/go.scm?raw';
 export class GolangProfile implements LanguageProfile {
 	languageIds = ["Go"];
 	fileExtensions = ["go"];
+
 	grammar = (langService: TSLanguageService) => langService.getLanguage('go');
+	isTestFile = (filePath: string) => filePath.endsWith('_test.go');
+
 	scopeQuery = new MemoizedQuery(goscm);
 	hoverableQuery = new MemoizedQuery(`
      [(identifier)

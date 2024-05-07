@@ -16,6 +16,7 @@ export class TypeScriptProfile implements LanguageProfile {
 
 		return langService.getLanguage('typescript');
 	};
+	isTestFile = (filePath: string) => filePath.endsWith('.test.ts') || filePath.endsWith('.spec.ts');
 	scopeQuery = new MemoizedQuery(tsscm);
 	hoverableQuery = new MemoizedQuery(`
       [(identifier)

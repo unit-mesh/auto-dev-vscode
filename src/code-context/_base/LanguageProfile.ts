@@ -53,6 +53,9 @@ export interface LanguageProfile {
 	autoSelectInsideParent: string[];
 
 	builtInTypes: string[];
+
+	// should return true if the file is a test file
+	isTestFile: (filePath: string) => boolean;
 }
 
 export class MemoizedQuery {
