@@ -53,6 +53,8 @@ export interface HydeStrategy<T> {
 
 	/**
 	 * Retrieve the most relevant code snippets based on the given condition
+	 * It can be:
+	 * - Lost in the middle link, ReRank the code snippets
 	 * @param docs - The documents to be used for retrieval
 	 * @returns The most relevant code snippets
 	 */

@@ -28,16 +28,12 @@ export class HydeKeywordsStrategy implements HydeStrategy<string[]> {
 	}
 
 	async instruction(userInput: string): Promise<string> {
-		const context: KeywordTemplateContext =  {
+		const context: KeywordTemplateContext = {
 			language: "",
 			userInput: userInput
 		};
 
 		return await this.promptManager.getHydeTemplate(HydeStep.Propose, this.documentType, context);
-	}
-
-	clusterChunks(docs: HydeDocument<string[]>[]): Embedding[] {
-		return [];
 	}
 
 	embedDocument(doc: HydeDocument<string[]>): Embedding {
@@ -50,5 +46,20 @@ export class HydeKeywordsStrategy implements HydeStrategy<string[]> {
 
 	retrieveChunks(condition: HydeQuery): ChunkItem[] {
 		return [];
+	}
+
+	clusterChunks(docs: HydeDocument<string[]>[]): Embedding[] {
+		return [];
+	}
+
+	/**
+	 * Parse string keyword to array, for example:
+	 *
+	 * input the string "['a', 'b', 'c', 'd']",
+	 * output will be: ['a', 'b', 'c', 'd']
+	 *
+	 */
+	parseKeywords(content: string): string[] {
+		return JSON.parse(content);
 	}
 }
