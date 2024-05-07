@@ -36,6 +36,15 @@ export class TypeScriptProfile implements LanguageProfile {
 			(generator_function_declaration
 				name: (identifier) @name.identifier.method
 			) @definition.method
+			
+			(export_statement
+			  declaration: (lexical_declaration 
+			    (variable_declarator
+			      name: (identifier) @name.identifier.method
+			      value: (arrow_function) 
+		      )
+			  ) @definition.method
+			)
 
       (class_declaration
         name: (type_identifier)
