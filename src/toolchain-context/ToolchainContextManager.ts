@@ -5,7 +5,8 @@ import { PROVIDER_TYPES } from "../ProviderTypes";
 export class ToolchainContextManager {
 	private static instance_: ToolchainContextManager;
 
-	private constructor() {}
+	private constructor() {
+	}
 
 	static instance(): ToolchainContextManager {
 		if (!ToolchainContextManager.instance_) {
@@ -16,11 +17,13 @@ export class ToolchainContextManager {
 
 	async collectContextItems(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
 		let map: Promise<ToolchainContextItem[]>[] = providerContainer.getAll<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider)
-			.filter(async (provider) => {
-				return await provider.isApplicable(context);
-			}).map(async (provider) => {
+			.map(async (provider) => {
 				try {
-					return await provider.collect(context);
+					if (await provider.isApplicable(context)) {
+						return await provider.collect(context);
+					} else {
+						return [];
+					}
 				} catch (e) {
 					return [];
 				}
