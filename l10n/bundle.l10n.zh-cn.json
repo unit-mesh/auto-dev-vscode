@@ -1,5 +1,6 @@
 {
   "AutoComment": "生成文档",
+  "AutoTest": "生成测试",
   "lang.java.prompt.basicTestTemplate": "You MUST use should_xx_xx style for test method name, You MUST use given-when-then style.\nTest file should be complete and compilable, without need for further actions.\nEnsure that each test focuses on a single use case to maintain clarity and readability.\nInstead of using `@BeforeEach` methods for setup, include all necessary code initialization within each individual test method, do not write parameterized tests.",
   "lang.java.prompt.testForController": "Use appropriate Spring test annotations such as `@MockBean`, `@Autowired`, `@WebMvcTest`, `@DataJpaTest`, `@AutoConfigureTestDatabase`, `@AutoConfigureMockMvc`, `@SpringBootTest` etc",
   "lang.java.prompt.testForService": "Follow the common Spring code style by using the AssertJ library.\nAssume that the database is empty before each test and create valid entities with consideration for data constraints (jakarta.validation.constraints).",

@@ -119,5 +119,11 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		await testgen.postProcessCodeFix(newDoc, output);
 
 		channel.append(doc);
+
+		// if new file is empty, console.error and remove file
+		if (newDoc.getText().length === 0) {
+			console.error("Empty file, removing...");
+			await vscode.workspace.fs.delete(newDocUri);
+		}
 	}
 }
