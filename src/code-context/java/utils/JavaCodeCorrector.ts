@@ -49,6 +49,8 @@ export class JavaCodeCorrector {
 				);
 
 				edit.replace(document.uri, classNameRange, this.targetClassName);
+				// applyEdit
+				await vscode.workspace.applyEdit(edit);
 			}
 		}
 	}
@@ -63,26 +65,26 @@ export class JavaCodeCorrector {
 		// if package is not found, add package to the top of the file
 		if (packageCapture.length === 0) {
 			let content = "package " + this.packageName + ";\n";
-			let newText = content + output;
 
 			let edit = new vscode.WorkspaceEdit();
 			edit.insert(document.uri, new vscode.Position(0, 0), content);
+
+			await vscode.workspace.applyEdit(edit);
 		}
 
 		// if package is found, compare package name to this.packageName, if they are different, replace package name
 		if (packageCapture.length > 0) {
 			let packageNode = packageCapture[0].node;
 			if (this.packageName !== packageNode.text) {
-				let range = tsfile.tree.rootNode.text.slice(packageNode.startIndex, packageNode.endIndex);
-				let newText = tsfile.tree.rootNode.text.replace(range, this.packageName);
-
 				let edit = new vscode.WorkspaceEdit();
 
 				let pkgNameRange = new vscode.Range(
 					PositionUtil.fromNode(packageNode.startPosition),
 					PositionUtil.fromNode(packageNode.endPosition)
 				);
+
 				edit.replace(document.uri, pkgNameRange, this.packageName);
+				await vscode.workspace.applyEdit(edit);
 			}
 		}
 	}
