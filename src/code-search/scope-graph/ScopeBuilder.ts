@@ -137,7 +137,7 @@ export class ScopeBuilder {
 			}
 		}
 
-		const scopeGraph = new ScopeGraph(this.rootNode);
+		const scopeGraph = new ScopeGraph(this.rootNode, this.languageConfig);
 		const captures = this.query.captures(this.rootNode);
 
 		const captureMap: { [index: number]: TextRange[] } = captures.reduce((map: any, capture) => {

@@ -12,18 +12,21 @@ import { ScopeDebug } from "../../test/ScopeDebug";
 import { TestOnly } from "../../ops/TestOnly";
 import { ImportWithRefs } from "./model/ImportWithRefs";
 import { DefToScope, EdgeKind, ImportToScope, RefToDef, RefToImport, ScopeToScope } from "./edge/EdgeKind";
+import { nameOfSymbol } from "./model/SymbolId";
 
 export type NodeIndex = string;
 
 export class ScopeGraph {
 	graph: Graph<NodeKind>;
 	private rootIndex: NodeIndex;
+	private languageProfile: LanguageProfile;
 
-	constructor(rootNode: SyntaxNode) {
+	constructor(rootNode: SyntaxNode, languageProfile: LanguageProfile) {
 		this.graph = new Graph();
 		const range = TextRange.from(rootNode);
 		let localScope = new LocalScope(range);
 		const index = 0;
+		this.languageProfile = languageProfile;
 		this.graph.addNode(index, localScope);
 		this.rootIndex = index.toString();
 	}
@@ -264,6 +267,32 @@ export class ScopeGraph {
 
 				return { name: name, range, refs, text: text};
 			});
+	}
+
+	symbols() {
+		const namespaces = this.languageProfile.namespaces;
+		return this.graph.nodes()
+			.filter(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				return nodeKind instanceof LocalDef && nodeKind.symbolId;
+			})
+			.map(node => {
+				const nodeKind = this.graph.getNodeAttributes(node) as LocalDef;
+				// return nodeKind.symbolId!!.name(namespaces);
+				return nameOfSymbol(namespaces, nodeKind.symbolId!!);
+			});
+	}
+
+	symbolNameOf(idx: NodeIndex): string | undefined {
+		const namespaces = this.languageProfile.namespaces;
+		const nodeKind = this.graph.getNodeAttributes(idx);
+		if (nodeKind instanceof LocalDef) {
+			const localDef = nodeKind as LocalDef;
+			if (localDef.symbolId) {
+				return nameOfSymbol(namespaces, localDef.symbolId!!);
+			}
+		}
+		return undefined;
 	}
 }
 
