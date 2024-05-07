@@ -1,6 +1,7 @@
 export enum CppFrameworks {
-	Qt = "Qt",
-	Boost = "Boost"
+	Boost = "Boost",
+	ETL = "ETL",
+	QT = "QT"
 }
 
 export enum CppTestFrameworks {

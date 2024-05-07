@@ -1,22 +1,19 @@
 import { injectable } from "inversify";
 
-import { ToolchainContextItem, ToolchainContextProvider, CreateToolchainContext } from "../../ToolchainContextProvider";
+import { CreateToolchainContext, ToolchainContextItem, ToolchainContextProvider } from "../../ToolchainContextProvider";
 import { JsDependenciesSnapshot, PackageJsonDependency } from "./JsDependenciesSnapshot";
 import { TechStack } from "../jvm/TechStack";
 import { getExtensionContext } from "../../../context";
 import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
 import { NpmBuildToolProvider } from "../../buildtool/NpmBuildToolProvider";
-
-export function isJavaScriptEnv(context: CreateToolchainContext) {
-	return context.language === "javascript" || context.language === "typescript" || context.language === "javascriptreact" || context.language === "typescriptreact";
-}
+import { applyJavaScript } from "./utils/JavaScriptUtils";
 
 @injectable()
 export class JavaScriptContextProvider implements ToolchainContextProvider {
 	private clazzName = this.constructor.name;
 
 	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
-		return isJavaScriptEnv(context);
+		return applyJavaScript(context);
 	}
 
 	async collect(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {

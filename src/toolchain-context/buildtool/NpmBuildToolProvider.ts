@@ -13,7 +13,8 @@ import {
 } from "../framework/javascript/JsDependenciesSnapshot";
 import { getExtensionContext } from "../../context";
 import { CreateToolchainContext } from "../ToolchainContextProvider";
-import { isJavaScriptEnv } from "../framework/javascript/JavaScriptContextProvider";
+
+import { applyJavaScript } from "../framework/javascript/utils/JavaScriptUtils";
 
 @injectable()
 export class NpmBuildToolProvider implements BuildToolProvider {
@@ -31,7 +32,7 @@ export class NpmBuildToolProvider implements BuildToolProvider {
 	moduleTarget = ["package.json"];
 
 	isApplicable(context: CreateToolchainContext): Promise<boolean> {
-		if (!isJavaScriptEnv(context)) {
+		if (!applyJavaScript(context)) {
 			return Promise.resolve(false);
 		}
 
