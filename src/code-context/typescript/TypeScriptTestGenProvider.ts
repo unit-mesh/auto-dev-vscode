@@ -78,6 +78,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 			currentClass: undefined,
 			isNewFile: true,
 			language: language,
+			sourceCode: block.blockRange.text,
 			relatedClasses: "",
 			underTestClassName: elementName,
 			imports: imports,
