@@ -13,6 +13,7 @@ import { TestOnly } from "../../ops/TestOnly";
 import { ImportWithRefs } from "./model/ImportWithRefs";
 import { DefToScope, EdgeKind, ImportToScope, RefToDef, RefToImport, ScopeToScope } from "./edge/EdgeKind";
 import { nameOfSymbol } from "./model/SymbolId";
+import { Symbol } from "./model/Symbol";
 
 export type NodeIndex = string;
 
@@ -265,22 +266,29 @@ export class ScopeGraph {
 
 				const text = range.contentFromRange(src);
 
-				return { name: name, range, refs, text: text};
+				return { name: name, range, refs, text: text };
 			});
 	}
 
-	symbols() {
+	symbols(): Symbol[] {
 		const namespaces = this.languageProfile.namespaces;
 		return this.graph.nodes()
 			.filter(node => {
 				const nodeKind = this.graph.getNodeAttributes(node);
-				return nodeKind instanceof LocalDef && nodeKind.symbolId;
+				return nodeKind instanceof LocalDef;
 			})
 			.map(node => {
-				const nodeKind = this.graph.getNodeAttributes(node) as LocalDef;
-				// return nodeKind.symbolId!!.name(namespaces);
-				return nameOfSymbol(namespaces, nodeKind.symbolId!!);
-			});
+				const nodeKind = this.graph.getNodeAttributes(node);
+				const localDef = nodeKind as LocalDef;
+				if (localDef.symbolId) {
+					return new Symbol(
+						nameOfSymbol(namespaces, localDef.symbolId),
+						localDef.range
+					);
+				}
+				return undefined;
+			})
+			.filter(sym => sym !== undefined) as Symbol[];
 	}
 
 	symbolNameOf(idx: NodeIndex): string | undefined {

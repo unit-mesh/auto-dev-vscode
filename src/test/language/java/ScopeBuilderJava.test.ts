@@ -35,13 +35,15 @@ class HelloWorld {
 		const query = langConfig.scopeQuery.query(language);
 
 		let scopeBuilder = new ScopeBuilder(query!!, rootNode, javaHelloWorld, langConfig);
-		let output = await scopeBuilder.build();
+		let scopeGraph = await scopeBuilder.build();
 
-		const hoverRanges = output.hoverableRanges();
+		const hoverRanges = scopeGraph.hoverableRanges();
 		expect(hoverRanges.length).toBe(4);
 
 		const allText = hoverRanges.map((range) => range.getText()).join(", ");
 		expect(allText).toBe("args, HelloWorld, main, args");
+
+		expect(scopeGraph.symbols().length).toBe(3);
 	});
 
 	it('test for main scopes', async () => {
