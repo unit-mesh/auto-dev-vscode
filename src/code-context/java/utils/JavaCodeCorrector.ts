@@ -35,7 +35,6 @@ export class JavaCodeCorrector {
 		let query = tsfile.languageProfile.classQuery.query(tsfile.tsLanguage);
 		const captures = query!!.captures(tsfile.tree.rootNode);
 
-		// find the class declaration
 		const queryCapture = captures.find((c) => c.name === "name.definition.class");
 		if (queryCapture) {
 			// compare targetClassName to queryCapture.text if they are different, replace queryCapture.text with targetClassName
@@ -64,7 +63,7 @@ export class JavaCodeCorrector {
 
 		// if package is not found, add package to the top of the file
 		if (packageCapture.length === 0) {
-			let content = "package " + this.packageName + ";\n";
+			let content = "package " + this.packageName + ";\n\n";
 
 			let edit = new vscode.WorkspaceEdit();
 			edit.insert(document.uri, new vscode.Position(0, 0), content);
@@ -72,7 +71,8 @@ export class JavaCodeCorrector {
 			await vscode.workspace.applyEdit(edit);
 		}
 
-		// if package is found, compare package name to this.packageName, if they are different, replace package name
+		// fixme: not tested
+		// if package is found, compare package name to this.packageName if they are different, replace package name
 		if (packageCapture.length > 0) {
 			let packageNode = packageCapture[0].node;
 			if (this.packageName !== packageNode.text) {

@@ -15,6 +15,7 @@ import { TreeSitterFile } from "../ast/TreeSitterFile";
 import { channel } from "../../channel";
 import { PositionUtil } from "../../editor/ast/PositionUtil";
 import { JavaCodeCorrector } from "./utils/JavaCodeCorrector";
+import path from "path";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
@@ -77,12 +78,15 @@ export class JavaTestGenProvider implements TestGenProvider {
 			.replace(".java", "Test.java")
 			.replace("src/main/java", "src/test/java");
 
+		let filename = path.basename(document.uri.fsPath);
+		let testClassName = element.identifierRange.text;
+
 		const testContext: AutoTestTemplateContext = {
-			filename: document.fileName,
+			filename: filename,
 			language: document.languageId,
 			targetPath: targetPath,
-			underTestClassName: element.identifierRange.text,
-			targetTestClassName: document.fileName.replace(".java", "Test.java"),
+			underTestClassName: testClassName,
+			targetTestClassName: testClassName + "Test",
 			sourceCode: element.blockRange.text,
 			relatedClasses: "",
 			chatContext: "",
