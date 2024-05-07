@@ -57,7 +57,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		// TODO: spike better way to improve performance
 		let toolchainContextItems = await PromptManager.getInstance().collectToolchain(creationContext);
-		let languageContextItems = await testgen.collect(testContext);
+		let languageContextItems = await testgen.collectTestContext(testContext);
 
 		const toolchainItems = toolchainContextItems.concat(languageContextItems);
 		if (toolchainItems.length > 0) {

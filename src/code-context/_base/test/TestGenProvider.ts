@@ -37,7 +37,7 @@ export interface TestGenProvider {
 	/**
 	 * collects the context for the test generation, like TestFramework, BuildTool, etc.
 	 */
-	collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]>;
+	collectTestContext(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]>;
 
 	/**
 	 * setup for language service which is used for test generation.

@@ -116,7 +116,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 		await codeFixer.correct();
 	}
 
-	async collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
+	async collectTestContext(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
 		const fileName = context.filename;
 
 		if (context && context.imports === undefined) {

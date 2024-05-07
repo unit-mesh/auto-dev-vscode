@@ -78,7 +78,7 @@ export class GoTestGenProvider implements TestGenProvider {
 		return Promise.resolve([]);
 	}
 
-	collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
+	collectTestContext(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
 		return Promise.resolve([]);
 	}
 
