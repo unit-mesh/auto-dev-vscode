@@ -34,6 +34,8 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 			return;
 		}
 
+		channel.appendLine("GradleBuildToolProvider startWatch");
+
 		try {
 			this.deps = await this.getDependencies();
 			this.gradleInfo = await this.getGradleVersion();
@@ -43,6 +45,10 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 	}
 
 	async getDependencies(): Promise<PackageDependencies> {
+		if (!await this.isApplicable()) {
+			return { name: this.getToolingName(), version: "unknown", path: "", dependencies: [], packageManager: PackageManger.GRADLE };
+		}
+
 		if (this.deps) {
 			return this.deps;
 		}

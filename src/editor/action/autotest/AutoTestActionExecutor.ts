@@ -12,6 +12,7 @@ import { CreateToolchainContext } from "../../../toolchain-context/ToolchainCont
 import { ActionType } from "../../../prompt-manage/ActionType";
 import { RelevantCodeProviderManager } from "../../../code-context/RelevantCodeProviderManager";
 import { documentToTreeSitterFile } from "../../../code-context/ast/TreeSitterFileUtil";
+import { channel } from "../../../channel";
 
 export class AutoTestActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoTest;
@@ -116,5 +117,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		const newDoc = await vscode.workspace.openTextDocument(newDocUri);
 		await testgen.postProcessCodeFix(newDoc, output);
+
+		channel.append(doc);
 	}
 }
