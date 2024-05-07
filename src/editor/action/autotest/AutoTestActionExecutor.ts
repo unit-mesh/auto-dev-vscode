@@ -87,6 +87,8 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		const outputFile = testContext.targetPath;
 		let newDocUri = vscode.Uri.file(outputFile!!);
 
+		let editor = vscode.window.activeTextEditor!!;
+
 		try {
 			for await (const chunk of llm._streamChat([msg])) {
 				doc += chunk.content;
@@ -94,9 +96,9 @@ export class AutoTestActionExecutor implements ActionExecutor {
 				const output = MarkdownCodeBlock.parse(doc).text;
 
 				if (output) {
-					// write to output file
-					// refactor change to append line
-					await vscode.workspace.fs.writeFile(newDocUri, Buffer.from(output));
+					let workspaceEdit = new vscode.WorkspaceEdit();
+					workspaceEdit.replace(newDocUri, new vscode.Range(0, 0, editor.document.lineCount, 0), output);
+					await vscode.workspace.applyEdit(workspaceEdit);
 				}
 			}
 		} catch (e) {

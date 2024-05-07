@@ -79,7 +79,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 			.replace("src/main/java", "src/test/java");
 
 		let filename = path.basename(document.uri.fsPath);
-		let testClassName = element.identifierRange.text;
+		let testClassName = filename.replace(".java", "");
 
 		const testContext: AutoTestTemplateContext = {
 			filename: filename,
