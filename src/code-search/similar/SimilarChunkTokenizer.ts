@@ -24,7 +24,7 @@ import { TermSplitter } from "../search/tfidf/TermSplitter";
 
 // a list of commonly used words that have little meaning and can be excluded
 // from analysis.
-const ChineseStopWords = [
+const CHINESE_STOP_WORDS = [
 	'的', '地', '得', '和', '跟',
 	'与', '及', '向', '并', '等',
 	'更', '已', '含', '做', '我',
@@ -41,11 +41,26 @@ const ChineseStopWords = [
 	'一', '为', '中', '于', '对',
 	'会', '之', '第', '此', '或',
 	'共', '按', '请'
-]
+];
 
 /**
- * based on:
- * https://github.com/mengjian-github/copilot-analysis#promptelement%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9
+ * The `tokenize` method takes a string as an input and returns a set of unique words (tokens) from the input string.
+ * It first splits the input string into individual words or terms using the `splitIntoTerms` method.
+ * Then it filters out any words that are present in the `stopWordsSet`.
+ * The `stopWordsSet` is a set of common words that are usually ignored in natural language processing due to their lack of meaningful information.
+ *
+ * @param input - A string that needs to be tokenized.
+ *
+ * @returns A set of unique words from the input string after removing the stop words.
+ *
+ * @throws Will throw an error if the input is not a string.
+ *
+ * @example
+ *
+ * This method is part of a text processing or natural language processing workflow, where the input string is a sentence or a paragraph of text.
+ *
+ * Note: This method does not handle punctuation or special characters. It is assumed that the input string is preprocessed to remove such characters.
+ *
  */
 export class SimilarChunkTokenizer {
 	// singletons
@@ -69,7 +84,7 @@ export class SimilarChunkTokenizer {
 
 	javaKeywords = ["public", "private", "protected", "static", "final", "abstract", "interface", "implements", "extends", "throws", "throw", "try", "catch", "finally", "synchronized"];
 
-	chineseStopWords = ChineseStopWords;
+	chineseStopWords = CHINESE_STOP_WORDS;
 
 	stopWordsSet = new Set([
 		...this.stopWords,
@@ -82,6 +97,10 @@ export class SimilarChunkTokenizer {
 		return new Set(this.splitIntoTerms(input).filter(word => !this.stopWordsSet.has(word)));
 	}
 
+	/**
+	 * Todo: call DomainTermService to teams if enable for Team Term
+	 * {@link DomainTermService} is a service that provides domain-specific terms for a given domain.
+	 */
 	splitIntoTerms(input: string): string[] {
 		return TermSplitter.syncSplitTerms(input);
 	}

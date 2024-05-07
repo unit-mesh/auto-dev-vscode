@@ -1,7 +1,6 @@
-import { HydeStrategy, HydeQuery } from "./_base/HydeStrategy";
+import { HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
 import { ChunkItem, Embedding } from "../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
-import { PromptManager } from "../../prompt-manage/PromptManager";
 
 /**
  * Generate keywords from the query, and then used to retrieve similar code by symbols.
