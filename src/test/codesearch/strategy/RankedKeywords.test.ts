@@ -1,4 +1,4 @@
-import { parseRankedKeywords, RankedKeywords } from "../../code-search/search-strategy/KeywordsUtils";
+import { RankedKeywords } from "../../../code-search/search-strategy/utils/RankedKeywords";
 
 describe('HydeKeywordsStrategy', () => {
 	it('should parse keywords correctly', () => {
@@ -14,7 +14,7 @@ describe('HydeKeywordsStrategy', () => {
 			localization: ["jisuan", "pingjunshu", "pingjun"]
 		};
 
-		const result = parseRankedKeywords(content);
+		const result = RankedKeywords.from(content);
 		expect(result).to.deep.equal(expected);
 	});
 });
