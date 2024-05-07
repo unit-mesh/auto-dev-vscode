@@ -10,7 +10,7 @@ export interface AutoTestTemplateContext extends TemplateContext {
 	currentClass?: CodeStructure,
 	underTestClassName: string,
 	/// the generated test class name
-	genTestClassName?: string,
+	targetTestClassName?: string,
 	targetPath?: string,
 	imports?: string[],
 	sourceCode?: string,

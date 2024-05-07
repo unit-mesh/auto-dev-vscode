@@ -14,6 +14,7 @@ import { documentToTreeSitterFile, textToTreeSitterFile } from "../ast/TreeSitte
 import { TreeSitterFile } from "../ast/TreeSitterFile";
 import { channel } from "../../channel";
 import { PositionUtil } from "../../editor/ast/PositionUtil";
+import { JavaCodeCorrector } from "./utils/JavaCodeCorrector";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
@@ -81,7 +82,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 			language: document.languageId,
 			targetPath: targetPath,
 			underTestClassName: element.identifierRange.text,
-			genTestClassName: document.fileName.replace(".java", "Test.java"),
+			targetTestClassName: document.fileName.replace(".java", "Test.java"),
 			sourceCode: element.blockRange.text,
 			relatedClasses: "",
 			chatContext: "",
@@ -98,67 +99,8 @@ export class JavaTestGenProvider implements TestGenProvider {
 	 * after test file is created, try to fix the code, like packageName and className, etc.
 	 */
 	async postProcessCodeFix(document: vscode.TextDocument, output: string): Promise<void> {
-		let tsfile = await textToTreeSitterFile(output, "java", "");
-
-		if (!tsfile) {
-			return Promise.reject(`Failed to find tree-sitter file for: ${document.uri}`);
-		}
-
-		await this.fixIncorrectClassName(tsfile, document);
-		await this.fixIncorrectPackageName(tsfile, output, document);
-	}
-
-	private async fixIncorrectClassName(tsfile: TreeSitterFile, document: vscode.TextDocument) {
-		let targetClassName = this.context!!.genTestClassName;
-		let query = tsfile.languageProfile.classQuery.query(tsfile.tsLanguage);
-		const captures = query!!.captures(tsfile.tree.rootNode);
-
-		// find the class declaration
-		const queryCapture = captures.find((c) => c.name === "name.definition.class");
-		if (queryCapture) {
-			// compare targetClassName to queryCapture.text if they are different, replace queryCapture.text with targetClassName
-			let classNode = queryCapture.node;
-			if (targetClassName !== classNode.text) {
-				let range = tsfile.tree.rootNode.text.slice(classNode.startIndex, classNode.endIndex);
-				let newText = tsfile.tree.rootNode.text.replace(range, targetClassName!!);
-				await vscode.workspace.fs.writeFile(document.uri, Buffer.from(newText));
-			}
-		}
-	}
-
-	/**
-	 * Fix LLM generated test file lost package name issue
-	 * FIXME: fix package name not equal
-	 */
-	private async fixIncorrectPackageName(tsfile: TreeSitterFile, output: string, document: vscode.TextDocument) {
-		let packageQuery = tsfile.languageProfile.packageQuery!!.query(tsfile.tsLanguage);
-		const packageCapture = packageQuery!!.captures(tsfile.tree.rootNode);
-
-		// if package is not found, add package to the top of the file
-		if (packageCapture.length === 0) {
-			let content = "package " + this.packageName + ";\n";
-			let newText = content + output;
-
-			let edit = new vscode.WorkspaceEdit();
-			edit.insert(document.uri, new vscode.Position(0, 0), content);
-		}
-
-		// if package is found, compare package name to this.packageName, if they are different, replace package name
-		if (packageCapture.length > 0) {
-			let packageNode = packageCapture[0].node;
-			if (this.packageName !== packageNode.text) {
-				let range = tsfile.tree.rootNode.text.slice(packageNode.startIndex, packageNode.endIndex);
-				let newText = tsfile.tree.rootNode.text.replace(range, this.packageName);
-
-				let edit = new vscode.WorkspaceEdit();
-
-				let pkgNameRange = new vscode.Range(
-					PositionUtil.fromNode(packageNode.startPosition),
-					PositionUtil.fromNode(packageNode.endPosition)
-				);
-				edit.replace(document.uri, pkgNameRange, this.packageName);
-			}
-		}
+		let codeFixer = new JavaCodeCorrector(document, output, this.packageName, this.context!!.targetTestClassName!!);
+		await codeFixer.correct();
 	}
 
 	async collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
