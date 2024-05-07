@@ -6,8 +6,10 @@ import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
  * Generate hypothetical document base on user input, and then used to retrieve similar code by symbols.
  */
 export class HydeCodeStrategy implements HydeStrategy<string> {
-	instruction(userInput: string): string {
-		return "";
+	documentType = HydeDocumentType.Code;
+
+	instruction(userInput: string): Promise<string> {
+		return Promise.resolve("");
 	}
 
 	generateDocument(): HydeDocument<string> {

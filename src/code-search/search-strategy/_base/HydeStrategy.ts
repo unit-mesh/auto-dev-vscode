@@ -1,5 +1,5 @@
 import { ChunkItem, Embedding } from "../../embedding/_base/Embedding";
-import { HydeDocument } from "./HydeDocument";
+import { HydeDocument, HydeDocumentType } from "./HydeDocument";
 
 export type HydeQuery = string | RegExp | Embedding;
 
@@ -26,10 +26,11 @@ export type HydeQuery = string | RegExp | Embedding;
  * Also can refer to the Unit Mesh SDK documentation: https://framework.unitmesh.cc/patterns/hyde.html
  */
 export interface HydeStrategy<T> {
+	documentType: HydeDocumentType;
 	/**
 	 * the Instruction prompt for executing by LLM;
 	 */
-	instruction: (userInput: string) => string;
+	instruction: (userInput: string) => Promise<string>;
 
 	/**
 	 * Generate Hyde doc can be Code, Keyword[], or any text,

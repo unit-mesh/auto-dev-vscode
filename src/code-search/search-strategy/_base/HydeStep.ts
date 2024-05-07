@@ -1,8 +1,8 @@
 export enum HydeStep {
 	/// the first step of the search-strategy
-	Propose,
+	Propose = "propose",
 	/// the second step of the search-strategy
-	Search,
+	Search = "search",
 	/// the end of the search-strategy
-	Evaluate,
+	Evaluate = "evaluate",
 }

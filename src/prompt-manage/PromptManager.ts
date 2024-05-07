@@ -8,6 +8,8 @@ import { CreateToolchainContext, ToolchainContextItem } from "../toolchain-conte
 import { ActionType } from "./ActionType";
 import { CustomActionTemplateContext } from "./custom-action/CustomActionTemplateContext";
 import { CustomActionExecutePrompt } from "./custom-action/CustomActionExecutePrompt";
+import { HydeStep } from "../code-search/search-strategy/_base/HydeStep";
+import { HydeDocumentType } from "../code-search/search-strategy/_base/HydeDocument";
 
 export class PromptManager {
 	private static _instance: PromptManager;
@@ -44,6 +46,53 @@ export class PromptManager {
 	 */
 	async constructCustomPrompt(): Promise<CustomActionExecutePrompt[]> {
 		return [];
+	}
+
+
+	/**
+	 * Asynchronously retrieves a Hyde template based on the provided step, Hyde document type, and template context.
+	 *
+	 * @param {HydeStep} step - The step of the Hyde process for which the template is needed.
+	 * @param {HydeDocumentType} hydeType - The type of Hyde document for which the template is needed.
+	 * @param {TemplateContext} context - The context in which the template will be used.
+	 *
+	 * @returns {Promise<string>} - Returns a promise that resolves to the requested template as a string.
+	 *
+	 * @throws {Error} - Throws an error if no template is found for the provided Hyde step and Hyde document type.
+	 *
+	 * @remarks
+	 * - The method currently only supports English language templates.
+	 * - The method uses the TemplateRender class to load and render the template.
+	 *
+	 * @example
+	 * ```typescript
+	 * const step = HydeStep.Init;
+	 * const hydeType = HydeDocumentType.Markdown;
+	 * const context = new TemplateContext();
+	 *
+	 * getHydeTemplate(step, hydeType, context)
+	 *     .then(template => console.log(template))
+	 *     .catch(error => console.error(error));
+	 * ```
+	 */
+	async getHydeTemplate(step: HydeStep, hydeType: HydeDocumentType, context: TemplateContext): Promise<string> {
+		let templateRender = new TemplateRender(this.templateLoader);
+		let template: string | undefined;
+
+		// only for english in this version
+		// let humanLanguage = vscode.env.language;
+		// if (humanLanguage !== "zh-cn") {
+		// 	humanLanguage = "en";
+		// }
+		let humanLanguage = "en";
+
+		template = await templateRender.getTemplate(`prompts/${humanLanguage}/hyde/${hydeType}/${step}.vm`);
+
+		if (!template) {
+			throw new Error(`No template found for hyde step ${step} and hyde type ${hydeType}`);
+		}
+
+		return templateRender.render(template, context);
 	}
 
 	/**

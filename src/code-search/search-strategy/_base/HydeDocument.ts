@@ -1,7 +1,7 @@
 export enum HydeDocumentType {
-	Code,
-	Keyword,
-	Text,
+	Code = "code",
+	Keywords = "keyword",
+	Text = "text",
 }
 
 export class HydeDocument<T> {
