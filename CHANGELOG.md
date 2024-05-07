@@ -1,3 +1,46 @@
+## [0.1.1](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.1.0...v0.1.1) (2024-05-07)
+
+
+### Bug Fixes
+
+* **editor:** ensure postProcessCodeFix is awaited ([0f019cd](https://github.com/unit-mesh/auto-dev-vscode/commit/0f019cd9165b28fa89ae3348e13da563628741ce))
+* fix tets ([716f96f](https://github.com/unit-mesh/auto-dev-vscode/commit/716f96fbac36c6dbd33eb200f9e004b8ccc389e3))
+
+
+### Features
+
+* **ast:** add textToTreeSitterFile function and update JavaTestGenProvider ([337801f](https://github.com/unit-mesh/auto-dev-vscode/commit/337801f16d6724baf0a1b186bc4b272a9c478f3f))
+* **BaseStructurerProvider:** add init method and move logic from child classes [#24](https://github.com/unit-mesh/auto-dev-vscode/issues/24) ([02ad3eb](https://github.com/unit-mesh/auto-dev-vscode/commit/02ad3ebad76d7a18b9a8a25118ea4beb4f713a78))
+* **BaseStructurerProvider:** add methods for import retrieval and class merging ([a69427f](https://github.com/unit-mesh/auto-dev-vscode/commit/a69427f34f2d0d7039d87a660edf04f46df87f68))
+* **code-context:** init Go language support in StructurerProvider [#24](https://github.com/unit-mesh/auto-dev-vscode/issues/24) ([383da8a](https://github.com/unit-mesh/auto-dev-vscode/commit/383da8a7e686587374c02d512733345146eb8f2b))
+* **code-context:** refactor BaseStructurer and RelatedCodeProvider ([d566cac](https://github.com/unit-mesh/auto-dev-vscode/commit/d566cac1b5bdb4432e1cb1c1e30e7c6681073fe5))
+* **code-context:** refactor RelatedCodeProvider to use singleton pattern and improve language setup ([f194d86](https://github.com/unit-mesh/auto-dev-vscode/commit/f194d86d5eb20973290de467f798b2dbc1b546d0))
+* **code-search:** support interpreted string literals in scope graph [#24](https://github.com/unit-mesh/auto-dev-vscode/issues/24) ([c59cd33](https://github.com/unit-mesh/auto-dev-vscode/commit/c59cd336b852c805c239b1e673222c9e975846f8))
+* **codemodel:** add class rendering and update test generation ([d9debf3](https://github.com/unit-mesh/auto-dev-vscode/commit/d9debf3159e38e468c9e3cb76967ef05a7c58bef))
+* **commands:** refactor commands into separate files ([b1a6b78](https://github.com/unit-mesh/auto-dev-vscode/commit/b1a6b782b9ce921363c7aa91be35a3f0343da240))
+* **commands:** refactor commands to use enum and improve readability ([c7509fd](https://github.com/unit-mesh/auto-dev-vscode/commit/c7509fd3da492bac1cbded2fb1edb569adfdd1dd))
+* **editor:** add navigation to test file and output writing ([d844dfb](https://github.com/unit-mesh/auto-dev-vscode/commit/d844dfb29803d72fb737666ff07de9c6ad5cc1a3))
+* **editor:** add test file detection and handling ([be5096a](https://github.com/unit-mesh/auto-dev-vscode/commit/be5096aa92b678f8924c7a406c2c82fe2b1ecf20))
+* **editor:** bind document changes in RecentlyDocumentManager ([c139f56](https://github.com/unit-mesh/auto-dev-vscode/commit/c139f56b30c9de04443c95ac98a42071fd3c51b0))
+* **editor:** refactor TreeSitterFileCacheManager to TreeSitterFileManager ([f92c6f4](https://github.com/unit-mesh/auto-dev-vscode/commit/f92c6f4d2eadf85ff0dcc9a9e2e60f8ca77db1c6))
+* **editor:** replace writeFile with applyEdit in AutoTestActionExecutor ([bd91f4e](https://github.com/unit-mesh/auto-dev-vscode/commit/bd91f4ee679d5803728fe7b186b122229b3453d2))
+* **go:** enhance Go language parsing and structuring [#24](https://github.com/unit-mesh/auto-dev-vscode/issues/24) ([405b935](https://github.com/unit-mesh/auto-dev-vscode/commit/405b935133fe0dfa657104c8fb4f524817f9c0f9))
+* **gradle:** add logging and dependency check in GradleBuildToolProvider ([1950637](https://github.com/unit-mesh/auto-dev-vscode/commit/19506372db7518ab6d7e2638f651ebbe0ca2d673))
+* **java-utils:** apply edits immediately in JavaCodeCorrector ([06933a8](https://github.com/unit-mesh/auto-dev-vscode/commit/06933a8c5ab0dd9cf01a21d08a5087dae170b58f))
+* **java:** improve package handling and filename extraction ([8c03e44](https://github.com/unit-mesh/auto-dev-vscode/commit/8c03e4492ab4adf3b35d2e9562dcecf923a24376))
+* **java:** refactor code correction into separate class ([6e120f2](https://github.com/unit-mesh/auto-dev-vscode/commit/6e120f21c61fd174c6693c9c6b304e15b34a0248))
+* **JavaTestGenProvider:** add methods to fix incorrect class and package names ([7a29f8e](https://github.com/unit-mesh/auto-dev-vscode/commit/7a29f8ee4675fb184ea530b2af53571cd4e67bda))
+* **language-profile:** implement dependency injection for language profiles ([dcda37f](https://github.com/unit-mesh/auto-dev-vscode/commit/dcda37f61dc0063b36e3b3517ea2f99d8c66db67))
+* **RelevantCodeProviderManager:** add relatedClassesContext method [#24](https://github.com/unit-mesh/auto-dev-vscode/issues/24) ([4f9f718](https://github.com/unit-mesh/auto-dev-vscode/commit/4f9f71872e99c0bf01f6af580ed59c8b17d91bfc))
+* **services:** refactor services and improve dependency injection ([a9341f5](https://github.com/unit-mesh/auto-dev-vscode/commit/a9341f557f3d1bf53eda8dde91729775eb78ef13))
+* **test-generation:** add fix for lost package name in Java test generation ([d7401f6](https://github.com/unit-mesh/auto-dev-vscode/commit/d7401f603156709ab51602fed9edb974abdc4b8f))
+* **test-generation:** add source code to TypeScriptTestGenProvider and handle empty toolchain ([f86170d](https://github.com/unit-mesh/auto-dev-vscode/commit/f86170dab93c280989faefffe30d7e30de47884d))
+* **test-generation:** improve test class naming and post-processing ([1e9d53e](https://github.com/unit-mesh/auto-dev-vscode/commit/1e9d53e747b4645e872a02c182366b7999c74a90))
+* **testing:** add printScopeGraph function and Golang test [#24](https://github.com/unit-mesh/auto-dev-vscode/issues/24) ([bfcb16e](https://github.com/unit-mesh/auto-dev-vscode/commit/bfcb16ed53349b582d6b5e51cb90744c152fed74))
+* **toolchain-context:** add caching for context items and unify prompts ([4e3cfb2](https://github.com/unit-mesh/auto-dev-vscode/commit/4e3cfb264fb96333239cb2247ba1eaf6078a5148))
+
+
+
 # [0.1.0](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.0.6...v0.1.0) (2024-05-05)
 
 
