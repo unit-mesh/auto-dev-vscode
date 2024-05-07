@@ -4,6 +4,10 @@ import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
 import { PromptManager } from "../../prompt-manage/PromptManager";
 import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 import { HydeStep } from "./_base/HydeStep";
+import { LlmProvider } from "../../llm-provider/LlmProvider";
+import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
+import { ChatMessage } from "../../llm-provider/ChatMessage";
+import { RankedKeywords } from "./utils/RankedKeywords";
 
 
 export interface KeywordTemplateContext extends TemplateContext {
@@ -19,12 +23,12 @@ export interface KeywordTemplateContext extends TemplateContext {
  * - Medium: Recently Documents
  * - Low: All Documents
  */
-export class HydeKeywordsStrategy implements HydeStrategy<string[]> {
+export class HydeKeywordsStrategy implements HydeStrategy<RankedKeywords> {
 	documentType = HydeDocumentType.Keywords;
 	private promptManager = PromptManager.getInstance();
+	message: ChatMessage[] = [];
 
 	constructor() {
-
 	}
 
 	async instruction(userInput: string): Promise<string> {
@@ -33,22 +37,28 @@ export class HydeKeywordsStrategy implements HydeStrategy<string[]> {
 			userInput: userInput
 		};
 
-		return await this.promptManager.getHydeTemplate(HydeStep.Propose, this.documentType, context);
+		let content = await this.promptManager.getHydeTemplate(HydeStep.Propose, this.documentType, context);
+		this.message = CustomActionPrompt.parseChatMessage(content);
+		return content;
 	}
 
-	embedDocument(doc: HydeDocument<string[]>): Embedding {
+	async embedDocument(doc: HydeDocument<RankedKeywords>): Promise<Embedding> {
 		return [];
 	}
 
-	generateDocument(): HydeDocument<string[]> {
-		return new HydeDocument(HydeDocumentType.Code, []);
+	async generateDocument(): Promise<HydeDocument<RankedKeywords>> {
+		let output = await LlmProvider.instance().chat(this.message);
+
+		let keywords = RankedKeywords.from(output);
+
+		return Promise.resolve(new HydeDocument(HydeDocumentType.Code, keywords));
 	}
 
-	retrieveChunks(condition: HydeQuery): ChunkItem[] {
+	async retrieveChunks(condition: HydeQuery): Promise<ChunkItem[]> {
 		return [];
 	}
 
-	clusterChunks(docs: HydeDocument<string[]>[]): Embedding[] {
+	async clusterChunks(docs: HydeDocument<RankedKeywords>[]): Promise<Embedding[]> {
 		return [];
 	}
 }

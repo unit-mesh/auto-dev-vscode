@@ -110,7 +110,7 @@ export class CustomActionPrompt {
 		return prompt;
 	}
 
-	private static parseChatMessage(chatContent: string): ChatMessage[] {
+	static parseChatMessage(chatContent: string): ChatMessage[] {
 		try {
 			const messages = TemplateRoleSplitter.split(chatContent);
 			return Object.entries(messages).map(([key, value]) => ({

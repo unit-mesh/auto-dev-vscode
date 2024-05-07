@@ -12,19 +12,19 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 		return Promise.resolve("");
 	}
 
-	generateDocument(): HydeDocument<string> {
+	async generateDocument(): Promise<HydeDocument<string>> {
 		return new HydeDocument(HydeDocumentType.Code, "");
 	}
 
-	embedDocument(doc: HydeDocument<string>): Embedding {
+	async embedDocument(doc: HydeDocument<string>): Promise<Embedding> {
 		return [];
 	}
 
-	clusterChunks(docs: HydeDocument<string>[]): Embedding[] {
+	async clusterChunks(docs: HydeDocument<string>[]): Promise<Embedding[]> {
 		return [];
 	}
 
-	retrieveChunks(condition: HydeQuery): ChunkItem[] {
+	async retrieveChunks(condition: HydeQuery): Promise<ChunkItem[]> {
 		return [];
 	}
 }

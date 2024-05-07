@@ -1,5 +1,6 @@
 import { ChunkItem, Embedding } from "../../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./HydeDocument";
+import { RankedKeywords } from "../utils/RankedKeywords";
 
 export type HydeQuery = string | RegExp | Embedding;
 
@@ -37,19 +38,19 @@ export interface HydeStrategy<T> {
 	 * In some cases can be extract_keywords,
 	 * For more, see example in https://github.com/ianhojy/auto-hyde/blob/main/src/auto_hyde.py
 	 */
-	generateDocument: () => HydeDocument<T>;
+	generateDocument: () => Promise<HydeDocument<T>>;
 
 	/**
 	 * Convert Hyde doc to embedding
 	 */
-	embedDocument: (doc: HydeDocument<T>) => Embedding;
+	embedDocument: (doc: HydeDocument<T>) => Promise<Embedding>;
 
 	/**
 	 * Retrieve the most relevant code snippets based on the given condition
 	 * @param condition - The condition to be used for retrieval
 	 * @returns The most relevant code snippets
 	 */
-	retrieveChunks: (condition: HydeQuery) => ChunkItem[]
+	retrieveChunks: (condition: HydeQuery) => Promise<ChunkItem[]>
 
 	/**
 	 * Retrieve the most relevant code snippets based on the given condition
@@ -58,6 +59,6 @@ export interface HydeStrategy<T> {
 	 * @param docs - The documents to be used for retrieval
 	 * @returns The most relevant code snippets
 	 */
-	clusterChunks: (docs: HydeDocument<T>[]) => Embedding[];
+	clusterChunks: (docs: HydeDocument<T>[]) => Promise<Embedding[]>;
 }
 
