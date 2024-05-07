@@ -1,6 +1,7 @@
 import { HydeStrategy, HydeQuery } from "./_base/HydeStrategy";
 import { ChunkItem, Embedding } from "../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
+import { PromptManager } from "../../prompt-manage/PromptManager";
 
 /**
  * Generate keywords from the query, and then used to retrieve similar code by symbols.
@@ -12,6 +13,10 @@ import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
  * - Low: All Documents
  */
 export class HydeKeywordsStrategy implements HydeStrategy<string[]> {
+	constructor() {
+		// PromptManager.getInstance().generateTemplateString()
+	}
+
 	instruction(userInput: string): string {
 		return "";
 	}

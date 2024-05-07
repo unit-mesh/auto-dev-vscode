@@ -3,4 +3,16 @@ export enum ActionType {
 	AutoTest,
 	GenApiData,
 	QuickAction,
+	/**
+	 * {@link HydeStep#Propose}
+	 */
+	HydePropose,
+	/**
+	 * {@link HydeStep#Search}
+	 */
+	HydeSearch,
+	/**
+	 * {@link HydeStep#Evaluate}
+	 */
+	HydeEvaluate,
 }
