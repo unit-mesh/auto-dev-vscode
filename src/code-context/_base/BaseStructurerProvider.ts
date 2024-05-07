@@ -1,4 +1,5 @@
 import Parser, { Query, SyntaxNode } from "web-tree-sitter";
+import { injectable } from "inversify";
 
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
@@ -10,7 +11,6 @@ import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { LanguageProfile } from "./LanguageProfile";
-import { injectable } from "inversify";
 
 @injectable()
 export abstract class BaseStructurerProvider implements StructurerProvider {

@@ -16,6 +16,7 @@ import { TreeSitterFile } from "../ast/TreeSitterFile";
 import { JavaCodeCorrector } from "./utils/JavaCodeCorrector";
 import { JavaStructurerProvider } from "./JavaStructurerProvider";
 import { CommentedUmlPresenter } from "../../editor/codemodel/presenter/CommentedUmlPresenter";
+import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
@@ -82,6 +83,8 @@ export class JavaTestGenProvider implements TestGenProvider {
 		let classname = filename.replace(".java", "");
 
 		let structurerProvider = new JavaStructurerProvider();
+		await structurerProvider.init(new DefaultLanguageService());
+
 		let codeFile = await structurerProvider.parseFile(document.getText(), document.fileName);
 		let currentClass = codeFile?.classes.find((clazz) => clazz.name === classname);
 
