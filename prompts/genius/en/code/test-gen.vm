@@ -7,10 +7,11 @@ ${context.relatedClasses}
 Here is current class information:
 ${context.currentClass}
 #end
-Here is the source code to be tested:
+// here is the user used libraries
+// ${context.imports}
 
+// Here is the source code to be tested:
 ```$context.language
-// imports: ${context.imports}
 ${context.sourceCode}
 ```
 
