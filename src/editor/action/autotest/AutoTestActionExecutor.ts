@@ -111,6 +111,6 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		console.info(`FencedCodeBlock parsed output: ${output}`);
 
 		const newDoc = await vscode.workspace.openTextDocument(newDocUri);
-		testgen.postProcessCodeFix(newDoc, output);
+		await testgen.postProcessCodeFix(newDoc, output);
 	}
 }
