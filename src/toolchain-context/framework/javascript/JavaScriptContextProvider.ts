@@ -13,6 +13,8 @@ export function isJavaScriptEnv(context: CreateToolchainContext) {
 
 @injectable()
 export class JavaScriptContextProvider implements ToolchainContextProvider {
+	private clazzName = this.constructor.name;
+
 	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
 		return isJavaScriptEnv(context);
 	}
@@ -23,7 +25,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 			return [];
 		}
 
-		let results = [];
+		let results: ToolchainContextItem[] = [];
 		let snapshot = await new NpmBuildToolProvider().create(getExtensionContext());
 		let typeScriptLanguageContext = this.getTypeScriptLanguageContext(snapshot);
 		let mostPopularPackagesContext = this.getMostPopularPackagesContext(snapshot);
@@ -40,7 +42,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 
 		if (techStack.coreFrameworksList().length > 0) {
 			let element = {
-				clazz: JavaScriptContextProvider.name,
+				clazz: this.clazzName,
 				text: `The project uses the following JavaScript component frameworks: ${techStack.coreFrameworksList()}`
 			};
 			results.push(element);
@@ -48,7 +50,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 
 		if (techStack.testFrameworksList().length > 0) {
 			let testChatContext = {
-				clazz: JavaScriptContextProvider.name,
+				clazz: this.clazzName,
 				text: `The project uses ${techStack.testFrameworksList()} to test.`
 			};
 
@@ -108,7 +110,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 
 		const version = packageJson.version;
 		return {
-			clazz: JavaScriptContextProvider.name,
+			clazz: this.clazzName,
 			text: `The project uses TypeScript language${version ? `, version: ${version}` : ''}`
 		};
 	}
@@ -127,7 +129,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 		}
 
 		return {
-			clazz: JavaScriptContextProvider.name,
+			clazz: this.clazzName,
 			text: `The project uses the following JavaScript packages: ${dependencies.join(', ')}`
 		};
 	}

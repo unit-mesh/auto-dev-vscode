@@ -23,7 +23,8 @@ export class JavaTestGenProvider implements TestGenProvider {
 	baseTestPrompt: string = `${l10n.t("lang.java.prompt.basicTestTemplate")}`.trim();
 	importRegex = /import\s+([\w.]+);/g;
 
-	private clazzName = "JavaTestGenProvider";
+	private clazzName = this.constructor.name;
+
 	private graph: ScopeGraph | undefined;
 	private tsfile: TreeSitterFile | undefined;
 	private context: AutoTestTemplateContext | undefined;

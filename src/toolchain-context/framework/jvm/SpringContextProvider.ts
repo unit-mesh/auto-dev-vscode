@@ -8,6 +8,8 @@ import { DependencyEntry } from "../../buildtool/_base/Dependence";
 
 @injectable()
 export class SpringContextProvider implements ToolchainContextProvider {
+	private clazzName = this.constructor.name;
+
 	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
 		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable(context);
 	}
@@ -45,7 +47,7 @@ export class SpringContextProvider implements ToolchainContextProvider {
 		if (isController() || isService()) {
 			let prompts = [
 				{
-					clazz: SpringContextProvider.name,
+					clazz: this.clazzName,
 					text: `You are working on a project that uses ${Array.from(techStacks.coreFrameworks.keys()).join(",")} to build RESTful APIs.`
 				}
 			];

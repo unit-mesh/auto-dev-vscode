@@ -5,6 +5,8 @@ import { GradleBuildToolProvider } from "../buildtool/GradleBuildToolProvider";
 
 @injectable()
 export class JavaSdkVersionProvider implements ToolchainContextProvider {
+	private clazzName = this.constructor.name;
+
 	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
 		return context.language === "java" && GradleBuildToolProvider.instance().isApplicable(context);
 	}
@@ -21,7 +23,7 @@ export class JavaSdkVersionProvider implements ToolchainContextProvider {
 		if (gradleInfo) {
 			return [
 				{
-					clazz: JavaSdkVersionProvider.name,
+					clazz: this.clazzName,
 					text: `You are using Java SDK version ${gradleInfo.jvmVersion}.`
 				}
 			];

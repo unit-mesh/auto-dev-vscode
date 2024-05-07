@@ -13,6 +13,7 @@ import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextPr
 @injectable()
 export class GoTestGenProvider implements TestGenProvider {
 	private languageService: TSLanguageService | undefined;
+	private clazzName = this.constructor.name;
 	context: AutoTestTemplateContext | undefined;
 
 	isApplicable(lang: string): boolean {

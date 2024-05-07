@@ -17,6 +17,8 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 	private languageService: TSLanguageService | undefined;
 	private context: AutoTestTemplateContext | undefined;
 
+	private clazzName = this.constructor.name;
+
 	isApplicable(lang: string): boolean {
 		return lang === "typescript" || lang === "javascript" || lang === "javascriptreact" || lang === "typescriptreact";
 	}
