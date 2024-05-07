@@ -1,10 +1,10 @@
-import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
+import { StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownCodeBlock";
 
 describe('FencedCodeBlock', () => {
 	describe('parse method', () => {
 		it('should correctly parse a fenced code block with specified language', () => {
 			const content = '```javascript\nconsole.log("Hello, world!");\n```';
-			const parsedBlock = MarkdownCodeBlock.parse(content);
+			const parsedBlock = StreamingMarkdownCodeBlock.parse(content);
 
 			expect(parsedBlock.language).toBe('javascript');
 			expect(parsedBlock.text).toBe('console.log("Hello, world!");');
@@ -13,7 +13,7 @@ describe('FencedCodeBlock', () => {
 
 		it('should correctly parse a fenced code block without specified language', () => {
 			const content = '```\nconsole.log("Hello, world!");\n```';
-			const parsedBlock = MarkdownCodeBlock.parse(content);
+			const parsedBlock = StreamingMarkdownCodeBlock.parse(content);
 
 			expect(parsedBlock.language).toBe('markdown');
 			expect(parsedBlock.text).toBe('console.log("Hello, world!");');
@@ -22,7 +22,7 @@ describe('FencedCodeBlock', () => {
 
 		it('should correctly parse a fenced code block with empty content', () => {
 			const content = '```\n```';
-			const parsedBlock = MarkdownCodeBlock.parse(content);
+			const parsedBlock = StreamingMarkdownCodeBlock.parse(content);
 
 			expect(parsedBlock.language).toBe('markdown');
 			expect(parsedBlock.text).toBe('```\n```');
@@ -31,7 +31,7 @@ describe('FencedCodeBlock', () => {
 
 		it('should correctly parse a fenced code block with whitespace', () => {
 			const content = '```typescript\n\nconsole.log("Hello, world!");\n\n```';
-			const parsedBlock = MarkdownCodeBlock.parse(content);
+			const parsedBlock = StreamingMarkdownCodeBlock.parse(content);
 
 			expect(parsedBlock.language).toBe('typescript');
 			expect(parsedBlock.text).toBe('console.log("Hello, world!");');
@@ -41,13 +41,13 @@ describe('FencedCodeBlock', () => {
 
 	describe('findLanguage method', () => {
 		it('should return correct language name for known languages', () => {
-			expect(MarkdownCodeBlock.findLanguage('javascript')).toBe('javascript');
-			expect(MarkdownCodeBlock.findLanguage('c#')).toBe('csharp');
-			expect(MarkdownCodeBlock.findLanguage('c++')).toBe('cpp');
+			expect(StreamingMarkdownCodeBlock.findLanguage('javascript')).toBe('javascript');
+			expect(StreamingMarkdownCodeBlock.findLanguage('c#')).toBe('csharp');
+			expect(StreamingMarkdownCodeBlock.findLanguage('c++')).toBe('cpp');
 		});
 
 		it('should return default language for unknown languages', () => {
-			expect(MarkdownCodeBlock.findLanguage('unknown')).toBe('markdown');
+			expect(StreamingMarkdownCodeBlock.findLanguage('unknown')).toBe('markdown');
 		});
 	});
 });

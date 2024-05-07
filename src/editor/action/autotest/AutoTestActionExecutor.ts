@@ -7,7 +7,7 @@ import { PromptManager } from "../../../prompt-manage/PromptManager";
 import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
-import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
+import { StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownCodeBlock";
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "../../../prompt-manage/ActionType";
 import { RelevantCodeProviderManager } from "../../../code-context/RelevantCodeProviderManager";
@@ -96,7 +96,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			for await (const chunk of llm._streamChat([msg])) {
 				doc += chunk.content;
 
-				const output = MarkdownCodeBlock.parse(doc).text;
+				const output = StreamingMarkdownCodeBlock.parse(doc).text;
 
 				if (output) {
 					let workspaceEdit = new vscode.WorkspaceEdit();
@@ -112,7 +112,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
 
-		const output = MarkdownCodeBlock.parse(doc).text;
+		const output = StreamingMarkdownCodeBlock.parse(doc).text;
 		console.info(`FencedCodeBlock parsed output: ${output}`);
 
 		const newDoc = await vscode.workspace.openTextDocument(newDocUri);

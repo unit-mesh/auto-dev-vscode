@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { MarkdownCodeBlock } from "../../markdown/MarkdownCodeBlock";
+import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
 
 export class FileGenerateTask {
 	constructor(
@@ -12,7 +12,7 @@ export class FileGenerateTask {
 	}
 
 	public async run() {
-		let parsedCode = MarkdownCodeBlock.parse(this.outputText);
+		let parsedCode = StreamingMarkdownCodeBlock.parse(this.outputText);
 		const inferFileName =
 			this.fileName === undefined
 				? 'output-' + Date.now() + (parsedCode.language === '' ? '.txt' : '.' + parsedCode.language)
