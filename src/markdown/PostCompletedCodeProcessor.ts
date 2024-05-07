@@ -2,7 +2,7 @@
  * PostCodeProcessor is a class that processes code by adding or removing indentation and unnecessary braces.
  * It is designed to format code in a way that improves readability and adheres to a consistent style.
  *
- * @class PostCodeProcessor
+ * @class PostCompletedCodeProcessor
  * @example
  * const processor = new PostCodeProcessor("prefix", "suffix", "code to process");
  * const formattedCode = processor.execute();
@@ -12,7 +12,7 @@
  * @param {string} completeCode The complete code that needs to be processed.
  * @param {number} [indentSize=4] The size of the indentation, in spaces.
  */
-export class PostCodeProcessor {
+export class PostCompletedCodeProcessor {
 	private prefixCode: string;
 	private suffixCode: string;
 	private completeCode: string;

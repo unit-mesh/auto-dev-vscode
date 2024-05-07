@@ -98,6 +98,14 @@ export class StreamingMarkdownCodeBlock {
 			case "c++":
 				fixedLanguage = "cpp";
 				break;
+			case "objective-c":
+				fixedLanguage = "objectivec";
+				break;
+			case "shell":
+				fixedLanguage = "bash";
+				break;
+			default:
+				break;
 		}
 
 		const registeredLanguages = SUPPORTED_LANGUAGES.filter(lang => lang);

@@ -1,4 +1,4 @@
-import { PostCodeProcessor } from "../../../markdown/PostCodeProcessor";
+import { PostCompletedCodeProcessor } from "../../../markdown/PostCompletedCodeProcessor";
 
 describe('PostCodeProcessor', () => {
 	describe('execute method', () => {
@@ -6,7 +6,7 @@ describe('PostCodeProcessor', () => {
 			const prefixCode = 'function someFunction() {\n';
 			const suffixCode = '\n}';
 			const completeCode = 'console.log("Hello, world!");';
-			const processor = new PostCodeProcessor(prefixCode, suffixCode, completeCode);
+			const processor = new PostCompletedCodeProcessor(prefixCode, suffixCode, completeCode);
 			const formattedCode = processor.execute();
 
 			expect(formattedCode).toBe("    console.log(\"Hello, world!\");");
@@ -16,7 +16,7 @@ describe('PostCodeProcessor', () => {
 			const prefixCode = 'function someFunction() {\n';
 			const suffixCode = '\n}';
 			const completeCode = 'if (true) {\nconsole.log("Hello, world!");\n}';
-			const processor = new PostCodeProcessor(prefixCode, suffixCode, completeCode);
+			const processor = new PostCompletedCodeProcessor(prefixCode, suffixCode, completeCode);
 			const formattedCode = processor.execute();
 			expect(formattedCode).toBe(
 				"    if (true) {\n" +
@@ -29,7 +29,7 @@ describe('PostCodeProcessor', () => {
 			const prefixCode = 'function someFunction() {\n';
 			const suffixCode = '\n}';
 			const completeCode = '';
-			const processor = new PostCodeProcessor(prefixCode, suffixCode, completeCode);
+			const processor = new PostCompletedCodeProcessor(prefixCode, suffixCode, completeCode);
 			const formattedCode = processor.execute();
 
 			expect(formattedCode).toBe('');
