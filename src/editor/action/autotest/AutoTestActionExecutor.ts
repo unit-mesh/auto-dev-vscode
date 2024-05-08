@@ -73,7 +73,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		console.log("endTime: ", startTime);
 		console.info(`Time taken to collect context: ${endTime - startTime}ms`);
 
-		let content = await PromptManager.getInstance().generateTemplateString(ActionType.AutoTest, testContext);
+		let content = await PromptManager.getInstance().generateInstruction(ActionType.AutoTest, testContext);
 		console.info(`user prompt: ${content}`);
 
 		let msg: ChatMessage = {

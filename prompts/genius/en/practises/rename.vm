@@ -1,0 +1,6 @@
+${context.originName} is a badname. Please provide 1 better options name for follow code:
+```${context.language}
+${context.code}
+```
+
+just return the better name:

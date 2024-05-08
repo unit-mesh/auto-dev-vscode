@@ -68,7 +68,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			console.info(`chat context: ${templateContext.chatContext}`);
 		}
 
-		let content = await PromptManager.getInstance().generateTemplateString(ActionType.AutoDoc, templateContext);
+		let content = await PromptManager.getInstance().generateInstruction(ActionType.AutoDoc, templateContext);
 		console.info(`request: ${content}`);
 
 		let msg: ChatMessage = {

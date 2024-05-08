@@ -47,7 +47,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			registerQuickFixProvider(extension);
 			registerCommands(extension);
 
-			// registerRenameAction(extension);
+			registerRenameAction(extension);
 
 			TreeSitterFileManager.getInstance();
 

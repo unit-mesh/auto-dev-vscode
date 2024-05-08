@@ -3,4 +3,5 @@ export enum ActionType {
 	AutoTest,
 	GenApiData,
 	QuickAction,
+	Rename,
 }

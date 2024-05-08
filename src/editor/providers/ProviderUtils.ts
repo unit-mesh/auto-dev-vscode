@@ -1,8 +1,9 @@
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
-import vscode, { Position, ProviderResult, Range } from "vscode";
+import vscode, { Position, Range } from "vscode";
 import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider";
 import { AutoDevCodeActionProvider } from "./AutoDevCodeActionProvider";
+import { RenameLookup } from "../action/refactor/RenameLookup";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
 
 export function registerCodeLensProviders(context: AutoDevExtension) {
@@ -45,20 +46,25 @@ export function registerWebViewProvider(extension: AutoDevExtension) {
 	);
 }
 
+// todo: load from settings
+let enableRename = true;
+
 export function registerRenameAction(extension: AutoDevExtension) {
 	vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES, {
-		prepareRename(document, position, token): ProviderResult<Range | { range: Range; placeholder: string; }> {
+		async prepareRename(document, position, token): Promise<undefined | Range | {
+			range: Range;
+			placeholder: string;
+		}> {
 			let range = document.getWordRangeAtPosition(position);
 			if (!range) {
-				return;
+				return undefined;
 			}
 
-			// TODO; calling API in here
+			if (!enableRename) {
+				return range;
+			}
 
-			return {
-				range,
-				placeholder: 'hello',
-			};
+			return await RenameLookup.suggest(document, position, token);
 		},
 
 		provideRenameEdits(document, position: Position, newName: string, token) {
