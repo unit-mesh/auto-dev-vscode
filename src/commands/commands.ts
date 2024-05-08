@@ -3,7 +3,6 @@ import * as vscode from "vscode";
 import { AutoDevExtension } from "../AutoDevExtension";
 import { NamedElement } from "../editor/ast/NamedElement";
 import { channel } from "../channel";
-import { PlantUMLPresenter } from "../editor/codemodel/presenter/PlantUMLPresenter";
 import { AutoDocActionExecutor } from "../editor/action/autodoc/AutoDocActionExecutor";
 import { AutoTestActionExecutor } from "../editor/action/autotest/AutoTestActionExecutor";
 import { NamedElementBuilder } from "../editor/ast/NamedElementBuilder";
@@ -13,6 +12,7 @@ import { documentToTreeSitterFile, toNamedElementBuilder } from "../code-context
 import { AutoDevCommandOperation } from "./autoDevCommandOperation";
 import { AutoDevCommand } from "./autoDevCommand";
 import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
+import { CommitMessageGenAction } from "../editor/action/misc/CommitMessageGenAction";
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
@@ -141,12 +141,10 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 	[AutoDevCommand.GenerateCommitMessage]: async () => {
 		let activate = await vscode.extensions.getExtension('vscode.git');
 		channel.appendLine(`git activate: ${activate}`);
-		activate?.activate()?.then((gitExtension) => {
+		activate?.activate()?.then(async (gitExtension) => {
 			const gitAPI = gitExtension.getAPI(1);
 			const repo = gitAPI.repositories[0];
-			const commitMessage = repo.inputBox.value;
-
-			channel.appendLine(`commit message: ${commitMessage}`);
+			await new CommitMessageGenAction().handleDiff(repo.inputBox);
 		});
 	},
 	[AutoDevCommand.GenApiData]: async (

@@ -16,9 +16,6 @@ Follow the Conventional Commits specification, examples:
 Here are the user's historical commit habits:
 $context.historyExamples
 #end
-#if($context.originText.length > 0)
-User origin intention was: $context.originText
-#end
 
 Diff:
 

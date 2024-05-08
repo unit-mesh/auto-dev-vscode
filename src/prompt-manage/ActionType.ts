@@ -4,4 +4,5 @@ export enum ActionType {
 	GenApiData,
 	QuickAction,
 	Rename,
+	GenCommitMessage,
 }

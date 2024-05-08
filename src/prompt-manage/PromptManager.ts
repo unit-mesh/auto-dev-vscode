@@ -125,6 +125,9 @@ export class PromptManager {
 			case ActionType.Rename:
 				template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/practises/rename.vm`);
 				break;
+			case ActionType.GenCommitMessage:
+				template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/practises/gen-commit-msg.vm`);
+				break;
 			default:
 				break;
 		}
