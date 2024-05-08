@@ -274,6 +274,13 @@
           "group": "1_autodev@0"
         }
       ],
+      "scm/title": [
+        {
+          "when": "scmProvider == git",
+          "command": "autodev.git.generateCommitMessage",
+          "group": "navigation"
+        }
+      ],
       "scm/inputBox": [
         {
           "command": "autodev.git.generateCommitMessage",

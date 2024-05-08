@@ -139,7 +139,9 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		await SystemActionService.instance().show(extension);
 	},
 	[AutoDevCommand.GenerateCommitMessage]: async () => {
-		vscode.extensions.getExtension('vscode.git')?.activate().then((gitExtension) => {
+		let activate = await vscode.extensions.getExtension('vscode.git');
+		channel.appendLine(`git activate: ${activate}`);
+		activate?.activate()?.then((gitExtension) => {
 			const gitAPI = gitExtension.getAPI(1);
 			const repo = gitAPI.repositories[0];
 			const commitMessage = repo.inputBox.value;
