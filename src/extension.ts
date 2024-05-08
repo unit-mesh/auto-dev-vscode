@@ -14,6 +14,7 @@ import {
 	registerAutoDevProviders,
 	registerCodeLensProviders,
 	registerQuickFixProvider,
+	registerRenameAction,
 	registerWebViewProvider
 } from "./editor/providers/ProviderUtils";
 import { channel } from "./channel";
@@ -45,6 +46,8 @@ export async function activate(context: vscode.ExtensionContext) {
 			registerAutoDevProviders(extension);
 			registerQuickFixProvider(extension);
 			registerCommands(extension);
+
+			// registerRenameAction(extension);
 
 			TreeSitterFileManager.getInstance();
 

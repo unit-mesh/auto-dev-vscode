@@ -1,6 +1,6 @@
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
-import vscode from "vscode";
+import vscode, { Position, ProviderResult, Range } from "vscode";
 import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider";
 import { AutoDevCodeActionProvider } from "./AutoDevCodeActionProvider";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
@@ -43,4 +43,33 @@ export function registerWebViewProvider(extension: AutoDevExtension) {
 			extension.sidebar, { webviewOptions: { retainContextWhenHidden: true }, }
 		)
 	);
+}
+
+export function registerRenameAction(extension: AutoDevExtension) {
+	vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES, {
+		prepareRename(document, position, token): ProviderResult<Range | { range: Range; placeholder: string; }> {
+			let range = document.getWordRangeAtPosition(position);
+			if (!range) {
+				return;
+			}
+
+			// TODO; calling API in here
+
+			return {
+				range,
+				placeholder: 'hello',
+			};
+		},
+
+		provideRenameEdits(document, position: Position, newName: string, token) {
+			let range = document.getWordRangeAtPosition(position);
+			if (!range) {
+				return;
+			}
+
+			let edit = new vscode.WorkspaceEdit();
+			edit.replace(document.uri, range, newName);
+			return edit;
+		}
+	});
 }
