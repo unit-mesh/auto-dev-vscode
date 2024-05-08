@@ -42,23 +42,18 @@ export class HydeKeywordsStrategy implements HydeStrategy<RankedKeywords> {
 		return content;
 	}
 
-	async embedDocument(doc: HydeDocument<RankedKeywords>): Promise<Embedding> {
-		return [];
-	}
-
 	async generateDocument(): Promise<HydeDocument<RankedKeywords>> {
 		let output = await LlmProvider.instance().chat(this.message);
-
 		let keywords = RankedKeywords.from(output);
-
 		return Promise.resolve(new HydeDocument(HydeDocumentType.Code, keywords));
 	}
 
 	async retrieveChunks(condition: HydeQuery): Promise<ChunkItem[]> {
+		// search by symbols
 		return [];
 	}
 
-	async clusterChunks(docs: HydeDocument<RankedKeywords>[]): Promise<Embedding[]> {
+	async clusterChunks(docs: HydeDocument<RankedKeywords>[]): Promise<ChunkItem[]> {
 		return [];
 	}
 }

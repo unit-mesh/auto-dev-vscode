@@ -1,6 +1,5 @@
 import { ChunkItem, Embedding } from "../../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./HydeDocument";
-import { RankedKeywords } from "../utils/RankedKeywords";
 
 export type HydeQuery = string | RegExp | Embedding;
 
@@ -41,11 +40,6 @@ export interface HydeStrategy<T> {
 	generateDocument: () => Promise<HydeDocument<T>>;
 
 	/**
-	 * Convert Hyde doc to embedding
-	 */
-	embedDocument: (doc: HydeDocument<T>) => Promise<Embedding>;
-
-	/**
 	 * Retrieve the most relevant code snippets based on the given condition
 	 * @param condition - The condition to be used for retrieval
 	 * @returns The most relevant code snippets
@@ -59,6 +53,6 @@ export interface HydeStrategy<T> {
 	 * @param docs - The documents to be used for retrieval
 	 * @returns The most relevant code snippets
 	 */
-	clusterChunks: (docs: HydeDocument<T>[]) => Promise<Embedding[]>;
+	clusterChunks: (docs: HydeDocument<T>[]) => Promise<ChunkItem[]>;
 }
 

@@ -16,11 +16,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 		return new HydeDocument(HydeDocumentType.Code, "");
 	}
 
-	async embedDocument(doc: HydeDocument<string>): Promise<Embedding> {
-		return [];
-	}
-
-	async clusterChunks(docs: HydeDocument<string>[]): Promise<Embedding[]> {
+	async clusterChunks(docs: HydeDocument<string>[]): Promise<ChunkItem[]> {
 		return [];
 	}
 
