@@ -46,7 +46,6 @@ export function registerWebViewProvider(extension: AutoDevExtension) {
 	);
 }
 
-// todo: load from settings
 let enableRename = true;
 
 export function registerRenameAction(extension: AutoDevExtension) {

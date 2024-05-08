@@ -31,7 +31,6 @@ export class RenameLookup {
 			code: firstElement.blockRange.text
 		};
 
-		console.log(context);
 		let instruction = await PromptManager.getInstance().generateInstruction(ActionType.Rename, context);
 
 		try {
@@ -40,11 +39,9 @@ export class RenameLookup {
 			let output = await LlmProvider.instance().chat(chatMessages);
 			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
 
-			console.info("output:" + output);
-
 			return {
 				range: range,
-				placeholder: output
+				placeholder: clearName(output)
 			};
 		} catch (e) {
 			console.log("error:" + e);
@@ -52,6 +49,16 @@ export class RenameLookup {
 			return range;
 		}
 	}
+}
+
+function clearName(str: string): string {
+	const firstChar = str.charAt(0);
+	const lastChar = str.charAt(str.length - 1);
+	if ((firstChar === '"' && lastChar === '"') || (firstChar === "'" && lastChar === "'") || (firstChar === '`' && lastChar === '`')) {
+		return str.substring(1, str.length - 1);
+	}
+
+	return str;
 }
 
 export interface RenameTemplateContext extends TemplateContext {
