@@ -77,6 +77,11 @@
           "default": null,
           "markdownDescription": "If your team is set up to use shared configuration, enter the server URL here and your user token below to enable automatic syncing."
         },
+        "autodev.enableRenameSuggestion": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Enable rename suggestion"
+        },
         "autodev.chatModels": {
           "type": "array",
           "default": [

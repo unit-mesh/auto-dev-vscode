@@ -5,6 +5,7 @@ import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider";
 import { AutoDevCodeActionProvider } from "./AutoDevCodeActionProvider";
 import { RenameLookup } from "../action/refactor/RenameLookup";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
+import { SettingService } from "../../settings/SettingService";
 
 export function registerCodeLensProviders(context: AutoDevExtension) {
 	const filter = SUPPORTED_LANGUAGES.map(it => ({ language: it } as vscode.DocumentFilter));
@@ -46,8 +47,6 @@ export function registerWebViewProvider(extension: AutoDevExtension) {
 	);
 }
 
-let enableRename = true;
-
 export function registerRenameAction(extension: AutoDevExtension) {
 	vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES, {
 		async prepareRename(document, position, token): Promise<undefined | Range | {
@@ -59,7 +58,7 @@ export function registerRenameAction(extension: AutoDevExtension) {
 				return undefined;
 			}
 
-			if (!enableRename) {
+			if (!SettingService.instance().isEnableRename()) {
 				return range;
 			}
 

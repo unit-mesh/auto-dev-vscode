@@ -24,6 +24,7 @@ import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";
+import { SettingService } from "./settings/SettingService";
 
 (globalThis as any).self = globalThis;
 
@@ -47,7 +48,9 @@ export async function activate(context: vscode.ExtensionContext) {
 			registerQuickFixProvider(extension);
 			registerCommands(extension);
 
-			registerRenameAction(extension);
+			if (!SettingService.instance().isEnableRename()) {
+				registerRenameAction(extension);
+			}
 
 			TreeSitterFileManager.getInstance();
 

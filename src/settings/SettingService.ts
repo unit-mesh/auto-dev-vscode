@@ -23,6 +23,11 @@ export class SettingService {
 		return settings.get('prompts') || 'prompts';
 	}
 
+	isEnableRename(): boolean {
+		const settings = vscode.workspace.getConfiguration('autodev.enableRenameSuggestion', this.projectUri);
+		return settings.get('enableRename') || false;
+	}
+
 	llmConfig(): LlmConfig {
 		const settings = vscode.workspace.getConfiguration('autodev.openaiCompatibleConfig', this.projectUri);
 		return {
