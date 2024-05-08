@@ -48,9 +48,12 @@ export async function activate(context: vscode.ExtensionContext) {
 			registerQuickFixProvider(extension);
 			registerCommands(extension);
 
-			if (!SettingService.instance().isEnableRename()) {
-				registerRenameAction(extension);
-			}
+			vscode.workspace.onDidChangeConfiguration(() => {
+				if (!SettingService.instance().isEnableRename()) {
+					// todo: make it works better
+					registerRenameAction(extension);
+				}
+			});
 
 			TreeSitterFileManager.getInstance();
 

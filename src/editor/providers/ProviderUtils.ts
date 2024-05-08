@@ -48,7 +48,7 @@ export function registerWebViewProvider(extension: AutoDevExtension) {
 }
 
 export function registerRenameAction(extension: AutoDevExtension) {
-	vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES, {
+	let disposable = vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES, {
 		async prepareRename(document, position, token): Promise<undefined | Range | {
 			range: Range;
 			placeholder: string;
@@ -76,4 +76,6 @@ export function registerRenameAction(extension: AutoDevExtension) {
 			return edit;
 		}
 	});
+
+	extension.extensionContext.subscriptions.push(disposable);
 }
