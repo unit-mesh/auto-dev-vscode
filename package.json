@@ -72,11 +72,6 @@
           },
           "markdownDescription": "For LLM compatible with OpenAI, set the API key here."
         },
-        "autodev.remoteConfigServerUrl": {
-          "type": "string",
-          "default": null,
-          "markdownDescription": "If your team is set up to use shared configuration, enter the server URL here and your user token below to enable automatic syncing."
-        },
         "autodev.enableRenameSuggestion": {
           "type": "boolean",
           "default": false,

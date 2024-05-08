@@ -25,7 +25,7 @@ export class SettingService {
 
 	isEnableRename(): boolean {
 		const settings = vscode.workspace.getConfiguration('autodev.enableRenameSuggestion', this.projectUri);
-		return settings.get('enableRename') || false;
+		return settings.get('autodev.enableRenameSuggestion') || false;
 	}
 
 	llmConfig(): LlmConfig {
