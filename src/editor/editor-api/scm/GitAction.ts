@@ -2,6 +2,7 @@ import vscode from "vscode";
 import * as util from "node:util";
 import { Repository } from "../../../types/git";
 import { DiffManager } from "../../diff/DiffManager";
+import path from "path";
 
 const asyncExec = util.promisify(require("child_process").exec);
 
