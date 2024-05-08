@@ -19,13 +19,13 @@ export class SettingService {
 	}
 
 	customPromptsDir(): string {
-		const settings = vscode.workspace.getConfiguration('prompts', this.projectUri);
-		return settings.get('prompts') || 'prompts';
+		const settings = vscode.workspace.getConfiguration('autodev', this.projectUri);
+		return settings.get('customPromptDir') || 'prompts';
 	}
 
 	isEnableRename(): boolean {
-		const settings = vscode.workspace.getConfiguration('autodev.enableRenameSuggestion', this.projectUri);
-		return settings.get('autodev.enableRenameSuggestion') || false;
+		const settings = vscode.workspace.getConfiguration('autodev', this.projectUri);
+		return settings.get('enableRenameSuggestion') || false;
 	}
 
 	llmConfig(): LlmConfig {
