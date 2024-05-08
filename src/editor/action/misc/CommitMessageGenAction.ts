@@ -22,7 +22,7 @@ export class CommitMessageGenAction {
 	async handleDiff(inputBox: InputBox) {
 		let diff = await new GitAction().getDiff();
 
-		console.info("diff: ", diff);
+		console.info("diff: ", JSON.stringify(diff));
 
 		let context: CommitMessageTemplateContext = {
 			language: "",
@@ -31,15 +31,15 @@ export class CommitMessageGenAction {
 		};
 
 		let instruction = await PromptManager.getInstance().generateInstruction(ActionType.GenCommitMessage, context);
-		const msgs = CustomActionPrompt.parseChatMessage(instruction);
-		let responsestream = LlmProvider.instance()._streamChat(msgs);
+		const messages = CustomActionPrompt.parseChatMessage(instruction);
+		let chatResponseStream = LlmProvider.instance()._streamChat(messages);
 
 		inputBox.value = "";
 
 		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
 		try {
-			for await (const chunk of responsestream) {
-				inputBox.value = chunk.content;
+			for await (const chunk of chatResponseStream) {
+				inputBox.value += chunk.content;
 			}
 
 			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);

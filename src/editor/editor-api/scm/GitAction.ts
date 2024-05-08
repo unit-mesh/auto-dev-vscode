@@ -2,7 +2,6 @@ import vscode from "vscode";
 import * as util from "node:util";
 import { Repository } from "../../../types/git";
 import { DiffManager } from "../../diff/DiffManager";
-import path from "path";
 
 const asyncExec = util.promisify(require("child_process").exec);
 
@@ -78,8 +77,8 @@ export class GitAction {
 		}
 	}
 
-	async parseGitDiff(repository: Repository, diffResult: string) {
-		return DiffManager.simplifyDiff(diffResult);
+	async parseGitDiff(repository: Repository, diffResult: string): Promise<string> {
+		return DiffManager.simplifyDiff(repository, diffResult);
 	}
 
 	async getHistoryMessages(repository: Repository) {
