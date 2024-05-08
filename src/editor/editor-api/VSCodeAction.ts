@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import path from "path";
 import { TextDecoder } from "node:util";
 
-import { GitAction } from "./GitAction";
+import { GitAction } from "./scm/GitAction";
 
 export class VSCodeAction implements IdeAction {
 	git: GitAction = new GitAction();

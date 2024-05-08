@@ -1,5 +1,9 @@
 export class DiffManager {
-  showDiff() {
-    // todo
-  }
+	showDiff() {
+		// todo
+	}
+
+	static simplifyDiff(diffResult: string) {
+		return diffResult;
+	}
 }

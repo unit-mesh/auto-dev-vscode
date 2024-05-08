@@ -1,25 +1,23 @@
 import vscode from "vscode";
 import * as util from "node:util";
+import { Repository } from "../../../types/git";
+import { DiffManager } from "../../diff/DiffManager";
 
 const asyncExec = util.promisify(require("child_process").exec);
 
 export class GitAction {
-	private async _getRepo(forDirectory: vscode.Uri): Promise<any | undefined> {
+	private async _getRepo(forDirectory: vscode.Uri): Promise<Repository | null> {
 		// Use the native git extension to get the branch name
 		const extension = vscode.extensions.getExtension("vscode.git");
-		if (
-			typeof extension === "undefined" ||
-			!extension.isActive ||
-			typeof vscode.workspace.workspaceFolders === "undefined"
-		) {
-			return undefined;
+		if (typeof extension === "undefined" || !extension.isActive || typeof vscode.workspace.workspaceFolders === "undefined") {
+			return null;
 		}
 
 		const git = extension.exports.getAPI(1);
 		return git.getRepository(forDirectory);
 	}
 
-	async getRepo(forDirectory: vscode.Uri): Promise<any | undefined> {
+	async getRepo(forDirectory: vscode.Uri): Promise<Repository | undefined> {
 		let repo = await this._getRepo(forDirectory);
 		let i = 0;
 		while (!repo?.state?.HEAD?.name) {
@@ -30,6 +28,7 @@ export class GitAction {
 			}
 			repo = await this._getRepo(forDirectory);
 		}
+
 		return repo;
 	}
 
@@ -38,7 +37,7 @@ export class GitAction {
 		return repo?.rootUri?.fsPath;
 	}
 
-	async getBranch(forDirectory: vscode.Uri) {
+	async getBranch(forDirectory: vscode.Uri): Promise<string> {
 		let repo = await this.getRepo(forDirectory);
 		if (repo?.state?.HEAD?.name === undefined) {
 			try {
@@ -63,10 +62,37 @@ export class GitAction {
 				continue;
 			}
 
-			diffs.push((await repo.getDiff()).join("\n"));
+			diffs.push(await this.getRepositoryChanges(repo));
 		}
 
 		return diffs.join("\n\n");
+	}
+
+	async getRepositoryChanges(repository: Repository): Promise<string> {
+		let diffResult = await repository.diff(true) || await repository.diff();
+		if (diffResult !== '') {
+			return this.parseGitDiff(repository, diffResult);
+		} else {
+			return "";
+		}
+	}
+
+	async parseGitDiff(repository: Repository, diffResult: string) {
+		return DiffManager.simplifyDiff(diffResult);
+	}
+
+	async getHistoryMessages(repository: Repository) {
+		let repositoryHistories = [];
+		let userHistories = [];
+
+		let commits = await repository.log({ maxEntries: 10 });
+		repositoryHistories.push(...commits.map(commit => commit.message));
+
+		let userName = await repository.getConfig('user.name') ?? await repository.getGlobalConfig('user.name');
+		let userCommits = await repository.log({ maxEntries: 10, author: userName });
+		userHistories.push(...userCommits.map(commit => commit.message));
+
+		return { repositoryHistories, userHistories };
 	}
 
 	getWorkspaceDirectories(): string[] {
