@@ -204,7 +204,7 @@
       {
         "command": "autodev.git.generateCommitMessage",
         "title": "Gen Commit Message",
-        "icon": "$(autodev)",
+        "icon": "$(autodev-icon)",
         "category": "AutoDev"
       }
     ],
@@ -290,6 +290,10 @@
       "commandPalette": [
         {
           "command": "autodev.debugTerminal"
+        },
+        {
+          "command": "autodev.git.generateCommitMessage",
+          "when": "false"
         }
       ]
     },
