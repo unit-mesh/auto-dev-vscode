@@ -1,6 +1,5 @@
 import vscode from "vscode";
 
-import { CodeFile } from "../../../editor/codemodel/CodeElement";
 import { AutoTestTemplateContext } from "./AutoTestTemplateContext";
 import { TSLanguageService } from "../../../editor/language/service/TSLanguageService";
 import { SupportedLanguage } from "../../../editor/language/SupportedLanguage";
