@@ -1,3 +1,5 @@
+import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+
 const Parser = require("web-tree-sitter");
 import 'reflect-metadata';
 
@@ -6,7 +8,6 @@ import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/scope-graph/ScopeGraph";
 import { functionToRange } from "../../../editor/codemodel/CodeElement";
 import { GoStructurerProvider } from "../../../code-context/go/GoStructurerProvider";
-import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
 
 describe('RelevantClass for Golang', () => {
 	let parser: any;

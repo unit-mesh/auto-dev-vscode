@@ -1,9 +1,10 @@
+import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+
 const Parser = require("web-tree-sitter");
 
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 import { ScopeBuilder } from "../../../code-search/scope-graph/ScopeBuilder";
 import { TestLanguageService } from "../../TestLanguageService";
-import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
 
 describe('ScopeBuilder for TypeScript', () => {
 	let parser: any;

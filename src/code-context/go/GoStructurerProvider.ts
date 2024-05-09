@@ -6,7 +6,8 @@ import { LanguageProfile } from "../_base/LanguageProfile";
 import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
-import { TSLanguageUtil } from "../ast/TSLanguageUtil";
+
+import { TSLanguageUtil } from "../ast/TreeSitterWrapper";
 
 export class GoStructurerProvider extends BaseStructurerProvider {
 	protected langId: SupportedLanguage = "go";

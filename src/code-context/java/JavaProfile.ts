@@ -11,7 +11,6 @@ export class JavaProfile implements LanguageProfile {
 	fileExtensions = ['java'];
 	grammar = (langService: TSLanguageService) => langService.getLanguage('java');
 	isTestFile = (filePath: string) => filePath.endsWith('.test.java') && filePath.includes('src/test');
-	// todo: load from `.scm` file
 	scopeQuery = new MemoizedQuery(javascm);
 	hoverableQuery = new MemoizedQuery(`
       [(identifier)

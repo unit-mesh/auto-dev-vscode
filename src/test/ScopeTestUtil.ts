@@ -1,5 +1,6 @@
 import { TreeSitterFile } from "../code-context/ast/TreeSitterFile";
-import { TSLanguageUtil } from "../code-context/ast/TSLanguageUtil";
+
+import { TSLanguageUtil } from "../code-context/ast/TreeSitterWrapper";
 
 export async function testScopes(langId: string, src: string, expected: string, tsfFile: TreeSitterFile) {
 	const graph = await tsfFile.scopeGraph();

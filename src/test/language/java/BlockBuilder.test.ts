@@ -1,9 +1,8 @@
-import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
-
 const Parser = require("web-tree-sitter");
 
 import { TestLanguageService } from "../../TestLanguageService";
 import { TreeSitterUtil } from "../../../code-context/ast/TreeSitterUtil";
+import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
 
 describe('BlockBuilder for Java', () => {
 	let parser: any;

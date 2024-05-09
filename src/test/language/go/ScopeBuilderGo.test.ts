@@ -7,7 +7,8 @@ import { TestLanguageService } from "../../TestLanguageService";
 import { testScopes } from "../../ScopeTestUtil";
 import { TSLanguageService } from "../../../editor/language/service/TSLanguageService";
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
-import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
+
+import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
 
 describe('ScopeBuilderGo', () => {
 	let parser: any;

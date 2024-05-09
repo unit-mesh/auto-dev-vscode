@@ -8,7 +8,7 @@ import { AutoTestActionExecutor } from "../editor/action/autotest/AutoTestAction
 import { NamedElementBuilder } from "../editor/ast/NamedElementBuilder";
 import { QuickActionService } from "../editor/editor-api/QuickAction";
 import { SystemActionService } from "../editor/action/setting/SystemActionService";
-import { toNamedElementBuilder } from "../code-context/ast/VSCodeTreeSitterProxy";
+import { createNamedElement } from "../code-context/ast/TreeSitterWrapper";
 import { AutoDevCommandOperation } from "./autoDevCommandOperation";
 import { AutoDevCommand } from "./autoDevCommand";
 import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
@@ -59,7 +59,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		}
 
 		let elementBuilder: NamedElementBuilder | null = null;
-		await toNamedElementBuilder(textDocument).then((builder) => {
+		await createNamedElement(textDocument).then((builder) => {
 			elementBuilder = builder;
 		}).catch((err) => {
 			channel.appendLine(`Error: ${err}`);
@@ -112,7 +112,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		let edit = new vscode.WorkspaceEdit();
 		let document = editor.document;
 		//
-		let elementBuilder = await toNamedElementBuilder(document);
+		let elementBuilder = await createNamedElement(document);
 		let currentLine = editor.selection.active.line;
 		let ranges = elementBuilder.getElementForAction(currentLine);
 

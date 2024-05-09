@@ -1,5 +1,3 @@
-import { TSLanguageUtil } from "../../code-context/ast/TSLanguageUtil";
-
 const Parser = require("web-tree-sitter");
 import { TfIdf } from "../../code-search/search/tfidf/Tfidf";
 
@@ -8,6 +6,7 @@ import { TermSplitter } from "../../code-search/search/tfidf/TermSplitter";
 import { TestLanguageService } from "../TestLanguageService";
 import { CollapsedCodeChunker } from "../../code-search/chunk/_base/CollapsedCodeChunker";
 import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
+import { TSLanguageUtil } from "../../code-context/ast/TreeSitterWrapper";
 
 describe('TfIdfWithSemanticChunkSearch', () => {
     let tfIdfWithSemanticChunkSearch: TfIdfSemanticChunkSearch;

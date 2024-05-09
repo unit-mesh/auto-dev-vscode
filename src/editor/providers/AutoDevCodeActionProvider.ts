@@ -7,7 +7,7 @@ import { providerContainer } from "../../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../../ProviderTypes";
 import { ActionCreator } from "../action/_base/ActionCreator";
 import { ActionCreatorContext } from "../action/_base/ActionCreatorContext";
-import { toNamedElementBuilder } from "../../code-context/ast/VSCodeTreeSitterProxy";
+import { createNamedElement } from "../../code-context/ast/TreeSitterWrapper";
 
 export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 	private context: AutoDevExtension;
@@ -31,7 +31,7 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 			return [];
 		}
 
-		let blockBuilder = await toNamedElementBuilder(document);
+		let blockBuilder = await createNamedElement(document);
 
 		const methodRanges: NamedElement[] = blockBuilder.buildMethod();
 		const classRanges: NamedElement[] = blockBuilder.buildClass();

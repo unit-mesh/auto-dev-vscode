@@ -1,9 +1,10 @@
+import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+
 const Parser = require("web-tree-sitter");
 import { SyntaxNode } from "web-tree-sitter";
 import 'reflect-metadata';
 
 import { TestLanguageService } from "../../TestLanguageService";
-import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
 
 describe('TypeScriptLangConfig', () => {
 	let parser: any;

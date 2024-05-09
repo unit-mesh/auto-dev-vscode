@@ -9,8 +9,8 @@ import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRefs";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { TSLanguageUtil } from "../ast/TSLanguageUtil";
 import { LanguageProfile } from "./LanguageProfile";
+import { TSLanguageUtil } from "../ast/TreeSitterWrapper";
 
 @injectable()
 export abstract class BaseStructurerProvider implements StructurerProvider {

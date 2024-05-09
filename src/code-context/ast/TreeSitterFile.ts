@@ -1,10 +1,10 @@
 import Parser, { Language, Tree } from "web-tree-sitter";
 
 import { LanguageProfile } from "../_base/LanguageProfile";
-import { TSLanguageUtil } from "./TSLanguageUtil";
 import { ScopeBuilder } from "../../code-search/scope-graph/ScopeBuilder";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
+import { TSLanguageUtil } from "./TreeSitterWrapper";
 
 const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 

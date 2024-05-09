@@ -7,7 +7,8 @@ import { LanguageProfile } from "../_base/LanguageProfile";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 import { BaseStructurerProvider } from "../_base/BaseStructurerProvider";
-import { TSLanguageUtil } from "../ast/TSLanguageUtil";
+
+import { TSLanguageUtil } from "../ast/TreeSitterWrapper";
 
 @injectable()
 export class JavaStructurerProvider extends BaseStructurerProvider {

@@ -1,6 +1,7 @@
+import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+
 const Parser = require("web-tree-sitter");
 
-import { TSLanguageUtil } from "../../../code-context/ast/TSLanguageUtil";
 import { ScopeBuilder } from "../../../code-search/scope-graph/ScopeBuilder";
 import { TestLanguageService } from "../../TestLanguageService";
 import { testScopes } from "../../ScopeTestUtil";

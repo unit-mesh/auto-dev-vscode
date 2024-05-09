@@ -52,6 +52,7 @@ export interface LanguageProfile {
 	// for example, in JavaScript/TypeScript, if we select function, we should also select the export keyword.
 	autoSelectInsideParent: string[];
 
+	/// for IO analysis
 	builtInTypes: string[];
 
 	// should return true if the file is a test file
@@ -60,19 +61,20 @@ export interface LanguageProfile {
 
 export class MemoizedQuery {
 	private readonly queryStr: string;
-	private cachedMap: Map<Language, Query> = new Map();
+	private cachedMap: Map<string, Query> = new Map();
 
 	constructor(scopeQuery: string) {
 		this.queryStr = scopeQuery;
 	}
 
 	query(language: Language): Query {
-		if (this.cachedMap.has(language)) {
-			return this.cachedMap.get(language)!!;
+		if (this.cachedMap.has(this.queryStr)) {
+			return this.cachedMap.get(this.queryStr)!!;
 		}
 
 		let query = language.query(this.queryStr);
-		this.cachedMap.set(language, query);
+
+		this.cachedMap.set(this.queryStr, query);
 		return query;
 	}
 }

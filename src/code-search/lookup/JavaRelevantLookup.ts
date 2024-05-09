@@ -1,5 +1,6 @@
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
-import { TSLanguageUtil } from "../../code-context/ast/TSLanguageUtil";
+
+import { TSLanguageUtil } from "../../code-context/ast/TreeSitterWrapper";
 
 export class JavaRelevantLookup {
 	tsfile: TreeSitterFile;

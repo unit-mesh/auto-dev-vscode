@@ -2,7 +2,7 @@ import vscode from "vscode";
 
 import { TreeSitterFile } from "../../ast/TreeSitterFile";
 import { PositionUtil } from "../../../editor/ast/PositionUtil";
-import { textToTreeSitterFile } from "../../ast/VSCodeTreeSitterProxy";
+import { textToTreeSitterFile } from "../../ast/TreeSitterWrapper";
 
 export class JavaCodeCorrector {
 	private document: vscode.TextDocument;
@@ -18,14 +18,14 @@ export class JavaCodeCorrector {
 	}
 
 	async correct() {
-		let tsfile = await textToTreeSitterFile(this.sourcecode, "java", "");
+		let tsfile = await textToTreeSitterFile(this.sourcecode, "java");
 
 		if (!tsfile) {
 			return Promise.reject(`Failed to find tree-sitter file for: ${this.document.uri}`);
 		}
 
 		await this.fixIncorrectClassName(tsfile, this.document);
-		await this.fixIncorrectPackageName(tsfile, this.sourcecode, this.document);
+		await this.fixIncorrectPackageName(tsfile, this.document);
 	}
 
 	/**
@@ -57,7 +57,7 @@ export class JavaCodeCorrector {
 	/**
 	 * Fix LLM generated test file lost package name issue
 	 */
-	private async fixIncorrectPackageName(tsfile: TreeSitterFile, output: string, document: vscode.TextDocument) {
+	private async fixIncorrectPackageName(tsfile: TreeSitterFile, document: vscode.TextDocument) {
 		let packageQuery = tsfile.languageProfile.packageQuery!!.query(tsfile.tsLanguage);
 		const packageCapture = packageQuery!!.captures(tsfile.tree.rootNode);
 
