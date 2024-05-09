@@ -65,6 +65,8 @@ export class ScopeBuilder {
 
 		for (let index = 0; index < this.query.captureNames.length; index++) {
 			const name = this.query.captureNames[index];
+			console.log(name);
+
 			const parts = name.split('.');
 			const partLength = parts.length;
 

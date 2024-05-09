@@ -91,16 +91,16 @@ export class TypeScriptProfile implements LanguageProfile {
       )
     )
 		
-	  (interface_declaration
-	     name: (type_identifier) @interface-name
-	     body: (interface_body (
-	       method_signature
-	         name: (property_identifier) @interface.method.id
-	         parameters: (formal_parameters (required_parameter)? @parameter)
-	         return_type: (type_annotation)? @interface.returnType
-	     ))
-	  )
-					
+	  ;;(interface_declaration
+	  ;;   name: (type_identifier) @interface-name
+	  ;;   body: (interface_body (
+	  ;;     method_signature
+	  ;;       name: (property_identifier) @interface.method.id
+	  ;;       parameters: (formal_parameters (required_parameter)? @parameter)
+	  ;;       return_type: (type_annotation)? @interface.returnType
+	  ;;   ))
+	  ;;)
+			
 		(program (function_declaration
           name: (identifier) @function-name))
 		`);

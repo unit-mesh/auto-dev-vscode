@@ -16,7 +16,6 @@ describe('BlockBuilder for Java', () => {
 
 		language = await langConfig.grammar(languageService, "java")!!;
 		parser.setLanguage(language);
-		parser.setLogger(null);
 	});
 
 	it('build for node', async () => {
