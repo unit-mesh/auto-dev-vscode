@@ -11,7 +11,7 @@
   (arrow_function)
   (object)
   ;; nameless functions create scopes, just like arrow functions
-  (function !name)
+;  (function !name)
   (function_declaration)
   (generator_function_declaration)
   (for_statement)
