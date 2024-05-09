@@ -39,14 +39,16 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
 - [ ] Chat mode
     - [x] Chat UI
     - [x] Chat with selection
-- [ ] Touch Point
+- [ ] Touch-point, aka: [Contribution Point](https://code.visualstudio.com/api/references/contribution-points)
     - [X] QuickPick
     - [x] ContextMenu
     - [x] QuickFix
     - [x] CodeLens
     - [x] Terminal
-    - [ ] Commit Message for SCM
+    - [x] Commit Message for SCM
     - [ ] Fix when error
+    - [ ] Comments Title: `comments/comment/title`
+    - [ ] Fix testings: `testing/message/context`
 - [ ] Action by AstNode
     - [x] TreeSitter
         - [x] Class level
