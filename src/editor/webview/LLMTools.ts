@@ -1,7 +1,5 @@
 import { ChatAnthropic } from "@langchain/anthropic";
 import { ChatMessage } from "@langchain/core/messages";
-import { ChatAlibabaTongyi } from "@langchain/community/chat_models/alibaba_tongyi";
-import { ChatBaiduWenxin } from "@langchain/community/chat_models/baiduwenxin";
 import { ChatOpenAI } from "@langchain/openai";
 
 import * as vscode from "vscode";
@@ -99,14 +97,6 @@ export function createChatModel(options: ChatModelCallOptions) {
     return createAnthropicChatModel(options);
   }
 
-  if (options.provider === "qianfan") {
-    return createQianfanChatModel(options);
-  }
-
-  if (options.provider === "tongyi") {
-    return createTongyiChatModel(options);
-  }
-
   return createOpenaiChatModel(options);
 }
 
@@ -137,28 +127,5 @@ export function createOpenaiChatModel(config: ChatModelCallOptions) {
       baseURL: config.baseURL,
       ...config.clientOptions,
     },
-  });
-}
-
-export function createQianfanChatModel(config: ChatModelCallOptions) {
-  return new ChatBaiduWenxin({
-    streaming: true,
-    baiduApiKey: config.apiKey,
-    baiduSecretKey: config.secretKey,
-    model: config.model,
-    temperature: config.temperature,
-    ...config.clientOptions,
-  });
-}
-
-export function createTongyiChatModel(config: ChatModelCallOptions) {
-  return new ChatAlibabaTongyi({
-    streaming: true,
-    alibabaApiKey: config.apiKey,
-    model: config.model,
-    temperature: config.temperature,
-    maxTokens: config.maxTokens,
-    enableSearch: true,
-    ...config.clientOptions,
   });
 }
