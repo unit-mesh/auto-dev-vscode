@@ -1,6 +1,6 @@
 import { CodeTokenizer } from "./CodeTokenizer";
 
-export class SpaceBasedTokenizer implements CodeTokenizer {
+export class WhitespaceBasedTokenizer implements CodeTokenizer {
 	tokenize(input: string): Set<string> {
 		let words = this.splitIntoWords(input);
 		return new Set(words);

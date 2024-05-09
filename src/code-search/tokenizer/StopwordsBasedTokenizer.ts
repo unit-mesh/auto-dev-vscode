@@ -99,7 +99,6 @@ export class StopwordsBasedTokenizer implements CodeTokenizer {
 	}
 
 	/**
-	 * Todo: call DomainTermService to teams if enable for Team Term
 	 * {@link DomainTermService} is a service that provides domain-specific terms for a given domain.
 	 */
 	splitIntoTerms(input: string): string[] {

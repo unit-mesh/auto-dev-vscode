@@ -1,4 +1,5 @@
 import { StopwordsBasedTokenizer } from "../../code-search/tokenizer/StopwordsBasedTokenizer";
+import { WhitespaceBasedTokenizer } from "../../code-search/tokenizer/WhitespaceBasedTokenizer";
 
 describe('SimilarChunkTokenizer', () => {
 	let tokenizer: StopwordsBasedTokenizer;
@@ -50,8 +51,9 @@ describe('SimilarChunkTokenizer', () => {
 	describe('splitIntoWords', () => {
 		it('should split the input string into an array of words', () => {
 			const input = 'this is a test';
-			const expectedOutput = ['this', 'is', 'a', 'test'];
-			expect(tokenizer.splitIntoWords(input)).to.deep.equal(expectedOutput);
+			const expectedOutput: Set<string> = new Set(['this', 'is', 'a', 'test']);
+			let tokenizer = new WhitespaceBasedTokenizer();
+			expect(tokenizer.tokenize(input)).to.deep.equal(expectedOutput);
 		});
 	});
 });
