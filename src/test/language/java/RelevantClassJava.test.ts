@@ -3,7 +3,7 @@ import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile
 const Parser = require("web-tree-sitter");
 import 'reflect-metadata';
 
-import { JavaRelevantLookup } from "../../../code-search/lookup/JavaRelevantLookup";
+import { JavaRelevantLookup } from "../../../code-context/java/utils/JavaRelevantLookup";
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 import { TestLanguageService } from "../../TestLanguageService";
 import { ScopeGraph } from "../../../code-search/scope-graph/ScopeGraph";

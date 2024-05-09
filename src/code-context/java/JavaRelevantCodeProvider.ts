@@ -6,7 +6,7 @@ import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { JavaStructurerProvider } from "./JavaStructurerProvider";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
-import { JavaRelevantLookup } from "../../code-search/lookup/JavaRelevantLookup";
+import { JavaRelevantLookup } from "./utils/JavaRelevantLookup";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
