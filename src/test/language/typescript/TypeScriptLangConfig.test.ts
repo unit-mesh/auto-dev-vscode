@@ -1,9 +1,8 @@
-import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
-
 const Parser = require("web-tree-sitter");
 import { SyntaxNode } from "web-tree-sitter";
 import 'reflect-metadata';
 
+import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
 import { TestLanguageService } from "../../TestLanguageService";
 
 describe('TypeScriptLangConfig', () => {

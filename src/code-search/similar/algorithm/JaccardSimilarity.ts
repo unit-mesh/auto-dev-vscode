@@ -1,4 +1,4 @@
-import { SimilarChunkTokenizer } from "../SimilarChunkTokenizer";
+import { StopwordsBasedTokenizer } from "../../tokenizer/StopwordsBasedTokenizer";
 
 /**
  * `JaccardSimilarity` is a TypeScript class that provides methods to calculate the Jaccard similarity between strings.
@@ -26,7 +26,7 @@ export class JaccardSimilarity {
 	}
 
 	private tokenize(input: string): Set<string> {
-		return SimilarChunkTokenizer.instance().tokenize(input);
+		return StopwordsBasedTokenizer.instance().tokenize(input);
 	}
 
 	private similarityScore(set1: Set<string>, set2: Set<string>): number {

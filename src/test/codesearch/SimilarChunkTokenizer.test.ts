@@ -1,19 +1,19 @@
-import { SimilarChunkTokenizer } from "../../code-search/similar/SimilarChunkTokenizer";
+import { StopwordsBasedTokenizer } from "../../code-search/tokenizer/StopwordsBasedTokenizer";
 
 describe('SimilarChunkTokenizer', () => {
-	let tokenizer: SimilarChunkTokenizer;
+	let tokenizer: StopwordsBasedTokenizer;
 
 	beforeEach(() => {
-		tokenizer = SimilarChunkTokenizer.instance();
+		tokenizer = StopwordsBasedTokenizer.instance();
 	});
 
 	describe('instance', () => {
 		it('should return an instance of SimilarChunkTokenizer', () => {
-			expect(tokenizer).to.be.instanceOf(SimilarChunkTokenizer);
+			expect(tokenizer).to.be.instanceOf(StopwordsBasedTokenizer);
 		});
 
 		it('should always return the same instance', () => {
-			const anotherInstance = SimilarChunkTokenizer.instance();
+			const anotherInstance = StopwordsBasedTokenizer.instance();
 			expect(anotherInstance).to.equal(tokenizer);
 		});
 	});

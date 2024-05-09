@@ -1,6 +1,4 @@
 import { TreeSitterFile } from "../code-context/ast/TreeSitterFile";
-
-
 import { LanguageProfileUtil } from "../code-context/_base/LanguageProfile";
 
 export async function testScopes(langId: string, src: string, expected: string, tsfFile: TreeSitterFile) {

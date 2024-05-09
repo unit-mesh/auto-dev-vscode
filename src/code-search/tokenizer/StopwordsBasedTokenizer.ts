@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 
 import { TermSplitter } from "../search/tfidf/TermSplitter";
+import { CodeTokenizer } from "./CodeTokenizer";
 
 // a list of commonly used words that have little meaning and can be excluded
 // from analysis.
@@ -62,13 +63,13 @@ const CHINESE_STOP_WORDS = [
  * Note: This method does not handle punctuation or special characters. It is assumed that the input string is preprocessed to remove such characters.
  *
  */
-export class SimilarChunkTokenizer {
+export class StopwordsBasedTokenizer implements CodeTokenizer {
 	// singletons
-	private static instance_: SimilarChunkTokenizer;
+	private static instance_: StopwordsBasedTokenizer;
 
 	static instance() {
 		if (!this.instance_) {
-			this.instance_ = new SimilarChunkTokenizer();
+			this.instance_ = new StopwordsBasedTokenizer();
 		}
 		return this.instance_;
 	}
@@ -103,13 +104,5 @@ export class SimilarChunkTokenizer {
 	 */
 	splitIntoTerms(input: string): string[] {
 		return TermSplitter.syncSplitTerms(input);
-	}
-
-	/**
-	 * @deprecated splitIntoWords is deprecated, use `splitIntoTerms` instead
-	 * @param input
-	 */
-	splitIntoWords(input: string): string[] {
-		return input.split(/[^a-zA-Z0-9]/).filter(word => word.length > 0);
 	}
 }
