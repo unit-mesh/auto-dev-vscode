@@ -1,4 +1,4 @@
-import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
 
 const Parser = require("web-tree-sitter");
 import 'reflect-metadata';
@@ -12,7 +12,7 @@ import { GoStructurerProvider } from "../../../code-context/go/GoStructurerProvi
 describe('RelevantClass for Golang', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = TSLanguageUtil.for("go")!!;
+	let langConfig = LanguageProfileUtil.from("go")!!;
 
 	beforeEach(async () => {
 		await Parser.init();

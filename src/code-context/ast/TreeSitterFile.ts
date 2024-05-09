@@ -1,10 +1,10 @@
 import Parser, { Language, Tree } from "web-tree-sitter";
 
-import { LanguageProfile } from "../_base/LanguageProfile";
+import { LanguageProfile, LanguageProfileUtil } from "../_base/LanguageProfile";
 import { ScopeBuilder } from "../../code-search/scope-graph/ScopeBuilder";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { TSLanguageUtil } from "./TreeSitterWrapper";
+
 
 const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 
@@ -61,7 +61,7 @@ export class TreeSitterFile {
 			return Promise.reject(TreeSitterFileError.fileTooLarge);
 		}
 
-		const tsConfig = TSLanguageUtil.for(langId);
+		const tsConfig = LanguageProfileUtil.from(langId);
 		if (tsConfig === undefined) {
 			return Promise.reject(TreeSitterFileError.unsupportedLanguage);
 		}

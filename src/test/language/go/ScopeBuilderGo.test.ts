@@ -8,12 +8,13 @@ import { testScopes } from "../../ScopeTestUtil";
 import { TSLanguageService } from "../../../editor/language/service/TSLanguageService";
 import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 
-import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+
+import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
 
 describe('ScopeBuilderGo', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = TSLanguageUtil.for("go")!!;
+	let langConfig = LanguageProfileUtil.from("go")!!;
 	let languageService: TSLanguageService;
 
 	beforeEach(async () => {

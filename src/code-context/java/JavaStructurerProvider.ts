@@ -3,17 +3,16 @@ import { injectable } from "inversify";
 
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
-import { LanguageProfile } from "../_base/LanguageProfile";
+import { LanguageProfile, LanguageProfileUtil } from "../_base/LanguageProfile";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 
-import { TSLanguageUtil } from "../ast/TreeSitterWrapper";
 import { BaseStructurerProvider } from "../_base/StructurerProvider";
 
 @injectable()
 export class JavaStructurerProvider extends BaseStructurerProvider {
 	protected langId: SupportedLanguage = "java";
-	protected config: LanguageProfile = TSLanguageUtil.for(this.langId)!!;
+	protected config: LanguageProfile = LanguageProfileUtil.from(this.langId)!!;
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 

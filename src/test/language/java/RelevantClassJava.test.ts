@@ -1,4 +1,4 @@
-import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
 
 const Parser = require("web-tree-sitter");
 import 'reflect-metadata';
@@ -14,7 +14,7 @@ import { functionToRange } from "../../../editor/codemodel/CodeElement";
 describe('RelevantClass for Java', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = TSLanguageUtil.for("java")!!;
+	let langConfig = LanguageProfileUtil.from("java")!!;
 
 	beforeEach(async () => {
 		await Parser.init();

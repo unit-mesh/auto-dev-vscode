@@ -1,10 +1,9 @@
 import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { injectable } from "inversify";
-import { LanguageProfile } from "./LanguageProfile";
+import { LanguageProfile, LanguageProfileUtil } from "./LanguageProfile";
 import Parser, { Query, SyntaxNode } from "web-tree-sitter";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { TSLanguageUtil } from "../ast/TreeSitterWrapper";
 import { PositionElement } from "../../editor/codemodel/PositionElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRefs";
@@ -30,7 +29,7 @@ export abstract class BaseStructurerProvider implements StructurerProvider {
 	abstract parseFile(code: string, path: string): Promise<CodeFile | undefined>;
 
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
-		const tsConfig = TSLanguageUtil.for(this.langId)!!;
+		const tsConfig = LanguageProfileUtil.from(this.langId)!!;
 		const _parser = langService.getParser() ?? new Parser();
 		const language = await tsConfig.grammar(langService, this.langId);
 		_parser.setLanguage(language);

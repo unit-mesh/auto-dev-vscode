@@ -3,6 +3,8 @@ import { Language, Query } from "web-tree-sitter";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NameSpaces } from "../../code-search/scope-graph/model/Namespace";
+import { languageContainer } from "../../ProviderLanguageProfile.config";
+import { PROVIDER_TYPES } from "../../ProviderTypes";
 
 /**
  * `LanguageProfile` is an interface that defines the structure of a language profile object.
@@ -74,5 +76,20 @@ export class MemoizedQuery {
 
 		this.compiledQuery = language.query(this.queryStr);
 		return this.compiledQuery;
+	}
+}
+
+/**
+ * Utility class for working with tree-sitter languages.
+ */
+export class LanguageProfileUtil {
+	static from(langId: string): LanguageProfile | undefined {
+		let languageProfiles = languageContainer.getAll<LanguageProfile>(PROVIDER_TYPES.LanguageProfile);
+
+		return languageProfiles.find((target) => {
+			return target.languageIds.some(
+				(id) => id.toLowerCase() === langId.toLowerCase()
+			);
+		});
 	}
 }

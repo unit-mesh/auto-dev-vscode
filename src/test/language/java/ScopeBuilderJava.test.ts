@@ -1,4 +1,4 @@
-import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
 
 const Parser = require("web-tree-sitter");
 
@@ -10,7 +10,7 @@ import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
 describe('ScopeBuilder for Java', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = TSLanguageUtil.for("java")!!;
+	let langConfig = LanguageProfileUtil.from("java")!!;
 
 	beforeEach(async () => {
 		await Parser.init();
@@ -19,7 +19,6 @@ describe('ScopeBuilder for Java', () => {
 
 		language = await langConfig.grammar(languageService, "java")!!;
 		parser.setLanguage(language);
-		parser.setLogger(null);
 	});
 
 	it('build for node', async () => {

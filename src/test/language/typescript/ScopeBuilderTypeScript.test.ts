@@ -1,4 +1,4 @@
-import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
 
 const Parser = require("web-tree-sitter");
 
@@ -9,7 +9,7 @@ import { TestLanguageService } from "../../TestLanguageService";
 describe('ScopeBuilder for TypeScript', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = TSLanguageUtil.for("typescript")!!;
+	let langConfig = LanguageProfileUtil.from("typescript")!!;
 
 	beforeEach(async () => {
 		await Parser.init();

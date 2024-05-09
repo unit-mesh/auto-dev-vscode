@@ -2,12 +2,12 @@ const Parser = require("web-tree-sitter");
 
 import { TestLanguageService } from "../../TestLanguageService";
 import { TreeSitterUtil } from "../../../code-context/ast/TreeSitterUtil";
-import { TSLanguageUtil } from "../../../code-context/ast/TreeSitterWrapper";
+import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
 
 describe('BlockBuilder for Java', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = TSLanguageUtil.for("java")!!
+	let langConfig = LanguageProfileUtil.from("java")!!
 
 	beforeEach(async () => {
 		await Parser.init();

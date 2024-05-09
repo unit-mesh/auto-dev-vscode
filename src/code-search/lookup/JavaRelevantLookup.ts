@@ -1,6 +1,7 @@
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 
-import { TSLanguageUtil } from "../../code-context/ast/TreeSitterWrapper";
+
+import { LanguageProfileUtil } from "../../code-context/_base/LanguageProfile";
 
 export class JavaRelevantLookup {
 	tsfile: TreeSitterFile;
@@ -40,7 +41,7 @@ export class JavaRelevantLookup {
 	}
 
 	extractCurrentPackageName() {
-		let languageProfile = TSLanguageUtil.for("java")!!;
+		let languageProfile = LanguageProfileUtil.from("java")!!;
 
 		const query = languageProfile.packageQuery?.query(this.tsfile.tsLanguage)!!;
 		const matches = query.matches(this.tsfile.tree.rootNode);

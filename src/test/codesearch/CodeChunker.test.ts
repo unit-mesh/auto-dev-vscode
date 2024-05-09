@@ -3,10 +3,9 @@
 const Parser = require("web-tree-sitter");
 
 import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
-import { JavaProfile } from "../../code-context/java/JavaProfile";
 import { TestLanguageService } from "../TestLanguageService";
 import { CollapsedCodeChunker } from "../../code-search/chunk/_base/CollapsedCodeChunker";
-import { TSLanguageUtil } from "../../code-context/ast/TreeSitterWrapper";
+import { LanguageProfileUtil } from "../../code-context/_base/LanguageProfile";
 
 describe('CodeChunk for Java', () => {
 	let parser: any;
@@ -16,7 +15,7 @@ describe('CodeChunk for Java', () => {
 		parser = new Parser();
 
 		const languageService = new TestLanguageService(parser);
-		const language = await TSLanguageUtil.for("java")!!.grammar(languageService, "java")!!;
+		const language = await LanguageProfileUtil.from("java")!!.grammar(languageService, "java")!!;
 		parser.setLanguage(language);
 	});
 
