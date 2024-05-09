@@ -11,8 +11,8 @@ import { StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownC
 import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
 import { ActionType } from "../../../prompt-manage/ActionType";
 import { RelevantCodeProviderManager } from "../../../code-context/RelevantCodeProviderManager";
-import { documentToTreeSitterFile } from "../../../code-context/ast/TreeSitterFileUtil";
 import { channel } from "../../../channel";
+import { TreeSitterFileManager } from "../../cache/TreeSitterFileManager";
 
 export class AutoTestActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoTest;
@@ -40,7 +40,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		const testContext = await testgen.setupTestFile(this.document, this.namedElement);
 
-		let file = await documentToTreeSitterFile(this.document);
+		let file = await TreeSitterFileManager.create(this.document);
 
 		let relevantCodeProviderManager = RelevantCodeProviderManager.getInstance();
 		testContext.relatedClasses = await relevantCodeProviderManager.relatedClassesContext(this.language, file, this.namedElement);

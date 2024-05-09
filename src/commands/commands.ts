@@ -8,12 +8,13 @@ import { AutoTestActionExecutor } from "../editor/action/autotest/AutoTestAction
 import { NamedElementBuilder } from "../editor/ast/NamedElementBuilder";
 import { QuickActionService } from "../editor/editor-api/QuickAction";
 import { SystemActionService } from "../editor/action/setting/SystemActionService";
-import { documentToTreeSitterFile, toNamedElementBuilder } from "../code-context/ast/TreeSitterFileUtil";
+import { toNamedElementBuilder } from "../code-context/ast/VSCodeTreeSitterProxy";
 import { AutoDevCommandOperation } from "./autoDevCommandOperation";
 import { AutoDevCommand } from "./autoDevCommand";
 import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
 import { CommitMessageGenAction } from "../editor/action/misc/CommitMessageGenAction";
 import { RelevantCodeProviderManager } from "../code-context/RelevantCodeProviderManager";
+import { TreeSitterFileManager } from "../editor/cache/TreeSitterFileManager";
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
@@ -161,7 +162,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 
 		let langService = new DefaultLanguageService();
 		let relatedProvider = RelevantCodeProviderManager.getInstance().provider(document.languageId, langService);
-		let file = await documentToTreeSitterFile(document);
+		let file = await TreeSitterFileManager.create(document);
 
 		let outputs = await relatedProvider?.getMethodFanInAndFanOut(file, range);
 		if (outputs !== undefined) {

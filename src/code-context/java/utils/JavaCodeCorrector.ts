@@ -2,7 +2,7 @@ import vscode from "vscode";
 
 import { TreeSitterFile } from "../../ast/TreeSitterFile";
 import { PositionUtil } from "../../../editor/ast/PositionUtil";
-import { textToTreeSitterFile } from "../../ast/TreeSitterFileUtil";
+import { textToTreeSitterFile } from "../../ast/VSCodeTreeSitterProxy";
 
 export class JavaCodeCorrector {
 	private document: vscode.TextDocument;

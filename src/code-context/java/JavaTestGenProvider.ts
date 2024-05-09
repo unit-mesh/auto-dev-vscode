@@ -11,12 +11,12 @@ import { TestTemplateFinder } from "../TestTemplateFinder";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
-import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
 import { JavaCodeCorrector } from "./utils/JavaCodeCorrector";
 import { JavaStructurerProvider } from "./JavaStructurerProvider";
 import { CommentedUmlPresenter } from "../../editor/codemodel/presenter/CommentedUmlPresenter";
 import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
+import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
@@ -67,7 +67,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 	 * Finally, the method returns a promise that resolves to the created AutoTestTemplateContext object.
 	 */
 	async setupTestFile(document: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
-		this.tsfile = await documentToTreeSitterFile(document);
+		this.tsfile = await TreeSitterFileManager.create(document);
 		this.graph = await this.tsfile.scopeGraph();
 
 		let query = this.tsfile.languageProfile.packageQuery!!.query(this.tsfile.tsLanguage);

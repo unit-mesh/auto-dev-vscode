@@ -27,6 +27,11 @@ export class NamedElementBuilder {
 	parser: Parser | undefined = undefined;
 	private file: TreeSitterFile;
 
+	/**
+	 * Creates a new `NamedElementBuilder` object.
+	 *
+	 * @param {TreeSitterFile} file - The TreeSitter file to build named elements from.
+	 */
 	constructor(file: TreeSitterFile) {
 		this.langConfig = file.languageProfile;
 		this.tree = file.tree;

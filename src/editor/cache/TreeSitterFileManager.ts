@@ -3,8 +3,8 @@ import vscode, { TextDocumentChangeEvent, Uri } from "vscode";
 
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { isSupportedLanguage } from "../language/SupportedLanguage";
-import { documentToTreeSitterFile } from "../../code-context/ast/TreeSitterFileUtil";
 import { PositionUtil } from "../ast/PositionUtil";
+import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
 
 export class TreeSitterFileManager implements vscode.Disposable {
 	private documentUpdateListener: vscode.Disposable;
@@ -37,7 +37,7 @@ export class TreeSitterFileManager implements vscode.Disposable {
 		const tree = this.getDocument(uri)?.tree;
 		if (!tree) {
 			if (!this.cache.has(uri)) {
-				const file = await documentToTreeSitterFile(event.document);
+				const file = await TreeSitterFileManager.create(event.document);
 				this.setDocument(uri, file);
 			}
 
@@ -48,6 +48,20 @@ export class TreeSitterFileManager implements vscode.Disposable {
 			const editParams = this.createEditParams(change, event.document);
 			tree.edit(editParams);
 		}
+	}
+
+	static async create(document: vscode.TextDocument): Promise<TreeSitterFile> {
+		const cached = TreeSitterFileManager.getInstance().getDocument(document.uri);
+		if (cached) {
+			return cached;
+		}
+
+		const src = document.getText();
+		const langId = document.languageId;
+
+		const file = await TreeSitterFile.create(src, langId, new DefaultLanguageService(), document.uri.fsPath);
+		TreeSitterFileManager.getInstance().setDocument(document.uri,file);
+		return file;
 	}
 
 	createEditParams(change: vscode.TextDocumentContentChangeEvent, document: vscode.TextDocument): Edit {

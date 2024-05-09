@@ -7,7 +7,7 @@ import { providerContainer } from "../../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../../ProviderTypes";
 import { ActionCreator } from "../action/_base/ActionCreator";
 import { ActionCreatorContext } from "../action/_base/ActionCreatorContext";
-import { toNamedElementBuilder } from "../../code-context/ast/TreeSitterFileUtil";
+import { toNamedElementBuilder } from "../../code-context/ast/VSCodeTreeSitterProxy";
 
 export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 	private context: AutoDevExtension;

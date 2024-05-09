@@ -5,7 +5,7 @@ import { CustomActionTemplateContext } from "./CustomActionTemplateContext";
 import { LANGUAGE_BLOCK_COMMENT_MAP, LANGUAGE_LINE_COMMENT_MAP } from "../../editor/language/LanguageCommentMap";
 import { ToolchainContextManager } from "../../toolchain-context/ToolchainContextManager";
 import { CreateToolchainContext } from "../../toolchain-context/ToolchainContextProvider";
-import { toNamedElementBuilder } from "../../code-context/ast/TreeSitterFileUtil";
+import { toNamedElementBuilder } from "../../code-context/ast/VSCodeTreeSitterProxy";
 
 export class CustomActionContextBuilder {
 	public static async fromDocument(document: vscode.TextDocument): Promise<CustomActionTemplateContext> {

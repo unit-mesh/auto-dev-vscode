@@ -8,8 +8,8 @@ import { CodeFile } from "../../editor/codemodel/CodeElement";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { NamedElement } from "../../editor/ast/NamedElement";
-import { documentToTreeSitterFile } from "../ast/TreeSitterFileUtil";
 import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
+import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
 
 
 @injectable()
@@ -43,7 +43,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 
 		const elementName = block.identifierRange.text;
 
-		let tsFile = await documentToTreeSitterFile(sourceFile);
+		let tsFile = await TreeSitterFileManager.create(sourceFile);
 		if (!tsFile) {
 			return Promise.reject(`Failed to find tree-sitter file for: ${sourceFile.uri}`);
 		}

@@ -1,6 +1,4 @@
 import vscode, { Position, Range } from "vscode";
-
-import { documentToTreeSitterFile } from "../../../code-context/ast/TreeSitterFileUtil";
 import { NamedElementBuilder } from "../../ast/NamedElementBuilder";
 import { PromptManager } from "../../../prompt-manage/PromptManager";
 import { ActionType } from "../../../prompt-manage/ActionType";
@@ -8,6 +6,7 @@ import { TemplateContext } from "../../../prompt-manage/template/TemplateContext
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
 import { CustomActionPrompt } from "../../../prompt-manage/custom-action/CustomActionPrompt";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
+import { TreeSitterFileManager } from "../../cache/TreeSitterFileManager";
 
 export class RenameLookup {
 	static async suggest(document: vscode.TextDocument, position: Position, token: vscode.CancellationToken): Promise<undefined | Range | {
@@ -15,7 +14,7 @@ export class RenameLookup {
 		placeholder: string;
 	}> {
 		let range = document.getWordRangeAtPosition(position)!!;
-		let treeSitterFile = await documentToTreeSitterFile(document);
+		let treeSitterFile = await TreeSitterFileManager.create(document);
 		let elementBuilder = new NamedElementBuilder(treeSitterFile);
 		let elementForSelections = elementBuilder.getElementForAction(position.line);
 
