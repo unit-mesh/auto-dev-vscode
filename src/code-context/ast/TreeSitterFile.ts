@@ -90,6 +90,16 @@ export class TreeSitterFile {
 		return new TreeSitterFile(source, tree, tsConfig, parser, language, fsPath);
 	}
 
+	static async fromParser(parser: Parser, languageService: TSLanguageService, langId: string, code: string): Promise<TreeSitterFile> {
+		let langConfig = LanguageProfileUtil.from(langId)!!;
+		const language = await langConfig.grammar(languageService, "typescript")!!;
+		parser.setLanguage(language);
+
+		let tree = parser.parse(code);
+		let tsf = new TreeSitterFile(code,  tree, langConfig, parser, language!!, "");
+		return tsf;
+	}
+
 	/**
 	 * The `scopeGraph` method is an asynchronous function that generates a node graph for the current instance.
 	 * A node graph is a representation of the scopes and their relationships in a program.
