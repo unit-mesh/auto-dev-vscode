@@ -13,6 +13,7 @@ import { AutoDevCommandOperation } from "./autoDevCommandOperation";
 import { AutoDevCommand } from "./autoDevCommand";
 import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
 import { CommitMessageGenAction } from "../editor/action/misc/CommitMessageGenAction";
+import { RelevantCodeProviderManager } from "../code-context/RelevantCodeProviderManager";
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
@@ -159,7 +160,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		}
 
 		let langService = new DefaultLanguageService();
-		let relatedProvider = extension.relatedManager.provider(document.languageId, langService);
+		let relatedProvider = RelevantCodeProviderManager.getInstance().provider(document.languageId, langService);
 		let file = await documentToTreeSitterFile(document);
 
 		let outputs = await relatedProvider?.getMethodFanInAndFanOut(file, range);
