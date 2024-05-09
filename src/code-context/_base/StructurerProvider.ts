@@ -11,9 +11,17 @@ import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 
 export interface StructurerProvider {
 	/**
+	 * For wrapper int test and source code.
+	 */
+	init(langService: TSLanguageService): Promise<Query | undefined>;
+	/**
 	 * The `langId` property is a string representing the language identifier of the structurer provider.
 	 */
 	isApplicable(lang: SupportedLanguage): any;
+
+	/**
+	 * Parses the given code and returns a `CodeFile` object.
+	 */
 	parseFile(code: string, path: string): Promise<CodeFile | undefined>
 }
 
@@ -28,6 +36,9 @@ export abstract class BaseStructurerProvider implements StructurerProvider {
 
 	abstract parseFile(code: string, path: string): Promise<CodeFile | undefined>;
 
+	/**
+	 * The `init` method is an asynchronous function that initializes the structurer provider with the given language service.
+	 */
 	async init(langService: TSLanguageService): Promise<Query | undefined> {
 		const tsConfig = LanguageProfileUtil.from(this.langId)!!;
 		const _parser = langService.getParser() ?? new Parser();

@@ -16,12 +16,12 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
 
-	isApplicable(lang: string) {
-		return lang === this.langId;
-	}
-
 	constructor() {
 		super();
+	}
+
+	isApplicable(lang: string) {
+		return lang === this.langId;
 	}
 
 	/**

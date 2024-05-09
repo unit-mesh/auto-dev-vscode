@@ -1,10 +1,17 @@
 import { injectable } from "inversify";
+import { Language } from "web-tree-sitter";
 
 import { CodeFile } from "../../editor/codemodel/CodeElement";
-import { StructurerProvider } from "../_base/StructurerProvider";
+import { BaseStructurerProvider } from "../_base/StructurerProvider";
+import { LanguageProfile, LanguageProfileUtil } from "../_base/LanguageProfile";
 
 @injectable()
-export class TypeScriptStructurer implements StructurerProvider {
+export class TypeScriptStructurer extends BaseStructurerProvider {
+	protected langId: string = "typescript";
+	protected config: LanguageProfile = LanguageProfileUtil.from(this.langId)!!;
+	protected parser: import("web-tree-sitter") | undefined;
+	protected language: Language | undefined;
+
 	isApplicable(lang: string) {
 		return false;
 		// return lang === "typescript" || lang === "javascript" || lang === "typescriptreact" || lang === "javascriptreact";
