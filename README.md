@@ -32,10 +32,14 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
 - [ ] Custom LLM config
     - [x] OpenAI Compatible
 - [ ] Provider API design
-    - [x] ChatContext
+    - [x] LanguageProfile
+    - [x] ToolchainContextProvider / ChatContextProvider
+    - [x] BuildToolProvider
     - [x] Structurer
+    - [x] TestGenProvider
     - [x] RelatedCode
     - [x] SimilarChunk
+    - [x] ActionCreator
 - [ ] Chat mode
     - [x] Chat UI
     - [x] Chat with selection
@@ -90,8 +94,10 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
     - [ ] Database
     - [ ] Terminal
 - [ ] Docs with RAG
-    - [ ] Auto Generate doc based on sourcecode
+    - [ ] spike: Auto Generate doc based on sourcecode
     - [ ] Ask for AutoDev doc
+        - [ ] Markdown 
+        - [ ] RDF 
 - [ ] l18n
     -  [x] init
 
