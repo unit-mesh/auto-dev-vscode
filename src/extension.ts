@@ -10,6 +10,7 @@ import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManag
 import { DiffManager } from "./editor/diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
 import { removeExtensionContext, setExtensionContext } from './context';
+import { channel } from "./channel";
 import {
 	registerAutoDevProviders,
 	registerCodeLensProviders,
@@ -17,9 +18,6 @@ import {
 	registerRenameAction,
 	registerWebViewProvider
 } from "./editor/providers/ProviderUtils";
-import { channel } from "./channel";
-import { RelevantCodeProviderManager } from "./code-context/RelevantCodeProviderManager";
-import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
@@ -35,11 +33,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const documentManager = new RecentlyDocumentManager();
 	const diffManager = new DiffManager();
-	const fileCacheManager = new CodeFileCacheManager();
-	const relatedManager = new RelevantCodeProviderManager();
 
 	const extension = new AutoDevExtension(
-		sidebar, action, documentManager, diffManager, relatedManager, fileCacheManager, context,
+		sidebar, action, documentManager, diffManager, context,
 	);
 
 	Parser.init().then(async () => {
