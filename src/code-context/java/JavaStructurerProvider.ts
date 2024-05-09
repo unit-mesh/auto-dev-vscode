@@ -2,7 +2,7 @@ import Parser, { SyntaxNode } from "web-tree-sitter";
 import { injectable } from "inversify";
 
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
+import { CodeFile, CodeFunction, CodeStructure, CodeVariable, StructureType } from "../../editor/codemodel/CodeElement";
 import { LanguageProfile, LanguageProfileUtil } from "../_base/LanguageProfile";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
@@ -55,6 +55,7 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 			classes: []
 		};
 		let classObj: CodeStructure = {
+			type: StructureType.Class,
 			canonicalName: '',
 			constant: [],
 			extends: [],
@@ -88,6 +89,7 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 					if (classObj.name !== '') {
 						codeFile.classes.push({ ...classObj });
 						classObj = {
+							type: StructureType.Class,
 							canonicalName: "",
 							package: codeFile.package,
 							implements: [],

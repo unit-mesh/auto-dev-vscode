@@ -36,6 +36,7 @@ public class ExampleClass {
 			],
 			"classes": [
 				{
+					"type": "class",
 					"constant": [],
 					"extends": [],
 					"fields": [],
@@ -104,6 +105,7 @@ public class CreateBlogRequest {
 				"package": "cc.unitmesh.untitled.demo.dto",
 				"imports": ["cc.unitmesh.untitled.demo.entity.User", "lombok.Data"],
 				"classes": [{
+					"type": "class",
 					"canonicalName": "cc.unitmesh.untitled.demo.dto.CreateBlogRequest",
 					"constant": [],
 					"extends": [],

@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import Parser, { Language } from "web-tree-sitter";
 
-import { CodeFile, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
+import { CodeFile, CodeStructure, CodeVariable, StructureType } from "../../editor/codemodel/CodeElement";
 import { BaseStructurerProvider } from "../_base/StructurerProvider";
 import { LanguageProfileUtil } from "../_base/LanguageProfile";
 import { TypeScriptProfile } from "./TypeScriptProfile";
@@ -34,6 +34,7 @@ export class TypeScriptStructurer extends BaseStructurerProvider {
 			classes: []
 		};
 		let classObj: CodeStructure = {
+			type: StructureType.Class,
 			canonicalName: '',
 			constant: [],
 			extends: [],
@@ -50,11 +51,12 @@ export class TypeScriptStructurer extends BaseStructurerProvider {
 			const text = capture.node.text;
 
 			switch (capture.name) {
-				case "source":
+				case "import-source":
 					codeFile.imports.push(text);
 					break;
 				case "class-name":
 					classObj.name = text;
+					classObj.type = StructureType.Class;
 					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
 					if (classNode) {
 						classObj.start = { row: classNode.startPosition.row, column: classNode.startPosition.column };
@@ -65,6 +67,29 @@ export class TypeScriptStructurer extends BaseStructurerProvider {
 					break;
 				case "class-method-name":
 					classObj.methods.push(this.createFunction(capture.node, text));
+					break;
+				case "interface-name":
+					classObj.name = text;
+					classObj.type = StructureType.Interface;
+					const interfaceNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
+					if (interfaceNode) {
+						classObj.start = { row: interfaceNode.startPosition.row, column: interfaceNode.startPosition.column };
+						classObj.end = { row: interfaceNode.endPosition.row, column: interfaceNode.endPosition.column };
+
+						codeFile.classes.push(classObj);
+					}
+					break;
+				case "interface-prop-name":
+					let lastClass = codeFile.classes[codeFile.classes.length - 1];
+					lastClass.fields = lastClass.fields ?? [];
+					lastClass.fields.push(this.createVariable(capture.node, text, ""));
+					break;
+				case "interface-prop-type":
+					let lastClass_ = codeFile.classes[codeFile.classes.length - 1];
+					const lastField = lastClass_.fields!![lastClass_.fields!!.length - 1];
+					lastField.type = text;
+					break;
+				default:
 					break;
 			}
 		}

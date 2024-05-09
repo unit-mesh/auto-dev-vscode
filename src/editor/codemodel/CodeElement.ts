@@ -13,10 +13,19 @@ export interface CodeFile extends CodeElement {
 	functions?: CodeFunction[];
 }
 
+export enum StructureType {
+	Class = "class",
+	Interface = "interface",
+	Enum = "enum",
+	Structure = "struct",
+	Annotation = "annotation",
+}
+
 export interface CodeStructure extends PositionElement, CodeElement {
 	name: string;
 	// like a package, `com.example.ExampleClass` is the canonical name
 	canonicalName: string,
+	type: StructureType;
 	package: string;
 	extends?: string[];
 	implements: string[];

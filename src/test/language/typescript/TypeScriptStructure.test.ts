@@ -1,11 +1,8 @@
-import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
-
 const Parser = require("web-tree-sitter");
 import "reflect-metadata";
 
 import { TestLanguageService } from "../../TestLanguageService";
 import { TypeScriptStructurer } from "../../../code-context/typescript/TypeScriptStructurer";
-import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
 
 describe('JavaStructure', () => {
 	it('should convert a simple file to CodeFile', async () => {
@@ -16,28 +13,38 @@ interface LabeledValue {
 `;
 
 		await Parser.init();
-		const parser = new Parser();
 		let languageService = new TestLanguageService(new Parser());
 
 		const structurer = new TypeScriptStructurer();
 		await structurer.init(languageService);
 
-		let langConfig = LanguageProfileUtil.from("typescript")!!;
-		const language = await langConfig.grammar(languageService, "typescript")!!;
-		parser.setLanguage(language);
-
-		let tree = parser.parse(typeScriptClass);
-		// walk tree.rootNode for list all node name
-	  let cursor = tree.walk();
-	  let nodeNames = [];
-	  cursor.gotoFirstChild();
-	  do {
-	    nodeNames.push(cursor.nodeType);
-	  } while (cursor.gotoNextSibling());
-
-		console.log(nodeNames);
-
 		const codeFile = await structurer.parseFile(typeScriptClass, "");
-		// console.log(codeFile);
+		expect(codeFile).toEqual({
+			"name": "",
+			"filepath": "",
+			"language": "typescript",
+			"functions": [],
+			"path": "",
+			"package": "",
+			"imports": [],
+			"classes": [{
+				"type": "interface",
+				"canonicalName": "",
+				"constant": [],
+				"extends": [],
+				"methods": [],
+				"name": "LabeledValue",
+				"package": "",
+				"implements": [],
+				"start": { "row": 1, "column": 0 },
+				"end": { "row": 3, "column": 1 },
+				"fields": [{
+					"name": "label",
+					"start": { "row": 2, "column": 2 },
+					"end": { "row": 2, "column": 7 },
+					"type": ": string"
+				}]
+			}]
+		});
 	});
 });
