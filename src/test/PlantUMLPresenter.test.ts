@@ -1,4 +1,4 @@
-import { CodeFile } from "../editor/codemodel/CodeElement";
+import { CodeFile, StructureType } from "../editor/codemodel/CodeElement";
 import { PlantUMLPresenter } from "../editor/codemodel/presenter/PlantUMLPresenter";
 
 describe('PlantUMLPresenter', () => {
@@ -14,6 +14,7 @@ describe('PlantUMLPresenter', () => {
 			classes: [
 				{
 					name: 'ExampleClass',
+					type: StructureType.Class,
 					package: 'com.example.ExampleClass',
 					canonicalName: 'com.example.ExampleClass',
 					start: { row: 1, column: 1 },
