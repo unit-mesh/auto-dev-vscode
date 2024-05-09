@@ -61,20 +61,18 @@ export interface LanguageProfile {
 
 export class MemoizedQuery {
 	private readonly queryStr: string;
-	private cachedMap: Map<string, Query> = new Map();
+	private compiledQuery: Query | undefined;
 
 	constructor(scopeQuery: string) {
 		this.queryStr = scopeQuery;
 	}
 
 	query(language: Language): Query {
-		if (this.cachedMap.has(this.queryStr)) {
-			return this.cachedMap.get(this.queryStr)!!;
+		if (this.compiledQuery) {
+			return this.compiledQuery;
 		}
 
-		let query = language.query(this.queryStr);
-
-		this.cachedMap.set(this.queryStr, query);
-		return query;
+		this.compiledQuery = language.query(this.queryStr);
+		return this.compiledQuery;
 	}
 }

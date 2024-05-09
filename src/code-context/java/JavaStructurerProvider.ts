@@ -6,9 +6,9 @@ import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../edito
 import { LanguageProfile } from "../_base/LanguageProfile";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
-import { BaseStructurerProvider } from "../_base/BaseStructurerProvider";
 
 import { TSLanguageUtil } from "../ast/TreeSitterWrapper";
+import { BaseStructurerProvider } from "../_base/StructurerProvider";
 
 @injectable()
 export class JavaStructurerProvider extends BaseStructurerProvider {

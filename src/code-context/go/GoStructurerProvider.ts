@@ -1,6 +1,5 @@
 import Parser, { SyntaxNode } from "web-tree-sitter";
 
-import { BaseStructurerProvider } from "../_base/BaseStructurerProvider";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { LanguageProfile } from "../_base/LanguageProfile";
 import { CodeFile } from "../../editor/codemodel/CodeElement";
@@ -8,6 +7,7 @@ import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 
 import { TSLanguageUtil } from "../ast/TreeSitterWrapper";
+import { BaseStructurerProvider } from "../_base/StructurerProvider";
 
 export class GoStructurerProvider extends BaseStructurerProvider {
 	protected langId: SupportedLanguage = "go";
