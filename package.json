@@ -384,7 +384,6 @@
   },
   "dependencies": {
     "@apache-arrow/ts": "^14.0.2",
-    "@lancedb/vectordb-darwin-x64": "^0.4.20",
     "@langchain/anthropic": "^0.1.16",
     "@langchain/core": "^0.1.59",
     "@langchain/openai": "^0.0.28",
