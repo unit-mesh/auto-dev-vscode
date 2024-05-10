@@ -16,7 +16,7 @@
 const fs = require("fs");
 const { execSync } = require("child_process");
 
-fs.mkdirSync("dist/node_modules", { recursive: true });
+fs.mkdirSync("bin", { recursive: true });
 
 const platforms = ["darwin", "linux", "win32"];
 const architectures = ["x64", "arm64"];
@@ -26,7 +26,7 @@ let targets = platforms.flatMap((platform) =>
 
 console.log("[info] Building binaries with pkg...");
 for (const target of targets) {
-  const targetDir = `dist/node_modules/bin/${target}`;
+  const targetDir = `bin/${target}`;
   fs.mkdirSync(targetDir, { recursive: true });
   console.log(`[info] Building ${target}...`);
   // execSync(

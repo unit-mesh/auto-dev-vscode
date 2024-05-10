@@ -14,7 +14,8 @@ export default defineConfig((api) => {
         deps: false,
         include: ["vscode", 'onnxruntime-node'],
         except: [
-          "web-tree-sitter"
+          "web-tree-sitter",
+          "onnxruntime-web"
         ]
       }),
       isDev && dts(),
@@ -34,6 +35,14 @@ export default defineConfig((api) => {
           },
           {
             src: "node_modules/onnxruntime-node/bin",
+            dest: "",
+          },
+          {
+            src: "bin/**",
+            dest: "build/",
+          },
+          {
+            src: "package.json",
             dest: "",
           },
           {

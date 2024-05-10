@@ -28,3 +28,4 @@ vite.config.d.mts
 vite.config.mjs
 vite.config.mts
 CHANGELOG.md
+bin
