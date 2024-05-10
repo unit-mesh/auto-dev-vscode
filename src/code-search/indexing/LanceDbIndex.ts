@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import path from "path";
-import fs from "fs";
-import os from "os";
+import * as path from "path";
+import * as fs from 'fs';
+import * as os from "node:os";
 import { v4 as uuidv4 } from "uuid";
+import { Table } from "vectordb";
 
 import {
 	CodebaseIndex,
@@ -30,7 +31,6 @@ import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { Chunk } from "../chunk/_base/Chunk";
 import { MAX_CHUNK_SIZE } from "../constants";
 import { ChunkerManager } from "../chunk/ChunkerManager";
-import { Table } from "vectordb";
 
 export function getAutoDevGlobalPath(): string {
 	// This is ~/.autodev on mac/linux
@@ -38,6 +38,7 @@ export function getAutoDevGlobalPath(): string {
 	if (!fs.existsSync(autodevPath)) {
 		fs.mkdirSync(autodevPath);
 	}
+
 	return autodevPath;
 }
 

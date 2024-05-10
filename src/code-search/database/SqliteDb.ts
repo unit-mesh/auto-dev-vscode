@@ -1,11 +1,11 @@
-import sqlite3 from "sqlite3";
-import { Database, open } from "sqlite";
-import fs from "fs";
-import path from "path";
+import * as fs from 'fs';
+import * as path from "path";
+import * as sqlite3 from "sqlite3";
+import * as sqlite from "sqlite";
 
 import { getIndexFolderPath } from "../indexing/LanceDbIndex";
 
-export type DatabaseConnection = Database<sqlite3.Database>;
+export type DatabaseConnection = sqlite.Database<sqlite3.Database>;
 
 export function getIndexSqlitePath(): string {
 	return path.join(getIndexFolderPath(), "autodev-index.sqlite");
@@ -46,7 +46,7 @@ export class SqliteDb {
 		}
 
 		SqliteDb.indexSqlitePath = getIndexSqlitePath();
-		SqliteDb.db = await open({
+		SqliteDb.db = await sqlite.open({
 			filename: SqliteDb.indexSqlitePath,
 			driver: sqlite3.Database,
 		});

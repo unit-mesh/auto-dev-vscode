@@ -38,7 +38,12 @@ export class AutoDevExtension {
 		// waiting for index command
 		vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).forEach(async (dir) => {
 			let localInference = new LocalEmbeddingProvider();
-			let sqliteDb = SqliteDb.get();
+			try {
+				let sqliteDb = await SqliteDb.get();
+			} catch (e) {
+				console.log(e);
+			}
+
 			localInference.init().then(() => {
 				this.indexer = new CodebaseIndexer(localInference, this.ideAction);
 				this.refreshCodebaseIndex([dir]);
