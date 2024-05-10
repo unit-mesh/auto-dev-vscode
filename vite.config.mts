@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { externalizeDeps } from "vite-plugin-externalize-deps";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig((api) => {
@@ -10,9 +11,16 @@ export default defineConfig((api) => {
 
   return {
     plugins: [
+      nodePolyfills({ include: ['crypto'] }),
       externalizeDeps({
         deps: false,
-        include: ["vscode", 'onnxruntime-node', 'sqlite3', '@lancedb/vectordb-darwin-x64'],
+        include: [
+          'vscode',
+          'onnxruntime-node',
+          'sqlite3',
+          'vectordb',
+          '@lancedb/vectordb-darwin-x64'
+        ],
         except: [
           "web-tree-sitter",
           "onnxruntime-web"
