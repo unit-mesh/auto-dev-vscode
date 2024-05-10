@@ -12,7 +12,7 @@ export default defineConfig((api) => {
     plugins: [
       externalizeDeps({
         deps: false,
-        include: ["vscode", 'onnxruntime-node', 'sqlite3', /^@lancedb\/vectordb-(?:\/.*)?$/],
+        include: ["vscode", 'onnxruntime-node', 'sqlite3'],
         except: [
           "web-tree-sitter",
           "onnxruntime-web"
@@ -40,6 +40,10 @@ export default defineConfig((api) => {
           {
             src: "node_modules/sqlite3/build",
             dest: "",
+          },
+          {
+            src: "node_modules/@lancedb",
+            dest: "node_modules/",
           },
           {
             src: "bin/**",
