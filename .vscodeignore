@@ -21,9 +21,15 @@ extension-manual-tests/
 # ignore arm64 build for temporary
 dist/bin/napi-v3/linux/arm64
 dist/bin/napi-v3/win32/arm64
+dist/bin/napi-v3/linux/x64/libonnxruntime_providers_cuda.so
+
+dist/build/linux-arm64
+dist/build/win32-arm64
+dist/build/node_sqlite3.node
+
+dist/node_modules/@lancedb/vectordb-linux-arm64-gnu
 
 models/
-dist/bin/napi-v3/linux/x64/libonnxruntime_providers_cuda.so
 vite.config.d.mts
 vite.config.mjs
 vite.config.mts
