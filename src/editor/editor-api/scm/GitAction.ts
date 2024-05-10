@@ -1,9 +1,9 @@
-import vscode from "vscode";
+import vscode, { Uri } from "vscode";
 import * as util from "node:util";
 import { Repository } from "../../../types/git";
 import { DiffManager } from "../../diff/DiffManager";
 
-const asyncExec = util.promisify(require("child_process").exec);
+export const asyncExec = util.promisify(require("child_process").exec);
 
 export class GitAction {
 	private async _getRepo(forDirectory: vscode.Uri): Promise<Repository | null> {
@@ -100,5 +100,14 @@ export class GitAction {
 			vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath) ||
 			[]
 		);
+	}
+
+	async getRepoName(uri: Uri) {
+		let repo = await this.getRepo(uri);
+		if (repo) {
+			return repo.state.HEAD?.name;
+		} else {
+			return "NONE";
+		}
 	}
 }

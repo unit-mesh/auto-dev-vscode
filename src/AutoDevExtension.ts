@@ -5,19 +5,19 @@ import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
 import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { StructurerProviderManager } from "./code-context/StructurerProviderManager";
-import { CodeFileCacheManager } from "./editor/cache/CodeFileCacheManager";
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 import { AutoDevWebviewProtocol } from "./editor/webview/AutoDevWebviewProtocol";
+import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingProvider";
 
 export class AutoDevExtension {
 	// the WebView for interacting with the editor
 	sidebar: AutoDevWebviewViewProvider;
-	action: VSCodeAction;
+	ideAction: VSCodeAction;
 	diffManager: DiffManager;
 	documentManager: RecentlyDocumentManager;
 	extensionContext: vscode.ExtensionContext;
 	structureProvider: StructurerProviderManager | undefined;
-	indexer: CodebaseIndexer;
+	indexer: CodebaseIndexer | undefined;
 	private webviewProtocol: AutoDevWebviewProtocol;
 
 	constructor(
@@ -27,16 +27,20 @@ export class AutoDevExtension {
 		diffManager: DiffManager,
 		context: vscode.ExtensionContext) {
 		this.sidebar = sidebar;
-		this.action = action;
+		this.ideAction = action;
 		this.diffManager = diffManager;
 		this.documentManager = documentManager;
 		this.extensionContext = context;
 
-		this.indexer = new CodebaseIndexer();
 		this.webviewProtocol = this.sidebar.webviewProtocol;
 
+		// waiting for index command
 		vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).forEach(async (dir) => {
-			this.refreshCodebaseIndex([dir]);
+			let localInference = new LocalEmbeddingProvider();
+			localInference.init().then(() => {
+				this.indexer = new CodebaseIndexer(localInference, this.ideAction);
+				this.refreshCodebaseIndex([dir]);
+			});
 		});
 	}
 
@@ -50,7 +54,7 @@ export class AutoDevExtension {
 		const that = this;
 
 		this.indexingCancellationController = new AbortController();
-		for await (const update of this.indexer.refresh(dirs, this.indexingCancellationController.signal)) {
+		for await (const update of this.indexer!!.refresh(dirs, this.indexingCancellationController.signal)) {
 			that.webviewProtocol?.request("indexProgress", update);
 		}
 	}

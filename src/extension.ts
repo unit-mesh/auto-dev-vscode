@@ -23,6 +23,7 @@ import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserv
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";
 import { SettingService } from "./settings/SettingService";
+import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingProvider";
 
 (globalThis as any).self = globalThis;
 
@@ -69,10 +70,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	AutoDevStatusManager.instance.create();
 
 	channel.show();
-
-	// setup for index
-	let codebaseIndexer = new CodebaseIndexer();
-	codebaseIndexer.init();
 }
 
 export function deactivate() {

@@ -3,7 +3,9 @@ import * as vscode from "vscode";
 import path from "path";
 import { TextDecoder } from "node:util";
 
-import { GitAction } from "./scm/GitAction";
+import { asyncExec, GitAction } from "./scm/GitAction";
+import { traverseDirectory } from "../util/traverseDirectory";
+import { defaultIgnoreFile } from "../util/ignore";
 
 export class VSCodeAction implements IdeAction {
 	git: GitAction = new GitAction();
@@ -129,5 +131,89 @@ export class VSCodeAction implements IdeAction {
 		}
 		// posixPath = posixPath.replace(" ", "\\ ");
 		return posixPath;
+	}
+
+	async getBranch(dir: string): Promise<string> {
+		return this.getBranchForUri(vscode.Uri.file(dir));
+	}
+
+	async getBranchForUri(forDirectory: vscode.Uri) {
+		let repo = await this.git.getRepo(forDirectory);
+		if (repo?.state?.HEAD?.name === undefined) {
+			try {
+				const { stdout } = await asyncExec("git rev-parse --abbrev-ref HEAD", {
+					cwd: forDirectory.fsPath,
+				});
+				return stdout?.trim() || "NONE";
+			} catch (e) {
+				return "NONE";
+			}
+		}
+
+		return repo?.state?.HEAD?.name || "NONE";
+	}
+
+	async getStats(directory: string): Promise<{ [path: string]: number }> {
+		const scheme = vscode.workspace.workspaceFolders?.[0].uri.scheme;
+		const files = await this.listWorkspaceContents(directory);
+		const pathToLastModified: { [path: string]: number } = {};
+		await Promise.all(
+			files.map(async (file) => {
+				let stat = await vscode.workspace.fs.stat(this.uriFromFilePath(file));
+				pathToLastModified[file] = stat.mtime;
+			}),
+		);
+
+		return pathToLastModified;
+	}
+
+	async listWorkspaceContents(directory?: string): Promise<string[]> {
+		if (directory) {
+			return await this.getDirectoryContents(directory, true);
+		} else {
+			const contents = await Promise.all(
+				this.getWorkspaceDirectories()
+					.map((dir) => this.getDirectoryContents(dir, true)),
+			);
+			return contents.flat();
+		}
+	}
+
+	async getDirectoryContents(
+		directory: string,
+		recursive: boolean,
+	): Promise<string[]> {
+		if (!recursive) {
+			return (
+				await vscode.workspace.fs.readDirectory(this.uriFromFilePath(directory))
+			)
+				.filter(([name, type]) => {
+					type === vscode.FileType.File && !defaultIgnoreFile.ignores(name);
+				})
+				.map(([name, type]) => path.join(directory, name));
+		}
+
+		const allFiles: string[] = [];
+		const gitRoot = await this.git.getGitRoot(directory);
+		let onlyThisDirectory = undefined;
+		if (gitRoot) {
+			onlyThisDirectory = directory.slice(gitRoot.length).split(path.sep);
+			if (onlyThisDirectory[0] === "") {
+				onlyThisDirectory.shift();
+			}
+		}
+		for await (const file of traverseDirectory(
+			gitRoot ?? directory,
+			[],
+			true,
+			gitRoot === directory ? undefined : onlyThisDirectory,
+		)) {
+			allFiles.push(file);
+		}
+		return allFiles;
+	}
+
+	getRepoName(dir: string): Promise<string | undefined> {
+		return this.git.getRepoName(vscode.Uri.file(dir));
 	}
 }

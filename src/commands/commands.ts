@@ -29,12 +29,12 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		}
 	},
 	[AutoDevCommand.SendToTerminal]: async (text: string) => {
-		extension.action.runCommand(text).then(() => {
+		extension.ideAction.runCommand(text).then(() => {
 		}, (err) => vscode.window.showErrorMessage(err.message));
 	},
 	[AutoDevCommand.DebugTerminal]: async () => {
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
-		const terminalContents = await extension.action.getTerminalContents();
+		const terminalContents = await extension.ideAction.getTerminalContents();
 		extension.sidebar.webviewProtocol?.request("userInput", {
 			input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
 		});
