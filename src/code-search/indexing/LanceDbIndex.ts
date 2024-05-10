@@ -31,6 +31,7 @@ import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { Chunk } from "../chunk/_base/Chunk";
 import { MAX_CHUNK_SIZE } from "../constants";
 import { ChunkerManager } from "../chunk/ChunkerManager";
+import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
 
 export function getAutoDevGlobalPath(): string {
 	// This is ~/.autodev on mac/linux
@@ -145,6 +146,18 @@ export class LanceDbIndex implements CodebaseIndex {
 		}
 	}
 
+	private async createSqliteCacheTable(db: DatabaseConnection) {
+		await db.exec(`CREATE TABLE IF NOT EXISTS lance_db_cache (
+        uuid TEXT PRIMARY KEY,
+        cacheKey TEXT NOT NULL,
+        path TEXT NOT NULL,
+        vector TEXT NOT NULL,
+        startLine INTEGER NOT NULL,
+        endLine INTEGER NOT NULL,
+        contents TEXT NOT NULL
+    )`);
+	}
+
 	async* update(tag: IndexTag,
 	             results: RefreshIndexResults,
 	             markComplete: MarkCompleteCallback,
@@ -153,6 +166,9 @@ export class LanceDbIndex implements CodebaseIndex {
 		const lancedb = await import("vectordb");
 		const tableName = this.tableNameForTag(tag);
 		const db = await lancedb.connect(getLanceDbPath());
+
+		const sqlite = await SqliteDb.get();
+		await this.createSqliteCacheTable(sqlite);
 
 		// Compute
 		let table: Table<number[]> | undefined = undefined;
@@ -179,6 +195,7 @@ export class LanceDbIndex implements CodebaseIndex {
 				needToCreateTable = false;
 			}
 
+			// Mark item complete
 			markComplete([pathAndCacheKey], IndexResultType.Compute);
 		};
 
@@ -188,11 +205,51 @@ export class LanceDbIndex implements CodebaseIndex {
 				const [progress, row, data, desc] = update;
 				computedRows.push(row);
 
+				// Add the computed row to the cache
+				await sqlite.run(
+					"INSERT INTO lance_db_cache (uuid, cacheKey, path, vector, startLine, endLine, contents) VALUES (?, ?, ?, ?, ?, ?, ?)",
+					row.uuid,
+					row.cachekey,
+					row.path,
+					JSON.stringify(row.vector),
+					data.startLine,
+					data.endLine,
+					data.contents,
+				);
+
 				yield { progress, desc };
 			} else {
 				await addComputedLanceDbRows(update, computedRows);
 				computedRows = [];
 			}
+		}
+
+		// Add tag - retrieve the computed info from lance sqlite cache
+		for (let { path, cacheKey } of results.addTag) {
+			const stmt = await sqlite.prepare(
+				"SELECT * FROM lance_db_cache WHERE cacheKey = ? AND path = ?",
+				cacheKey,
+				path,
+			);
+			const cachedItems = await stmt.all();
+
+			const lanceRows: LanceDbRow[] = cachedItems.map((item) => {
+				return {
+					path,
+					cachekey: cacheKey,
+					uuid: item.uuid,
+					vector: JSON.parse(item.vector),
+				};
+			});
+
+			if (needToCreateTable && lanceRows.length > 0) {
+				table = await db.createTable(tableName, lanceRows);
+				needToCreateTable = false;
+			} else if (lanceRows.length > 0) {
+				await table!.add(lanceRows);
+			}
+
+			markComplete([{ path, cacheKey }], IndexResultType.AddTag);
 		}
 
 		// Delete or remove tag - remove from lance table)
@@ -202,11 +259,18 @@ export class LanceDbIndex implements CodebaseIndex {
 				await table!.delete(`cachekey = '${cacheKey}' AND path = '${path}'`);
 			}
 		}
-
 		markComplete(results.removeTag, IndexResultType.RemoveTag);
+
+		// Delete - also remove from sqlite cache
+		for (let { path, cacheKey } of results.del) {
+			await sqlite.run(
+				"DELETE FROM lance_db_cache WHERE cacheKey = ? AND path = ?",
+				cacheKey,
+				path,
+			);
+		}
 
 		markComplete(results.del, IndexResultType.Delete);
 		yield { progress: 1, desc: "Completed Calculating Embeddings" };
 	}
-
 }
