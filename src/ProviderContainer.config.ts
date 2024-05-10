@@ -3,7 +3,7 @@ import { PROVIDER_TYPES } from "./ProviderTypes";
 
 import { ToolchainContextProvider } from "./toolchain-context/ToolchainContextProvider";
 import { SpringContextProvider } from "./toolchain-context/framework/jvm/SpringContextProvider";
-import { JavaSdkVersionProvider } from "./toolchain-context/sdk/JavaSdkVersionProvider";
+import { JavaVersionProvider } from "./toolchain-context/version/JavaVersionProvider";
 import { JavaScriptContextProvider } from "./toolchain-context/framework/javascript/JavaScriptContextProvider";
 import { RelevantCodeProvider } from "./code-context/_base/RelevantCodeProvider";
 import { JavaRelevantCodeProvider } from "./code-context/java/JavaRelevantCodeProvider";
@@ -48,7 +48,7 @@ export interface LanguageProvider {
 }
 
 providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(SpringContextProvider);
-providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(JavaSdkVersionProvider);
+providerContainer.bind<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider).to(JavaVersionProvider);
 
 providerContainer.bind<RelevantCodeProvider>(PROVIDER_TYPES.RelevantCodeProvider).to(JavaRelevantCodeProvider);
 providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(JavaTestGenProvider);

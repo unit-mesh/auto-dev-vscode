@@ -4,7 +4,7 @@ import { ToolchainContextItem, ToolchainContextProvider, CreateToolchainContext 
 import { GradleBuildToolProvider } from "../buildtool/GradleBuildToolProvider";
 
 @injectable()
-export class JavaSdkVersionProvider implements ToolchainContextProvider {
+export class JavaVersionProvider implements ToolchainContextProvider {
 	private clazzName = this.constructor.name;
 
 	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
