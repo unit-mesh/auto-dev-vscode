@@ -12,7 +12,7 @@ export default defineConfig((api) => {
     plugins: [
       externalizeDeps({
         deps: false,
-        include: ["vscode", 'onnxruntime-node'],
+        include: ["vscode", 'onnxruntime-node', 'sqlite3'],
         except: [
           "web-tree-sitter",
           "onnxruntime-web"
