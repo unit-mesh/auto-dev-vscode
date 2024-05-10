@@ -18,6 +18,14 @@ const { execSync } = require("child_process");
 
 fs.mkdirSync("bin", { recursive: true });
 
+const targetToLanceDb = {
+  "darwin-arm64": "@lancedb/vectordb-darwin-arm64",
+  "darwin-x64": "@lancedb/vectordb-darwin-x64",
+  "linux-arm64": "@lancedb/vectordb-linux-arm64-gnu",
+  "linux-x64": "@lancedb/vectordb-linux-x64-gnu",
+  "win32-x64": "@lancedb/vectordb-win32-x64-msvc",
+};
+
 const platforms = ["darwin", "linux", "win32"];
 const architectures = ["x64", "arm64"];
 let targets = platforms.flatMap((platform) =>
@@ -48,4 +56,12 @@ for (const target of targets) {
     recursive: true,
     force: true,
   });
+}
+
+console.log("[info] Downloading prebuilt lancedb...");
+for (const target of targets) {
+  if (targetToLanceDb[target]) {
+    console.log(`[info] Downloading ${target}...`);
+    execSync(`npm install -f ${targetToLanceDb[target]} --no-save`);
+  }
 }

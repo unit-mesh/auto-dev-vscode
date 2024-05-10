@@ -416,7 +416,7 @@
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "tokenizers": "^0.13.3",
-    "vectordb": "0.4.19",
+    "vectordb": "0.4.20",
     "velocityjs": "^2.0.6",
     "vscode-gradle": "^3.10.1",
     "web-tree-sitter": "^0.22.2"
