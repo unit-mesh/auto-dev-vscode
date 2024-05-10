@@ -30,7 +30,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		this.languageService = defaultLanguageService;
 	}
 
-	collectTestContext(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
+	additionalTestContext(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
 		return Promise.resolve([]);
 	}
 

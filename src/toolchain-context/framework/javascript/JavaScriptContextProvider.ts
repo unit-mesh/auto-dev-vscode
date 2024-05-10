@@ -27,8 +27,6 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 		let typeScriptLanguageContext = this.getTypeScriptLanguageContext(snapshot);
 		let mostPopularPackagesContext = this.getMostPopularPackagesContext(snapshot);
 
-		let techStack = this.prepareStack(snapshot);
-
 		if (typeScriptLanguageContext) {
 			results.push(typeScriptLanguageContext);
 		}
@@ -37,10 +35,11 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 			results.push(mostPopularPackagesContext);
 		}
 
+		let techStack = this.prepareStack(snapshot);
 		if (techStack.coreFrameworksList().length > 0) {
 			let element = {
 				clazz: this.clazzName,
-				text: `The project uses the following JavaScript component frameworks: ${techStack.coreFrameworksList()}`
+				text: `The project uses the following JavaScript frameworks: ${techStack.coreFrameworksList()}`
 			};
 			results.push(element);
 		}
@@ -48,7 +47,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 		if (techStack.testFrameworksList().length > 0) {
 			let testChatContext = {
 				clazz: this.clazzName,
-				text: `The project uses ${techStack.testFrameworksList()} to test.`
+				text: `The project uses ${techStack.testFrameworksList()} to test source code.`
 			};
 
 			results.push(testChatContext);
@@ -66,8 +65,19 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 		for (const [name, entry] of snapshot.packages) {
 			let dependencyType = entry.dependencyType;
 			if (dependencyType === PackageJsonDependency.dependencies || dependencyType === PackageJsonDependency.devDependencies) {
-				if (!name.startsWith("@types/")) {
-					devDependencies.set(name, entry.version);
+				if (name.startsWith("@types/") || name.endsWith("-types")) {
+					continue;
+				}
+
+				switch (dependencyType) {
+					case PackageJsonDependency.dependencies:
+						dependencies.set(name, entry.version);
+						break;
+					case PackageJsonDependency.devDependencies:
+						devDependencies.set(name, entry.version);
+						break;
+					default:
+						break;
 				}
 
 				const webFramework = this.enumToMap(JsWebFrameworks);

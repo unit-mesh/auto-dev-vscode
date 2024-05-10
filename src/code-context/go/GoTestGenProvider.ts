@@ -78,7 +78,10 @@ export class GoTestGenProvider implements TestGenProvider {
 		return Promise.resolve([]);
 	}
 
-	collectTestContext(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
+	/**
+	 * Addition test framework
+	 */
+	additionalTestContext(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
 		return Promise.resolve([]);
 	}
 
