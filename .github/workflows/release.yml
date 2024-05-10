@@ -60,6 +60,10 @@ jobs:
       - name: Install VSCE
         run: npm install -g @vscode/vsce
 
+      - name: Download bundle build
+        run: |
+          node pre-download-build.js
+
       - name: Package VSIX
         run: vsce package
 
