@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ESNext", "ES2021"],
     "module": "NodeNext",
     "skipLibCheck": true,
     "types": ["vitest/globals", "reflect-metadata"],

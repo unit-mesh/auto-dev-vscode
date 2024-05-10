@@ -29,3 +29,6 @@ vite.config.mjs
 vite.config.mts
 CHANGELOG.md
 bin
+tsconfig.node.json
+pre-download-build.js
+docs

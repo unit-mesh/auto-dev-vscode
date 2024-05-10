@@ -1,16 +1,20 @@
 import * as fs from 'fs';
 import * as path from "path";
-import * as sqlite3 from "sqlite3";
-import * as sqlite from "sqlite";
+import { Database, open } from "sqlite";
+import sqlite3 from "sqlite3";
 
 import { getIndexFolderPath } from "../indexing/LanceDbIndex";
 
-export type DatabaseConnection = sqlite.Database<sqlite3.Database>;
+export type DatabaseConnection = Database<sqlite3.Database>;
 
 export function getIndexSqlitePath(): string {
 	return path.join(getIndexFolderPath(), "autodev-index.sqlite");
 }
 
+/**
+ * todo: add Symbols
+ * {@link Symbol} {@link ScopeGraph#symbols}
+ */
 export class SqliteDb {
 	static db: DatabaseConnection | null = null;
 
@@ -46,7 +50,7 @@ export class SqliteDb {
 		}
 
 		SqliteDb.indexSqlitePath = getIndexSqlitePath();
-		SqliteDb.db = await sqlite.open({
+		SqliteDb.db = await open({
 			filename: SqliteDb.indexSqlitePath,
 			driver: sqlite3.Database,
 		});

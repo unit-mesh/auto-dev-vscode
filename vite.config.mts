@@ -38,6 +38,10 @@ export default defineConfig((api) => {
             dest: "",
           },
           {
+            src: "node_modules/sqlite3/build",
+            dest: "",
+          },
+          {
             src: "bin/**",
             dest: "build/",
           },
