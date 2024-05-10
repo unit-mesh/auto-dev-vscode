@@ -22,6 +22,10 @@ export type PathAndCacheKey = {
 	cacheKey: string;
 };
 
+export type LastModifiedMap = {
+	[path: string]: number;
+};
+
 export type RefreshIndexResults = {
 	compute: PathAndCacheKey[];
 	del: PathAndCacheKey[];
