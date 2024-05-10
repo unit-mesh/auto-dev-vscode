@@ -24,3 +24,7 @@ dist/bin/napi-v3/win32/arm64
 
 models/
 dist/bin/napi-v3/linux/x64/libonnxruntime_providers_cuda.so
+vite.config.d.mts
+vite.config.mjs
+vite.config.mts
+CHANGELOG.md
