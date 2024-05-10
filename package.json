@@ -413,6 +413,8 @@
     "onnxruntime-node": "^1.17.3-rev.1",
     "openai": "^4.36.0",
     "reflect-metadata": "^0.2.2",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "tokenizers": "^0.13.3",
     "vectordb": "0.4.19",
     "velocityjs": "^2.0.6",
