@@ -21,9 +21,9 @@ export class CodebaseIndexer {
 
 	private async getIndexesToBuild(): Promise<CodebaseIndex[]> {
 		const indexes = [
-			new ChunkCodebaseIndex(),
-			new FullTextSearchCodebaseIndex(),
-			new CodeSnippetsCodebaseIndex(),
+			// new ChunkCodebaseIndex(),
+			// new FullTextSearchCodebaseIndex(),
+			// new CodeSnippetsCodebaseIndex(),
 			new LanceDbIndex(
 				this.embeddingsProvider,
 				this.ide.readFile.bind(this.ide),
