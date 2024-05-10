@@ -8,6 +8,7 @@ import { StructurerProviderManager } from "./code-context/StructurerProviderMana
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 import { AutoDevWebviewProtocol } from "./editor/webview/AutoDevWebviewProtocol";
 import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingProvider";
+import { SqliteDb } from "./code-search/database/SqliteDb";
 
 export class AutoDevExtension {
 	// the WebView for interacting with the editor
@@ -37,6 +38,7 @@ export class AutoDevExtension {
 		// waiting for index command
 		vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).forEach(async (dir) => {
 			let localInference = new LocalEmbeddingProvider();
+			let sqliteDb = SqliteDb.get();
 			localInference.init().then(() => {
 				this.indexer = new CodebaseIndexer(localInference, this.ideAction);
 				this.refreshCodebaseIndex([dir]);
