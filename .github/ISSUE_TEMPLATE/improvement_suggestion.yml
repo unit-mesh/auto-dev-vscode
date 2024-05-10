@@ -1,0 +1,33 @@
+---
+name: 💪 Improvement suggestion
+description: Share how you think AutoDev could be better
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your perspective! We are keen to hear how you think AutoDev could work better for you.
+  - type: checkboxes
+    id: checkboxes
+    attributes:
+      label: Validations
+      description: Before submitting your suggested improvement
+      options:
+        - label: I'm not able to find an [open issue](https://github.com/unit-mesh/auto-dev-vscode/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement) that requests the same enhancement
+          required: false
+  - type: textarea
+    attributes:
+      label: Problem
+      description: Please describe the problem you are aiming to solve with this suggested improvement. If applicable, add a screenshot, gif, or video to better convey your idea.
+      placeholder: |
+        Short description
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Solution
+      description: Please describe what you might want to happen to address this issue. If applicable, add a screenshot, gif, or video to better convey your idea.
+      placeholder: |
+        Short description
+    validations:
+      required: false
