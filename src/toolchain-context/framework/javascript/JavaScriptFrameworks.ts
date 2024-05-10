@@ -15,6 +15,8 @@ export enum JsWebFrameworks {
 export enum JsTestFrameworks {
 	Jest = "jest",
 	Mocha = "mocha",
+	Sinon = "sinon",
+	Chai = "chai",
 	Jasmine = "jasmine",
 	Karma = "karma",
 	Ava = "ava",
@@ -25,6 +27,18 @@ export enum JsTestFrameworks {
 	Protractor = "protractor",
 	Nightwatch = "nightwatch",
 	Vitest = "vitest"
+}
+
+export enum JsApplicationFrameworks {
+	VSCode = "vscode",
+	Electron = "electron"
+}
+
+export enum JsAiFrameworks {
+	TensorFlow = "@tensorflow/tfjs",
+	LangChain = "@langchain/core",
+	OpenAI = "@openai",
+	Transformers = "@xenova/transformers",
 }
 
 export const TYPESCRIPT_PACKAGE = "typescript";

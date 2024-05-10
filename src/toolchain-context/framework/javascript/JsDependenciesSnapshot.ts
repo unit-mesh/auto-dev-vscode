@@ -1,5 +1,5 @@
 import vscode from "vscode";
-import { MOST_POPULAR_PACKAGES } from "./JavaScriptFrameworks";
+import { JsApplicationFrameworks, MOST_POPULAR_PACKAGES } from "./JavaScriptFrameworks";
 
 export interface PackageJsonDependencyEntry {
 	// Define the structure of PackageJsonDependencyEntry
@@ -28,6 +28,7 @@ export class JsDependenciesSnapshot {
 	resolvedPackageJson: boolean;
 	tsConfigs: vscode.Uri[];
 	packages: Map<string, PackageJsonDependencyEntry>;
+	applicationFrameworks: string[] = Object.values(JsApplicationFrameworks);
 
 	constructor(
 		packageJsonFiles: vscode.Uri[],
@@ -48,6 +49,13 @@ export class JsDependenciesSnapshot {
 				const version = entry.version;
 				const dependency = version ? `${name}: ${version}` : name;
 				dependencies.push(dependency);
+			}
+		}
+
+		// this.applicationFrameworks is an array of strings
+		for (const framework of this.applicationFrameworks) {
+			if (dependencies.includes(framework)) {
+				dependencies.push(framework);
 			}
 		}
 
