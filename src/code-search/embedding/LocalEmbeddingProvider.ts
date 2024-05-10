@@ -13,11 +13,11 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 	tokenizer: any;
 	session: InferenceSession | undefined;
 
-	async init() {
+	async init(basepath: string = __dirname) {
 		const { env, AutoTokenizer } = await import('@xenova/transformers');
 		this.env = env;
 		env.allowLocalModels = true;
-		let modelPath = path.join(__dirname, "models", "all-MiniLM-L6-v2", "onnx", "model_quantized.onnx");
+		let modelPath = path.join(basepath, "models", "all-MiniLM-L6-v2", "onnx", "model_quantized.onnx");
 
 		this.tokenizer = await AutoTokenizer.from_pretrained("all-MiniLM-L6-v2", {
 			local_files_only: true,

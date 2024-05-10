@@ -9,6 +9,7 @@ import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 import { AutoDevWebviewProtocol } from "./editor/webview/AutoDevWebviewProtocol";
 import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingProvider";
 import { SqliteDb } from "./code-search/database/SqliteDb";
+import { getExtensionUri } from "./context";
 
 export class AutoDevExtension {
 	// the WebView for interacting with the editor
@@ -44,7 +45,8 @@ export class AutoDevExtension {
 				console.log(e);
 			}
 
-			localInference.init().then(() => {
+			let fsPath = getExtensionUri().fsPath;
+			localInference.init(fsPath).then(() => {
 				this.indexer = new CodebaseIndexer(localInference, this.ideAction);
 				this.refreshCodebaseIndex([dir]);
 			});
