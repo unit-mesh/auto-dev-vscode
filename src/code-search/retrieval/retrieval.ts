@@ -63,12 +63,10 @@ export async function retrieveContextItemsFromEmbeddings(
 		}),
 	])) as string[];
 
-	console.log(branches);
 	const tags: BranchAndDir[] = workspaceDirs.map((directory, i) => ({
 		directory,
 		branch: branches[i],
 	}));
-	console.log(tags);
 
 	// Get all retrieval results
 	const retrievalResults: Chunk[] = [];

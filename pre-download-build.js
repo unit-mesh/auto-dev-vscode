@@ -62,6 +62,6 @@ console.log("[info] Downloading prebuilt lancedb...");
 for (const target of targets) {
   if (targetToLanceDb[target]) {
     console.log(`[info] Downloading ${target}...`);
-    execSync(`npm install -f ${targetToLanceDb[target]} --no-save`);
+    execSync(`npm install -f ${targetToLanceDb[target]}@0.4.19 --no-save`);
   }
 }
