@@ -19,10 +19,10 @@ export default defineConfig((api) => {
           'onnxruntime-node',
           'sqlite3',
           'vectordb',
-          '@lancedb/vectordb-darwin-x64'
+          '@lancedb/vectordb-darwin-x64',
+          "web-tree-sitter"
         ],
         except: [
-          "web-tree-sitter",
           "onnxruntime-web"
         ]
       }),
