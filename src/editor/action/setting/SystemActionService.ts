@@ -69,6 +69,6 @@ export class SystemActionService implements Service {
 	}
 
 	async indexingAction(extension: AutoDevExtension) {
-		channel.append("TODO: Indexing...");
+		return await extension.indexing();
 	}
 }
