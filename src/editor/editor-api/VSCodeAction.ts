@@ -6,6 +6,7 @@ import { TextDecoder } from "node:util";
 import { asyncExec, GitAction } from "./scm/GitAction";
 import { traverseDirectory } from "../util/traverseDirectory";
 import { defaultIgnoreFile } from "../util/ignore";
+import fs from "fs";
 
 export class VSCodeAction implements IdeAction {
 	git: GitAction = new GitAction();

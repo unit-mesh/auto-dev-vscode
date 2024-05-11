@@ -21,6 +21,8 @@ import { LanceDbIndex } from "./indexing/LanceDbIndex";
 import { IdeAction } from "../editor/editor-api/IdeAction";
 import { EmbeddingsProvider } from "./embedding/_base/EmbeddingsProvider";
 import { getComputeDeleteAddRemove } from "./refreshIndex";
+import { FullTextSearchCodebaseIndex } from "./search/FullTextSearch";
+import { ChunkCodebaseIndex } from "./indexing/ChunkCodebaseIndex";
 
 export class CodebaseIndexer {
 	ide: IdeAction;
@@ -33,9 +35,9 @@ export class CodebaseIndexer {
 
 	private async getIndexesToBuild(): Promise<CodebaseIndex[]> {
 		const indexes = [
-			// new ChunkCodebaseIndex(),
-			// new FullTextSearchCodebaseIndex(),
 			// new CodeSnippetsCodebaseIndex(),
+			new ChunkCodebaseIndex(this.ide.readFile.bind(this.ide)),
+			new FullTextSearchCodebaseIndex(),
 			new LanceDbIndex(
 				this.embeddingsProvider,
 				this.ide.readFile.bind(this.ide),

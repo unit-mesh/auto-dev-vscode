@@ -11,6 +11,7 @@ import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingPr
 import { SqliteDb } from "./code-search/database/SqliteDb";
 import { getExtensionUri } from "./context";
 import { channel } from "./channel";
+import { EmbeddingsProvider } from "./code-search/embedding/_base/EmbeddingsProvider";
 
 export class AutoDevExtension {
 	// the WebView for interacting with the editor
@@ -21,6 +22,7 @@ export class AutoDevExtension {
 	extensionContext: vscode.ExtensionContext;
 	structureProvider: StructurerProviderManager | undefined;
 	private webviewProtocol: AutoDevWebviewProtocol;
+	embeddingsProvider: EmbeddingsProvider | undefined;
 
 	constructor(
 		sidebar: AutoDevWebviewViewProvider,
@@ -52,6 +54,7 @@ export class AutoDevExtension {
 			channel.appendLine("start indexing dirs:" + dirs);
 			let localInference = new LocalEmbeddingProvider();
 			let fsPath = getExtensionUri().fsPath;
+			this.embeddingsProvider = localInference;
 			localInference.init(fsPath).then(() => {
 				const indexer = new CodebaseIndexer(localInference, this.ideAction);
 				this.refreshCodebaseIndex(indexer, dirs).then(r => {

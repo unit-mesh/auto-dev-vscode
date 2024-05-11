@@ -6,6 +6,7 @@ import { AutoDevExtension } from "../../../AutoDevExtension";
 import { channel } from "../../../channel";
 import { SimilarChunkSearcher } from "../../../code-search/similar/SimilarChunkSearcher";
 import { SimilarSearchElementBuilder } from "../../../code-search/similar/SimilarSearchElementBuilder";
+import { retrieveContextItemsFromEmbeddings } from "../../../code-search/retrieval/retrieval";
 
 /**
  * A better example will be: [QuickInput Sample](https://github.com/microsoft/vscode-extension-samples/tree/main/quickinput-sample)
@@ -54,6 +55,9 @@ export class SystemActionService implements Service {
 		inputBox.onDidAccept(async () => {
 			const query = inputBox.value;
 			channel.append("Semantic search for code: " + query + "\n");
+
+			let result = await retrieveContextItemsFromEmbeddings(query, extension.ideAction, extension.embeddingsProvider!!, undefined);
+			channel.append("Search result: \n" + result.join("\n") + "\n");
 			inputBox.hide();
 		});
 

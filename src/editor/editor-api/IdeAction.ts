@@ -5,4 +5,5 @@ export interface IdeAction {
   getBranch(dir: string): Promise<string>;
   getStats(directory: string): Promise<{ [path: string]: number }>;
   getRepoName(dir: string): Promise<string | undefined>;
+  getWorkspaceDirectories(): string[];
 }
