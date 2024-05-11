@@ -1,4 +1,4 @@
-import { ChunkItem, Embedding } from "../embedding/_base/Embedding";
+import { ChunkItem } from "../embedding/_base/Embedding";
 import { HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
 import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
 

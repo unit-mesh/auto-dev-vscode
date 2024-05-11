@@ -1,5 +1,5 @@
 import { HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
-import { ChunkItem, Embedding } from "../embedding/_base/Embedding";
+import { ChunkItem } from "../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
 import { PromptManager } from "../../prompt-manage/PromptManager";
 import { TemplateContext } from "../../prompt-manage/template/TemplateContext";

@@ -53,8 +53,7 @@ export class SystemActionService implements Service {
 
 		inputBox.onDidAccept(async () => {
 			const query = inputBox.value;
-			// execute for similar search
-			extension.sidebar.webviewProtocol?.request("search", { query });
+			channel.append("Semantic search for code: " + query + "\n");
 			inputBox.hide();
 		});
 
