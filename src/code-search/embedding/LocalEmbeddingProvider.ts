@@ -1,7 +1,7 @@
 import path from "path";
 
 import { InferenceSession, Tensor as ONNXTensor } from "onnxruntime-common";
-import { mean_pooling, reshape } from "./_base/EmbeddingUtils";
+import { mean_pooling, reshape, tensorData } from "./_base/EmbeddingUtils";
 import { EmbeddingsProvider } from "./_base/EmbeddingsProvider";
 import { Embedding } from "./_base/Embedding";
 
@@ -43,9 +43,9 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		const { Tensor } = await import('@xenova/transformers');
 		let encodings = this.tokenizer(sequence);
 
-		const inputIdsTensor = new ONNXTensor('int64', new BigInt64Array(encodings.input_ids.cpuData), encodings.input_ids.dims);
-		const attentionMaskTensor = new ONNXTensor('int64', new BigInt64Array(encodings.attention_mask.cpuData), encodings.attention_mask.dims);
-		const tokenTypeIdsTensor = new ONNXTensor('int64', new BigInt64Array(encodings.token_type_ids.cpuData), encodings.token_type_ids.dims);
+		const inputIdsTensor = new ONNXTensor('int64', new BigInt64Array(tensorData(encodings.input_ids)), encodings.input_ids.dims);
+		const attentionMaskTensor = new ONNXTensor('int64', new BigInt64Array(tensorData(encodings.attention_mask)), encodings.attention_mask.dims);
+		const tokenTypeIdsTensor = new ONNXTensor('int64', new BigInt64Array(tensorData(encodings.token_type_ids)), encodings.token_type_ids.dims);
 
 		const outputs: InferenceSession.ReturnType = await this.session!!.run({
 			input_ids: inputIdsTensor,
@@ -55,8 +55,8 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 
 		let result = outputs.last_hidden_state ?? outputs.logits;
 		// @ts-ignore
-		let infer = new Tensor('float32', new Float32Array(result.cpuData), result.dims);
-		let output = mean_pooling(infer, encodings.attention_mask);
+		let infer = new Tensor('float32', new Float32Array(tensorData(result)), result.dims);
+		let output = await mean_pooling(infer, encodings.attention_mask);
 
 		return reshape(output.data, output.dims as any);
 	}

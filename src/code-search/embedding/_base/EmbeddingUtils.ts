@@ -16,20 +16,28 @@
  */
 import { Tensor as ONNXTensor } from "onnxruntime-common";
 
+export function tensorData(tensor: any) {
+	if (tensor.data !== undefined) {
+		return tensor.data;
+	}
+
+	if (tensor['cpuData'] !== undefined) {
+		return tensor[tensor['cpuData']];
+	}
+
+	return [];
+}
+
 /**
  * Perform mean pooling of the last hidden state followed by a normalization step.
  * @param {Tensor} last_hidden_state Tensor of shape [batchSize, seqLength, embedDim]
  * @param {Tensor} attention_mask Tensor of shape [batchSize, seqLength]
  * @returns {Tensor} Returns a new Tensor of shape [batchSize, embedDim].
  */
-export function mean_pooling(last_hidden_state: any, attention_mask: any) {
-
-	// last_hidden_state: [batchSize, seqLength, embedDim]
-	// attention_mask:    [batchSize, seqLength]
-
+export async function mean_pooling(last_hidden_state: any, attention_mask: any) {
 	let shape = [last_hidden_state.dims[0], last_hidden_state.dims[2]];
 	// @ts-ignore
-	let returnedData = new last_hidden_state.cpuData.constructor(shape[0] * shape[1]);
+	let returnedData = new (tensorData(last_hidden_state).constructor)(shape[0] * shape[1]);
 	let [batchSize, seqLength, embedDim] = last_hidden_state.dims;
 
 	let outIndex = 0;
@@ -45,10 +53,10 @@ export function mean_pooling(last_hidden_state: any, attention_mask: any) {
 			// Pool over all words in sequence
 			for (let j = 0; j < seqLength; ++j) {
 				// index into attention mask
-				let attn = Number(attention_mask.cpuData[attnMaskOffset + j]);
+				let attn = Number(tensorData(attention_mask)[attnMaskOffset + j]);
 
 				count += attn;
-				sum += last_hidden_state.cpuData[offset2 + j * embedDim] * attn;
+				sum += tensorData(last_hidden_state)[offset2 + j * embedDim] * attn;
 			}
 
 			let avg = sum / count;
