@@ -2,9 +2,6 @@ import {
 	CodebaseIndex,
 	IndexingProgressUpdate, IndexTag,
 } from "./indexing/_base/CodebaseIndex";
-import { ChunkCodebaseIndex } from "./indexing/ChunkCodebaseIndex";
-import { FullTextSearchCodebaseIndex } from "./indexing/FullTextSearchCodebaseIndex";
-import { CodeSnippetsCodebaseIndex } from "./indexing/CodeSnippetsCodebaseIndex";
 import { LanceDbIndex } from "./indexing/LanceDbIndex";
 import { IdeAction } from "../editor/editor-api/IdeAction";
 import { EmbeddingsProvider } from "./embedding/_base/EmbeddingsProvider";

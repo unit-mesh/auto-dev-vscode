@@ -10,6 +10,7 @@ import { AutoDevWebviewProtocol } from "./editor/webview/AutoDevWebviewProtocol"
 import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingProvider";
 import { SqliteDb } from "./code-search/database/SqliteDb";
 import { getExtensionUri } from "./context";
+import { channel } from "./channel";
 
 export class AutoDevExtension {
 	// the WebView for interacting with the editor
@@ -39,12 +40,6 @@ export class AutoDevExtension {
 		// waiting for index command
 		vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).forEach(async (dir) => {
 			let localInference = new LocalEmbeddingProvider();
-			try {
-				let sqliteDb = await SqliteDb.get();
-			} catch (e) {
-				console.log(e);
-			}
-
 			let fsPath = getExtensionUri().fsPath;
 			localInference.init(fsPath).then(() => {
 				this.indexer = new CodebaseIndexer(localInference, this.ideAction);
@@ -64,7 +59,7 @@ export class AutoDevExtension {
 
 		this.indexingCancellationController = new AbortController();
 		for await (const update of this.indexer!!.refresh(dirs, this.indexingCancellationController.signal)) {
-			console.log(that.webviewProtocol);
+			channel.appendLine("indexing progress: " + update.progress + " - " + update.desc);
 			that.webviewProtocol?.request("indexProgress", update);
 		}
 	}
