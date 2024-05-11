@@ -36,16 +36,27 @@ export class AutoDevExtension {
 		this.extensionContext = context;
 
 		this.webviewProtocol = this.sidebar.webviewProtocol;
+	}
+
+	public async indexing() {
+		try {
+			let sqliteDb = await SqliteDb.get();
+		} catch (e) {
+			console.log(e);
+		}
 
 		// waiting for index command
-		vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).forEach(async (dir) => {
+		let dirs = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath);
+		if (dirs) {
+			channel.appendLine("start indexing dirs:" + dirs);
 			let localInference = new LocalEmbeddingProvider();
 			let fsPath = getExtensionUri().fsPath;
 			localInference.init(fsPath).then(() => {
 				this.indexer = new CodebaseIndexer(localInference, this.ideAction);
-				this.refreshCodebaseIndex([dir]);
+				this.refreshCodebaseIndex(dirs).then(r => {
+				});
 			});
-		});
+		}
 	}
 
 	private indexingCancellationController: AbortController | undefined;

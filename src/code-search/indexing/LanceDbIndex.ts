@@ -13,47 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as path from "path";
-import * as fs from 'fs';
-import * as os from "node:os";
 import { v4 as uuidv4 } from "uuid";
 import { Table } from "vectordb";
 
 import {
 	CodebaseIndex,
-	IndexTag,
 	IndexingProgressUpdate,
-	tagToString,
+	IndexResultType,
+	IndexTag,
+	MarkCompleteCallback,
 	PathAndCacheKey,
-	RefreshIndexResults, MarkCompleteCallback, IndexResultType
+	RefreshIndexResults,
+	tagToString
 } from "./_base/CodebaseIndex";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { Chunk } from "../chunk/_base/Chunk";
 import { MAX_CHUNK_SIZE } from "../constants";
 import { ChunkerManager } from "../chunk/ChunkerManager";
 import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
-
-export function getAutoDevGlobalPath(): string {
-	// This is ~/.autodev on mac/linux
-	const autodevPath = path.join(os.homedir(), ".autodev");
-	if (!fs.existsSync(autodevPath)) {
-		fs.mkdirSync(autodevPath);
-	}
-
-	return autodevPath;
-}
-
-export function getIndexFolderPath(): string {
-	const indexPath = path.join(getAutoDevGlobalPath(), "index");
-	if (!fs.existsSync(indexPath)) {
-		fs.mkdirSync(indexPath);
-	}
-	return indexPath;
-}
-
-export function getLanceDbPath(): string {
-	return path.join(getIndexFolderPath(), "lancedb");
-}
+import { getBasename, getLanceDbPath } from "./IndexPathHelper";
 
 // LanceDB  converts to lowercase, so names must all be lowercase
 interface LanceDbRow {
@@ -63,10 +41,6 @@ interface LanceDbRow {
 	vector: number[];
 
 	[key: string]: any;
-}
-
-export function getBasename(filepath: string, n: number = 1): string {
-	return filepath.split(/[\\/]/).pop() ?? "";
 }
 
 export class LanceDbIndex implements CodebaseIndex {

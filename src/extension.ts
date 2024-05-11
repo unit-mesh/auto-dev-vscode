@@ -20,10 +20,8 @@ import {
 } from "./editor/providers/ProviderUtils";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
-import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";
 import { SettingService } from "./settings/SettingService";
-import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingProvider";
 
 (globalThis as any).self = globalThis;
 
@@ -40,29 +38,34 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	Parser.init().then(async () => {
-			registerCodeLensProviders(extension);
-			registerAutoDevProviders(extension);
-			registerQuickFixProvider(extension);
-			registerCommands(extension);
+		registerCodeLensProviders(extension);
+		registerAutoDevProviders(extension);
+		registerQuickFixProvider(extension);
+		registerCommands(extension);
 
+		if (SettingService.instance().isEnableRename()) {
+			channel.append("rename is enable");
+			registerRenameAction(extension);
+		}
+		vscode.workspace.onDidChangeConfiguration(() => {
 			if (SettingService.instance().isEnableRename()) {
+				// todo: make it works better
 				channel.append("rename is enable");
 				registerRenameAction(extension);
+			} else {
 			}
-			vscode.workspace.onDidChangeConfiguration(() => {
-				if (SettingService.instance().isEnableRename()) {
-					// todo: make it works better
-					channel.append("rename is enable");
-					registerRenameAction(extension);
-				} else {
-				}
-			});
+		});
 
-			TreeSitterFileManager.getInstance();
+		TreeSitterFileManager.getInstance();
 
-			await new BuildToolObserver().startWatch();
+		try {
+			extension.indexing();
+		} catch (e) {
+			console.log(e);
 		}
-	);
+
+		await new BuildToolObserver().startWatch();
+	});
 
 	registerWebViewProvider(extension);
 	documentManager.bindChanges();

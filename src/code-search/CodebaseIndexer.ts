@@ -60,7 +60,6 @@ export class CodebaseIndexer {
 
 			try {
 				for (let codebaseIndex of indexesToBuild) {
-					// TODO: IndexTag type should use repoName rather than directory
 					const tag: IndexTag = {
 						directory,
 						branch,
