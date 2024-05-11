@@ -17,6 +17,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Table } from "vectordb";
 
 import {
+	BranchAndDir,
 	CodebaseIndex,
 	IndexingProgressUpdate,
 	IndexResultType,
@@ -246,5 +247,78 @@ export class LanceDbIndex implements CodebaseIndex {
 
 		markComplete(results.del, IndexResultType.Delete);
 		yield { progress: 1, desc: "Completed Calculating Embeddings" };
+	}
+
+	async retrieve(
+		query: string,
+		n: number,
+		tags: BranchAndDir[],
+		filterDirectory: string | undefined,
+	): Promise<Chunk[]> {
+		const lancedb = await import("vectordb");
+		if (!lancedb.connect) {
+			throw new Error("LanceDB failed to load a native module");
+		}
+		const [vector] = await this.embeddingsProvider.embed([query]);
+		const db = await lancedb.connect(getLanceDbPath());
+
+		let allResults = [];
+		for (const tag of tags) {
+			const results = await this._retrieveForTag(
+				{ ...tag, artifactId: this.artifactId },
+				n,
+				filterDirectory,
+				vector,
+				db,
+			);
+			allResults.push(...results);
+		}
+
+		allResults = allResults
+			.sort((a, b) => a._distance - b._distance)
+			.slice(0, n);
+
+		const sqliteDb = await SqliteDb.get();
+		const data = await sqliteDb.all(
+			`SELECT * FROM lance_db_cache WHERE uuid in (${allResults
+				.map((r) => `'${r.uuid}'`)
+				.join(",")})`,
+		);
+
+		return data.map((d) => {
+			return {
+				digest: d.cacheKey,
+				filepath: d.path,
+				startLine: d.startLine,
+				endLine: d.endLine,
+				index: 0,
+				content: d.contents,
+			};
+		});
+	}
+
+	private async _retrieveForTag(
+		tag: IndexTag,
+		n: number,
+		directory: string | undefined,
+		vector: number[],
+		db: any, /// lancedb.Connection
+	): Promise<LanceDbRow[]> {
+		const tableName = this.tableNameForTag(tag);
+		const tableNames = await db.tableNames();
+		if (!tableNames.includes(tableName)) {
+			return [];
+		}
+
+		const table = await db.openTable(tableName);
+		let query = table.search(vector);
+		if (directory) {
+			// seems like lancedb is only post-filtering, so have to return a bunch of results and slice after
+			query = query.where(`path LIKE '${directory}%'`).limit(300);
+		} else {
+			query = query.limit(n);
+		}
+		const results = await query.execute();
+		return results.slice(0, n) as any;
 	}
 }

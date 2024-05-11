@@ -12,6 +12,10 @@ export function getAutoDevGlobalPath(): string {
 	return autodevPath;
 }
 
+export function getDocsSqlitePath(): string {
+	return path.join(getIndexFolderPath(), "docs.sqlite");
+}
+
 export function getIndexFolderPath(): string {
 	const indexPath = path.join(getAutoDevGlobalPath(), "index");
 	if (!fs.existsSync(indexPath)) {
