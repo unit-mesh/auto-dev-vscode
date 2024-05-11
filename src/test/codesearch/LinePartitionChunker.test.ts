@@ -1,6 +1,5 @@
 import { LinePartitionChunker } from "../../code-search/chunk/LinePartitionChunker";
 import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
-import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 
 describe('LinePartitionChunker', () => {
   let chunker: LinePartitionChunker;

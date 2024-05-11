@@ -15,7 +15,6 @@ export const EXT_LANGUAGE_MAP: { [key: string]: string } = {
 	cs: "c_sharp",
 	c: "c",
 	h: "c",
-	css: "css",
 	ts: "typescript",
 	mts: "typescript",
 	cts: "typescript",

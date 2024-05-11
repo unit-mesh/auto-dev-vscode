@@ -16,4 +16,8 @@ export namespace PositionUtil {
 		const end = fromNode(node.endPosition);
 		return new Selection(start, end);
 	}
+
+	export function selectionToNode(selection: Selection): [Point, Point] {
+		return [toPoint(selection.start), toPoint(selection.end)];
+	}
 }
