@@ -3,9 +3,9 @@ import { IdeAction } from "../../editor/editor-api/IdeAction";
 import { BranchAndDir } from "../indexing/_base/CodebaseIndex";
 import { LanceDbIndex } from "../indexing/LanceDbIndex";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
-import { getBasename } from "../indexing/IndexPathHelper";
+import { getBasename } from "../utils/IndexPathHelper";
 import { retrieveFts } from "./fullTextSearch";
-import { RETRIEVAL_PARAMS } from "../constants";
+import { RETRIEVAL_PARAMS } from "../utils/constants";
 
 export interface ContextItem {
 	content: string;
@@ -81,20 +81,24 @@ export async function retrieveContextItemsFromEmbeddings(
 		filterDirectory,
 	);
 	retrievalResults.push(...ftsResults);
-	console.log(ftsResults);
 
 	// Source: Embeddings
 	const lanceDbIndex = new LanceDbIndex(embeddingsProvider, (path) =>
 		ide.readFile(path),
 	);
-	let vecResults = await lanceDbIndex.retrieve(
-		fullInput,
-		nRetrieve,
-		tags,
-		filterDirectory,
-	);
+
+	let vecResults : Chunk[] = [];
+	try {
+		await lanceDbIndex.retrieve(
+			fullInput,
+			nRetrieve,
+			tags,
+			filterDirectory,
+		);
+	} catch (e) {
+		console.warn("Error retrieving from embeddings:", e);
+	}
 	retrievalResults.push(...vecResults);
-	console.log(retrievalResults);
 
 	// De-duplicate
 	let results: Chunk[] = deduplicateChunks(retrievalResults);

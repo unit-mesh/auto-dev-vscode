@@ -22,7 +22,7 @@ import {
   MarkCompleteCallback,
   RefreshIndexResults
 } from "../indexing/_base/CodebaseIndex";
-import { RETRIEVAL_PARAMS } from "../constants";
+import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { Chunk } from "../chunk/_base/Chunk";
 import { ChunkCodebaseIndex } from "../indexing/ChunkCodebaseIndex";
 import { tagToString } from "../refreshIndex";

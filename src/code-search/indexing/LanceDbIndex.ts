@@ -29,10 +29,10 @@ import {
 } from "./_base/CodebaseIndex";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { Chunk } from "../chunk/_base/Chunk";
-import { MAX_CHUNK_SIZE } from "../constants";
+import { MAX_CHUNK_SIZE } from "../utils/constants";
 import { ChunkerManager } from "../chunk/ChunkerManager";
 import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
-import { getBasename, getLanceDbPath } from "./IndexPathHelper";
+import { getBasename, getLanceDbPath } from "../utils/IndexPathHelper";
 
 // LanceDB  converts to lowercase, so names must all be lowercase
 interface LanceDbRow {

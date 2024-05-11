@@ -15,7 +15,7 @@
  */
 import { cleanFragment, cleanHeader } from "../../../markdown/MarkdownClean";
 import { Article, ArticleComponent } from "./ArticleCrawl";
-import { MAX_CHUNK_SIZE } from "../../constants";
+import { MAX_CHUNK_SIZE } from "../../utils/constants";
 import { Chunk } from "../../chunk/_base/Chunk";
 
 function breakdownArticleComponent(

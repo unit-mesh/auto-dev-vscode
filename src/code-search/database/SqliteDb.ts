@@ -3,7 +3,7 @@ import * as path from "path";
 import { Database, open } from "sqlite";
 import sqlite3 from "sqlite3";
 
-import { getIndexFolderPath } from "../indexing/IndexPathHelper";
+import { getIndexFolderPath } from "../utils/IndexPathHelper";
 
 export type DatabaseConnection = Database<sqlite3.Database>;
 

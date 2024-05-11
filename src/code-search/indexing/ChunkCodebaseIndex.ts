@@ -8,8 +8,8 @@ import {
 import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
 import { tagToString } from "../refreshIndex";
 import { Chunk } from "../chunk/_base/Chunk";
-import { MAX_CHUNK_SIZE } from "../constants";
-import { getBasename } from "./IndexPathHelper";
+import { MAX_CHUNK_SIZE } from "../utils/constants";
+import { getBasename } from "../utils/IndexPathHelper";
 import { ChunkerManager } from "../chunk/ChunkerManager";
 
 export class ChunkCodebaseIndex implements CodebaseIndex {

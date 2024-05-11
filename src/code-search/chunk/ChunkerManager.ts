@@ -4,7 +4,7 @@ import { ConstructCodeChunker } from "./ConstructCodeChunker";
 import { EXT_LANGUAGE_MAP } from "../../editor/language/ExtensionLanguageMap";
 import { basicChunker } from "./BasicChunker";
 import { countTokens } from "../token/TokenCounter";
-import { MAX_CHUNK_SIZE } from "../constants";
+import { MAX_CHUNK_SIZE } from "../utils/constants";
 
 const DEFAULT_THRESHOLD = 0.72;
 
