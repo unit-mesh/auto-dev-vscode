@@ -44,13 +44,11 @@ export async function activate(context: vscode.ExtensionContext) {
 		registerCommands(extension);
 
 		if (SettingService.instance().isEnableRename()) {
-			channel.append("rename is enable");
 			registerRenameAction(extension);
 		}
 		vscode.workspace.onDidChangeConfiguration(() => {
 			if (SettingService.instance().isEnableRename()) {
 				// todo: make it works better
-				channel.append("rename is enable");
 				registerRenameAction(extension);
 			} else {
 			}
