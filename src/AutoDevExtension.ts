@@ -20,7 +20,6 @@ export class AutoDevExtension {
 	documentManager: RecentlyDocumentManager;
 	extensionContext: vscode.ExtensionContext;
 	structureProvider: StructurerProviderManager | undefined;
-	indexer: CodebaseIndexer | undefined;
 	private webviewProtocol: AutoDevWebviewProtocol;
 
 	constructor(
@@ -36,6 +35,8 @@ export class AutoDevExtension {
 		this.extensionContext = context;
 
 		this.webviewProtocol = this.sidebar.webviewProtocol;
+
+		this.indexing();
 	}
 
 	public async indexing() {
@@ -52,8 +53,8 @@ export class AutoDevExtension {
 			let localInference = new LocalEmbeddingProvider();
 			let fsPath = getExtensionUri().fsPath;
 			localInference.init(fsPath).then(() => {
-				this.indexer = new CodebaseIndexer(localInference, this.ideAction);
-				this.refreshCodebaseIndex(dirs).then(r => {
+				const indexer = new CodebaseIndexer(localInference, this.ideAction);
+				this.refreshCodebaseIndex(indexer, dirs).then(r => {
 				});
 			});
 		}
@@ -61,7 +62,7 @@ export class AutoDevExtension {
 
 	private indexingCancellationController: AbortController | undefined;
 
-	private async refreshCodebaseIndex(dirs: string[]) {
+	private async refreshCodebaseIndex(indexer: CodebaseIndexer, dirs: string[]) {
 		if (this.indexingCancellationController) {
 			this.indexingCancellationController.abort();
 		}
@@ -69,7 +70,7 @@ export class AutoDevExtension {
 		const that = this;
 
 		this.indexingCancellationController = new AbortController();
-		for await (const update of this.indexer!!.refresh(dirs, this.indexingCancellationController.signal)) {
+		for await (const update of indexer.refresh(dirs, this.indexingCancellationController.signal)) {
 			channel.appendLine("indexing progress: " + update.progress + " - " + update.desc);
 			that.webviewProtocol?.request("indexProgress", update);
 		}

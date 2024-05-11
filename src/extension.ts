@@ -57,13 +57,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		});
 
 		TreeSitterFileManager.getInstance();
-
-		try {
-			extension.indexing();
-		} catch (e) {
-			console.log(e);
-		}
-
 		await new BuildToolObserver().startWatch();
 	});
 
