@@ -63,7 +63,6 @@ export class AutoTestActionExecutor implements ActionExecutor {
 		const toolchainItems = toolchainContextItems.concat(languageContextItems);
 		if (toolchainItems.length > 0) {
 			testContext.chatContext = toolchainItems.map(item => item.text).join("\n - ");
-			console.info(`chat context: ${testContext.chatContext}`);
 		} else {
 			testContext.chatContext = '';
 		}

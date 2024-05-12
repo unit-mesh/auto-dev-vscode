@@ -65,7 +65,6 @@ export class AutoDocActionExecutor implements ActionExecutor {
 		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);
 		if (contextItems.length > 0) {
 			templateContext.chatContext = contextItems.map(item => item.text).join("\n - ");
-			console.info(`chat context: ${templateContext.chatContext}`);
 		}
 
 		let content = await PromptManager.getInstance().generateInstruction(ActionType.AutoDoc, templateContext);
