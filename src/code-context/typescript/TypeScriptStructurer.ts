@@ -10,7 +10,7 @@ import { TypeScriptProfile } from "./TypeScriptProfile";
 export class TypeScriptStructurer extends BaseStructurerProvider {
 	protected langId: string = "typescript";
 	protected config: TypeScriptProfile = LanguageProfileUtil.from(this.langId)!!;
-	protected parser: import("web-tree-sitter") | undefined;
+	protected parser: Parser | undefined;
 	protected language: Language | undefined;
 
 	isApplicable(lang: string) {
