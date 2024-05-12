@@ -264,6 +264,7 @@ export class LanceDbIndex implements CodebaseIndex {
 
 		let allResults = [];
 		for (const tag of tags) {
+			console.log("Retrieving for tag", tag);
 			const results = await this._retrieveForTag(
 				{ ...tag, artifactId: this.artifactId },
 				n,

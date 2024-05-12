@@ -37,10 +37,24 @@ export class AutoDevExtension {
 		this.extensionContext = context;
 
 		this.webviewProtocol = this.sidebar.webviewProtocol;
-
-		this.indexing();
 	}
 
+	/**
+	 * The `indexing` method is an asynchronous function that initializes the indexing process of directories in the workspace.
+	 *
+	 * This method first attempts to get an instance of the SQLite database using the `SqliteDb.get()` method. If an error occurs during this process, it is caught and logged to the console.
+	 *
+	 * The method then retrieves the directories in the workspace using `vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath)`. If directories are found, it logs the start of the indexing process and the directories to be indexed.
+	 *
+	 * A new instance of `LocalEmbeddingProvider` is created and initialized with the file system path of the extension URI. This instance is then set as the `embeddingsProvider`.
+	 *
+	 * Once the `LocalEmbeddingProvider` is initialized, a new `CodebaseIndexer` instance is created with the `LocalEmbeddingProvider` and `ideAction` as parameters. The `refreshCodebaseIndex` method is then called with the `CodebaseIndexer` and directories as parameters.
+	 *
+	 * This method does not return any value.
+	 *
+	 * @throws {Error} If an error occurs while getting the SQLite database instance.
+	 * @async
+	 */
 	public async indexing() {
 		try {
 			let sqliteDb = await SqliteDb.get();
