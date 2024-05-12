@@ -1,4 +1,4 @@
-import vscode from "vscode";
+import vscode, { env } from "vscode";
 
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { NamedElement } from "../../ast/NamedElement";
@@ -95,7 +95,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			for await (const chunk of llm._streamChat([msg])) {
 				doc += chunk.content;
 
-				const output = StreamingMarkdownCodeBlock.parse(doc).text;
+				const output = StreamingMarkdownCodeBlock.parse(doc, this.language).text;
 
 				if (output) {
 					let workspaceEdit = new vscode.WorkspaceEdit();
@@ -111,7 +111,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 
 		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
 
-		const output = StreamingMarkdownCodeBlock.parse(doc).text;
+		const output = StreamingMarkdownCodeBlock.parse(doc, this.language).text;
 		console.info(`FencedCodeBlock parsed output: ${output}`);
 
 		const newDoc = await vscode.workspace.openTextDocument(newDocUri);
