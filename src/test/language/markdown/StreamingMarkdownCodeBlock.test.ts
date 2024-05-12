@@ -31,13 +31,22 @@ describe('StreamingMarkdownCodeBlock', () => {
 		});
 
 		// multiple markdown code blocks
-		it.skip('should correctly parse multiple unfinished fenced code blocks', () => {
+		it('should correctly parse multiple unfinished fenced code blocks', () => {
 			const content = '```javascript\nconsole.log("Hello, JS!");\n```\n```typescript\nconsole.log("Hello, TS!");\n';
-			const parsedBlock = StreamingMarkdownCodeBlock.parse(content);
+			const parsedBlock = StreamingMarkdownCodeBlock.multiLineCodeBlock(content);
 
 			expect(parsedBlock.language).toBe('typescript');
 			expect(parsedBlock.text).toBe('console.log("Hello, TS!");');
-			expect(parsedBlock.isComplete).toBe(true);
+			expect(parsedBlock.isComplete).toBe(false);
+		});
+
+		it('should correctly parse filter last fenced code blocks', () => {
+			const content = '```javascript\nconsole.log("Hello, JS!");\n```\n```typescript\nconsole.log("Hello, TS!");\n';
+			const parsedBlock = StreamingMarkdownCodeBlock.multiLineCodeBlock(content, "javascript");
+
+			expect(parsedBlock.language).toBe('typescript');
+			expect(parsedBlock.text).toBe('console.log("Hello, JS!");\n');
+			expect(parsedBlock.isComplete).toBe(false);
 		});
 
 		it('should correctly parse a fenced code block with empty content', () => {

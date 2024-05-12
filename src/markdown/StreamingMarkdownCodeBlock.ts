@@ -57,9 +57,50 @@ export class StreamingMarkdownCodeBlock {
 		this.endIndex = endIndex;
 	}
 
-	// static multiLineCodeBlock(content: string, language: string): StreamingMarkdownCodeBlock {
-	//
-	// }
+	static multiLineCodeBlock(content: string, defaultLanguage: string = "") {
+		const regex = /```([\w#+]*?)\s*$/;
+		const lines = content.replace(/\\n/g, "\n").split("\n");
+
+		let lastBlockStartIndex = 0;
+		let codeBlocks: StandardCodeBlock[] = [];
+		let language = defaultLanguage;
+		let blockContent: string[] = [];
+
+		lines.forEach((line, index) => {
+			if (line.trim().startsWith("```")) {
+				const matchResult = regex.exec(line.trim());
+				if (matchResult) {
+					if (blockContent.length > 0) {
+						const block = blockContent.join("\n");
+						codeBlocks.push(new StandardCodeBlock(language, lastBlockStartIndex, index, block));
+						blockContent = [];
+					}
+					language = matchResult[1];
+					lastBlockStartIndex = index;
+				}
+			} else {
+				blockContent.push(line);
+			}
+		});
+
+		if (blockContent.length > 0) {
+			const block = blockContent.join("\n");
+			codeBlocks.push(new StandardCodeBlock(language, lastBlockStartIndex, lines.length - 1, block));
+		}
+
+		// filter by language
+		if (language !== "") {
+			codeBlocks = codeBlocks.filter(block => block.language === language);
+			if (codeBlocks.length > 0) {
+				const block = codeBlocks[codeBlocks.length - 1];
+				return new StreamingMarkdownCodeBlock(block.language, block.code, false, block.startLine, block.endLine);
+			}
+		}
+
+		// split content by code block from last match line to end
+		const block = lines.slice(lastBlockStartIndex).join("\n");
+		return StreamingMarkdownCodeBlock.parse(block);
+	}
 
 	static parse(content: string): StreamingMarkdownCodeBlock {
 		const regex = /```([\w#+]*)/;
