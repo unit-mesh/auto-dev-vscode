@@ -6,7 +6,7 @@ import { AutoDevExtension } from "../../../AutoDevExtension";
 import { channel } from "../../../channel";
 import { SimilarChunkSearcher } from "../../../code-search/similar/SimilarChunkSearcher";
 import { SimilarSearchElementBuilder } from "../../../code-search/similar/SimilarSearchElementBuilder";
-import { ContextItem, retrieveContextItemsFromEmbeddings } from "../../../code-search/retrieval/retrieval";
+import { ContextItem, retrieveContextItemsFromEmbeddings } from "../../../code-search/retrieval/DefaultRetrieval";
 
 /**
  * A better example will be: [QuickInput Sample](https://github.com/microsoft/vscode-extension-samples/tree/main/quickinput-sample)

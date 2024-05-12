@@ -4,8 +4,8 @@ import { BranchAndDir } from "../indexing/_base/CodebaseIndex";
 import { LanceDbIndex } from "../indexing/LanceDbIndex";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { getBasename } from "../utils/IndexPathHelper";
-import { retrieveFts } from "./fullTextSearch";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
+import { FullTextSearchCodebaseIndex } from "../search/FullTextSearch";
 
 export interface ContextItem {
 	content: string;
@@ -38,6 +38,36 @@ function deduplicateChunks(chunks: Chunk[]): Chunk[] {
 			a.endLine === b.endLine
 		);
 	});
+}
+
+export async function retrieveFts(
+	query: string,
+	n: number,
+	tags: BranchAndDir[],
+	filterDirectory: string | undefined,
+): Promise<Chunk[]> {
+	const ftsIndex = new FullTextSearchCodebaseIndex();
+
+	let ftsResults: Chunk[] = [];
+	try {
+		if (query.trim() !== "") {
+			ftsResults = await ftsIndex.retrieve(
+				tags,
+				query
+					.trim()
+					.split(" ")
+					.map((element) => `"${element}"`)
+					.join(" OR "),
+				n,
+				filterDirectory,
+				undefined,
+			);
+		}
+		return ftsResults;
+	} catch (e) {
+		console.warn("Error retrieving from FTS:", e);
+		return [];
+	}
 }
 
 export async function retrieveContextItemsFromEmbeddings(
