@@ -1,5 +1,33 @@
 import { SUPPORTED_LANGUAGES } from "../editor/language/SupportedLanguage";
 
+export class StandardCodeBlock {
+	language: string;
+	startLine: number;
+	endLine: number;
+	code: string;
+
+	constructor(language: string, startLine: number, endLine: number, code: string) {
+		this.language = language;
+		this.startLine = startLine;
+		this.endLine = endLine;
+		this.code = code;
+	}
+
+	static from(markdown: string): StandardCodeBlock[] {
+		const regex = /```(\w+)?\s([\s\S]*?)```/gm;
+		const blocks: StandardCodeBlock[] = [];
+		let match;
+
+		while ((match = regex.exec(markdown)) !== null) {
+			const startLine = markdown.substring(0, match.index).split("\n").length;
+			const endLine = startLine + match[0].split("\n").length - 1;
+			blocks.push(new StandardCodeBlock(match[1] || 'plaintext', startLine, endLine, match[2]));
+		}
+
+		return blocks;
+	}
+}
+
 /**
  * FencedCodeBlock class represents a block of code that is delimited by triple backticks (```) and can optionally have a
  * language identifier.
@@ -16,12 +44,22 @@ export class StreamingMarkdownCodeBlock {
 	language: string;
 	text: string;
 	isComplete: boolean;
+	startIndex: number = 0;
+	endIndex: number = 0;
 
-	constructor(language: string, text: string, isComplete: boolean) {
+	constructor(language: string, text: string, isComplete: boolean, startIndex: number = 0, endIndex: number = 0) {
 		this.language = language;
 		this.text = text;
 		this.isComplete = isComplete;
+
+		// for split
+		this.startIndex = startIndex;
+		this.endIndex = endIndex;
 	}
+
+	// static multiLineCodeBlock(content: string, language: string): StreamingMarkdownCodeBlock {
+	//
+	// }
 
 	static parse(content: string): StreamingMarkdownCodeBlock {
 		const regex = /```([\w#+]*)/;
@@ -72,14 +110,14 @@ export class StreamingMarkdownCodeBlock {
 
 		// if content is not empty, but code is empty, then it's a markdown
 		if (!trimmedCode.trim()) {
-			return new StreamingMarkdownCodeBlock("markdown", content.replace(/\\n/g, "\n"), codeClosed);
+			return new StreamingMarkdownCodeBlock("markdown", content.replace(/\\n/g, "\n"), codeClosed, startIndex, endIndex);
 		}
 
 		if (languageId === "devin" || languageId === "devins") {
 			trimmedCode = trimmedCode.replace(/\\`\\`\\`/g, "```");
 		}
 
-		return new StreamingMarkdownCodeBlock(language, trimmedCode, codeClosed);
+		return new StreamingMarkdownCodeBlock(language, trimmedCode, codeClosed, startIndex, endIndex);
 	}
 
 	/**

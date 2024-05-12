@@ -1,6 +1,6 @@
-import { StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownCodeBlock";
+import { StandardCodeBlock, StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownCodeBlock";
 
-describe('FencedCodeBlock', () => {
+describe('StreamingMarkdownCodeBlock', () => {
 	describe('parse method', () => {
 		it('should correctly parse a fenced code block with specified language', () => {
 			const content = '```javascript\nconsole.log("Hello, world!");\n```';
