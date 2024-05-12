@@ -1,32 +1,5 @@
 import { SUPPORTED_LANGUAGES } from "../editor/language/SupportedLanguage";
-
-export class StandardCodeBlock {
-	language: string;
-	startLine: number;
-	endLine: number;
-	code: string;
-
-	constructor(language: string, startLine: number, endLine: number, code: string) {
-		this.language = language;
-		this.startLine = startLine;
-		this.endLine = endLine;
-		this.code = code;
-	}
-
-	static from(markdown: string): StandardCodeBlock[] {
-		const regex = /```(\w+)?\s([\s\S]*?)```/gm;
-		const blocks: StandardCodeBlock[] = [];
-		let match;
-
-		while ((match = regex.exec(markdown)) !== null) {
-			const startLine = markdown.substring(0, match.index).split("\n").length;
-			const endLine = startLine + match[0].split("\n").length - 1;
-			blocks.push(new StandardCodeBlock(match[1] || 'plaintext', startLine, endLine, match[2]));
-		}
-
-		return blocks;
-	}
-}
+import { MarkdownCodeBlock } from "./MarkdownCodeBlock";
 
 /**
  * FencedCodeBlock class represents a block of code that is delimited by triple backticks (```) and can optionally have a
@@ -66,7 +39,7 @@ export class StreamingMarkdownCodeBlock {
 		const lines = content.replace(/\\n/g, "\n").split("\n");
 
 		let lastBlockStartIndex = 0;
-		let codeBlocks: StandardCodeBlock[] = [];
+		let codeBlocks: MarkdownCodeBlock[] = [];
 		let language = "markdown";
 		let blockContent: string[] = [];
 
@@ -77,7 +50,7 @@ export class StreamingMarkdownCodeBlock {
 					language = matchResult[1];
 					if (blockContent.length > 0) {
 						const block = blockContent.join("\n");
-						codeBlocks.push(new StandardCodeBlock(language, lastBlockStartIndex, index, block));
+						codeBlocks.push(new MarkdownCodeBlock(language, lastBlockStartIndex, index, block));
 						blockContent = [];
 					}
 
@@ -85,7 +58,7 @@ export class StreamingMarkdownCodeBlock {
 				} else {
 					if (blockContent.length > 0) {
 						const block = blockContent.join("\n");
-						codeBlocks.push(new StandardCodeBlock(language, lastBlockStartIndex, lines.length - 1, block));
+						codeBlocks.push(new MarkdownCodeBlock(language, lastBlockStartIndex, lines.length - 1, block));
 					}
 				}
 			} else {
@@ -96,7 +69,7 @@ export class StreamingMarkdownCodeBlock {
 		// split content by code block from last match line to end
 		const block = lines.slice(lastBlockStartIndex).join("\n");
 		let otherBlock = StreamingMarkdownCodeBlock.singleBlock(block);
-		codeBlocks.push(new StandardCodeBlock(otherBlock.language, lastBlockStartIndex, lines.length - 1, otherBlock.text));
+		codeBlocks.push(new MarkdownCodeBlock(otherBlock.language, lastBlockStartIndex, lines.length - 1, otherBlock.text));
 
 		// filter by language
 		if (primaryLanguage !== "") {

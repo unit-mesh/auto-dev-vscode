@@ -1,4 +1,5 @@
-import { StandardCodeBlock, StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownCodeBlock";
+import { StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownCodeBlock";
+import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
 
 describe('StreamingMarkdownCodeBlock', () => {
 	describe('parse method', () => {
