@@ -72,6 +72,7 @@ export class AutoDevExtension {
 			localInference.init(fsPath).then(() => {
 				const indexer = new CodebaseIndexer(localInference, this.ideAction);
 				this.refreshCodebaseIndex(indexer, dirs).then(r => {
+					channel.appendLine("indexing finished");
 				});
 			});
 		}
