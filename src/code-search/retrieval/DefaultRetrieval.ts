@@ -7,6 +7,12 @@ import { getBasename } from "../utils/IndexPathHelper";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { FullTextSearchCodebaseIndex } from "../search/FullTextSearch";
 
+export interface ContextSubmenuItem {
+	id: string;
+	title: string;
+	description: string;
+}
+
 export interface ContextItem {
 	content: string;
 	name: string;
