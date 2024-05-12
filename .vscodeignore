@@ -25,7 +25,7 @@ dist/bin/napi-v3/linux/x64/libonnxruntime_providers_cuda.so
 
 dist/build/linux-arm64
 dist/build/win32-arm64
-dist/build/node_sqlite3.node
+#dist/build/node_sqlite3.node
 
 dist/node_modules/@lancedb/vectordb-linux-arm64-gnu
 
