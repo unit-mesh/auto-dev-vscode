@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from "path";
-import { Database, open } from "sqlite";
-import sqlite3 from "sqlite3";
+import { open, Database } from "sqlite";
+import * as sqlite3 from "sqlite3";
 
 import { getIndexFolderPath } from "../utils/IndexPathHelper";
 
@@ -44,7 +44,7 @@ export class SqliteDb {
 
 	private static indexSqlitePath = getIndexSqlitePath();
 
-	static async get() {
+	static async get(): Promise<Database> {
 		if (SqliteDb.db && fs.existsSync(SqliteDb.indexSqlitePath)) {
 			return SqliteDb.db;
 		}
@@ -56,8 +56,6 @@ export class SqliteDb {
 		});
 
 		await SqliteDb.createTables(SqliteDb.db);
-
 		return SqliteDb.db;
 	}
 }
-
