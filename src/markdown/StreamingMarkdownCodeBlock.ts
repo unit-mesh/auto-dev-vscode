@@ -57,52 +57,60 @@ export class StreamingMarkdownCodeBlock {
 		this.endIndex = endIndex;
 	}
 
-	static multiLineCodeBlock(content: string, defaultLanguage: string = "") {
+	static parse(content: string, defaultLanguage: string = ""): StreamingMarkdownCodeBlock {
+		return StreamingMarkdownCodeBlock.multiLineCodeBlock(content, defaultLanguage);
+	}
+
+	static multiLineCodeBlock(content: string, primaryLanguage: string = "") {
 		const regex = /```([\w#+]*?)\s*$/;
 		const lines = content.replace(/\\n/g, "\n").split("\n");
 
 		let lastBlockStartIndex = 0;
 		let codeBlocks: StandardCodeBlock[] = [];
-		let language = defaultLanguage;
+		let language = "markdown";
 		let blockContent: string[] = [];
 
 		lines.forEach((line, index) => {
 			if (line.trim().startsWith("```")) {
 				const matchResult = regex.exec(line.trim());
-				if (matchResult) {
+				if (matchResult && matchResult[1] !== "") {
+					language = matchResult[1];
 					if (blockContent.length > 0) {
 						const block = blockContent.join("\n");
 						codeBlocks.push(new StandardCodeBlock(language, lastBlockStartIndex, index, block));
 						blockContent = [];
 					}
-					language = matchResult[1];
+
 					lastBlockStartIndex = index;
+				} else {
+					if (blockContent.length > 0) {
+						const block = blockContent.join("\n");
+						codeBlocks.push(new StandardCodeBlock(language, lastBlockStartIndex, lines.length - 1, block));
+					}
 				}
 			} else {
 				blockContent.push(line);
 			}
 		});
 
-		if (blockContent.length > 0) {
-			const block = blockContent.join("\n");
-			codeBlocks.push(new StandardCodeBlock(language, lastBlockStartIndex, lines.length - 1, block));
-		}
+		// split content by code block from last match line to end
+		const block = lines.slice(lastBlockStartIndex).join("\n");
+		let otherBlock = StreamingMarkdownCodeBlock.singleBlock(block);
+		codeBlocks.push(new StandardCodeBlock(otherBlock.language, lastBlockStartIndex, lines.length - 1, otherBlock.text));
 
 		// filter by language
-		if (language !== "") {
-			codeBlocks = codeBlocks.filter(block => block.language === language);
+		if (primaryLanguage !== "") {
+			codeBlocks = codeBlocks.filter(block => block.language === primaryLanguage);
 			if (codeBlocks.length > 0) {
 				const block = codeBlocks[codeBlocks.length - 1];
 				return new StreamingMarkdownCodeBlock(block.language, block.code, false, block.startLine, block.endLine);
 			}
 		}
 
-		// split content by code block from last match line to end
-		const block = lines.slice(lastBlockStartIndex).join("\n");
-		return StreamingMarkdownCodeBlock.parse(block);
+		return otherBlock
 	}
 
-	static parse(content: string): StreamingMarkdownCodeBlock {
+	static singleBlock(content: string): StreamingMarkdownCodeBlock {
 		const regex = /```([\w#+]*)/;
 		// convert content \\n to \n
 		const lines = content.replace(/\\n/g, "\n").split("\n");
