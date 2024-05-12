@@ -82,10 +82,10 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
     - [x] ONNX Runtime
     - [x] Transformer.js
         - [x] [transformers](https://xenova.github.io/transformers.js/)
-    - [ ] Embedding Database
-        - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike ?
-            - [vectordb](https://www.npmjs.com/package/vectordb) ?
-        - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike ?
+    - [x] Embedding Database
+        - [x] [LanceDB](https://github.com/lancedb/lancedb)
+        - [x] [vectordb](https://www.npmjs.com/package/vectordb)
+    - [x] Semantic Search
 - [ ] Extensions
     - [x] Build Tools
         - [x] Gradle
