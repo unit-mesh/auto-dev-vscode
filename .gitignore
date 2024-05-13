@@ -38,7 +38,7 @@ pnpm-lock.yaml
 .vscode-test
 coverage/
 semantic/wasm
-models
+
 vite.config.d.mts
 vite.config.mjs
 bin
