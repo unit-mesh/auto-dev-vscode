@@ -42,3 +42,4 @@ models
 vite.config.d.mts
 vite.config.mjs
 bin
+build/

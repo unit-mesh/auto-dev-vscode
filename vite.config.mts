@@ -17,7 +17,6 @@ export default defineConfig((api) => {
         include: [
           'vscode',
           'onnxruntime-node',
-          'sqlite3',
           'vectordb',
           "web-tree-sitter"
         ],
@@ -68,14 +67,21 @@ export default defineConfig((api) => {
       }),
     ],
     build: {
-      minify: !isDev,
-      sourcemap: isDev,
+      minify: false,
+      sourcemap: true,
       copyPublicDir: false,
       lib: {
         entry: "src/extension.ts",
         formats: ["cjs"],
         fileName: "extension",
       },
+      // commonjsOptions: {
+      //   ignoreDynamicRequires: true,
+      //   dynamicRequireRoot: "/",
+      //   dynamicRequireTargets: [
+      //     './build/node_sqlite3.node'
+      //   ],
+      // }
     },
     test: {
       include: ["src/test/**/*.test.ts"],

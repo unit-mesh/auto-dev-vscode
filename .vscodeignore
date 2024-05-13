@@ -29,6 +29,12 @@ dist/build/win32-arm64
 
 dist/node_modules/@lancedb/vectordb-linux-arm64-gnu
 
+# node_modules/sqlite3/node_modules
+# !node_modules/sqlite3
+# !node_modules/bindings
+# !node_modules/file-uri-to-path
+# !node_modules/web-tree-sitter
+
 models/
 vite.config.d.mts
 vite.config.mjs
