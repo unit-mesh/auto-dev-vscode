@@ -60,7 +60,6 @@ export class JavaRelevantLookup {
 	 */
 	pathByPackageName(packageName: string) {
 		let currentPath = this.tsfile.filePath;
-		console.log(currentPath);
 		const currentPackageName = this.extractCurrentPackageName();
 		if (currentPackageName === '') {
 			return '';

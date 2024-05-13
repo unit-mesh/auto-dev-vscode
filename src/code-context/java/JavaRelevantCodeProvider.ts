@@ -40,6 +40,10 @@ export class JavaRelevantCodeProvider implements RelevantCodeProvider {
 		// read file by path and structurer to parse it to uml
 		async function parseCodeFile(path: string): Promise<CodeFile | undefined> {
 			const uri = vscode.Uri.file(path);
+			if (!await vscode.workspace.fs.stat(uri)) {
+				return undefined;
+			}
+
 			const document = await vscode.workspace.openTextDocument(uri);
 			return await structurer.parseFile(document.getText(), path);
 		}
