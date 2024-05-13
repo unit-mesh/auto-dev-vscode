@@ -22,6 +22,7 @@ import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
 import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";
 import { SettingService } from "./settings/SettingService";
+import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingProvider";
 
 (globalThis as any).self = globalThis;
 
@@ -56,6 +57,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		TreeSitterFileManager.getInstance();
 		await new BuildToolObserver().startWatch();
+
+		LocalEmbeddingProvider.getInstance().init(context.extensionPath);
 	});
 
 	registerWebViewProvider(extension);

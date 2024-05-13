@@ -4,6 +4,7 @@ import { InferenceSession, Tensor as ONNXTensor } from "onnxruntime-common";
 import { mean_pooling, reshape, tensorData } from "./_base/EmbeddingUtils";
 import { EmbeddingsProvider } from "./_base/EmbeddingsProvider";
 import { Embedding } from "./_base/Embedding";
+import { channel } from "../../channel";
 
 const ort = require('onnxruntime-node');
 
@@ -12,6 +13,19 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 	env: any;
 	tokenizer: any;
 	session: InferenceSession | undefined;
+
+	// singleton
+	private static instance: LocalEmbeddingProvider;
+
+	private constructor() {
+	}
+
+	static getInstance(): LocalEmbeddingProvider {
+		if (!LocalEmbeddingProvider.instance) {
+			LocalEmbeddingProvider.instance = new LocalEmbeddingProvider();
+		}
+		return LocalEmbeddingProvider.instance;
+	}
 
 	async init(basepath: string = __dirname) {
 		const { env, AutoTokenizer } = await import('@xenova/transformers');
@@ -26,6 +40,8 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		this.session = await ort.InferenceSession.create(modelPath, {
 			executionProviders: ['cpu']
 		});
+
+		channel.appendLine("embedding provider initialized");
 	}
 
 	async embed(chunks: string[]): Promise<Embedding[]> {

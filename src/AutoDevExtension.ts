@@ -66,7 +66,7 @@ export class AutoDevExtension {
 		let dirs = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath);
 		if (dirs) {
 			channel.appendLine("start indexing dirs:" + dirs);
-			let localInference = new LocalEmbeddingProvider();
+			let localInference = LocalEmbeddingProvider.getInstance();
 			let fsPath = getExtensionUri().fsPath;
 			this.embeddingsProvider = localInference;
 			localInference.init(fsPath).then(() => {
