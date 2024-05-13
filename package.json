@@ -578,6 +578,7 @@
   },
   "scripts": {
     "preinstall": "npx only-allow npm",
+    "postinstall": "node pre-download-build.js",
     "watch": "vite build --watch --mode=development",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx",
