@@ -11,7 +11,8 @@ export class LlmProvider {
 	}
 
 	public static instance(): OpenAICompletion {
-		const llmConfig = SettingService.instance().llmConfig();
+		// TODO Support for multiple providers
+		const llmConfig = SettingService.instance().getCodeCompletionConfig();
 		if (!LlmProvider.instance_) {
 			LlmProvider.instance_ = new LlmProvider(llmConfig);
 		}

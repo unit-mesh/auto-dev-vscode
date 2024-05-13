@@ -16,7 +16,7 @@ export class OpenAICompletion {
 
 	constructor(llmConfig: LlmConfig) {
 		this.apiKey = llmConfig.apiKey;
-		this.apiBase = llmConfig.apiBase;
+		this.apiBase = llmConfig.baseURL;
 		this.apiType = "openai";
 		this.model = llmConfig.model;
 	}
