@@ -7,7 +7,7 @@ import { TSLanguageService } from "../../editor/language/service/TSLanguageServi
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { GradleBuildToolProvider } from "../../toolchain-context/buildtool/GradleBuildToolProvider";
 import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
-import { TestTemplateFinder } from "../TestTemplateFinder";
+import { TestTemplateManager } from "../TestTemplateManager";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
@@ -141,7 +141,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 
 		let prompt = this.baseTestPrompt + await this.determineJUnitVersion();
 
-		const testPrompt = new TestTemplateFinder();
+		const testPrompt = new TestTemplateManager();
 		let finalPrompt: ToolchainContextItem;
 
 		if (this.isController(fileName) && isSpringRelated) {

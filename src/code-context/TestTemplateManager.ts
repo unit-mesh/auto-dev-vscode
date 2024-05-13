@@ -2,11 +2,17 @@ import path from "path";
 import fs from "fs";
 import vscode, { WorkspaceFolder } from "vscode";
 
-export class TestTemplateFinder {
-	private workspace: WorkspaceFolder | undefined;
+export class TestTemplateManager {
+	private workspace: WorkspaceFolder | undefined = vscode.workspace.workspaceFolders?.[0];
 
-	constructor() {
-		this.workspace = vscode.workspace.workspaceFolders?.[0];
+	// singleton
+	private static instance: TestTemplateManager;
+
+	static getInstance(): TestTemplateManager {
+		if (!TestTemplateManager.instance) {
+			TestTemplateManager.instance = new TestTemplateManager();
+		}
+		return TestTemplateManager.instance;
 	}
 
 	/**
