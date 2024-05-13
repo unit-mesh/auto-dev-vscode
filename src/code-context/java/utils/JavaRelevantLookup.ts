@@ -26,9 +26,17 @@ export class JavaRelevantLookup {
 	relevantImportToFilePath(imports: string[]): string[] {
 		const relevantImports = this.refineImportTypes(imports);
 
-		return relevantImports.map(imp => {
+		let packages = relevantImports.map(imp => {
 			return this.pathByPackageName(imp);
 		});
+
+		return packages.filter(p => !this.isJavaFrameworks(p));
+	}
+
+	isJavaFrameworks(imp: string) {
+		let javaImport = imp.startsWith('java.') || imp.startsWith('javax.');
+		let isSpringImport = imp.startsWith('org.springframework');
+		return javaImport || isSpringImport;
 	}
 
 	private refineImportTypes(imports: string[]) {

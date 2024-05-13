@@ -44,13 +44,24 @@ export class JavaRelevantCodeProvider implements RelevantCodeProvider {
 				return undefined;
 			}
 
-			const document = await vscode.workspace.openTextDocument(uri);
-			return await structurer.parseFile(document.getText(), path);
+			try {
+				const document = await vscode.workspace.openTextDocument(uri);
+				return await structurer.parseFile(document.getText(), path);
+			} catch (e) {
+				console.info(`Failed to open file ${path}`);
+				return undefined;
+			}
 		}
 
 		let codeFiles: CodeFile[] = [];
 		for (const path of paths) {
-			const codeFile = await parseCodeFile(path);
+			let codeFile: CodeFile | undefined = undefined;
+			try {
+				codeFile = await parseCodeFile(path);
+			} catch (e) {
+				console.info(`Failed to parse file ${path}`);
+			}
+
 			if (codeFile !== undefined) {
 				codeFiles.push(codeFile);
 			}
