@@ -1,3 +1,90 @@
+# [0.2.0](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.1.2...v0.2.0) (2024-05-13)
+
+
+### Bug Fixes
+
+* **code-search:** handle null embeddingsProvider in LanceDbIndex [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([da03aa7](https://github.com/unit-mesh/auto-dev-vscode/commit/da03aa7e66b4f0e0ec0b673b43b050e1cef349c8))
+* fix typos ([d7613a6](https://github.com/unit-mesh/auto-dev-vscode/commit/d7613a6d1e1c2ee5203d8865059ed3a9fd6660d7))
+* fix version for ci ([0eaaea5](https://github.com/unit-mesh/auto-dev-vscode/commit/0eaaea563693a6373a8c0aa3136b7eab4c847708))
+
+
+### Features
+
+* **ast:** add fromParser method in TreeSitterFile class ([28945cc](https://github.com/unit-mesh/auto-dev-vscode/commit/28945ccc3029cc3df9c1b12ef3a61c477f6b7daf))
+* **AutoDevExtension:** add dynamic basepath for model loading [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([6430fbe](https://github.com/unit-mesh/auto-dev-vscode/commit/6430fbeda537f4107da976a3a3889ac9ead98a18))
+* **build:** add pre-download-build script for binaries ([0962b36](https://github.com/unit-mesh/auto-dev-vscode/commit/0962b3694855dc31696393327e13bab9d3e31a79))
+* **build:** add support for multiple platforms in pre-download-build.js [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([b886731](https://github.com/unit-mesh/auto-dev-vscode/commit/b886731cfa84bafd806d867b902a20f9e4079609))
+* **code-search:** add FullTextSearch class and update import statements [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([5f3378c](https://github.com/unit-mesh/auto-dev-vscode/commit/5f3378c7aac885e956db7cc1be6e54fb7271bc5a))
+* **code-search:** add Reranker interface [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([f53967f](https://github.com/unit-mesh/auto-dev-vscode/commit/f53967f4ec073fdfb99b051a65d9623e06189ffd))
+* **code-search:** add retrieve function to LanceDbIndex [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([8c11330](https://github.com/unit-mesh/auto-dev-vscode/commit/8c1133032b2d39c75433f6d949bb9e23626b8c39))
+* **code-search:** disable codebase indexing methods ([01dc92f](https://github.com/unit-mesh/auto-dev-vscode/commit/01dc92f92205fbf376bd1eba4668820986192210))
+* **code-search:** enhance indexing process and add global cache [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([6bec659](https://github.com/unit-mesh/auto-dev-vscode/commit/6bec6596a8c1c9ea3c791db09351c097b45925ab))
+* **code-search:** implement code snippets indexing and retrieval [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([2f64041](https://github.com/unit-mesh/auto-dev-vscode/commit/2f640413769f70a79ea40aea99959d83773937bc))
+* **code-search:** implement full-text search and retrieval functionality [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([6c81b4b](https://github.com/unit-mesh/auto-dev-vscode/commit/6c81b4bb550e5bd0eeda98b2b9eda4f24d98d700))
+* **code-search:** improve logging and specific package version installation [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([3cf4390](https://github.com/unit-mesh/auto-dev-vscode/commit/3cf4390a77f979a2f537910b99807493f8f3cc1f))
+* **codebase-indexer:** add support for LanceDbIndex and improve indexing [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([cd77bba](https://github.com/unit-mesh/auto-dev-vscode/commit/cd77bba64febabe9acda5ce948ad2295d79a334d))
+* **codemodel:** add StructureType enum and update structurers ([fe313ef](https://github.com/unit-mesh/auto-dev-vscode/commit/fe313ef9c80ea13bf6694955b99bb13944c92b00))
+* **commands:** use singleton for RelevantCodeProviderManager ([c03a5aa](https://github.com/unit-mesh/auto-dev-vscode/commit/c03a5aad10b6d5d18f9801500d23de181f78b8c4))
+* **database:** add SqliteDb class and integrate with AutoDevExtension [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([4b6bfcf](https://github.com/unit-mesh/auto-dev-vscode/commit/4b6bfcf68e77c427a03c02f62d8930c5ee8bde86))
+* **editor:** add language support to Markdown code block parsing ([d257485](https://github.com/unit-mesh/auto-dev-vscode/commit/d2574850d4e493d868c288842f57c10c680f8f65))
+* **editor:** add selectionToNode function and update language map [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([a5030f4](https://github.com/unit-mesh/auto-dev-vscode/commit/a5030f4997f3e7ef8e2959689da47357c76af4bb))
+* **editor:** implement indexing action in SystemActionService ([44c4577](https://github.com/unit-mesh/auto-dev-vscode/commit/44c4577b7d9d5ebc69464aaff4ffd5afbac8ef0c))
+* **embedding:** add tensorData function and update tensor handling [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([02105d4](https://github.com/unit-mesh/auto-dev-vscode/commit/02105d4e72e71611ab23e994e50b63a4892c4c43))
+* fix binary file path fails in bundler ([4760b90](https://github.com/unit-mesh/auto-dev-vscode/commit/4760b906226ac1228cd4fbee6dc47d6728df08b6))
+* **gitignore:** add vite config and changelog to ignore files ([5ab2db3](https://github.com/unit-mesh/auto-dev-vscode/commit/5ab2db3cf8cbab4f3d8c2db7a7e200c03155f4d5))
+* **indexing:** add detailed comments and logging for indexing process ([d675526](https://github.com/unit-mesh/auto-dev-vscode/commit/d6755261dfcbb2fdfd2b90894aae98abe91f528e))
+* **indexing:** add SQLite caching to LanceDbIndex [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([312d6ff](https://github.com/unit-mesh/auto-dev-vscode/commit/312d6ffed5e48eb14f3a9032f90660562adbe5f4))
+* **indexing:** add webpage crawling and article chunking ([0bd70ad](https://github.com/unit-mesh/auto-dev-vscode/commit/0bd70ad8f5e8fdade1a34e9721d3b7ac7ae87c35))
+* **indexing:** refactor codebase indexing process [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([5d54257](https://github.com/unit-mesh/auto-dev-vscode/commit/5d54257a862f20b8f67b5cfeb2639c138ca30c87))
+* **indexing:** refactor indexing process and improve code organization [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([a0bea09](https://github.com/unit-mesh/auto-dev-vscode/commit/a0bea09c748dcc948b3468e1a71a3a8b6ec2d9eb))
+* **javascript:** add support for more JS frameworks ([96107b9](https://github.com/unit-mesh/auto-dev-vscode/commit/96107b935fdbe1c0285d8924c2b3017b0424e82b))
+* **markdown:** add multiLineCodeBlock method in StreamingMarkdownCodeBlock ([065239b](https://github.com/unit-mesh/auto-dev-vscode/commit/065239b051028fe554bf01b30ab682f49169489f))
+* **markdown:** add StandardCodeBlock class and update StreamingMarkdownCodeBlock ([1cc6617](https://github.com/unit-mesh/auto-dev-vscode/commit/1cc6617f19fc16cbcdd306f3f2864cd31811c354))
+* **markdown:** improve code block parsing and filtering ([8df5411](https://github.com/unit-mesh/auto-dev-vscode/commit/8df541160f27d3294b17f4410f7497bdb7038eb8))
+* **structurer-provider:** add init method and refactor TypeScriptStructurer ([4ea9e07](https://github.com/unit-mesh/auto-dev-vscode/commit/4ea9e07ed99470cf751d02138bda45866373e036))
+* **test-gen:** add language context to Markdown code blocks ([a4c1034](https://github.com/unit-mesh/auto-dev-vscode/commit/a4c103499d55310922b0916c8009eb0935c685aa))
+* **typescript:** enable interface declarations and named functions ([14a19c2](https://github.com/unit-mesh/auto-dev-vscode/commit/14a19c2e7dd509b033d73e7dbc10fa8bc7bcefda))
+* **typescript:** enhance TypeScript structuring and add tests ([4ff2a98](https://github.com/unit-mesh/auto-dev-vscode/commit/4ff2a98aada2da07ac546f68ec10fa9e31e68885))
+* **vite.config:** add node polyfills and update dependencies [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([d12edfb](https://github.com/unit-mesh/auto-dev-vscode/commit/d12edfb03e91743d28d7b01cf638434b429f95ba))
+* **vite.config:** add vectordb to external dependencies ([2d97882](https://github.com/unit-mesh/auto-dev-vscode/commit/2d978825ffa4c1f1e009bd6104a38cf5b527fe14))
+* **vite.config:** update dependencies in externalizeDeps plugin ([6f74f22](https://github.com/unit-mesh/auto-dev-vscode/commit/6f74f226557b593e68e8c4c2bd848bd295103ece))
+
+
+
+## [0.1.2](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.1.1...v0.1.2) (2024-05-08)
+
+
+### Bug Fixes
+
+* fix gen icon lost items issues ([dd5fcef](https://github.com/unit-mesh/auto-dev-vscode/commit/dd5fcef75af30bcd9b9f42c88c3a4d14f498d879))
+
+
+### Features
+
+* **code-context:** add isTestFile method to LanguageProfile ([30e7413](https://github.com/unit-mesh/auto-dev-vscode/commit/30e74135e902081ffee8d38c6feea401f7987832))
+* **code-search:** add HydeSteps and update PromptManager methods ([672b9e3](https://github.com/unit-mesh/auto-dev-vscode/commit/672b9e33ad06581dd8aad4b9e99945a1ba05c469))
+* **code-search:** add HydeStrategy and HydeDocument classes [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([679aad4](https://github.com/unit-mesh/auto-dev-vscode/commit/679aad4aaf4f76fa4022c34741bd2e33ab484a3c))
+* **code-search:** refactor keyword parsing and add tests [#22](https://github.com/unit-mesh/auto-dev-vscode/issues/22) ([62bc2ee](https://github.com/unit-mesh/auto-dev-vscode/commit/62bc2eebe9370d56865ffa176ce19813cbc430f9))
+* **code-search:** remove java schema from structurer ([298acca](https://github.com/unit-mesh/auto-dev-vscode/commit/298acca35b182bf2d075cbd364a5960b677c56ba))
+* **commit-message:** add commit message generation functionality ([496603b](https://github.com/unit-mesh/auto-dev-vscode/commit/496603baeabf3b2a3b31ff9034761d56192366d2))
+* **diff-manager:** add git diff parsing functionality ([d4762a7](https://github.com/unit-mesh/auto-dev-vscode/commit/d4762a7a1cff770cf3c866609ff0534338ea98f2))
+* **editor:** add rename action registration ([5f24b12](https://github.com/unit-mesh/auto-dev-vscode/commit/5f24b121721f1500728c37b9acd5ad5b149a546d))
+* **editor:** add rename lookup and refactor prompt manager ([5b7dfdc](https://github.com/unit-mesh/auto-dev-vscode/commit/5b7dfdcaec15a9e08b69bf713066640fe9d1de9e))
+* **editor:** handle empty file case in AutoTestActionExecutor ([12ccedc](https://github.com/unit-mesh/auto-dev-vscode/commit/12ccedcc4daaffb6f8217d4c1abb47263e3b605f))
+* **editor:** improve rename lookup functionality ([ff0f95d](https://github.com/unit-mesh/auto-dev-vscode/commit/ff0f95d322a8b6d5454ff408eebe057dedcceab9))
+* **extension:** add dynamic configuration change support for rename action ([7b61275](https://github.com/unit-mesh/auto-dev-vscode/commit/7b61275b5281ec41a5bc41e8cbfede3da2b17391))
+* **git:** init Git types and commit message generator ([077b921](https://github.com/unit-mesh/auto-dev-vscode/commit/077b921c34948cfcdc0c4b49fc277b45d44e602a))
+* **scope-graph:** add language profile and symbol handling ([830dcf3](https://github.com/unit-mesh/auto-dev-vscode/commit/830dcf3058914922ec6c6fad72782784eece66b8))
+* **search-strategy:** add async instruction method and template context ([dea67a1](https://github.com/unit-mesh/auto-dev-vscode/commit/dea67a1ce6fcfb9091552f6ef139e1a3eb76d710))
+* **search-strategy:** add parseKeywords method and update comments ([4c3e3d6](https://github.com/unit-mesh/auto-dev-vscode/commit/4c3e3d675434e27304512e6a91b1f2d379dbcb9f))
+* **search-strategy:** convert synchronous methods to async and add chat support [#24](https://github.com/unit-mesh/auto-dev-vscode/issues/24) ([a6debfa](https://github.com/unit-mesh/auto-dev-vscode/commit/a6debfa710769c1ba8242ba38ec930fc9da04ddf))
+* **settings:** add enableRename setting in SettingService ([64c2ba4](https://github.com/unit-mesh/auto-dev-vscode/commit/64c2ba4c68f049434e8b6585b2050ae81a25dc75))
+* **settings:** enable rename suggestion in settings ([2c462ce](https://github.com/unit-mesh/auto-dev-vscode/commit/2c462cee2fa7cd98ac2a7a9d343ffbeca5006e73))
+* **settings:** update configuration retrieval in SettingService ([f8a6c16](https://github.com/unit-mesh/auto-dev-vscode/commit/f8a6c169c6da02dcc5793ed2974b6eac7be4b15c))
+* **typescript:** add support for export statement in TypeScriptProfile.ts ([a582274](https://github.com/unit-mesh/auto-dev-vscode/commit/a58227457f1d3f3d46ead484d6b17694d8a2a69b))
+
+
+
 ## [0.1.1](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.1.0...v0.1.1) (2024-05-07)
 
 
