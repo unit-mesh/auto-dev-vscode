@@ -120,6 +120,7 @@
           },
           "autodev.openai.apiKey": {
             "type": "string",
+            "description": "OpenAI API key.",
             "markdownDescription": "Our legacy keys. Provides access to all organizations and all projects that user has been added to; access [API Keys](https://platform.openai.com/account/api-keys) to view your available keys. We highly advise transitioning to project keys for best security practices, although access via this method is currently still supported.",
             "order": 3
           },
