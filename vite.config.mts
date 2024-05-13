@@ -18,6 +18,7 @@ export default defineConfig((api) => {
           'vscode',
           'onnxruntime-node',
           'vectordb',
+          'sqlite3',
           "web-tree-sitter"
         ],
         except: [
