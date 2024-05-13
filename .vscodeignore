@@ -35,7 +35,10 @@ dist/node_modules/@lancedb/vectordb-linux-arm64-gnu
 # !node_modules/file-uri-to-path
 # !node_modules/web-tree-sitter
 
-models/
+# switch models for release
+!models/
+dist/models
+
 vite.config.d.mts
 vite.config.mjs
 vite.config.mts
