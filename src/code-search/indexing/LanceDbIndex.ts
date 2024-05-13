@@ -46,7 +46,7 @@ interface LanceDbRow {
 
 export class LanceDbIndex implements CodebaseIndex {
 	get artifactId(): string {
-		return "vectordb::" + this.embeddingsProvider.id;
+		return "vectordb::" + this.embeddingsProvider?.id;
 	}
 
 	constructor(
@@ -259,12 +259,15 @@ export class LanceDbIndex implements CodebaseIndex {
 		if (!lancedb.connect) {
 			throw new Error("LanceDB failed to load a native module");
 		}
-		const [vector] = await this.embeddingsProvider.embed([query]);
+		const [vector] = await this.embeddingsProvider?.embed([query]) ?? [[]];
+		if (!vector) {
+			return [];
+		}
+
 		const db = await lancedb.connect(getLanceDbPath());
 
 		let allResults = [];
 		for (const tag of tags) {
-			console.log("Retrieving for tag", tag);
 			const results = await this._retrieveForTag(
 				{ ...tag, artifactId: this.artifactId },
 				n,
