@@ -15,14 +15,15 @@
  */
 import crypto from "crypto";
 import {
-  CodebaseIndex, IndexingProgressUpdate,
   IndexResultType,
-  IndexTag, LastModifiedMap,
+  IndexTag,
+  LastModifiedMap,
   MarkCompleteCallback,
   PathAndCacheKey,
   RefreshIndexResults
 } from "./indexing/_base/CodebaseIndex";
-import { DatabaseConnection, SqliteDb } from "./database/SqliteDb";
+import { SqliteDb } from "./database/SqliteDb";
+import { GlobalCacheCodeBaseIndex } from "./GlobalCacheCodeBaseIndex";
 
 export function tagToString(tag: IndexTag): string {
   return `${tag.directory}::${tag.branch}::${tag.artifactId}`;
@@ -291,59 +292,3 @@ export async function getComputeDeleteAddRemove(
   ];
 }
 
-export class GlobalCacheCodeBaseIndex implements CodebaseIndex {
-  private db: DatabaseConnection;
-
-  constructor(db: DatabaseConnection) {
-    this.db = db;
-  }
-  artifactId: string = "globalCache";
-
-  static async create(): Promise<GlobalCacheCodeBaseIndex> {
-    return new GlobalCacheCodeBaseIndex(await SqliteDb.get());
-  }
-
-  async *update(
-    tag: IndexTag,
-    results: RefreshIndexResults,
-    _: MarkCompleteCallback,
-    repoName: string | undefined,
-  ): AsyncGenerator<IndexingProgressUpdate> {
-    const add = [...results.compute, ...results.addTag];
-    const remove = [...results.del, ...results.removeTag];
-    await Promise.all([
-      ...add.map(({ cacheKey }) => {
-        return this.computeOrAddTag(cacheKey, tag);
-      }),
-      ...remove.map(({ cacheKey }) => {
-        return this.deleteOrRemoveTag(cacheKey, tag);
-      }),
-    ]);
-    yield { progress: 1, desc: "Done updating global cache" };
-  }
-
-  private async computeOrAddTag(
-    cacheKey: string,
-    tag: IndexTag,
-  ): Promise<void> {
-    await this.db.run(
-      "INSERT INTO global_cache (cacheKey, dir, branch, artifactId) VALUES (?, ?, ?, ?)",
-      cacheKey,
-      tag.directory,
-      tag.branch,
-      tag.artifactId,
-    );
-  }
-  private async deleteOrRemoveTag(
-    cacheKey: string,
-    tag: IndexTag,
-  ): Promise<void> {
-    await this.db.run(
-      "DELETE FROM global_cache WHERE cacheKey = ? AND dir = ? AND branch = ? AND artifactId = ?",
-      cacheKey,
-      tag.directory,
-      tag.branch,
-      tag.artifactId,
-    );
-  }
-}
