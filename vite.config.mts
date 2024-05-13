@@ -38,7 +38,7 @@ export default defineConfig((api) => {
             src: "src/code-search/schemas/**/*.scm",
             dest: "semantic",
           },
-          { 
+          {
             src: "node_modules/onnxruntime-node/bin",
             dest: "",
           },
@@ -66,21 +66,21 @@ export default defineConfig((api) => {
       }),
     ],
     build: {
-      minify: false,
-      sourcemap: true,
+      minify: !isDev,
+      sourcemap: isDev,
       copyPublicDir: false,
       lib: {
         entry: "src/extension.ts",
         formats: ["cjs"],
         fileName: "extension",
       },
-      // commonjsOptions: {
-      //   ignoreDynamicRequires: true,
-      //   dynamicRequireRoot: "/",
-      //   dynamicRequireTargets: [
-      //     './build/node_sqlite3.node'
-      //   ],
-      // }
+      commonjsOptions: {
+        ignoreDynamicRequires: true,
+        dynamicRequireRoot: "/",
+        dynamicRequireTargets: [
+          './bin/napi-v3/**/onnxruntime_binding.node'
+        ],
+      }
     },
     test: {
       include: ["src/test/**/*.test.ts"],

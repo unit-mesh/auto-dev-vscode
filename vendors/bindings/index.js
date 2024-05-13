@@ -185,6 +185,11 @@ export function getRoot(file) {
 }
 
 function pathStrip(source) {
+  if (source === 'node_sqlite3.node')  {
+    // platform-arch for example win32-x64
+    const target = `${process.platform}-${process.arch}`;
+    return path.join(target, source);
+  }
   const index = source.lastIndexOf("./") + 1;
   return index ? source.substring(index + 1) : source;
 }
