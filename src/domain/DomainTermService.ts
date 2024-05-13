@@ -39,7 +39,7 @@ export class DomainTermService implements Service {
 			}
 		});
 
-		parser.on('error', function (err) {
+		parser.on('error', function (err: any) {
 			console.info(err.message);
 		});
 

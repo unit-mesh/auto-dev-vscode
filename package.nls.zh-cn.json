@@ -4,5 +4,13 @@
   "autodev.command.quickChat": "AutoDev 快速聊天",
   "autodev.command.explain": "解释此代码",
   "autodev.command.fixThis": "修复此代码",
-  "AutoTest": "生成测试"
+  "AutoTest": "生成测试",
+  "configuration.openai.title": "OpenAI",
+  "configuration.anthropic.title": "Anthropic",
+  "configuration.wenxin.title": "文心千帆",
+  "configuration.tongyi.title": "通义千问",
+  "configuration.completion.title": "代码补全",
+  "configuration.chat.title": "对话",
+  "configuration.prompts.title": "AI 提示",
+  "configuration.legacy.title": "即将废弃"
 }

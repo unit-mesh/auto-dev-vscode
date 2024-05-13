@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
-import { getExtensionUri } from "../../context";
-import { callAI, getChatModelList } from "./LLMTools";
+import { getExtensionContext, getExtensionUri } from "../../context";
+import { callAI, getChatModelList } from "../../llm-provider/LLMTools";
 import { channel } from "../../channel";
 import { uuid } from "./uuid";
 
@@ -27,8 +27,8 @@ export class AutoDevWebviewProtocol {
   on<T extends keyof WebviewProtocol>(
     messageType: T,
     handler: (
-      message: Message<WebviewProtocol[T][0]>,
-    ) => Promise<WebviewProtocol[T][1]> | WebviewProtocol[T][1],
+      message: Message<WebviewProtocol[T][0]>
+    ) => Promise<WebviewProtocol[T][1]> | WebviewProtocol[T][1]
   ): void {
     if (!this.listeners.has(messageType)) {
       this.listeners.set(messageType, []);
@@ -72,7 +72,7 @@ export class AutoDevWebviewProtocol {
         } catch (e: any) {
           console.error(
             "Error handling webview message: " +
-            JSON.stringify({ msg }, null, 2),
+              JSON.stringify({ msg }, null, 2)
           );
 
           let message = e.message;
@@ -91,11 +91,11 @@ export class AutoDevWebviewProtocol {
             .then((selection) => {
               if (selection === "Show Logs") {
                 vscode.commands.executeCommand(
-                  "workbench.action.toggleDevTools",
+                  "workbench.action.toggleDevTools"
                 );
               } else if (selection === "Troubleshooting") {
                 vscode.env.openExternal(
-                  vscode.Uri.parse("https://continue.dev/docs/troubleshooting"),
+                  vscode.Uri.parse("https://continue.dev/docs/troubleshooting")
                 );
               }
             });
@@ -128,6 +128,9 @@ export class AutoDevWebviewProtocol {
         case "getOpenFiles":
           let files = this.getOpenFiles();
           this.send("getOpenFiles", files, messageId);
+          break;
+        case "openConfigJson":
+          this.openSettings();
           break;
         case "onLoad":
           this.onLoad({
@@ -182,9 +185,16 @@ export class AutoDevWebviewProtocol {
       });
   }
 
+  openSettings() {
+    const context = getExtensionContext();
+    vscode.commands.executeCommand("workbench.action.openSettings", {
+      query: "@ext:" + context.extension.id,
+    });
+  }
+
   // See continue BrowserSerializedContinueConfig
   getBrowserSerialized({ reply, type }: WebviewEvent) {
-    reply(type,{
+    reply(type, {
       models: getChatModelList(),
       // contextProviders: [],
       // disableIndexing: false,
@@ -247,7 +257,7 @@ export class AutoDevWebviewProtocol {
             resolve(msg.data);
             disposable?.dispose();
           }
-        },
+        }
       );
     });
   }

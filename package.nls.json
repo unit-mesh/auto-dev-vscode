@@ -4,5 +4,13 @@
   "autodev.command.quickChat": "AutoDev Quick Chat",
   "autodev.command.explain": "Explain This",
   "autodev.command.fixThis": "AutoDev Fix this",
-  "AutoTest": "Generate Test"
+  "AutoTest": "Generate Test",
+  "configuration.openai.title": "OpenAI",
+  "configuration.anthropic.title": "Anthropic",
+  "configuration.qianfan.title": "Baidu QianFan",
+  "configuration.tongyi.title": "Ali TongYi",
+  "configuration.completion.title": "Code Completion",
+  "configuration.chat.title": "Chat",
+  "configuration.prompts.title": "AI Prompts",
+  "configuration.legacy.title": "Deprecated"
 }
