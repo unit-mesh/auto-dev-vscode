@@ -6,7 +6,14 @@ import { EmbeddingsProvider } from "./_base/EmbeddingsProvider";
 import { Embedding } from "./_base/Embedding";
 import { channel } from "../../channel";
 
-const ort = require('onnxruntime-node');
+// @ts-expect-error
+const ortPromise = import('onnxruntime-node')
+
+const InferenceSessionCreate = (...args: any[]) => {
+	return ortPromise.then(ort => {
+		return ort.InferenceSession.create(...args)
+	})
+} 
 
 export class LocalEmbeddingProvider implements EmbeddingsProvider {
 	id: string = "local";
@@ -37,7 +44,7 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 			local_files_only: true,
 		});
 
-		this.session = await ort.InferenceSession.create(modelPath, {
+		this.session = await InferenceSessionCreate(modelPath, {
 			executionProviders: ['cpu']
 		});
 

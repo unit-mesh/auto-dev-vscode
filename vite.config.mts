@@ -1,29 +1,27 @@
 /// <reference types="vitest" />
+import path from "node:path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { externalizeDeps } from "vite-plugin-externalize-deps";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig((api) => {
   const isDev = api.mode === "development";
 
   return {
+    resolve: {
+      alias: {
+        // hack bindings of sqlite3
+        bindings: path.join(__dirname, "vendors/bindings/index.js"),
+        // hack onnxruntime-node
+        'onnxruntime-node': path.join(__dirname, "vendors/onnxruntime-node/index.cjs")
+      },
+    },
     plugins: [
-      nodePolyfills({ include: ['crypto'] }),
       externalizeDeps({
         deps: false,
-        include: [
-          'vscode',
-          'onnxruntime-node',
-          'vectordb',
-          'sqlite3',
-          "web-tree-sitter"
-        ],
-        except: [
-          "onnxruntime-web"
-        ]
+        include: ["vscode"],
       }),
       isDev && dts(),
       viteStaticCopy({
@@ -40,7 +38,7 @@ export default defineConfig((api) => {
             src: "src/code-search/schemas/**/*.scm",
             dest: "semantic",
           },
-          {
+          { 
             src: "node_modules/onnxruntime-node/bin",
             dest: "",
           },
@@ -89,7 +87,7 @@ export default defineConfig((api) => {
       globals: true,
       coverage: {
         // you can include other reporters, but 'json-summary' is required, json is recommended
-        reporter: ['text', 'json-summary', 'json'],
+        reporter: ["text", "json-summary", "json"],
         // If you want a coverage reports even if your tests are failing, include the reportOnFailure option
         reportOnFailure: true,
         // thresholds: {
@@ -99,6 +97,6 @@ export default defineConfig((api) => {
         //   statements: 10
         // }
       },
-    }
+    },
   };
 });
