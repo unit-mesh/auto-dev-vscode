@@ -1,10 +1,11 @@
 import vscode from "vscode";
 
-import { TreeSitterFile } from "../../ast/TreeSitterFile";
-import { PositionUtil } from "../../../editor/ast/PositionUtil";
-import { textToTreeSitterFile } from "../../ast/TreeSitterWrapper";
+import { TreeSitterFile } from "../ast/TreeSitterFile";
+import { PositionUtil } from "../../editor/ast/PositionUtil";
+import { textToTreeSitterFile } from "../ast/TreeSitterWrapper";
+import { CodeCorrector } from "../_base/CodeCorrector";
 
-export class JavaCodeCorrector {
+export class JavaCodeCorrector implements CodeCorrector {
 	private document: vscode.TextDocument;
 	private sourcecode: string;
 	private packageName: string;

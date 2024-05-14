@@ -12,7 +12,7 @@ import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TreeSitterFile } from "../ast/TreeSitterFile";
-import { JavaCodeCorrector } from "./utils/JavaCodeCorrector";
+import { JavaCodeCorrector } from "./JavaCodeCorrector";
 import { JavaStructurerProvider } from "./JavaStructurerProvider";
 import { CommentedUmlPresenter } from "../../editor/codemodel/presenter/CommentedUmlPresenter";
 import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
