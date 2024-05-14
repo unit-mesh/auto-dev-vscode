@@ -7,7 +7,7 @@ import { TSLanguageService } from "../../editor/language/service/TSLanguageServi
 import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
 import { GradleBuildToolProvider } from "../../toolchain-context/buildtool/GradleBuildToolProvider";
 import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
-import { TestTemplateManager } from "../TestTemplateManager";
+import { TestTemplateManager } from "../_lookup/TestTemplateManager";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
@@ -112,7 +112,13 @@ export class JavaTestGenProvider implements TestGenProvider {
 	 * after test file is created, try to fix the code, like packageName and className, etc.
 	 */
 	async postProcessCodeFix(document: vscode.TextDocument, output: string): Promise<void> {
-		let codeFixer = new JavaCodeCorrector(document, output, this.packageName, this.context!!.targetTestClassName!!);
+		let codeFixer = new JavaCodeCorrector({
+			document: document,
+			sourcecode: output,
+			packageName: this.packageName,
+			targetClassName: this.context!!.targetTestClassName!!,
+		});
+
 		await codeFixer.correct();
 	}
 

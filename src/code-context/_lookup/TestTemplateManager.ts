@@ -15,6 +15,23 @@ export class TestTemplateManager {
 		return TestTemplateManager.instance;
 	}
 
+	lookupByRegex(fileName: string): string | null {
+		let promptsDir = path.join(this.workspace?.uri.fsPath || "", "prompts");
+		if (!fs.existsSync(promptsDir)) {return null;}
+
+		let templateFile = path.join(promptsDir, "templates");
+		if (!fs.existsSync(templateFile)) {return null;}
+
+		const files = fs.readdirSync(templateFile);
+		const matchedFile = files.find(file => new RegExp(file).test(fileName));
+		if (matchedFile) {
+			const matchedFilePath = path.join(templateFile, matchedFile);
+			return fs.readFileSync(matchedFilePath, { encoding: 'utf-8' });
+		}
+
+		return null;
+	}
+
 	/**
 	 * Looks up a template file by its name and returns its content as a string.
 	 *

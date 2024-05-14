@@ -1,3 +1,12 @@
+import vscode from "vscode";
+
+export interface CorrectorContext {
+	document: vscode.TextDocument;
+	sourcecode: string;
+	packageName: string;
+	targetClassName: string;
+}
+
 export interface CodeCorrector {
 	/**
 	 * Corrects the generate AI code.
