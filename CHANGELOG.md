@@ -1,3 +1,33 @@
+## [0.2.2](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.2.1...v0.2.2) (2024-05-14)
+
+
+### Bug Fixes
+
+* **retrieval:** refactor retrieveContextItems function [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([ae6b941](https://github.com/unit-mesh/auto-dev-vscode/commit/ae6b9417dc4baaf71e25bcb6e7c03ddfbb76c76f))
+
+
+### Features
+
+* **agent:** add Catalyser class for semantic code search [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([50c5f53](https://github.com/unit-mesh/auto-dev-vscode/commit/50c5f535987139df06eb185ed601a9abdc42fb41))
+* **agent:** refactor custom agent classes into separate files ([9e5c80f](https://github.com/unit-mesh/auto-dev-vscode/commit/9e5c80f6b4aaeac08dc91fa5f3d8e3f374797d03))
+* **code-context:** refactor CodeCorrector and TestTemplateManager ([2be8140](https://github.com/unit-mesh/auto-dev-vscode/commit/2be81403e697d509d1afef48ef2afa8e7abfbd7f))
+* **code-context:** refactor relatedClassesContext method ([b21b85e](https://github.com/unit-mesh/auto-dev-vscode/commit/b21b85e4b4dfe2578dcebe2eecb294d1950a6a4c))
+* **extension:** add user input request to sidebar webview [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([0c04ce8](https://github.com/unit-mesh/auto-dev-vscode/commit/0c04ce83469cba16e42506e222fbb33b8933bc2c))
+* **prompt:** add evaluation step to prompt processing [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([b440e3f](https://github.com/unit-mesh/auto-dev-vscode/commit/b440e3f09d152c17dbd4e2d53a78ae7c6c257504))
+* Remove unused file ([979b293](https://github.com/unit-mesh/auto-dev-vscode/commit/979b29306c77abb4e51549782c192e645c60709e))
+
+
+
+## [0.2.1](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.2.0...v0.2.1) (2024-05-13)
+
+
+### Features
+
+* **java-utils:** filter out Java and Spring framework imports and handle file parsing errors ([11bd4e9](https://github.com/unit-mesh/auto-dev-vscode/commit/11bd4e9779340451202009546e6a7e2ecd003810))
+* **java:** add file existence check before parsing ([d530ad6](https://github.com/unit-mesh/auto-dev-vscode/commit/d530ad67df0270294f8fea4411d1d5b448506f3c))
+
+
+
 # [0.2.0](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.1.2...v0.2.0) (2024-05-13)
 
 
