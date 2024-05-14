@@ -27,3 +27,5 @@ Where is calculating the average of a list of numbers?
 
 ```user```
 User: ${context.question}
+
+Response:

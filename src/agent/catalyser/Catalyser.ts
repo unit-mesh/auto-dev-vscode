@@ -49,19 +49,23 @@ export class Catalyser {
 		// todo: add remote semantic search
 		step = HydeStep.Search;
 		let result: ContextItem[] = await retrieveContextItems(queryTerm, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined);
+
+		console.log("Search results:");
 		result.forEach((item: ContextItem) => {
-			channel.appendLine(JSON.stringify(item));
+			console.log(item);
 		});
 
+		console.log(`${step}:`);
 		step = HydeStep.Evaluate;
 		let evaluateContext: KeywordEvaluateContext = {
 			step,
 			question: query,
-			code: JSON.stringify(result),
+			code: result.map(item => item.description).join("\n"),
 			language: ""
 		};
 
 		let evaluateIns = await instance.renderHydeTemplate(step, HydeDocumentType.Keywords, evaluateContext);
+
 		console.log(evaluateIns);
 		let evaluateOutput = await this.executeIns(evaluateIns);
 
