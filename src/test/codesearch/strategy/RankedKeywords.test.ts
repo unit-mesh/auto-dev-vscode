@@ -1,20 +1,23 @@
-import { RankedKeywords } from "../../../code-search/search-strategy/utils/RankedKeywords";
+import { QuestionKeywords } from "../../../code-search/search-strategy/utils/QuestionKeywords";
 
 describe('HydeKeywordsStrategy', () => {
 	it('should parse keywords correctly', () => {
 		const content = `
+Where is calculating the average of a list of numbers?
+
 - calculate average, average, average calculation
 - calculate, average
 - jisuan, pingjunshu, pingjun
 `;
 
-		const expected: RankedKeywords = {
+		const expected: QuestionKeywords = {
+			question: "Where is calculating the average of a list of numbers?",
 			basic: ["calculate average", "average", "average calculation"],
 			single: ["calculate", "average"],
 			localization: ["jisuan", "pingjunshu", "pingjun"]
 		};
 
-		const result = RankedKeywords.from(content);
+		const result = QuestionKeywords.from(content);
 		expect(result).to.deep.equal(expected);
 	});
 });

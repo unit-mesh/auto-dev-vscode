@@ -8,7 +8,7 @@ import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
-import { RankedKeywords } from "../../code-search/search-strategy/utils/RankedKeywords";
+import { QuestionKeywords } from "../../code-search/search-strategy/utils/QuestionKeywords";
 
 export class Catalyser {
 	private static instance: Catalyser;
@@ -46,7 +46,7 @@ export class Catalyser {
 			input: query,
 		});
 
-		let keywords = RankedKeywords.from(proposeOutput);
+		let keywords = QuestionKeywords.from(proposeOutput);
 		let queryTerm = keywords.basic.join(" ");
 
 		// todo: add remote semantic search
@@ -62,7 +62,7 @@ export class Catalyser {
 		step = HydeStep.Evaluate;
 		let evaluateContext: KeywordEvaluateContext = {
 			step,
-			question: query,
+			question: keywords.question,
 			code: result.map(item => item.content).join("\n"),
 			language: ""
 		};

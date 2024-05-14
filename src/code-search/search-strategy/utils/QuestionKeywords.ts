@@ -1,9 +1,11 @@
-export class RankedKeywords {
+export class QuestionKeywords {
+	question: string = '';
 	basic: string[] = [];
 	single: string[] = [];
 	localization: string[] = [];
 
-	constructor(basic: string[], single: string[], localization: string[]) {
+	constructor(question: string, basic: string[], single: string[], localization: string[]) {
+		this.question = question;
 		this.basic = basic;
 		this.single = single;
 		this.localization = localization;
@@ -16,7 +18,7 @@ export class RankedKeywords {
 	 * - calculate, average
 	 * - jisuan, pingjunshu, pingjun
 	 * "
-	 * output will be: {@link RankedKeywords}
+	 * output will be: {@link QuestionKeywords}
 	 * ```
 	 * {
 	 *   "basic": ["calculate average", "average", "average calculation"],
@@ -25,7 +27,16 @@ export class RankedKeywords {
 	 * }
 	 * ```
 	 */
-	static from(content: string): RankedKeywords {
+	static from(content: string): QuestionKeywords {
+		// first line is the question
+		let question = '';
+		// get first line without leading and trailing whitespaces, and not starting with '-'
+		const questionRegex = /^([^-\n].*)$/gm;
+		let questionMatch;
+		if ((questionMatch = questionRegex.exec(content)) !== null) {
+			question = questionMatch[1];
+		}
+
 		const regex = /-\s*([^,\n]+(?:,[^,\n]+)*)/g;
 		let match;
 
@@ -51,6 +62,6 @@ export class RankedKeywords {
 			i++;
 		}
 
-		return new RankedKeywords(basic, single, localization);
+		return new QuestionKeywords(question, basic, single, localization);
 	}
 }

@@ -7,7 +7,7 @@ import { HydeStep } from "./_base/HydeStep";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
 import { ChatMessage } from "../../llm-provider/ChatMessage";
-import { RankedKeywords } from "./utils/RankedKeywords";
+import { QuestionKeywords } from "./utils/QuestionKeywords";
 
 
 export interface KeywordTemplateContext extends TemplateContext {
@@ -23,7 +23,7 @@ export interface KeywordTemplateContext extends TemplateContext {
  * - Medium: Recently Documents
  * - Low: All Documents
  */
-export class HydeKeywordsStrategy implements HydeStrategy<RankedKeywords> {
+export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	documentType = HydeDocumentType.Keywords;
 	private promptManager = PromptManager.getInstance();
 	message: ChatMessage[] = [];
@@ -42,9 +42,9 @@ export class HydeKeywordsStrategy implements HydeStrategy<RankedKeywords> {
 		return content;
 	}
 
-	async generateDocument(): Promise<HydeDocument<RankedKeywords>> {
+	async generateDocument(): Promise<HydeDocument<QuestionKeywords>> {
 		let output = await LlmProvider.instance().chat(this.message);
-		let keywords = RankedKeywords.from(output);
+		let keywords = QuestionKeywords.from(output);
 		return Promise.resolve(new HydeDocument(HydeDocumentType.Code, keywords));
 	}
 
@@ -53,7 +53,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<RankedKeywords> {
 		return [];
 	}
 
-	async clusterChunks(docs: HydeDocument<RankedKeywords>[]): Promise<ChunkItem[]> {
+	async clusterChunks(docs: HydeDocument<QuestionKeywords>[]): Promise<ChunkItem[]> {
 		return [];
 	}
 }
