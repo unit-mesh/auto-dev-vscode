@@ -47,7 +47,7 @@ export class Catalyser {
 		});
 
 		let keywords = QuestionKeywords.from(proposeOutput);
-		let queryTerm = keywords.basic.join(" ");
+		let queryTerm = keywords.basic?.[0] + " " + keywords.single?.[0] + " " + keywords.localization?.[0];
 
 		// todo: add remote semantic search
 		step = HydeStep.Search;
@@ -71,6 +71,7 @@ export class Catalyser {
 
 		console.log(evaluateIns);
 		let evaluateOutput = await this.executeIns(evaluateIns);
+		channel.appendLine("")
 		channel.appendLine("Summary: ");
 		channel.append(evaluateOutput);
 

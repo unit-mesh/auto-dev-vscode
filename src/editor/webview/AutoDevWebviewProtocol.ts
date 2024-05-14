@@ -114,7 +114,7 @@ export class AutoDevWebviewProtocol {
         return;
       }
 
-      channel.appendLine(`Received message: ${messageType}`);
+      // channel.appendLine(`Received message: ${messageType}`);
 
       const reply = (messageType: string, data: unknown) => {
         this._webview.postMessage({
@@ -232,7 +232,7 @@ export class AutoDevWebviewProtocol {
   }
 
   private send(messageType: string, data: any, messageId?: string): string {
-    channel.appendLine(`Sending message: ${messageType}`);
+    // channel.appendLine(`Sending message: ${messageType}`);
     const id = messageId ?? uuid();
     this._webview?.postMessage({
       messageType,
