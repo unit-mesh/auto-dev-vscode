@@ -42,6 +42,9 @@ export class Catalyser {
 		let proposeOutput = await this.executeIns(proposeIns);
 
 		console.log(proposeIns);
+		this.extension.sidebar.webviewProtocol?.request("userInput", {
+			input: query,
+		});
 
 		let keywords = RankedKeywords.from(proposeOutput);
 		let queryTerm = keywords.basic.join(" ");
@@ -60,7 +63,7 @@ export class Catalyser {
 		let evaluateContext: KeywordEvaluateContext = {
 			step,
 			question: query,
-			code: result.map(item => item.description).join("\n"),
+			code: result.map(item => item.content).join("\n"),
 			language: ""
 		};
 
@@ -68,10 +71,13 @@ export class Catalyser {
 
 		console.log(evaluateIns);
 		let evaluateOutput = await this.executeIns(evaluateIns);
-
+		channel.appendLine("Summary: ");
 		channel.append(evaluateOutput);
-	}
 
+		this.extension.sidebar?.webviewProtocol?.request("userInput", {
+			input: evaluateOutput,
+		});
+	}
 
 	async executeIns(instruction: string): Promise<string> {
 		let result = "";
