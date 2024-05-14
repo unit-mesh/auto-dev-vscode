@@ -1,4 +1,4 @@
-import { ContextItem, retrieveContextItemsFromEmbeddings } from "../../code-search/retrieval/DefaultRetrieval";
+import { ContextItem, retrieveContextItems } from "../../code-search/retrieval/DefaultRetrieval";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { channel } from "../../channel";
 
@@ -22,10 +22,9 @@ export class Catalyser {
 
 	async query(query: string): Promise<void> {
 		channel.append("Semantic search for code: " + query + "\n");
-		let result = await retrieveContextItemsFromEmbeddings(query, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined);
+		let result: ContextItem[] = await retrieveContextItems(query, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined);
 		result.forEach((item: ContextItem) => {
 			channel.appendLine(JSON.stringify(item));
 		});
 	}
-
 }

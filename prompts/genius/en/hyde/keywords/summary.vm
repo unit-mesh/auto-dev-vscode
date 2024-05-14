@@ -1,0 +1,15 @@
+```system```
+Use the above code to answer the following question. You should not reference any files outside of what is shown,
+unless they are commonly known files, like a .gitignore or package.json. Reference the filenames whenever possible.
+If there isn't enough information to answer the question, suggest where the user might look to learn more.
+
+```user```
+User's Question: What is the output of the code?
+
+code:
+
+```{context.language}
+{context.code}
+```
+
+User's Question: What is the output of the code?
