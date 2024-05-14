@@ -33,19 +33,39 @@ export class Catalyser {
 		// query propose.vm
 		let step = HydeStep.Propose;
 		let instance = PromptManager.getInstance();
-		let proposeContext: KeywordsProposeContext =  {
+		let proposeContext: KeywordsProposeContext = {
+			step,
 			question: query,
 			language: ""
 		};
 		let proposeIns = await instance.renderHydeTemplate(step, HydeDocumentType.Keywords, proposeContext);
 		let proposeOutput = await this.executeIns(proposeIns);
 
-		let keywords = RankedKeywords.from(proposeOutput);
+		console.log(proposeIns);
 
-		let result: ContextItem[] = await retrieveContextItems(query, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined);
+		let keywords = RankedKeywords.from(proposeOutput);
+		let queryTerm = keywords.basic.join(" ");
+
+		// todo: add remote semantic search
+		step = HydeStep.Search;
+		let result: ContextItem[] = await retrieveContextItems(queryTerm, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined);
 		result.forEach((item: ContextItem) => {
 			channel.appendLine(JSON.stringify(item));
 		});
+
+		step = HydeStep.Evaluate;
+		let evaluateContext: KeywordEvaluateContext = {
+			step,
+			question: query,
+			code: JSON.stringify(result),
+			language: ""
+		};
+
+		let evaluateIns = await instance.renderHydeTemplate(step, HydeDocumentType.Keywords, evaluateContext);
+		console.log(evaluateIns);
+		let evaluateOutput = await this.executeIns(evaluateIns);
+
+		channel.append(evaluateOutput);
 	}
 
 
@@ -72,5 +92,12 @@ export class Catalyser {
 }
 
 export interface KeywordsProposeContext extends TemplateContext {
+	step: HydeStep,
 	question: string,
+}
+
+export interface KeywordEvaluateContext extends TemplateContext {
+	step: HydeStep,
+	question: string,
+	code: string,
 }

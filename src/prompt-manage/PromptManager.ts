@@ -86,7 +86,7 @@ export class PromptManager {
 		// }
 		let humanLanguage = "en";
 
-		template = await templateRender.getTemplate(`prompts/${humanLanguage}/hyde/${hydeType}/${step}.vm`);
+		template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/hyde/${hydeType}/${step}.vm`);
 
 		if (!template) {
 			throw new Error(`No template found for hyde step ${step} and hyde type ${hydeType}`);
