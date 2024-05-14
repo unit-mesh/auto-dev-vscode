@@ -129,15 +129,7 @@ export class ScopeDebug {
 			.inEdges(start)
 			.filter(edge => graph.getEdgeAttributes(edge) instanceof ImportToScope)
 			.map(edge => {
-				const impNode = graph.source(edge);
-				const range = graph.getNodeAttributes(impNode).range;
-				const text = src.slice(range.start.byte, range.end.byte);
-
-				const refs = graph
-					.inEdges(impNode)
-					.filter(edge => graph.getEdgeAttributes(edge) instanceof RefToImport)
-					.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
-					.sort();
+				const { range, text, refs } = fetchNodeElements(graph, edge, src);
 
 				return new ImportDebug(text, range, refs, src);
 			});
@@ -166,6 +158,21 @@ export class ScopeDebug {
 		});
 	}
 }
+
+function fetchNodeElements(graph: Graph<NodeKind>, edge: string, src: string) {
+	const impNode = graph.source(edge);
+	const range = graph.getNodeAttributes(impNode).range;
+	const text = src.slice(range.start.byte, range.end.byte);
+
+	const refs = graph
+		.inEdges(impNode)
+		.filter(edge => graph.getEdgeAttributes(edge) instanceof RefToImport)
+		.map(edge => graph.getNodeAttributes(graph.source(edge)).range)
+		.sort();
+
+	return { range, text, refs };
+}
+
 
 function contextFromRange(range: TextRange, src: string): string {
 	const contextStart = (() => {
