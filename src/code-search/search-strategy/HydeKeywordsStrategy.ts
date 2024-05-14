@@ -37,7 +37,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<RankedKeywords> {
 			userInput: userInput
 		};
 
-		let content = await this.promptManager.getHydeTemplate(HydeStep.Propose, this.documentType, context);
+		let content = await this.promptManager.renderHydeTemplate(HydeStep.Propose, this.documentType, context);
 		this.message = CustomActionPrompt.parseChatMessage(content);
 		return content;
 	}

@@ -8,8 +8,8 @@ User's Question: What is the output of the code?
 
 code:
 
-```{context.language}
-{context.code}
+```${context.language}
+${context.code}
 ```
 
 User's Question: What is the output of the code?

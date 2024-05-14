@@ -75,7 +75,7 @@ export class PromptManager {
 	 *     .catch(error => console.error(error));
 	 * ```
 	 */
-	async getHydeTemplate(step: HydeStep, hydeType: HydeDocumentType, context: TemplateContext): Promise<string> {
+	async renderHydeTemplate(step: HydeStep, hydeType: HydeDocumentType, context: TemplateContext): Promise<string> {
 		let templateRender = new TemplateRender(this.templateLoader);
 		let template: string | undefined;
 
