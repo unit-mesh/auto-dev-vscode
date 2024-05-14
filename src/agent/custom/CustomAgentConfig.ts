@@ -1,59 +1,9 @@
 import { InteractionType } from "../../prompt-manage/InteractionType";
 import { CustomAgentResponseAction } from "./CustomAgentResponseAction";
-
-export class CustomFlowTransition {
-	/**
-	 * will be JsonPath
-	 */
-	source: string;
-	/**
-	 * will be JsonPath too
-	 */
-	target: string;
-
-	constructor(source: string, target: string) {
-		this.source = source;
-		this.target = target;
-	}
-}
-
-export class ConnectorConfig {
-	/**
-	 * will be Json Config
-	 */
-	requestFormat: string;
-	/**
-	 * will be JsonPath
-	 */
-	responseFormat: string;
-
-	constructor(requestFormat: string = "", responseFormat: string = "") {
-		this.requestFormat = requestFormat;
-		this.responseFormat = responseFormat;
-	}
-}
-
-
-export enum CustomAgentState {
-	START = 'START',
-	HANDLING = 'HANDLING',
-	FINISHED = 'FINISHED'
-}
-
-export class CustomAgentAuth {
-	type: AuthType;
-	token: string;
-
-	constructor(type: AuthType = AuthType.Bearer, token: string = '') {
-		this.type = type;
-		this.token = token;
-	}
-}
-
-export enum AuthType {
-	Bearer = 'Bearer'
-}
-
+import { CustomFlowTransition } from "./CustomFlowTransition";
+import { ConnectorConfig } from "./ConnectorConfig";
+import { CustomAgentAuth } from "./CustomAgentAuth";
+import { CustomAgentState } from "./CustomAgentState";
 
 export class CustomAgentConfig {
 	name: string;
