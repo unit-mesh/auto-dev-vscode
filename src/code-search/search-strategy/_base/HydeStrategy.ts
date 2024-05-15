@@ -26,11 +26,13 @@ export type HydeQuery = string | RegExp | Embedding;
  * Also can refer to the Unit Mesh SDK documentation: https://framework.unitmesh.cc/patterns/hyde.html
  */
 export interface HydeStrategy<T> {
+	query: string;
+
 	documentType: HydeDocumentType;
 	/**
 	 * the Instruction prompt for executing by LLM;
 	 */
-	instruction: (userInput: string) => Promise<string>;
+	instruction: () => Promise<string>;
 
 	/**
 	 * Generate Hyde doc can be Code, Keyword[], or any text,
@@ -53,6 +55,6 @@ export interface HydeStrategy<T> {
 	 * @param docs - The documents to be used for retrieval
 	 * @returns The most relevant code snippets
 	 */
-	clusterChunks: (docs: HydeDocument<T>[]) => Promise<ChunkItem[]>;
+	clusterChunks: (docs: ChunkItem[]) => Promise<ChunkItem[]>;
 }
 
