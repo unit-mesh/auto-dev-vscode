@@ -37,14 +37,13 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	async instruction(): Promise<string> {
-		let step = HydeStep.Propose;
 		let proposeContext: KeywordsProposeContext = {
-			step,
+			step: this.step,
 			question: this.query,
 			language: ""
 		};
 
-		return await PromptManager.getInstance().renderHydeTemplate(step, HydeDocumentType.Keywords, proposeContext);
+		return await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, proposeContext);
 	}
 
 	async generateDocument(): Promise<HydeDocument<QuestionKeywords>> {
@@ -56,7 +55,6 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
-		this.step = HydeStep.Retrieve;
 		let result: ContextItem[] = await retrieveContextItems(queryTerm as string, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined);
 
 		let chunks: ChunkItem[] = [];
@@ -77,22 +75,22 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	async execute() {
-		this.step = HydeStep.Evaluate;
+		this.step = HydeStep.Propose;
 		let documents = await this.generateDocument();
-
 		let keywords = documents.content;
 
+		this.step = HydeStep.Retrieve;
 		let queryTerm = keywords.basic?.[0] + " " + keywords.single?.[0] + " " + keywords.localization?.[0];
 		let chunks = await this.retrieveChunks(queryTerm);
 		let result = await this.clusterChunks(chunks);
 
+		this.step = HydeStep.Evaluate;
 		let evaluateContext: KeywordEvaluateContext = {
 			step: this.step,
 			question: keywords.question,
 			code: result.map(item => item.text).join("\n"),
 			language: ""
 		};
-
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, evaluateContext);
 		let evaluateOutput = await HydeKeywordsStrategy.executeIns(evaluateIns);
 		return evaluateOutput;
