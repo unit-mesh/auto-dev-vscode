@@ -97,6 +97,8 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	static async executeIns(instruction: string): Promise<string> {
+		console.log("\ninstruction: \n\n" + instruction);
+		channel.appendLine("\n");
 		let result = "";
 		try {
 			let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
