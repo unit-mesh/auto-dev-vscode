@@ -12,6 +12,7 @@ import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActi
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { channel } from "../../channel";
+import { TextRange } from "../scope-graph/model/TextRange";
 
 /**
  * Generate keywords from the query, and then used to retrieve similar code by symbols.
@@ -61,7 +62,9 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 		result.forEach((item: ContextItem) => {
 			chunks.push({
 				text: item.content,
-				file: item.name
+				file: item.name,
+				range: TextRange.empty(),
+				embedding: []
 			});
 		});
 

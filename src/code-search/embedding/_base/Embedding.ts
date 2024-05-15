@@ -10,6 +10,6 @@ export interface ScoredItem<T> {
 export interface ChunkItem {
 	file: string;
 	text: string;
-	range?: TextRange;
-	embedding?: Embedding;
+	range: TextRange;
+	embedding: Embedding;
 }

@@ -27,6 +27,10 @@ export class TextRange {
 		return this.text;
 	}
 
+	static empty(): TextRange {
+		return new TextRange(new Point(0, 0, 0), new Point(0, 0, 0), "");
+	}
+
 	static from(node: SyntaxNode): TextRange {
 		let text = this.extracted(node);
 
