@@ -1,6 +1,7 @@
 import { Chunker, ChunkWithoutID } from "./_base/Chunk";
 import { getParserForFile } from "../../editor/language/parser/ParserUtil";
 import { CollapsedCodeChunker } from "./_base/CollapsedCodeChunker";
+import { languageFromPath } from "../../editor/language/ExtensionLanguageMap";
 
 export class ConstructCodeChunker extends CollapsedCodeChunker implements Chunker {
 	chunk(filepath: string, contents: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
@@ -22,6 +23,8 @@ export class ConstructCodeChunker extends CollapsedCodeChunker implements Chunke
 			return;
 		}
 
-		yield* this.parsedCodeChunker(parser, contents, maxChunkSize);
+		let language = languageFromPath(filepath);
+
+		yield* this.parsedCodeChunker(parser, contents, maxChunkSize, language);
 	}
 }

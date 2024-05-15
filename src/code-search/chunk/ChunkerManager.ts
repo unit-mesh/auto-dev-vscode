@@ -1,7 +1,7 @@
 import { ChunkItem, Embedding, ScoredItem } from "../embedding/_base/Embedding";
 import { Chunk, ChunkWithoutID } from "./_base/Chunk";
 import { ConstructCodeChunker } from "./ConstructCodeChunker";
-import { EXT_LANGUAGE_MAP } from "../../editor/language/ExtensionLanguageMap";
+import { EXT_LANGUAGE_MAP, languageFromPath } from "../../editor/language/ExtensionLanguageMap";
 import { basicChunker } from "./BasicChunker";
 import { countTokens } from "../token/TokenCounter";
 import { MAX_CHUNK_SIZE } from "../utils/constants";
@@ -44,6 +44,7 @@ export class ChunkerManager {
 			return;
 		}
 
+		const language = languageFromPath(filepath);
 		const chunker = new ConstructCodeChunker();
 		const segs = filepath.split(".");
 		const ext = segs[segs.length - 1];
@@ -59,7 +60,7 @@ export class ChunkerManager {
 			}
 		}
 
-		yield* basicChunker(contents, maxChunkSize);
+		yield* basicChunker(contents, maxChunkSize, language);
 	}
 
 	async* chunkDocument(

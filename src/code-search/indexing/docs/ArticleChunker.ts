@@ -38,6 +38,7 @@ function breakdownArticleComponent(
 			endLine = i;
 		} else {
 			chunks.push({
+				language: "markdown", // TODO: chunk in different languages
 				content: content.trim(),
 				startLine: startLine,
 				endLine: endLine,
@@ -61,6 +62,7 @@ function breakdownArticleComponent(
 	// Push the last chunk
 	if (content) {
 		chunks.push({
+			language: "markdown", // TODO: chunk in different languages
 			content: content.trim(),
 			startLine: startLine,
 			endLine: endLine,

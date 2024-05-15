@@ -30,7 +30,8 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
       idx INTEGER NOT NULL,
       startLine INTEGER NOT NULL,
       endLine INTEGER NOT NULL,
-      content TEXT NOT NULL
+      content TEXT NOT NULL,
+      language TEXT DEFAULT NULL
     )`);
 
 		await db.exec(`CREATE TABLE IF NOT EXISTS chunk_tags (
@@ -53,7 +54,7 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 
 		async function handleChunk(chunk: Chunk) {
 			const { lastID } = await db.run(
-				`INSERT INTO chunks (cacheKey, path, idx, startLine, endLine, content) VALUES (?, ?, ?, ?, ?, ?)`,
+				`INSERT INTO chunks (cacheKey, path, idx, startLine, endLine, content, langauge) VALUES (?, ?, ?, ?, ?, ?, ?)`,
 				[
 					chunk.digest,
 					chunk.filepath,
@@ -61,6 +62,7 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 					chunk.startLine,
 					chunk.endLine,
 					chunk.content,
+					chunk.language,
 				],
 			);
 

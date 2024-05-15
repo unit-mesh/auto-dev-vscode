@@ -48,7 +48,6 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 
 	async generateDocument(): Promise<HydeDocument<QuestionKeywords>> {
 		let proposeIns = await this.instruction();
-
 		let proposeOut = await HydeKeywordsStrategy.executeIns(proposeIns);
 		let keywords = QuestionKeywords.from(proposeOut);
 		return new HydeDocument<QuestionKeywords>(this.documentType, keywords);

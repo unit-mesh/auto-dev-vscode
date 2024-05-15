@@ -129,7 +129,8 @@ export class LanceDbIndex implements CodebaseIndex {
         vector TEXT NOT NULL,
         startLine INTEGER NOT NULL,
         endLine INTEGER NOT NULL,
-        contents TEXT NOT NULL
+        contents TEXT NOT NULL,
+				language TEXT
     )`);
 	}
 
@@ -297,6 +298,7 @@ export class LanceDbIndex implements CodebaseIndex {
 				endLine: d.endLine,
 				index: 0,
 				content: d.contents,
+				language: d.language,
 			};
 		});
 	}

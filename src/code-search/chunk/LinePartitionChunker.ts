@@ -1,5 +1,6 @@
 import { TextRange } from "../scope-graph/model/TextRange";
 import { ChunkWithoutID, Chunker } from "./_base/Chunk";
+import { languageFromPath } from "../../editor/language/ExtensionLanguageMap";
 
 /**
  * The `LinePartitionChunker` class is an implementation of the `Chunker` interface.
@@ -36,11 +37,14 @@ import { ChunkWithoutID, Chunker } from "./_base/Chunk";
 export class LinePartitionChunker implements Chunker {
 	async* chunk(filepath: string, contents: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
 		const chunks = this.byLines(contents, maxChunkSize);
+		let language = languageFromPath(filepath);
+
 		for (const chunk of chunks) {
 			yield {
 				content: chunk.getText(),
 				startLine: chunk.start.line,
 				endLine: chunk.end.line,
+				language
 			};
 		}
 	}

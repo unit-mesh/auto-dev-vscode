@@ -25,6 +25,7 @@ export class MarkdownChunker implements Chunker {
 		if (countTokens(content) <= maxChunkSize) {
 			const header = this.findHeader(content.split("\n"));
 			yield {
+				language: "markdown",
 				content,
 				startLine: 0,
 				endLine: content.split("\n").length,
@@ -37,7 +38,7 @@ export class MarkdownChunker implements Chunker {
 		} else if (hLevel > 4) {
 			const header = this.findHeader(content.split("\n"));
 
-			for (const chunk of basicChunker(content, maxChunkSize)) {
+			for (const chunk of basicChunker(content, maxChunkSize, 'markdown')) {
 				yield {
 					...chunk,
 					otherMetadata: {
@@ -91,6 +92,7 @@ export class MarkdownChunker implements Chunker {
 				hLevel + 1,
 			)) {
 				yield {
+					language: "markdown",
 					content: section.header + "\n" + chunk.content,
 					startLine: section.startLine + chunk.startLine,
 					endLine: section.startLine + chunk.endLine,

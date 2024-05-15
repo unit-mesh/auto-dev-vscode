@@ -10,7 +10,7 @@ import path from "path";
 import fs from "fs";
 import { IdeAction } from "../../editor/editor-api/IdeAction";
 import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
-import { EXT_LANGUAGE_MAP } from "../../editor/language/ExtensionLanguageMap";
+import { EXT_LANGUAGE_MAP, languageFromPath } from "../../editor/language/ExtensionLanguageMap";
 import { ChunkWithoutID } from "../chunk/_base/Chunk";
 import { getLanguageForFile } from "../../editor/language/parser/TreeSitterParser";
 import { getParserForFile } from "../../editor/language/parser/ParserUtil";
@@ -72,6 +72,7 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 		const ast = parser.parse(contents);
 		const query = lang?.query(this.getQuerySource(filepath));
 		const matches = query?.matches(ast.rootNode);
+		const language = languageFromPath(filepath);
 
 		return (
 			matches?.flatMap((match) => {
@@ -82,6 +83,7 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 					content: node.text,
 					startLine: node.startPosition.row,
 					endLine: node.endPosition.row,
+					language: language,
 				};
 				return results;
 			}) ?? []

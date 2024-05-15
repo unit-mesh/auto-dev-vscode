@@ -63,7 +63,7 @@ ${nodeCode}
 ${graphCode}
 `;
 		let chunker = new CollapsedCodeChunker();
-		let codeChunker: AsyncGenerator<ChunkWithoutID> = chunker.parsedCodeChunker(parser, sampleCode, 100);
+		let codeChunker: AsyncGenerator<ChunkWithoutID> = chunker.parsedCodeChunker(parser, sampleCode, 100, "java");
 		const results = [];
 
 		for await (let chunk of codeChunker) {

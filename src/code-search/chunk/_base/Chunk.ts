@@ -2,6 +2,7 @@ export interface ChunkWithoutID {
 	content: string;
 	startLine: number;
 	endLine: number;
+	language: string;
 	otherMetadata?: { [key: string]: any };
 }
 

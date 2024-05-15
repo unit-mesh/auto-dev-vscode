@@ -59,11 +59,7 @@ export async function retrieveFts(
 		if (query.trim() !== "") {
 			ftsResults = await ftsIndex.retrieve(
 				tags,
-				query
-					.trim()
-					.split(" ")
-					.map((element) => `"${element}"`)
-					.join(" OR "),
+				query.trim().split(" ").map((element) => `"${element}"`).join(" OR "),
 				n,
 				filterDirectory,
 				undefined,

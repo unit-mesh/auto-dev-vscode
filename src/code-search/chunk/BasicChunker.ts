@@ -4,6 +4,7 @@ import { countTokens } from "../token/TokenCounter";
 export function* basicChunker(
 	contents: string,
 	maxChunkSize: number,
+	language: string,
 ): Generator<ChunkWithoutID> {
 	let chunkContent = "";
 	let chunkTokens = 0;
@@ -13,7 +14,7 @@ export function* basicChunker(
 	for (const line of contents.split("\n")) {
 		const lineTokens = countTokens(line);
 		if (chunkTokens + lineTokens > maxChunkSize - 5) {
-			yield { content: chunkContent, startLine, endLine: currLine - 1 };
+			yield { language, content: chunkContent, startLine, endLine: currLine - 1 };
 			chunkContent = "";
 			chunkTokens = 0;
 			startLine = currLine;
@@ -28,6 +29,7 @@ export function* basicChunker(
 	}
 
 	yield {
+		language,
 		content: chunkContent,
 		startLine,
 		endLine: currLine - 1,

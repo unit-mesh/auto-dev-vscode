@@ -31,3 +31,8 @@ export const EXT_LANGUAGE_MAP: { [key: string]: string } = {
 	rs: "rust",
 	// kt: "kotlin",
 };
+
+export function languageFromPath(filepath: string) {
+	const extension = filepath.split(".").pop() || "";
+	return EXT_LANGUAGE_MAP[extension];
+}

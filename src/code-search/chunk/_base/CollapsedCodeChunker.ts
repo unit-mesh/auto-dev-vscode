@@ -12,9 +12,10 @@ export class CollapsedCodeChunker {
 		parser: Parser,
 		contents: string,
 		maxChunkSize: number,
+		language: string,
 	): AsyncGenerator<ChunkWithoutID> {
 		const tree = parser.parse(contents);
-		yield* this.getSmartCollapsedChunks(tree.rootNode, contents, maxChunkSize);
+		yield* this.getSmartCollapsedChunks(tree.rootNode, contents, maxChunkSize, language);
 	}
 
 	collapsedReplacement(node: SyntaxNode): string {
@@ -167,10 +168,11 @@ export class CollapsedCodeChunker {
 		function_item: this.constructFunctionDefinitionChunk.bind(this),
 	};
 
-	*getSmartCollapsedChunks(
+	* getSmartCollapsedChunks(
 		node: SyntaxNode,
 		code: string,
 		maxChunkSize: number,
+		language: string,
 		root = true,
 	): Generator<ChunkWithoutID> {
 		// Keep entire text if not over size
@@ -179,6 +181,7 @@ export class CollapsedCodeChunker {
 				content: node.text,
 				startLine: node.startPosition.row,
 				endLine: node.endPosition.row,
+				language,
 			};
 
 			return;
@@ -190,12 +193,13 @@ export class CollapsedCodeChunker {
 				content: this.collapsedNodeConstructors[node.type](node, code, maxChunkSize),
 				startLine: node.startPosition.row,
 				endLine: node.endPosition.row,
+				language,
 			};
 		}
 
 		// Recurse (because even if collapsed version was shown, want to show the children in full somewhere)
 		for (const child of node.children) {
-			yield* this.getSmartCollapsedChunks(child, code, maxChunkSize, false);
+			yield* this.getSmartCollapsedChunks(child, code, maxChunkSize, language, false);
 		}
 	}
 }

@@ -112,6 +112,7 @@ export class FullTextSearchCodebaseIndex implements CodebaseIndex {
     directory: string | undefined,
     filterPaths: string[] | undefined,
     bm25Threshold: number = RETRIEVAL_PARAMS.bm25Threshold,
+    language: string | undefined = undefined,
   ): Promise<Chunk[]> {
     const db = await SqliteDb.get();
 
@@ -124,15 +125,9 @@ export class FullTextSearchCodebaseIndex implements CodebaseIndex {
     FROM fts
     JOIN fts_metadata ON fts.rowid = fts_metadata.id
     JOIN chunk_tags ON fts_metadata.chunkId = chunk_tags.chunkId
-    WHERE fts MATCH '${text.replace(
-      /\?/g,
-      "",
-    )}' AND chunk_tags.tag IN (${tagStrings.map(() => "?").join(",")})
-      ${
-        filterPaths
-          ? `AND fts_metadata.path IN (${filterPaths.map(() => "?").join(",")})`
-          : ""
-      }
+    WHERE fts MATCH '${text.replace(/\?/g, "",)}'
+      AND chunk_tags.tag IN (${tagStrings.map(() => "?").join(",")}) 
+      ${ filterPaths ? `AND fts_metadata.path IN (${filterPaths.map(() => "?").join(",")})` : ""}
     ORDER BY rank
     LIMIT ?`;
 
@@ -145,7 +140,10 @@ export class FullTextSearchCodebaseIndex implements CodebaseIndex {
     results = results.filter((result) => result.rank <= bm25Threshold);
 
     const chunks = await db.all(
-      `SELECT * FROM chunks WHERE id IN (${results.map(() => "?").join(",")})`,
+      `SELECT * FROM chunks 
+         WHERE id IN (${results.map(() => "?").join(",")})
+         ${ language ? `AND language = ${language}` : ""}
+      `,
       results.map((result) => result.chunkId),
     );
 
@@ -157,6 +155,7 @@ export class FullTextSearchCodebaseIndex implements CodebaseIndex {
         endLine: chunk.endLine,
         content: chunk.content,
         digest: chunk.cacheKey,
+        language: chunk.language,
       };
     });
   }
