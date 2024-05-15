@@ -41,6 +41,7 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		let modelPath = path.join(basepath, "models", "all-MiniLM-L6-v2", "onnx", "model_quantized.onnx");
 
 		this.tokenizer = await AutoTokenizer.from_pretrained("all-MiniLM-L6-v2", {
+			quantized: true,
 			local_files_only: true,
 		});
 
@@ -66,9 +67,9 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		const { Tensor } = await import('@xenova/transformers');
 		let encodings = this.tokenizer(sequence);
 
-		const inputIdsTensor = new ONNXTensor('int64', new BigInt64Array(tensorData(encodings.input_ids)), encodings.input_ids.dims);
-		const attentionMaskTensor = new ONNXTensor('int64', new BigInt64Array(tensorData(encodings.attention_mask)), encodings.attention_mask.dims);
-		const tokenTypeIdsTensor = new ONNXTensor('int64', new BigInt64Array(tensorData(encodings.token_type_ids)), encodings.token_type_ids.dims);
+		const inputIdsTensor = new ONNXTensor('int64', tensorData(encodings.input_ids), encodings.input_ids.dims);
+		const attentionMaskTensor = new ONNXTensor('int64', tensorData(encodings.attention_mask), encodings.attention_mask.dims);
+		const tokenTypeIdsTensor = new ONNXTensor('int64', tensorData(encodings.token_type_ids), encodings.token_type_ids.dims);
 
 		const outputs: InferenceSession.ReturnType = await this.session!!.run({
 			input_ids: inputIdsTensor,

@@ -17,12 +17,12 @@
 import { Tensor as ONNXTensor } from "onnxruntime-common";
 
 export function tensorData(tensor: any) {
-	if (tensor.data !== undefined) {
-		return tensor.data;
+	if (tensor['data'] !== undefined) {
+		return tensor['data'];
 	}
 
 	if (tensor['cpuData'] !== undefined) {
-		return tensor[tensor['cpuData']];
+		return tensor['cpuData'];
 	}
 
 	return [];
