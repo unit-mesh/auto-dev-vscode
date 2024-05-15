@@ -35,7 +35,7 @@ export default defineConfig((api) => {
             dest: "",
           },
           {
-            src: "src/code-search/schemas/**/*.scm",
+            src: "src/code-search/schemas/indexes/*.scm",
             dest: "semantic",
           },
           {

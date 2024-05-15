@@ -48,7 +48,6 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 		const sourcePath = path.join(
 			__dirname,
 			"..",
-			"code-search",
 			"schemas",
 			"code-snippet-queries",
 			`tree-sitter-${fullLangName}-tags.scm`,
@@ -56,6 +55,7 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 		if (!fs.existsSync(sourcePath)) {
 			return "";
 		}
+
 		return fs.readFileSync(sourcePath).toString();
 	}
 
