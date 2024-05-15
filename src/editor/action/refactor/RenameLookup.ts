@@ -35,7 +35,7 @@ export class RenameLookup {
 		try {
 			let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
 			AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
-			let output = await LlmProvider.codeCompletion().chat(chatMessages);
+			let output = await LlmProvider.codeCompletion().output(chatMessages);
 			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
 
 			return {

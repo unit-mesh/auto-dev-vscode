@@ -15,10 +15,10 @@ import { channel } from "../../channel";
 import { TextRange } from "../scope-graph/model/TextRange";
 
 /**
- * Generate keywords from the query, and then used to retrieve similar code by symbols.
+ * The `HydeKeywordsStrategy` class is a part of the Hyde Strategy pattern and is used to generate keywords from a query.
+ * These keywords are then used to retrieve similar code by symbols.
  *
- * Should set prioritize for the text code aka {@link TextDocument}.
-
+ * The class prioritizes the text code, also known as TextDocument, in the following order:
  * - High: Current Document
  * - Medium: Recently Documents
  * - Low: All Documents
@@ -112,7 +112,6 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 			}
 
 			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
-
 			return result;
 		} catch (e) {
 			console.log("error:" + e);

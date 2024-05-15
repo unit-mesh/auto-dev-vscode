@@ -21,7 +21,7 @@ export class OpenAICompletion {
 		this.model = llmConfig.model;
 	}
 
-	async chat(messages: ChatMessage[]): Promise<string> {
+	async output(messages: ChatMessage[]): Promise<string> {
 		let output = "";
 		for await (const chunk of this._streamChat(messages)) {
 			output += chunk.content;
