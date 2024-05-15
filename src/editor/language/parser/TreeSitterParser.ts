@@ -54,6 +54,14 @@ async function loadLanguageOndemand(
         );
       }
       break;
+    case "kotlin":
+      if (!LanguageParserMap.has("kotlin")) {
+        LanguageParserMap.set(
+          "kotlin",
+          await Parser.Language.load(await wasmByLanguage(uri, "kotlin"))
+        );
+      }
+      break;
     case "javascript":
       if (!LanguageParserMap.has("javascript")) {
         LanguageParserMap.set(
