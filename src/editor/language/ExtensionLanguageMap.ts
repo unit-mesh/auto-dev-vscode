@@ -29,7 +29,7 @@ export const EXT_LANGUAGE_MAP: { [key: string]: string } = {
 	go: "go",
 	java: "java",
 	rs: "rust",
-	// kt: "kotlin",
+	kt: "kotlin",
 };
 
 export function languageFromPath(filepath: string) {

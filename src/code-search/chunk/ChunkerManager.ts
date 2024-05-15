@@ -69,6 +69,7 @@ export class ChunkerManager {
 		maxChunkSize: number,
 		digest: string,
 	): AsyncGenerator<Chunk> {
+		let language = languageFromPath(filepath);
 		let index = 0;
 		for await (let chunkWithoutId of this.chunkDocumentWithoutId(
 			filepath,
@@ -85,6 +86,7 @@ export class ChunkerManager {
 			}
 			yield {
 				...chunkWithoutId,
+				language,
 				digest,
 				index,
 				filepath,
