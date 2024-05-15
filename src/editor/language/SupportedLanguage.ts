@@ -4,6 +4,7 @@ export const SUPPORTED_LANGUAGES = [
   "csharp",
   "go",
   "java",
+  "kotlin",
   "python",
   "rust",
   "javascript",
