@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import {
-	CodebaseIndex,
-	IndexingProgressUpdate, IndexTag,
-} from "./indexing/_base/CodebaseIndex";
+import { CodebaseIndex, IndexingProgressUpdate, IndexTag, } from "./indexing/_base/CodebaseIndex";
 import { LanceDbIndex } from "./indexing/LanceDbIndex";
 import { IdeAction } from "../editor/editor-api/IdeAction";
 import { EmbeddingsProvider } from "./embedding/_base/EmbeddingsProvider";
@@ -35,7 +32,7 @@ export class CodebaseIndexer {
 	}
 
 	private async getIndexesToBuild(): Promise<CodebaseIndex[]> {
-		const indexes = [
+		return [
 			new CodeSnippetsCodebaseIndex(this.ide),
 			new ChunkCodebaseIndex(this.ide.readFile.bind(this.ide)),
 			new FullTextSearchCodebaseIndex(),
@@ -44,18 +41,12 @@ export class CodebaseIndexer {
 				this.ide.readFile.bind(this.ide),
 			)
 		];
-
-		return indexes;
 	}
 
 	async* refresh(
 		workspaceDirs: string[],
 		abortSignal: AbortSignal,
 	): AsyncGenerator<IndexingProgressUpdate> {
-		// const config = await this.configHandler.loadConfig();
-		// if (config.disableIndexing) {
-		// 	return;
-		// }
 		const indexesToBuild = await this.getIndexesToBuild();
 
 		let completedDirs = 0;
