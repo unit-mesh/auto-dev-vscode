@@ -1,14 +1,22 @@
 import { ChunkItem } from "../embedding/_base/Embedding";
 import { HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
 import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
+import { AutoDevExtension } from "../../AutoDevExtension";
 
 /**
  * Generate hypothetical document base on user input, and then used to retrieve similar code by symbols.
  */
 export class HydeCodeStrategy implements HydeStrategy<string> {
 	documentType = HydeDocumentType.Code;
+	query: string;
+	extension: AutoDevExtension;
 
-	instruction(userInput: string): Promise<string> {
+	constructor(query: string, extension: AutoDevExtension) {
+		this.query = query;
+		this.extension = extension;
+	}
+
+	instruction(): Promise<string> {
 		return Promise.resolve("");
 	}
 
@@ -16,11 +24,11 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 		return new HydeDocument(HydeDocumentType.Code, "");
 	}
 
-	async clusterChunks(docs: HydeDocument<string>[]): Promise<ChunkItem[]> {
+	async retrieveChunks(condition: HydeQuery): Promise<ChunkItem[]> {
 		return [];
 	}
 
-	async retrieveChunks(condition: HydeQuery): Promise<ChunkItem[]> {
+	async clusterChunks(docs: ChunkItem[]): Promise<ChunkItem[]> {
 		return [];
 	}
 }
