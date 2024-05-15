@@ -12,4 +12,4 @@ code:
 ${context.code}
 ```
 
-User's Question: What is the output of the code?
+User's Question: ${context.question}
