@@ -121,7 +121,7 @@ export function createChatModel(options: ChatModelCallOptions) {
     return createTongYiChatModel(options);
   }
 
-  return createOpenaiChatModel(options);
+  return createOpenAIChatModel(options);
 }
 
 export function createAnthropicChatModel(config: ChatModelCallOptions) {
@@ -141,8 +141,8 @@ export function createAnthropicChatModel(config: ChatModelCallOptions) {
   });
 }
 
-export function createOpenaiChatModel(config: ChatModelCallOptions) {
-  const defaults = SettingService.instance().getAnthropicConfig();
+export function createOpenAIChatModel(config: ChatModelCallOptions) {
+  const defaults = SettingService.instance().getOpenAIConfig();
 
   if (defaults.apiType === "azure") {
     return new AzureChatOpenAI({
