@@ -80,20 +80,22 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 		let keywords = documents.content;
 
 		this.step = HydeStep.Retrieve;
-		let queryTerm = keywords.basic?.[0] + " " + keywords.single?.[0] + " " + keywords.localization?.[0];
+		let queryTerm = this.createQueryTerm(keywords);
 		let chunks = await this.retrieveChunks(queryTerm);
-		let result = await this.clusterChunks(chunks);
 
 		this.step = HydeStep.Evaluate;
 		let evaluateContext: KeywordEvaluateContext = {
 			step: this.step,
 			question: keywords.question,
-			code: result.map(item => item.text).join("\n"),
+			code: chunks.map(item => item.text).join("\n"),
 			language: ""
 		};
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, evaluateContext);
-		let evaluateOutput = await HydeKeywordsStrategy.executeIns(evaluateIns);
-		return evaluateOutput;
+		return await HydeKeywordsStrategy.executeIns(evaluateIns);
+	}
+
+	private createQueryTerm(keywords: QuestionKeywords) {
+		return keywords.basic?.[0] + " " + keywords.single?.[0] + " " + keywords.localization?.[0];
 	}
 
 	static async executeIns(instruction: string): Promise<string> {
