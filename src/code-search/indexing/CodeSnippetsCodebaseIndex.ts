@@ -1,3 +1,6 @@
+import path from "path";
+import fs from "fs";
+
 import {
 	CodebaseIndex,
 	IndexingProgressUpdate,
@@ -6,8 +9,6 @@ import {
 	MarkCompleteCallback,
 	RefreshIndexResults
 } from "./_base/CodebaseIndex";
-import path from "path";
-import fs from "fs";
 import { IdeAction } from "../../editor/editor-api/IdeAction";
 import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
 import { EXT_LANGUAGE_MAP, languageFromPath } from "../../editor/language/ExtensionLanguageMap";
@@ -47,7 +48,8 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 		const sourcePath = path.join(
 			__dirname,
 			"..",
-			"tree-sitter",
+			"code-search",
+			"schemas",
 			"code-snippet-queries",
 			`tree-sitter-${fullLangName}-tags.scm`,
 		);

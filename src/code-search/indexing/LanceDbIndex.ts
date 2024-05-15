@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { v4 as uuidv4 } from "uuid";
-import { Table } from "vectordb";
+import { Connection, Table } from "vectordb";
 
 import {
 	BranchAndDir,
@@ -315,7 +315,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		n: number,
 		directory: string | undefined,
 		vector: number[],
-		db: any, /// lancedb.Connection
+		db: Connection, /// lancedb.Connection
 	): Promise<LanceDbRow[]> {
 		const tableName = this.tableNameForTag(tag);
 		const tableNames = await db.tableNames();
