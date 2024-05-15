@@ -13,11 +13,6 @@ import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/Aut
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { channel } from "../../channel";
 
-
-export interface KeywordTemplateContext extends TemplateContext {
-	userInput: string;
-}
-
 /**
  * Generate keywords from the query, and then used to retrieve similar code by symbols.
  *
@@ -28,7 +23,6 @@ export interface KeywordTemplateContext extends TemplateContext {
  * - Low: All Documents
  */
 export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
-	private promptManager = PromptManager.getInstance();
 	documentType = HydeDocumentType.Keywords;
 	message: ChatMessage[] = [];
 	query: string;
