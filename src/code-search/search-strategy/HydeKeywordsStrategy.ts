@@ -56,6 +56,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
+		this.step = HydeStep.Retrieve;
 		let result: ContextItem[] = await retrieveContextItems(queryTerm as string, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined);
 
 		let chunks: ChunkItem[] = [];
@@ -76,6 +77,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	async execute() {
+		this.step = HydeStep.Evaluate;
 		let documents = await this.generateDocument();
 
 		let keywords = documents.content;
