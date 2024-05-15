@@ -33,6 +33,7 @@ import { MAX_CHUNK_SIZE } from "../utils/constants";
 import { ChunkerManager } from "../chunk/ChunkerManager";
 import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
 import { getBasename, getLanceDbPath } from "../utils/IndexPathHelper";
+import { Embedding } from "../embedding/_base/Embedding";
 
 // LanceDB  converts to lowercase, so names must all be lowercase
 interface LanceDbRow {
@@ -91,9 +92,15 @@ export class LanceDbIndex implements CodebaseIndex {
 			}
 
 			// Calculate embeddings
-			const embeddings = await this.embeddingsProvider.embed(
-				chunks.map((c) => c.content),
-			);
+			let embeddings: Embedding[] = [];
+			try {
+				embeddings = await this.embeddingsProvider.embed(
+					chunks.map((c) => c.content),
+				);
+			} catch (e) {
+				console.error("Failed to embed chunks", items[i].path, e);
+				continue;
+			}
 
 			// Create row format
 			for (let j = 0; j < chunks.length; j++) {
