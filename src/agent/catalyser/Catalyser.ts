@@ -25,10 +25,6 @@ export class Catalyser {
 		let keywordsStrategy = new HydeKeywordsStrategy(query, this.extension);
 		let evaluateOutput = await keywordsStrategy.execute();
 
-		channel.appendLine("");
-		channel.appendLine("Summary: ");
-		channel.append(evaluateOutput);
-
 		this.extension.sidebar?.webviewProtocol?.request("userInput", {
 			input: evaluateOutput,
 		});

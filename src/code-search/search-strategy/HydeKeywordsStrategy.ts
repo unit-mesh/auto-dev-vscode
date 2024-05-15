@@ -48,6 +48,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 
 	async generateDocument(): Promise<HydeDocument<QuestionKeywords>> {
 		let proposeIns = await this.instruction();
+		channel.appendLine(" --- Generate keyword --- ");
 		let proposeOut = await HydeKeywordsStrategy.executeIns(proposeIns);
 		let keywords = QuestionKeywords.from(proposeOut);
 		return new HydeDocument<QuestionKeywords>(this.documentType, keywords);
@@ -89,6 +90,8 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 			code: chunks.map(item => item.text).join("\n"),
 			language: ""
 		};
+
+		channel.appendLine(" --- Summary --- ");
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, evaluateContext);
 		return await HydeKeywordsStrategy.executeIns(evaluateIns);
 	}
@@ -98,7 +101,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	static async executeIns(instruction: string): Promise<string> {
-		console.log("\ninstruction: \n\n" + instruction);
+		console.log("\ninstruction: \n" + instruction);
 		channel.appendLine("\n");
 		let result = "";
 		try {
