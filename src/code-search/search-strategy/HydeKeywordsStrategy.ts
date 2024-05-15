@@ -49,11 +49,21 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	async retrieveChunks(condition: HydeQuery): Promise<ChunkItem[]> {
-		// search by symbols
 		return [];
 	}
 
 	async clusterChunks(docs: HydeDocument<QuestionKeywords>[]): Promise<ChunkItem[]> {
 		return [];
 	}
+}
+
+export interface KeywordsProposeContext extends TemplateContext {
+	step: HydeStep,
+	question: string,
+}
+
+export interface KeywordEvaluateContext extends TemplateContext {
+	step: HydeStep,
+	question: string,
+	code: string,
 }

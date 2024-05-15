@@ -4,11 +4,11 @@ import { channel } from "../../channel";
 import { PromptManager } from "../../prompt-manage/PromptManager";
 import { HydeStep } from "../../code-search/search-strategy/_base/HydeStep";
 import { HydeDocumentType } from "../../code-search/search-strategy/_base/HydeDocument";
-import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { QuestionKeywords } from "../../code-search/search-strategy/utils/QuestionKeywords";
+import { KeywordEvaluateContext, KeywordsProposeContext } from "../../code-search/search-strategy/HydeKeywordsStrategy";
 
 export class Catalyser {
 	private static instance: Catalyser;
@@ -100,15 +100,4 @@ export class Catalyser {
 			return "";
 		}
 	}
-}
-
-export interface KeywordsProposeContext extends TemplateContext {
-	step: HydeStep,
-	question: string,
-}
-
-export interface KeywordEvaluateContext extends TemplateContext {
-	step: HydeStep,
-	question: string,
-	code: string,
 }
