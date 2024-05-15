@@ -91,6 +91,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 			language: ""
 		};
 
+		channel.appendLine("\n");
 		channel.appendLine(" --- Summary --- ");
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, evaluateContext);
 		return await HydeKeywordsStrategy.executeIns(evaluateIns);
@@ -102,7 +103,6 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 
 	static async executeIns(instruction: string): Promise<string> {
 		console.log("\ninstruction: \n" + instruction);
-		channel.appendLine("\n");
 		let result = "";
 		try {
 			let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
