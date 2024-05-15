@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Development
-nav_order: 2
+title: Semantic
+nav_order: 4
 has_children: true
 permalink: /semantic
 ---
