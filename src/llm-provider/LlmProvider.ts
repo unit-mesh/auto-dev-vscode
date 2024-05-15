@@ -1,10 +1,14 @@
 import { SettingService } from "../settings/SettingService";
-import { LlmConfig } from "../settings/LlmConfig";
 import { OpenAICompletion } from "./OpenAICompletion";
 
 export class LlmProvider {
-	public static instance(): OpenAICompletion {
+	public static codeCompletion(): OpenAICompletion {
 		const llmConfig = SettingService.instance().getCodeCompletionConfig();
+		return new OpenAICompletion(llmConfig);
+	}
+
+	public static chatCompletion(): OpenAICompletion {
+		const llmConfig = SettingService.instance().getChatCompletionConfig();
 		return new OpenAICompletion(llmConfig);
 	}
 }

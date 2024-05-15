@@ -85,7 +85,7 @@ export class Catalyser {
 		try {
 			let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
 			AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
-			let response = await LlmProvider.instance()._streamChat(chatMessages);
+			let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
 			for await (let chatMessage of response) {
 				channel.append(chatMessage.content);
 				result += chatMessage.content;

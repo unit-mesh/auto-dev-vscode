@@ -43,7 +43,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	async generateDocument(): Promise<HydeDocument<QuestionKeywords>> {
-		let output = await LlmProvider.instance().chat(this.message);
+		let output = await LlmProvider.chatCompletion().chat(this.message);
 		let keywords = QuestionKeywords.from(output);
 		return Promise.resolve(new HydeDocument(HydeDocumentType.Code, keywords));
 	}

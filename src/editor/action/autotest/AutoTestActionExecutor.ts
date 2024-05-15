@@ -80,7 +80,7 @@ export class AutoTestActionExecutor implements ActionExecutor {
 			content: content
 		};
 
-		let llm = LlmProvider.instance();
+		let llm = LlmProvider.chatCompletion();
 		let doc: string = "";
 
 		// navigate to test file

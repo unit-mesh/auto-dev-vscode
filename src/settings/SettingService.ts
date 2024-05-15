@@ -143,6 +143,10 @@ export class SettingService {
     return config;
   }
 
+  getChatCompletionConfig(): LlmConfig {
+    return this.getCodeCompletionConfig();
+  }
+
   // TODO: Need to register to context.subscriptions
   dispose() {
     this.disposables.forEach((disposeble) => disposeble.dispose());

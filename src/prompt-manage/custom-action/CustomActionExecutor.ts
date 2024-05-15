@@ -21,7 +21,7 @@ export class CustomActionExecutor {
 
 		console.info(`request: ${JSON.stringify(messages)}`);
 
-		let llm = LlmProvider.instance();
+		let llm = LlmProvider.codeCompletion();
 		let output: string = "";
 
 		try {

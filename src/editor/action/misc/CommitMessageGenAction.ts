@@ -32,7 +32,7 @@ export class CommitMessageGenAction {
 
 		let instruction = await PromptManager.getInstance().generateInstruction(ActionType.GenCommitMessage, context);
 		const messages = CustomActionPrompt.parseChatMessage(instruction);
-		let chatResponseStream = LlmProvider.instance()._streamChat(messages);
+		let chatResponseStream = LlmProvider.codeCompletion()._streamChat(messages);
 
 		inputBox.value = "";
 

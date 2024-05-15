@@ -75,7 +75,7 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			content: content
 		};
 
-		let llm = LlmProvider.instance();
+		let llm = LlmProvider.codeCompletion();
 		let doc: string = "";
 
 		try {
