@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Quick Start
-nav_order: 2
+title: Troubleshooting
+nav_order: 99
 permalink: /troubleshooting
 ---
 

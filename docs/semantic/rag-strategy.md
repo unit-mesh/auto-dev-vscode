@@ -5,9 +5,14 @@ nav_order: 1
 parent: Semantic
 ---
 
-## Trends
+## Tech Trends
 
-- GitHub Copilot Chat: TfIDF
+- GitHub Copilot Chat
+    - TfIDF
 - Bloop: HydeDoc
-- Continue.Dev: Multiple
+    - Semantic Search
+- Continue.Dev: Multiple Strategy
+    - Full Text Search
+    - Snippet Search
+    - Semantic Search
 
