@@ -5,7 +5,7 @@ import { TemplateRender } from "./template/TemplateRender";
 import { TemplateContext } from "./template/TemplateContext";
 import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
 import { CreateToolchainContext, ToolchainContextItem } from "../toolchain-context/ToolchainContextProvider";
-import { ActionType } from "../action/ActionType";
+import { ActionType } from "./ActionType";
 import { CustomActionTemplateContext } from "./custom-action/CustomActionTemplateContext";
 import { CustomActionExecutePrompt } from "./custom-action/CustomActionExecutePrompt";
 import { HydeStep } from "../code-search/search-strategy/_base/HydeStep";

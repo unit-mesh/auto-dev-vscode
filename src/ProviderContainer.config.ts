@@ -16,16 +16,17 @@ import { TypeScriptTestGenProvider } from "./code-context/typescript/TypeScriptT
 import { StructurerProvider } from "./code-context/_base/StructurerProvider";
 import { JavaStructurerProvider } from "./code-context/java/JavaStructurerProvider";
 import { TypeScriptStructurer } from "./code-context/typescript/TypeScriptStructurer";
+import { ActionCreator } from "./editor/action/_base/ActionCreator";
+import { AutoDocActionCreator } from "./editor/action/autodoc/AutoDocActionCreator";
+import { AutoTestActionCreator } from "./editor/action/autotest/AutoTestActionCreator";
+import { GenApiDataActionCreator } from "./editor/action/test-data/GenApiDataActionCreator";
 import { GoBuildToolProvider } from "./toolchain-context/buildtool/GoBuildToolProvider";
 import { GoStructurerProvider } from "./code-context/go/GoStructurerProvider";
 import { LanguageProfile } from "./code-context/_base/LanguageProfile";
 import { languageContainer } from "./ProviderLanguageProfile.config";
+import { ProjectService } from "./service/ProjectService";
 import { DomainTermService } from "./domain/DomainTermService";
 import { Service } from "./service/Service";
-import { ActionCreator } from "./action/_base/ActionCreator";
-import { AutoDocActionCreator } from "./action/autodoc/AutoDocActionCreator";
-import { AutoTestActionCreator } from "./action/autotest/AutoTestActionCreator";
-import { GenApiDataActionCreator } from "./action/test-data/GenApiDataActionCreator";
 
 const providerContainer = new Container();
 

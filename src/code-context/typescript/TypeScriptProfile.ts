@@ -127,7 +127,7 @@ export class TypeScriptProfile implements LanguageProfile {
 			"enumerator",
 			"class",
 			"interface",
-			// practises.
+			// misc.
 			"label",
 		]
 	];

@@ -103,7 +103,7 @@ export class JavaProfile implements LanguageProfile {
 			'record',
 			'interface',
 			'typedef',
-			// practises.
+			// misc.
 			'label',
 		]
 	];
