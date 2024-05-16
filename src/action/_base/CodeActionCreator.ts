@@ -1,9 +1,9 @@
 import { injectable } from "inversify";
 import { ActionCreatorContext } from "./ActionCreatorContext";
 import vscode from "vscode";
-import { CodeElementType } from "../../codemodel/CodeElementType";
-import { NamedElement } from "../../ast/NamedElement";
 import { ActionCreator } from "./ActionCreator";
+import { CodeElementType } from "../../editor/codemodel/CodeElementType";
+import { NamedElement } from "../../editor/ast/NamedElement";
 
 @injectable()
 export abstract class CodeActionCreator implements ActionCreator {

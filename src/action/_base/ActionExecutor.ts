@@ -1,4 +1,4 @@
-import { ActionType } from "../../../prompt-manage/ActionType";
+import { ActionType } from "../ActionType";
 
 export interface ActionExecutor {
 	type: ActionType;
