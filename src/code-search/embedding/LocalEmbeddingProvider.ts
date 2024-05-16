@@ -39,8 +39,9 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		this.env = env;
 		env.allowLocalModels = true;
 		let modelPath = path.join(basepath, "models", "all-MiniLM-L6-v2", "onnx", "model_quantized.onnx");
+		let modelBase = path.join(".", "all-MiniLM-L6-v2");
 
-		this.tokenizer = await AutoTokenizer.from_pretrained("all-MiniLM-L6-v2", {
+		this.tokenizer = await AutoTokenizer.from_pretrained(modelBase, {
 			quantized: true,
 			local_files_only: true,
 		});

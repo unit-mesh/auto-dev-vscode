@@ -79,9 +79,13 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 		let documents = await this.generateDocument();
 		let keywords = documents.content;
 
+		console.log('keywords:', keywords);
+
 		this.step = HydeStep.Retrieve;
 		let queryTerm = this.createQueryTerm(keywords);
 		let chunks = await this.retrieveChunks(queryTerm);
+
+		console.log(chunks);
 
 		this.step = HydeStep.Evaluate;
 		let evaluateContext: KeywordEvaluateContext = {
