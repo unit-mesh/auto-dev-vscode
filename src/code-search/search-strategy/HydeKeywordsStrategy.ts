@@ -55,7 +55,8 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
-		let result: ContextItem[] = await retrieveContextItems(queryTerm as string, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined);
+		let language = undefined;
+		let result: ContextItem[] = await retrieveContextItems(queryTerm as string, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined, language);
 
 		let chunks: ChunkItem[] = [];
 		result.forEach((item: ContextItem) => {

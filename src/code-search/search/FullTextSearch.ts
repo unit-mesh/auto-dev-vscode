@@ -139,11 +139,13 @@ export class FullTextSearchCodebaseIndex implements CodebaseIndex {
 
     results = results.filter((result) => result.rank <= bm25Threshold);
 
+    let sql = `SELECT * FROM chunks 
+       WHERE id IN (${results.map(() => "?").join(",")})
+       ${ language ? `AND language == '${language}'` : ""}
+    `;
+
     const chunks = await db.all(
-      `SELECT * FROM chunks 
-         WHERE id IN (${results.map(() => "?").join(",")})
-         ${ language ? `AND language = ${language}` : ""}
-      `,
+      sql,
       results.map((result) => result.chunkId),
     );
 

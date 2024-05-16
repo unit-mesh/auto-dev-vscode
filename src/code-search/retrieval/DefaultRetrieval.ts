@@ -51,6 +51,7 @@ export async function retrieveFts(
 	n: number,
 	tags: BranchAndDir[],
 	filterDirectory: string | undefined,
+	language: string | undefined = undefined,
 ): Promise<Chunk[]> {
 	const ftsIndex = new FullTextSearchCodebaseIndex();
 
@@ -63,6 +64,8 @@ export async function retrieveFts(
 				n,
 				filterDirectory,
 				undefined,
+				RETRIEVAL_PARAMS.bm25Threshold,
+				language,
 			);
 		}
 		return ftsResults;
@@ -77,6 +80,7 @@ export async function retrieveContextItems(
 	ide: IdeAction,
 	embeddingsProvider: EmbeddingsProvider,
 	filterDirectory: string | undefined,
+	language: string | undefined = undefined,
 ): Promise<ContextItem[]> {
 	const workspaceDirs = await ide.getWorkspaceDirectories();
 
@@ -109,6 +113,7 @@ export async function retrieveContextItems(
 		nRetrieve / 2,
 		tags,
 		filterDirectory,
+		language
 	);
 	retrievalResults.push(...ftsResults);
 
