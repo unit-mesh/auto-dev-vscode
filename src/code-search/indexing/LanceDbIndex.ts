@@ -40,7 +40,7 @@ interface LanceDbRow {
 	uuid: string;
 	path: string;
 	cachekey: string;
-	vector: number[];
+	vector: Embedding;
 
 	[key: string]: any;
 }
