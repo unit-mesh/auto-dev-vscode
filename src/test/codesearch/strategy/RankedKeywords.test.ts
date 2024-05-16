@@ -1,6 +1,6 @@
 import { QuestionKeywords } from "../../../code-search/search-strategy/utils/QuestionKeywords";
 
-describe('HydeKeywordsStrategy', () => {
+describe('RankedKeywords', () => {
 	it('should parse keywords correctly', () => {
 		const content = `
 Where is calculating the average of a list of numbers?
