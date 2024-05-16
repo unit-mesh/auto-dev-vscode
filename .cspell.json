@@ -3,10 +3,18 @@
   "version": "0.2",
   "language": "en",
   "languageId": "typescript,javascript",
-  "dictionaries": ["powershell", "typescript", "node"],
+  "dictionaries": [
+    "powershell",
+    "typescript",
+    "node"
+  ],
   "useGitignore": true,
   "ignorePaths": [],
-  "words": ["phodal"],
+  "words": [
+    "ollama",
+    "openai",
+    "phodal"
+  ],
   "allowCompoundWords": true,
   "overrides": []
 }
