@@ -8,7 +8,7 @@ import { CustomActionPrompt } from "../../../prompt-manage/custom-action/CustomA
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
 import { TreeSitterFileManager } from "../../cache/TreeSitterFileManager";
 
-export class RenameLookup {
+export class RenameLookupExecutor {
 	static async suggest(document: vscode.TextDocument, position: Position, token: vscode.CancellationToken): Promise<undefined | Range | {
 		range: Range;
 		placeholder: string;
@@ -40,7 +40,7 @@ export class RenameLookup {
 
 			return {
 				range: range,
-				placeholder: clearName(output)
+				placeholder: postNameFix(output)
 			};
 		} catch (e) {
 			console.log("error:" + e);
@@ -50,7 +50,7 @@ export class RenameLookup {
 	}
 }
 
-function clearName(str: string): string {
+export function postNameFix(str: string): string {
 	const firstChar = str.charAt(0);
 	const lastChar = str.charAt(str.length - 1);
 	if ((firstChar === '"' && lastChar === '"') || (firstChar === "'" && lastChar === "'") || (firstChar === '`' && lastChar === '`')) {

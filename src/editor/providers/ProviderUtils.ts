@@ -3,7 +3,7 @@ import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import vscode, { Position, Range } from "vscode";
 import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider";
 import { AutoDevCodeActionProvider } from "./AutoDevCodeActionProvider";
-import { RenameLookup } from "../action/refactor/RenameLookup";
+import { RenameLookupExecutor } from "../action/refactor/RenameLookupExecutor";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
 import { SettingService } from "../../settings/SettingService";
 import { channel } from "../../channel";
@@ -65,7 +65,7 @@ export function registerRenameAction(extension: AutoDevExtension) {
 				return range;
 			}
 
-			return await RenameLookup.suggest(document, position, token);
+			return await RenameLookupExecutor.suggest(document, position, token);
 		},
 
 		provideRenameEdits(document, position: Position, newName: string, token) {
