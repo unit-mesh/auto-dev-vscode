@@ -62,13 +62,14 @@ export class AutoDevExtension {
 			console.log(e);
 		}
 
+		const that = this;
 		// waiting for index command
 		let dirs = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath);
 		if (dirs) {
 			channel.appendLine("start indexing dirs:" + dirs);
 			let localInference = LocalEmbeddingProvider.getInstance();
 			let fsPath = getExtensionUri().fsPath;
-			this.embeddingsProvider = localInference;
+			that.embeddingsProvider = localInference;
 			localInference.init(fsPath).then(() => {
 				const indexer = new CodebaseIndexer(localInference, this.ideAction);
 				this.refreshCodebaseIndex(indexer, dirs).then(r => {

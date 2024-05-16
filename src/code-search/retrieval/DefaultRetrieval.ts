@@ -6,6 +6,7 @@ import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { getBasename } from "../utils/IndexPathHelper";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { FullTextSearchCodebaseIndex } from "../search/FullTextSearch";
+import { channel } from "../../channel";
 
 export interface ContextSubmenuItem {
 	id: string;
@@ -133,6 +134,8 @@ export async function retrieveContextItems(
 	} catch (e) {
 		console.warn("Error retrieving from embeddings:", e);
 	}
+
+	console.log("vecResults", vecResults);
 	retrievalResults.push(...vecResults);
 
 	// De-duplicate

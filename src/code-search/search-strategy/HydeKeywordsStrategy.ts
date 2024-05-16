@@ -13,6 +13,7 @@ import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/Aut
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { channel } from "../../channel";
 import { TextRange } from "../scope-graph/model/TextRange";
+import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 
 /**
  * The `HydeKeywordsStrategy` class is a part of the Hyde Strategy pattern and is used to generate keywords from a query.
@@ -56,7 +57,8 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
 		let language = undefined;
-		let result: ContextItem[] = await retrieveContextItems(queryTerm as string, this.extension.ideAction, this.extension.embeddingsProvider!!, undefined, language);
+		let embeddingsProvider = this.extension.embeddingsProvider ?? LocalEmbeddingProvider.getInstance();
+		let result: ContextItem[] = await retrieveContextItems(queryTerm as string, this.extension.ideAction, embeddingsProvider, undefined, language);
 
 		let chunks: ChunkItem[] = [];
 		result.forEach((item: ContextItem) => {

@@ -54,6 +54,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		private readonly embeddingsProvider: EmbeddingsProvider,
 		private readonly readFile: (filepath: string) => Promise<string>,
 	) {
+		this.embeddingsProvider = embeddingsProvider;
 	}
 
 	private tableNameForTag(tag: IndexTag) {
@@ -323,6 +324,7 @@ export class LanceDbIndex implements CodebaseIndex {
 			return [];
 		}
 
+		console.log("Searching", tableName, "for", vector, "in", directory)
 		const table = await db.openTable(tableName);
 		let query = table.search(vector);
 		if (directory) {
