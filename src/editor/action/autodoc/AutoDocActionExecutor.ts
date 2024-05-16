@@ -13,6 +13,7 @@ import { ActionExecutor } from "../_base/ActionExecutor";
 import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
 import { MarkdownTextProcessor } from "../../../markdown/MarkdownTextProcessor";
 import { ActionType } from "../../../prompt-manage/ActionType";
+import { channel } from "../../../channel";
 
 export class AutoDocActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
@@ -87,20 +88,22 @@ export class AutoDocActionExecutor implements ActionExecutor {
 			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
 			return;
 		}
-		console.info(`result: ${doc}`);
 
 		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
 		const finalText = StreamingMarkdownCodeBlock.parse(doc).text;
 
-		console.info(`FencedCodeBlock parsed output: ${finalText}`);
+		channel.appendLine(`FencedCodeBlock parsed output: ${finalText}`);
 		let document = MarkdownTextProcessor.buildDocFromSuggestion(doc, startSymbol, endSymbol);
 
-		// todo: parse comments
 		let startLine = this.range.blockRange.start.line;
+		let startChar = this.range.blockRange.start.character;
 		if (startLine === 0) {
 			startLine = 1;
 		}
-		let textRange: Position = new Position(startLine - 1, 0);
+
+		// todo: add format by indent.
+
+		let textRange: Position = new Position(startLine - 1, startChar);
 		insertCodeByRange(textRange, document);
 	}
 }
