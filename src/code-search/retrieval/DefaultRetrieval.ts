@@ -125,7 +125,7 @@ export async function retrieveContextItems(
 
 	let vecResults : Chunk[] = [];
 	try {
-		await lanceDbIndex.retrieve(
+		vecResults = await lanceDbIndex.retrieve(
 			fullInput,
 			nRetrieve,
 			tags,
@@ -135,7 +135,6 @@ export async function retrieveContextItems(
 		console.warn("Error retrieving from embeddings:", e);
 	}
 
-	console.log("vecResults", vecResults);
 	retrievalResults.push(...vecResults);
 
 	// De-duplicate

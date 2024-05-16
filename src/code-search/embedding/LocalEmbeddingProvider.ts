@@ -83,7 +83,7 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		let infer = new Tensor('float32', new Float32Array(tensorData(result)), result.dims);
 		let output = await mean_pooling(infer, encodings.attention_mask);
 
-		return reshape(output.data, output.dims as any);
+		return reshape(output.data, output.dims as any)[0];
 	}
 }
 

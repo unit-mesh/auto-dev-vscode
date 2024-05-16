@@ -218,6 +218,7 @@ export class LanceDbIndex implements CodebaseIndex {
 			const cachedItems = await stmt.all();
 
 			const lanceRows: LanceDbRow[] = cachedItems.map((item) => {
+				// Schema<{ 0: vector: FixedSizeList[1]<Float32>, 1: path: Utf8, 2: cachekey: Utf8, 3: uuid: Utf8 }>
 				return {
 					path,
 					cachekey: cacheKey,
@@ -315,7 +316,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		tag: IndexTag,
 		n: number,
 		directory: string | undefined,
-		vector: number[],
+		vector: Embedding,
 		db: Connection, /// lancedb.Connection
 	): Promise<LanceDbRow[]> {
 		const tableName = this.tableNameForTag(tag);
@@ -326,6 +327,8 @@ export class LanceDbIndex implements CodebaseIndex {
 
 		console.log("Searching", tableName, "for", vector, "in", directory)
 		const table = await db.openTable(tableName);
+		// console.log((await table.schema).toString());
+
 		let query = table.search(vector);
 		if (directory) {
 			// seems like lancedb is only post-filtering, so have to return a bunch of results and slice after
