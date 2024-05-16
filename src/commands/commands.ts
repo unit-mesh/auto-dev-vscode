@@ -12,7 +12,7 @@ import { createNamedElement } from "../code-context/ast/TreeSitterWrapper";
 import { AutoDevCommandOperation } from "./autoDevCommandOperation";
 import { AutoDevCommand } from "./autoDevCommand";
 import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
-import { CommitMessageGenAction } from "../editor/action/misc/CommitMessageGenAction";
+import { CommitMessageGenAction } from "../editor/action/devops/CommitMessageGenAction";
 import { RelevantCodeProviderManager } from "../code-context/RelevantCodeProviderManager";
 import { TreeSitterFileManager } from "../editor/cache/TreeSitterFileManager";
 
