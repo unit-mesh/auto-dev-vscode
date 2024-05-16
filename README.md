@@ -74,6 +74,8 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
 - [ ] Custom Agent
     - [ ] Custom Agent
     - [ ] Custom Agent API
+- [ ] Custom Chat Server
+    - [x] [ollama chat server](./examples/ollama-chat-server/README.md)
 - [ ] Local Text Search
     - [x] TF-IDF
         - [natural](https://naturalnode.github.io/natural/tfidf.html)

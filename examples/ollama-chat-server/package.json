@@ -1,0 +1,29 @@
+{
+  "name": "ollama-chat-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx -r dotenv/config --no-warnings --watch ./src/main.mts",
+    "build": "vite build",
+    "preview": "node ./dist/main.mjs",
+    "chat": "tsx -r dotenv/config ./demo/chat.mts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "ansi-colors": "^4.1.3",
+    "dotenv": "^16.4.5",
+    "enquirer": "^2.4.1",
+    "on-exit": "^1.0.1",
+    "openai": "^4.47.1",
+    "ora": "^8.0.1",
+    "tsx": "^4.10.2",
+    "vite": "^5.2.11",
+    "vite-plugin-externalize-deps": "^0.8.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "zhengxs2018",
+  "license": "MIT"
+}
