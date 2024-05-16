@@ -102,7 +102,7 @@ export class GolangProfile implements LanguageProfile {
 		["const", "var", "func", "module"],
 		// types
 		["struct", "interface", "type"],
-		// misc.
+		// practises.
 		["member"], ["label"],
 	];
 	autoSelectInsideParent = [];

@@ -1,4 +1,4 @@
-import { Git } from "../../../types/git";
+import { Git } from "../../types/git";
 import vscode, { InputBox } from "vscode";
 import { GitAction } from "../../editor-api/scm/GitAction";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
