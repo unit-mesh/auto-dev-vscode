@@ -17,7 +17,6 @@ import { v4 as uuidv4 } from "uuid";
 import { Connection, MetricType, Table } from "vectordb";
 
 import {
-	BranchAndDir,
 	CodebaseIndex,
 	IndexingProgressUpdate,
 	IndexResultType,
@@ -134,39 +133,15 @@ export class LanceDbIndex implements CodebaseIndex {
 	}
 
 	private async createSqliteCacheTable(db: DatabaseConnection) {
-		await db.exec(`CREATE TABLE IF NOT EXISTS lance_db_cache
-                   (
-                       uuid
-                       TEXT
-                       PRIMARY
-                       KEY,
-                       cacheKey
-                       TEXT
-                       NOT
-                       NULL,
-                       path
-                       TEXT
-                       NOT
-                       NULL,
-                       vector
-                       TEXT
-                       NOT
-                       NULL,
-                       startLine
-                       INTEGER
-                       NOT
-                       NULL,
-                       endLine
-                       INTEGER
-                       NOT
-                       NULL,
-                       contents
-                       TEXT
-                       NOT
-                       NULL,
-                       language
-                       TEXT
-                   )`);
+		await db.exec(`CREATE TABLE IF NOT EXISTS lance_db_cache (
+        uuid TEXT PRIMARY KEY,
+        cacheKey TEXT NOT NULL,
+        path TEXT NOT NULL,
+        vector TEXT NOT NULL,
+        startLine INTEGER NOT NULL,
+        endLine INTEGER NOT NULL,
+        contents TEXT NOT NULL
+    )`);
 	}
 
 	async* update(tag: IndexTag,

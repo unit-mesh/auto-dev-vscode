@@ -6,6 +6,7 @@ export interface EmbeddingsProvider {
 	 */
 	id: string;
 	/**
+	 * A text content will split into multiple chunks.
 	 * Accepts a list of code chunks and returns a list of embeddings data
 	 */
 	embed(chunks: string[]): Promise<Embedding[]>;
