@@ -89,8 +89,12 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
         - [x] [vectordb](https://www.npmjs.com/package/vectordb)
     - [x] Semantic Search
 - [ ] Search strategy
-    - [ ] Hyde Document/Code strategy
-    - [x] Hyde Keywords strategy 
+    - [x] Hyde Document/Code strategy
+    - [x] Hyde Keywords strategy
+    - [ ] Symbol search
+- RAG Strategy
+    - [ ] Pre-information build
+    - [ ] Post-symbol recovery
 - [ ] Extensions
     - [x] Build Tools
         - [x] Gradle
