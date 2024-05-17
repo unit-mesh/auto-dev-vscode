@@ -6,7 +6,7 @@ import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 import { HydeStep } from "./_base/HydeStep";
 import { ChatMessage } from "../../llm-provider/ChatMessage";
 import { QuestionKeywords } from "./utils/QuestionKeywords";
-import { ContextItem, Retrieval } from "../retrieval/DefaultRetrieval";
+import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
@@ -14,6 +14,7 @@ import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { channel } from "../../channel";
 import { TextRange } from "../scope-graph/model/TextRange";
 import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
+import { ContextItem } from "../retrieval/Retrieval";
 
 /**
  * The `HydeKeywordsStrategy` class is a part of the Hyde Strategy pattern and is used to generate keywords from a query.
@@ -58,7 +59,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
 		let language = undefined;
 		let embeddingsProvider = this.extension.embeddingsProvider ?? LocalEmbeddingProvider.getInstance();
-		let retrieval = Retrieval.getInstance();
+		let retrieval = DefaultRetrieval.getInstance();
 		let result: ContextItem[] = await retrieval.retrieve(queryTerm as string, this.extension.ideAction, embeddingsProvider, undefined, language);
 
 		let chunks: ChunkItem[] = [];

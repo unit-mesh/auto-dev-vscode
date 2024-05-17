@@ -5,89 +5,21 @@ import { LanceDbIndex } from "../indexing/LanceDbIndex";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { getBasename } from "../utils/IndexPathHelper";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
-import { FullTextSearchCodebaseIndex } from "../search/FullTextSearch";
 import { channel } from "../../channel";
+import { ContextItem, Retrieval } from "./Retrieval";
 
-export interface ContextSubmenuItem {
-	id: string;
-	title: string;
-	description: string;
-}
-
-export interface ContextItem {
-	content: string;
-	name: string;
-	description: string;
-	editing?: boolean;
-	editable?: boolean;
-}
-
-export class Retrieval {
-	// singleton
-	private static instance: Retrieval;
+export class DefaultRetrieval extends Retrieval {
+	private static instance: DefaultRetrieval;
 
 	private constructor() {
+		super();
 	}
 
 	static getInstance() {
-		if (!Retrieval.instance) {
-			Retrieval.instance = new Retrieval();
+		if (!DefaultRetrieval.instance) {
+			DefaultRetrieval.instance = new DefaultRetrieval();
 		}
-		return Retrieval.instance;
-	}
-
-	deduplicateArray<T>(
-		array: T[],
-		equal: (a: T, b: T) => boolean,
-	): T[] {
-		const result: T[] = [];
-
-		for (const item of array) {
-			if (!result.some((existingItem) => equal(existingItem, item))) {
-				result.push(item);
-			}
-		}
-
-		return result;
-	}
-
-	deduplicateChunks(chunks: Chunk[]): Chunk[] {
-		return this.deduplicateArray(chunks, (a, b) => {
-			return (
-				a.filepath === b.filepath &&
-				a.startLine === b.startLine &&
-				a.endLine === b.endLine
-			);
-		});
-	}
-
-	async retrieveFts(
-		query: string,
-		n: number,
-		tags: BranchAndDir[],
-		filterDirectory: string | undefined,
-		language: string | undefined = undefined,
-	): Promise<Chunk[]> {
-		const ftsIndex = new FullTextSearchCodebaseIndex();
-
-		let ftsResults: Chunk[] = [];
-		try {
-			if (query.trim() !== "") {
-				ftsResults = await ftsIndex.retrieve(
-					tags,
-					query.trim().split(" ").map((element) => `"${element}"`).join(" OR "),
-					n,
-					filterDirectory,
-					undefined,
-					RETRIEVAL_PARAMS.bm25Threshold,
-					language,
-				);
-			}
-			return ftsResults;
-		} catch (e) {
-			console.warn("Error retrieving from FTS:", e);
-			return [];
-		}
+		return DefaultRetrieval.instance;
 	}
 
 	/// todo: add indextypes

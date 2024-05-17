@@ -16,8 +16,8 @@ import { ChunkWithoutID } from "../chunk/_base/Chunk";
 import { getLanguageForFile } from "../../editor/language/parser/TreeSitterParser";
 import { getParserForFile } from "../../editor/language/parser/ParserUtil";
 import { tagToString } from "../refreshIndex";
-import { ContextItem, ContextSubmenuItem } from "../retrieval/DefaultRetrieval";
 import { getBasename } from "../utils/IndexPathHelper";
+import { ContextItem, ContextSubmenuItem } from "../retrieval/Retrieval";
 
 export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 	artifactId = "codeSnippets";
