@@ -6,7 +6,7 @@ import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { getBasename } from "../utils/IndexPathHelper";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { channel } from "../../channel";
-import { ContextItem, Retrieval } from "./Retrieval";
+import { ContextItem, Retrieval, RetrievalQueryTerm } from "./Retrieval";
 
 export class DefaultRetrieval extends Retrieval {
 	private static instance: DefaultRetrieval;
@@ -56,13 +56,13 @@ export class DefaultRetrieval extends Retrieval {
 		const retrievalResults: Chunk[] = [];
 
 		// Source: Full-text search
-		let ftsResults = await this.retrieveFts(
+		let ftsResults = await this.retrieveFts(new RetrievalQueryTerm(
 			fullInput,
 			nRetrieve / 2,
 			tags,
 			filterDirectory,
 			language
-		);
+		));
 
 		channel.appendLine("\n");
 		channel.appendLine(`== [Codebase] Found ${ftsResults.length} results from FullTextSearch`);

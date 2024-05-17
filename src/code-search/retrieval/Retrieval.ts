@@ -19,6 +19,22 @@ export interface ContextItem {
 	editable?: boolean;
 }
 
+export class RetrievalQueryTerm {
+	query = "";
+	n = 0;
+	tags: BranchAndDir[];
+	filterDirectory?: string;
+	language?: string;
+
+	constructor(query: string, n: number, tags: BranchAndDir[], filterDirectory?: string, language?: string) {
+		this.query = query;
+		this.n = n;
+		this.tags = tags;
+		this.filterDirectory = filterDirectory;
+		this.language = language;
+	}
+}
+
 export abstract class Retrieval {
 
 	deduplicateArray<T>(
@@ -46,26 +62,20 @@ export abstract class Retrieval {
 		});
 	}
 
-	async retrieveFts(
-		query: string,
-		n: number,
-		tags: BranchAndDir[],
-		filterDirectory: string | undefined,
-		language: string | undefined = undefined,
-	): Promise<Chunk[]> {
+	async retrieveFts(term: RetrievalQueryTerm): Promise<Chunk[]> {
 		const ftsIndex = new FullTextSearchCodebaseIndex();
 
 		let ftsResults: Chunk[] = [];
 		try {
-			if (query.trim() !== "") {
+			if (term.query.trim() !== "") {
 				ftsResults = await ftsIndex.retrieve(
-					tags,
-					query.trim().split(" ").map((element) => `"${element}"`).join(" OR "),
-					n,
-					filterDirectory,
+					term.tags,
+					term.query.trim().split(" ").map((element) => `"${element}"`).join(" OR "),
+					term.n,
+					term.filterDirectory,
 					undefined,
 					RETRIEVAL_PARAMS.bm25Threshold,
-					language,
+					term.language,
 				);
 			}
 			return ftsResults;
