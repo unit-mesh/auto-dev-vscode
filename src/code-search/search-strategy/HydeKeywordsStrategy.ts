@@ -14,7 +14,7 @@ import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { channel } from "../../channel";
 import { TextRange } from "../scope-graph/model/TextRange";
 import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
-import { ContextItem } from "../retrieval/Retrieval";
+import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
 
 /**
  * The `HydeKeywordsStrategy` class is a part of the Hyde Strategy pattern and is used to generate keywords from a query.
@@ -60,10 +60,15 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 		let language = undefined;
 		let embeddingsProvider = this.extension.embeddingsProvider ?? LocalEmbeddingProvider.getInstance();
 		let retrieval = DefaultRetrieval.getInstance();
-		let query = queryTerm as string;
+		let options: RetrieveOption = {
+			filterDirectory: undefined,
+			filterLanguage: language,
+			withFullTextSearch: true,
+			withSemanticSearch: true,
+		};
 
 		let result: ContextItem[] = await retrieval.retrieve(
-			queryTerm as string, this.extension.ideAction, embeddingsProvider, undefined, language
+			queryTerm as string, this.extension.ideAction, embeddingsProvider, options
 		);
 
 		let chunks: ChunkItem[] = [];

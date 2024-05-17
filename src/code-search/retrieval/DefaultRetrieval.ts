@@ -6,7 +6,7 @@ import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { getBasename } from "../utils/IndexPathHelper";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { channel } from "../../channel";
-import { ContextItem, Retrieval } from "./Retrieval";
+import { ContextItem, Retrieval, RetrieveOption } from "./Retrieval";
 import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
 
 export class DefaultRetrieval extends Retrieval {
@@ -28,8 +28,7 @@ export class DefaultRetrieval extends Retrieval {
 		fullInput: string,
 		ide: IdeAction,
 		embeddingsProvider: EmbeddingsProvider,
-		filterDirectory: string | undefined,
-		language: string | undefined = undefined,
+		options: RetrieveOption,
 	): Promise<ContextItem[]> {
 		const workspaceDirs = await ide.getWorkspaceDirectories();
 
@@ -58,42 +57,44 @@ export class DefaultRetrieval extends Retrieval {
 		// Get all retrieval results
 		const retrievalResults: Chunk[] = [];
 
-		// Source: Full-text search
-		let ftsResults = await this.retrieveFts(new RetrievalQueryTerm(
-			fullInput,
-			nRetrieve / 2,
-			tags,
-			filterDirectory,
-			language
-		));
-
-		channel.appendLine(`== [Codebase] Found ${ftsResults.length} results from FullTextSearch`);
-		retrievalResults.push(...ftsResults);
-
-		// Source: Embeddings
-		const lanceDbIndex = new LanceDbIndex(embeddingsProvider, (path) =>
-			ide.readFile(path),
-		);
-
-		let vecResults: Chunk[] = [];
-		try {
-			vecResults = await lanceDbIndex.retrieve(new RetrievalQueryTerm(
+		if (options.withFullTextSearch) {
+			// Source: Full-text search
+			let ftsResults = await this.retrieveFts(new RetrievalQueryTerm(
 				fullInput,
-				nRetrieve,
+				nRetrieve / 2,
 				tags,
-				filterDirectory,
-				language
+				options.filterDirectory,
+				options.filterLanguage
 			));
-		} catch (e) {
-			console.warn("Error retrieving from embeddings:", e);
+
+			channel.appendLine(`== [Codebase] Found ${ftsResults.length} results from FullTextSearch`);
+			retrievalResults.push(...ftsResults);
 		}
 
-		channel.appendLine(`== [Codebase] Found ${vecResults.length} results from embeddings`);
-		retrievalResults.push(...vecResults);
+		if (options.withSemanticSearch) {
+			// Source: Embeddings
+			const lanceDbIndex = new LanceDbIndex(embeddingsProvider, (path) =>
+				ide.readFile(path),
+			);
 
-		// De-duplicate
+			let vecResults: Chunk[] = [];
+			try {
+				vecResults = await lanceDbIndex.retrieve(new RetrievalQueryTerm(
+					fullInput,
+					nRetrieve,
+					tags,
+					options.filterDirectory,
+					options.filterLanguage
+				));
+			} catch (e) {
+				console.warn("Error retrieving from embeddings:", e);
+			}
+
+			channel.appendLine(`== [Codebase] Found ${vecResults.length} results from embeddings`);
+			retrievalResults.push(...vecResults);
+		}
+
 		let results: Chunk[] = this.deduplicateChunks(retrievalResults);
-
 		if (results.length === 0) {
 			channel.appendLine(`== [Codebase] No results found for @codebase context provider.`);
 			return [];

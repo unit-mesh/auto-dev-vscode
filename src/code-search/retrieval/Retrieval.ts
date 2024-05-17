@@ -19,7 +19,29 @@ export interface ContextItem {
 	editable?: boolean;
 }
 
+export interface RetrieveOption {
+	filterDirectory: string | undefined;
+	filterLanguage: string | undefined;
+	withFullTextSearch: boolean;
+	withSemanticSearch: boolean;
+}
+
 export abstract class Retrieval {
+	/**
+	 * Retrieves context items based on the provided full input.
+	 *
+	 * @param fullInput - The full input string used to retrieve context items.
+	 * @param ide - The IDE action that triggered the retrieval of context items.
+	 * @param embeddingsProvider - The provider of embeddings used for context item retrieval.
+	 * @param options - Optional parameters for customizing the retrieval process.
+	 * @returns A Promise that resolves to an array of ContextItem objects representing the retrieved context items.
+	 */
+	abstract retrieve(
+		fullInput: string,
+		ide: IdeAction,
+		embeddingsProvider: EmbeddingsProvider,
+		options: RetrieveOption | undefined,
+	): Promise<ContextItem[]>;
 
 	deduplicateArray<T>(
 		array: T[],
@@ -68,12 +90,4 @@ export abstract class Retrieval {
 			return [];
 		}
 	}
-
-	abstract retrieve(
-		fullInput: string,
-		ide: IdeAction,
-		embeddingsProvider: EmbeddingsProvider,
-		filterDirectory: string | undefined,
-		language: string | undefined,
-	): Promise<ContextItem[]>;
 }
