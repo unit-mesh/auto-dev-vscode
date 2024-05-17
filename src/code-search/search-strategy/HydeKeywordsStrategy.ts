@@ -16,6 +16,27 @@ import { TextRange } from "../scope-graph/model/TextRange";
 import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
 
+export async function executeIns(instruction: string) {
+	console.log("\ninstruction: \n" + instruction);
+	let result = "";
+	try {
+		let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
+		let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
+		for await (let chatMessage of response) {
+			channel.append(chatMessage.content);
+			result += chatMessage.content;
+		}
+
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
+		return result;
+	} catch (e) {
+		console.log("error:" + e);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
+		return "";
+	}
+}
+
 /**
  * The `HydeKeywordsStrategy` class is a part of the Hyde Strategy pattern and is used to generate keywords from a query.
  * These keywords are then used to retrieve similar code by symbols.
@@ -50,8 +71,8 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 
 	async generateDocument(): Promise<HydeDocument<QuestionKeywords>> {
 		let proposeIns = await this.instruction();
-		channel.appendLine(" --- Generate keyword --- ");
-		let proposeOut = await HydeKeywordsStrategy.executeIns(proposeIns);
+		channel.appendLine(" --- Generated keyword --- ");
+		let proposeOut = await executeIns(proposeIns);
 		let keywords = QuestionKeywords.from(proposeOut);
 		return new HydeDocument<QuestionKeywords>(this.documentType, keywords);
 	}
@@ -90,7 +111,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 
 	async execute() {
 		channel.appendLine("=".repeat(80));
-		channel.appendLine("= Hyde Keywords Strategy: generate keywords for query =");
+		channel.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
 		channel.appendLine("=".repeat(80));
 
 		this.step = HydeStep.Propose;
@@ -112,32 +133,11 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 		channel.appendLine("\n");
 		channel.appendLine(" --- Summary --- ");
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, evaluateContext);
-		return await HydeKeywordsStrategy.executeIns(evaluateIns);
+		return await executeIns(evaluateIns);
 	}
 
 	private createQueryTerm(keywords: QuestionKeywords) {
 		return keywords.basic?.[0] + " " + keywords.single?.[0] + " " + keywords.localization?.[0];
-	}
-
-	static async executeIns(instruction: string): Promise<string> {
-		console.log("\ninstruction: \n" + instruction);
-		let result = "";
-		try {
-			let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
-			AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
-			let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
-			for await (let chatMessage of response) {
-				channel.append(chatMessage.content);
-				result += chatMessage.content;
-			}
-
-			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
-			return result;
-		} catch (e) {
-			console.log("error:" + e);
-			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
-			return "";
-		}
 	}
 }
 
