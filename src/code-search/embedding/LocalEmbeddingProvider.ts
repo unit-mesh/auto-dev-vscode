@@ -1,7 +1,7 @@
 import path from "path";
 
 import { InferenceSession, Tensor as ONNXTensor } from "onnxruntime-common";
-import { mean_pooling, mergedTensor, reshape, tensorData } from "./_base/EmbeddingUtils";
+import { mean_pooling, mergedTensor, normalize_, reshape, tensorData } from "./_base/EmbeddingUtils";
 import { EmbeddingsProvider } from "./_base/EmbeddingsProvider";
 import { Embedding } from "./_base/Embedding";
 import { channel } from "../../channel";
@@ -55,7 +55,7 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		});
 
 		channel.appendLine("embedding provider initialized");
-		console.log(await this.embed(['blog']));
+		// console.log(await this.embed(['blog']));
 	}
 
 	async embed(chunks: string[]): Promise<Embedding[]> {
@@ -97,44 +97,4 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		let final = normalize_(mergedTensor(tensor), 2.0, 1);
 		return reshape(final.data, final.dims as any)[0];
 	}
-}
-
-function safeIndex(index: number, size: number, dimension = null) {
-	if (index < -size || index >= size) {
-		throw new Error(`IndexError: index ${index} is out of bounds for dimension${dimension === null ? '' : ' ' + dimension} with size ${size}`);
-	}
-
-	if (index < 0) {
-		// Negative indexing, ensuring positive index
-		index = ((index % size) + size) % size;
-	}
-	return index;
-}
-
-
-function normalize_(tensor: any, p = 2.0, dim = 1) {
-	dim = safeIndex(dim, tensor.dims.length);
-
-	const norm = mergedTensor(tensor.norm(p, dim, true));
-
-	for (let i = 0; i < tensor.data.length; ++i) {
-
-		// Calculate the index in the resulting array
-		let resultIndex = 0;
-
-		for (let j = tensor.dims.length - 1, num = i, resultMultiplier = 1; j >= 0; --j) {
-			const size = tensor.dims[j];
-			if (j !== dim) {
-				const index = num % size;
-				resultIndex += index * resultMultiplier;
-				resultMultiplier *= tensor.dims[j];
-			}
-			num = Math.floor(num / size);
-		}
-
-		// Divide by normalized value
-		tensor.data[i] /= norm.data[resultIndex];
-	}
-
-	return tensor;
 }

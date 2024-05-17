@@ -121,3 +121,42 @@ export function reshape(data: any, dimensions: any[]) {
 
 	return reshapedArray[0];
 }
+
+export function safeIndex(index: number, size: number, dimension = null) {
+	if (index < -size || index >= size) {
+		throw new Error(`IndexError: index ${index} is out of bounds for dimension${dimension === null ? '' : ' ' + dimension} with size ${size}`);
+	}
+
+	if (index < 0) {
+		// Negative indexing, ensuring positive index
+		index = ((index % size) + size) % size;
+	}
+	return index;
+}
+
+export function normalize_(tensor: any, p = 2.0, dim = 1) {
+	dim = safeIndex(dim, tensor.dims.length);
+
+	const norm = mergedTensor(tensor.norm(p, dim, true));
+
+	for (let i = 0; i < tensor.data.length; ++i) {
+
+		// Calculate the index in the resulting array
+		let resultIndex = 0;
+
+		for (let j = tensor.dims.length - 1, num = i, resultMultiplier = 1; j >= 0; --j) {
+			const size = tensor.dims[j];
+			if (j !== dim) {
+				const index = num % size;
+				resultIndex += index * resultMultiplier;
+				resultMultiplier *= tensor.dims[j];
+			}
+			num = Math.floor(num / size);
+		}
+
+		// Divide by normalized value
+		tensor.data[i] /= norm.data[resultIndex];
+	}
+
+	return tensor;
+}
