@@ -26,7 +26,8 @@ export class Retrieval {
 	// singleton
 	private static instance: Retrieval;
 
-	private constructor() {}
+	private constructor() {
+	}
 
 	static getInstance() {
 		if (!Retrieval.instance) {
@@ -159,9 +160,8 @@ export class Retrieval {
 		let results: Chunk[] = this.deduplicateChunks(retrievalResults);
 
 		if (results.length === 0) {
-			throw new Error(
-				"Warning: No results found for @codebase context provider.",
-			);
+			channel.appendLine(`== [Codebase] No results found for @codebase context provider.`);
+			return [];
 		}
 
 		// todo: extends to full code context
