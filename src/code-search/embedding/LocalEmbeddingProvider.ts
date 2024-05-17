@@ -1,7 +1,7 @@
 import path from "path";
 
 import { InferenceSession, Tensor as ONNXTensor } from "onnxruntime-common";
-import { mergedTensor, mean_pooling, reshape, tensorData } from "./_base/EmbeddingUtils";
+import { mean_pooling, mergedTensor, reshape, tensorData } from "./_base/EmbeddingUtils";
 import { EmbeddingsProvider } from "./_base/EmbeddingsProvider";
 import { Embedding } from "./_base/Embedding";
 import { channel } from "../../channel";
@@ -23,6 +23,7 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 	env: any;
 	tokenizer: any;
 	session: InferenceSession | undefined;
+	MaxGroupSize: number = 4;
 
 	// singleton
 	private static instance: LocalEmbeddingProvider;
@@ -54,18 +55,23 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		});
 
 		channel.appendLine("embedding provider initialized");
-		// console.log(await this.embed(['blog']));
+		console.log(await this.embed(['blog']));
 	}
 
 	async embed(chunks: string[]): Promise<Embedding[]> {
-		let embeddings = [];
-		for (let i = 0; i < chunks.length; i++) {
-			let chunk = chunks[i];
-			let embedding = await this.embedChunk(chunk);
-			embeddings.push(embedding);
+		if (chunks.length === 0) {
+			return [];
 		}
 
-		return embeddings;
+		let outputs = [];
+		for (let i = 0; i < chunks.length; i += this.MaxGroupSize) {
+			let chunkGroup = chunks.slice(i, i + this.MaxGroupSize,);
+			for (const chunk of chunkGroup) {
+				outputs.push(await this.embedChunk(chunk));
+			}
+		}
+
+		return outputs;
 	}
 
 	private async embedChunk(sequence: string) {
