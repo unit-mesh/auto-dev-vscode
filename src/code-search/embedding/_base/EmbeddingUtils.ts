@@ -35,6 +35,8 @@ export function tensorData(tensor: any) {
  * @returns {Tensor} Returns a new Tensor of shape [batchSize, embedDim].
  */
 export async function mean_pooling(last_hidden_state: any, attention_mask: any) {
+	const { Tensor } = await import('@xenova/transformers');
+
 	let shape = [last_hidden_state.dims[0], last_hidden_state.dims[2]];
 	// @ts-ignore
 	let returnedData = new (tensorData(last_hidden_state).constructor)(shape[0] * shape[1]);
@@ -64,7 +66,7 @@ export async function mean_pooling(last_hidden_state: any, attention_mask: any) 
 		}
 	}
 
-	return new ONNXTensor(
+	return new Tensor(
 		last_hidden_state.type,
 		returnedData,
 		shape

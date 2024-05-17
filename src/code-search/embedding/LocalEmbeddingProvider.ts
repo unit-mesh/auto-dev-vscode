@@ -24,6 +24,8 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 	tokenizer: any;
 	session: InferenceSession | undefined;
 
+	MaxGroupSize: number = 4;
+
 	// singleton
 	private static instance: LocalEmbeddingProvider;
 
@@ -44,6 +46,7 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		let modelPath = path.join(basepath, "models", "all-MiniLM-L6-v2", "onnx", "model_quantized.onnx");
 		let modelBase = path.join(".", "all-MiniLM-L6-v2");
 
+
 		this.tokenizer = await AutoTokenizer.from_pretrained(modelBase, {
 			quantized: true,
 			local_files_only: true,
@@ -54,39 +57,48 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		});
 
 		channel.appendLine("embedding provider initialized");
+		console.log(await this.embed(['blog']));
 	}
 
 	async embed(chunks: string[]): Promise<Embedding[]> {
-		let embeddings = [];
-		for (let i = 0; i < chunks.length; i++) {
-			let chunk = chunks[i];
-			let embedding = await this.embedChunk(chunk);
-			embeddings.push(embedding);
+		if (chunks.length === 0) {
+			return [];
 		}
 
-		return embeddings;
+		let outputs = [];
+		for (let i = 0; i < chunks.length; i += this.MaxGroupSize) {
+			let chunkGroup = chunks.slice(i, i + this.MaxGroupSize,);
+			let output = await this.embedChunk(chunkGroup);
+			outputs.push(...output);
+		}
+		return outputs;
 	}
 
-	private async embedChunk(sequence: string) {
+
+	async embedChunk(sequence: string[]) : Promise<Embedding[]> {
 		const { Tensor } = await import('@xenova/transformers');
-		let encodings = this.tokenizer(sequence);
-
-		const inputIdsTensor = new ONNXTensor('int64', tensorData(encodings.input_ids), encodings.input_ids.dims);
-		const attentionMaskTensor = new ONNXTensor('int64', tensorData(encodings.attention_mask), encodings.attention_mask.dims);
-		const tokenTypeIdsTensor = new ONNXTensor('int64', tensorData(encodings.token_type_ids), encodings.token_type_ids.dims);
-
-		const outputs: InferenceSession.ReturnType = await this.session!!.run({
-			input_ids: inputIdsTensor,
-			attention_mask: attentionMaskTensor,
-			token_type_ids: tokenTypeIdsTensor
+		let encodings = this.tokenizer(sequence, {
+			padding: true,
+			truncation: true,
 		});
 
-		let result = outputs.last_hidden_state ?? outputs.logits;
+		// const inputIdsTensor = new ONNXTensor('int64', tensorData(encodings.input_ids), encodings.input_ids.dims);
+		// const attentionMaskTensor = new ONNXTensor('int64', tensorData(encodings.attention_mask), encodings.attention_mask.dims);
+		// const tokenTypeIdsTensor = new ONNXTensor('int64', tensorData(encodings.token_type_ids), encodings.token_type_ids.dims);
+
+		const outputs: InferenceSession.ReturnType = await this.session!!.run({
+			input_ids: encodings.input_ids,
+			attention_mask: encodings.attention_mask,
+			token_type_ids: encodings.token_type_ids
+		});
+
+		let state = outputs.last_hidden_state ?? outputs.logits;
 		// @ts-ignore
-		let infer = new Tensor('float32', new Float32Array(tensorData(result)), result.dims);
+		let infer = new Tensor(state);
 		let output = await mean_pooling(infer, encodings.attention_mask);
 
-		return reshape(output.data, output.dims as any)[0];
+		let final = output.normalize_(2, -1);
+
+		return reshape(final.data, final.dims as any)[0];
 	}
 }
-
