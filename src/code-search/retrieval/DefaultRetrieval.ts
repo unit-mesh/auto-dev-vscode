@@ -116,6 +116,8 @@ export async function retrieveContextItems(
 		filterDirectory,
 		language
 	);
+
+	channel.appendLine(`[Codebase] Found ${ftsResults.length} results from FullTextSearch`);
 	retrievalResults.push(...ftsResults);
 
 	// Source: Embeddings
@@ -135,6 +137,7 @@ export async function retrieveContextItems(
 		console.warn("Error retrieving from embeddings:", e);
 	}
 
+	channel.appendLine(`[Codebase] Found ${vecResults.length} results from embeddings`);
 	retrievalResults.push(...vecResults);
 
 	// De-duplicate

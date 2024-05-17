@@ -325,9 +325,7 @@ export class LanceDbIndex implements CodebaseIndex {
 			return [];
 		}
 
-		console.log("Searching", tableName, "for", vector, "in", directory)
 		const table = await db.openTable(tableName);
-		// console.log((await table.schema).toString());
 
 		let query = table.search(vector);
 		if (directory) {
