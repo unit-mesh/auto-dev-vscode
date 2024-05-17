@@ -6,7 +6,7 @@ import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 import { HydeStep } from "./_base/HydeStep";
 import { ChatMessage } from "../../llm-provider/ChatMessage";
 import { QuestionKeywords } from "./utils/QuestionKeywords";
-import { ContextItem, retrieveContextItems } from "../retrieval/DefaultRetrieval";
+import { ContextItem, Retrieval } from "../retrieval/DefaultRetrieval";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
@@ -58,7 +58,8 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
 		let language = undefined;
 		let embeddingsProvider = this.extension.embeddingsProvider ?? LocalEmbeddingProvider.getInstance();
-		let result: ContextItem[] = await retrieveContextItems(queryTerm as string, this.extension.ideAction, embeddingsProvider, undefined, language);
+		let retrieval = Retrieval.getInstance();
+		let result: ContextItem[] = await retrieval.retrieve(queryTerm as string, this.extension.ideAction, embeddingsProvider, undefined, language);
 
 		let chunks: ChunkItem[] = [];
 		result.forEach((item: ContextItem) => {
