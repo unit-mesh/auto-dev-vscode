@@ -117,7 +117,8 @@ export async function retrieveContextItems(
 		language
 	);
 
-	channel.appendLine(`[Codebase] Found ${ftsResults.length} results from FullTextSearch`);
+	channel.appendLine("\n");
+	channel.appendLine(`== [Codebase] Found ${ftsResults.length} results from FullTextSearch`);
 	retrievalResults.push(...ftsResults);
 
 	// Source: Embeddings
@@ -137,7 +138,7 @@ export async function retrieveContextItems(
 		console.warn("Error retrieving from embeddings:", e);
 	}
 
-	channel.appendLine(`[Codebase] Found ${vecResults.length} results from embeddings`);
+	channel.appendLine(`== [Codebase] Found ${vecResults.length} results from embeddings`);
 	retrievalResults.push(...vecResults);
 
 	// De-duplicate
@@ -148,6 +149,8 @@ export async function retrieveContextItems(
 			"Warning: No results found for @codebase context provider.",
 		);
 	}
+
+	// todo: extends to full code context
 
 	return [
 		...results.map((r) => {

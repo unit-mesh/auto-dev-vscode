@@ -78,17 +78,17 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 	}
 
 	async execute() {
+		channel.appendLine("=".repeat(80));
+		channel.appendLine("= Hyde Keywords Strategy: generate keywords for query =");
+		channel.appendLine("=".repeat(80));
+
 		this.step = HydeStep.Propose;
 		let documents = await this.generateDocument();
 		let keywords = documents.content;
 
-		console.log('keywords:', keywords);
-
 		this.step = HydeStep.Retrieve;
 		let queryTerm = this.createQueryTerm(keywords);
 		let chunks = await this.retrieveChunks(queryTerm);
-
-		console.log(chunks);
 
 		this.step = HydeStep.Evaluate;
 		let evaluateContext: KeywordEvaluateContext = {
