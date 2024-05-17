@@ -1,27 +1,20 @@
-Write a code snippet that could hypothetically be returned by a code search engine as the answer to the query: {query}
+Your job is to answer a query about a codebase using the information above.
 
-- Write the snippets in a programming or markup language that is likely given the query
-- The snippet should be between 5 and 10 lines long
-- Surround the snippet in triple backticks
+You must use the following formatting rules at all times:
+- Provide only as much information and code as is necessary to answer the query and be concise
+- If you do not have enough information needed to answer the query, do not make up an answer
+- When referring to code, you must provide an example in a code block
+- Keep number of quoted lines of code to a minimum when possible
+- Basic markdown is allowed
+- If you have enough information, try your best to answer more details.
+- You MUST provide key process of your thinking,
 
-**Examples**
-User: What's the Qdrant threshold?
-Response:
-```rust
-SearchPoints {
-    limit,
-    vector: vectors.get(idx).unwrap().clone(),
-    collection_name: COLLECTION_NAME.to_string(),
-    offset: Some(offset),
-    score_threshold: Some(0.3),
-    with_payload: Some(WithPayloadSelector {
-        selector_options: Some(with_payload_selector::SelectorOptions::Enable(true)),
-    }),
-}
+Code：
+
+```${context.language}
+${context.code}
 ```
 
-```user```
-User: ${context.question}
+Take a deep breath, and start to answer the question.
 
-Response:
-
+User's Question：${context.question}
