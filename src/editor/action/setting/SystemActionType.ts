@@ -2,8 +2,8 @@ import { AutoDevExtension } from "../../../AutoDevExtension";
 
 export enum SystemActionType {
 	Indexing = "Indexing codebase",
-	SemanticSearchKeyword = "Natural language search (Keyword strategy)",
-	SemanticSearchCode = "Natural language search (Code strategy)",
+	SemanticSearchKeyword = "Natural language search (Hyde Keyword strategy)",
+	SemanticSearchCode = "Natural language search (Hyde Code strategy)",
 	SimilarCodeSearch = "Search for similar code",
 }
 

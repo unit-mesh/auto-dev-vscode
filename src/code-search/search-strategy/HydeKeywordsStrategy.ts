@@ -66,7 +66,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 			language: ""
 		};
 
-		return await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, proposeContext);
+		return await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, proposeContext);
 	}
 
 	async generateDocument(): Promise<HydeDocument<QuestionKeywords>> {
@@ -132,7 +132,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 
 		channel.appendLine("\n");
 		channel.appendLine(" --- Summary --- ");
-		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, evaluateContext);
+		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);
 		return await executeIns(evaluateIns);
 	}
 

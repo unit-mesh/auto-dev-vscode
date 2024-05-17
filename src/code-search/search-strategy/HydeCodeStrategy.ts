@@ -60,7 +60,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 			language: ""
 		};
 
-		return await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, proposeContext);
+		return await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, proposeContext);
 	}
 
 	async generateDocument(): Promise<HydeDocument<string>> {
@@ -125,7 +125,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 
 		channel.appendLine("\n");
 		channel.appendLine(" --- Summary --- ");
-		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, HydeDocumentType.Keywords, evaluateContext);
+		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);
 		return await executeIns(evaluateIns);
 	}
 }

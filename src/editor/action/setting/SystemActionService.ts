@@ -7,9 +7,6 @@ import { channel } from "../../../channel";
 import { SimilarChunkSearcher } from "../../../code-search/similar/SimilarChunkSearcher";
 import { SimilarSearchElementBuilder } from "../../../code-search/similar/SimilarSearchElementBuilder";
 import { Catalyser } from "../../../agent/catalyser/Catalyser";
-import { HydeStrategy } from "../../../code-search/search-strategy/_base/HydeStrategy";
-import { HydeCodeStrategy } from "../../../code-search/search-strategy/HydeCodeStrategy";
-import { HydeDocumentType } from "../../../code-search/search-strategy/_base/HydeDocument";
 
 /**
  * A better example will be: [QuickInput Sample](https://github.com/microsoft/vscode-extension-samples/tree/main/quickinput-sample)
