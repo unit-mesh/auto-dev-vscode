@@ -53,6 +53,8 @@ export class DefaultRetrieval extends Retrieval {
 			branch: branches[i],
 		}));
 
+		channel.appendLine("\n");
+
 		// Get all retrieval results
 		const retrievalResults: Chunk[] = [];
 
@@ -65,7 +67,6 @@ export class DefaultRetrieval extends Retrieval {
 			language
 		));
 
-		channel.appendLine("\n");
 		channel.appendLine(`== [Codebase] Found ${ftsResults.length} results from FullTextSearch`);
 		retrievalResults.push(...ftsResults);
 
@@ -99,7 +100,6 @@ export class DefaultRetrieval extends Retrieval {
 		}
 
 		// todo: extends to full code context
-
 		return [
 			...results.map((r) => {
 				const name = `${getBasename(r.filepath)} (${r.startLine}-${r.endLine})`;

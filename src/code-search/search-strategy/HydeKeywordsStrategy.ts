@@ -60,7 +60,11 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 		let language = undefined;
 		let embeddingsProvider = this.extension.embeddingsProvider ?? LocalEmbeddingProvider.getInstance();
 		let retrieval = DefaultRetrieval.getInstance();
-		let result: ContextItem[] = await retrieval.retrieve(queryTerm as string, this.extension.ideAction, embeddingsProvider, undefined, language);
+		let query = queryTerm as string;
+
+		let result: ContextItem[] = await retrieval.retrieve(
+			queryTerm as string, this.extension.ideAction, embeddingsProvider, undefined, language
+		);
 
 		let chunks: ChunkItem[] = [];
 		result.forEach((item: ContextItem) => {
