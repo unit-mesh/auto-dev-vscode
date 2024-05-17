@@ -7,14 +7,17 @@ import { Embedding } from "./_base/Embedding";
 import { channel } from "../../channel";
 
 // @ts-expect-error
-const ortPromise = import('onnxruntime-node')
+const ortPromise = import('onnxruntime-node');
 
 const InferenceSessionCreate = (...args: any[]) => {
 	return ortPromise.then(ort => {
-		return ort.InferenceSession.create(...args)
-	})
-} 
+		return ort.InferenceSession.create(...args);
+	});
+};
 
+/**
+ * Which will use ONNXRuntime and all-MiniLM-L6-v2 to embed the text.
+ */
 export class LocalEmbeddingProvider implements EmbeddingsProvider {
 	id: string = "local";
 	env: any;
