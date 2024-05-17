@@ -1,12 +1,15 @@
 import { window } from "vscode";
 
-import { SystemAction, SystemActionHandler } from "./SystemAction";
+import { SystemActionType, SystemActionHandler } from "./SystemActionType";
 import { Service } from "../../../service/Service";
 import { AutoDevExtension } from "../../../AutoDevExtension";
 import { channel } from "../../../channel";
 import { SimilarChunkSearcher } from "../../../code-search/similar/SimilarChunkSearcher";
 import { SimilarSearchElementBuilder } from "../../../code-search/similar/SimilarSearchElementBuilder";
 import { Catalyser } from "../../../agent/catalyser/Catalyser";
+import { HydeStrategy } from "../../../code-search/search-strategy/_base/HydeStrategy";
+import { HydeCodeStrategy } from "../../../code-search/search-strategy/HydeCodeStrategy";
+import { HydeDocumentType } from "../../../code-search/search-strategy/_base/HydeDocument";
 
 /**
  * A better example will be: [QuickInput Sample](https://github.com/microsoft/vscode-extension-samples/tree/main/quickinput-sample)
@@ -29,16 +32,17 @@ export class SystemActionService implements Service {
 		let pick = window.createQuickPick();
 
 		const items: { [key: string]: SystemActionHandler } = {
-			[SystemAction.Indexing]: this.indexingAction.bind(this),
-			[SystemAction.IntentionSemanticSearch]: this.intentionSemanticSearch.bind(this),
-			[SystemAction.SimilarCodeSearch]: this.searchSimilarCode.bind(this),
+			[SystemActionType.Indexing]: this.indexingAction.bind(this),
+			[SystemActionType.SemanticSearchKeyword]: this.intentionSemanticSearch.bind(this),
+			[SystemActionType.SemanticSearchCode]: this.intentionSemanticSearch.bind(this),
+			[SystemActionType.SimilarCodeSearch]: this.searchSimilarCode.bind(this),
 		};
 
 		pick.items = Object.keys(items).map(label => ({ label }));
 		pick.onDidChangeSelection(async selection => {
 			if (selection[0]) {
 				const item = items[selection[0].label];
-				await item(extension);
+				await item(extension, selection[0].label as SystemActionType);
 				pick.hide();
 			}
 		});
@@ -47,13 +51,13 @@ export class SystemActionService implements Service {
 		pick.show();
 	}
 
-	async intentionSemanticSearch(extension: AutoDevExtension) {
+	async intentionSemanticSearch(extension: AutoDevExtension, type: SystemActionType) {
 		let inputBox = window.createInputBox();
 		inputBox.title = "Natural Language query for code search";
 		inputBox.onDidAccept(async () => {
 			const query = inputBox.value;
 			inputBox.hide();
-			await Catalyser.getInstance(extension).query(query);
+			await Catalyser.getInstance(extension).query(query, type);
 		});
 
 		inputBox.onDidHide(() => inputBox.dispose());
