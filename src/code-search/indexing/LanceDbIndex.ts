@@ -34,6 +34,7 @@ import { ChunkerManager } from "../chunk/ChunkerManager";
 import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
 import { getBasename, getLanceDbPath } from "../utils/IndexPathHelper";
 import { Embedding } from "../embedding/_base/Embedding";
+import { RetrievalQueryTerm } from "../retrieval/RetrievalQueryTerm";
 
 // LanceDB  converts to lowercase, so names must all be lowercase
 interface LanceDbRow {
@@ -133,22 +134,45 @@ export class LanceDbIndex implements CodebaseIndex {
 	}
 
 	private async createSqliteCacheTable(db: DatabaseConnection) {
-		await db.exec(`CREATE TABLE IF NOT EXISTS lance_db_cache (
-        uuid TEXT PRIMARY KEY,
-        cacheKey TEXT NOT NULL,
-        path TEXT NOT NULL,
-        vector TEXT NOT NULL,
-        startLine INTEGER NOT NULL,
-        endLine INTEGER NOT NULL,
-        contents TEXT NOT NULL,
-				language TEXT
-    )`);
+		await db.exec(`CREATE TABLE IF NOT EXISTS lance_db_cache
+                   (
+                       uuid
+                       TEXT
+                       PRIMARY
+                       KEY,
+                       cacheKey
+                       TEXT
+                       NOT
+                       NULL,
+                       path
+                       TEXT
+                       NOT
+                       NULL,
+                       vector
+                       TEXT
+                       NOT
+                       NULL,
+                       startLine
+                       INTEGER
+                       NOT
+                       NULL,
+                       endLine
+                       INTEGER
+                       NOT
+                       NULL,
+                       contents
+                       TEXT
+                       NOT
+                       NULL,
+                       language
+                       TEXT
+                   )`);
 	}
 
 	async* update(tag: IndexTag,
-	             results: RefreshIndexResults,
-	             markComplete: MarkCompleteCallback,
-	             repoName: string | undefined
+	              results: RefreshIndexResults,
+	              markComplete: MarkCompleteCallback,
+	              repoName: string | undefined
 	): AsyncGenerator<IndexingProgressUpdate> {
 		const lancedb = await import("vectordb");
 		const tableName = this.tableNameForTag(tag);
@@ -262,18 +286,12 @@ export class LanceDbIndex implements CodebaseIndex {
 		yield { progress: 1, desc: "Completed Calculating Embeddings" };
 	}
 
-	async retrieve(
-		query: string,
-		n: number,
-		tags: BranchAndDir[],
-		filterDirectory: string | undefined,
-		minimumScore: number = 0.618
-	): Promise<Chunk[]> {
+	async retrieve(term: RetrievalQueryTerm): Promise<Chunk[]> {
 		const lancedb = await import("vectordb");
 		if (!lancedb.connect) {
 			throw new Error("LanceDB failed to load a native module");
 		}
-		const [vector] = await this.embeddingsProvider?.embed([query]) ?? [[]];
+		const [vector] = await this.embeddingsProvider?.embed([term.query]) ?? [[]];
 		if (!vector) {
 			return [];
 		}
@@ -281,11 +299,11 @@ export class LanceDbIndex implements CodebaseIndex {
 		const db = await lancedb.connect(getLanceDbPath());
 
 		let allResults = [];
-		for (const tag of tags) {
+		for (const tag of term.tags) {
 			const results = await this._retrieveForTag(
 				{ ...tag, artifactId: this.artifactId },
-				n,
-				filterDirectory,
+				term.n,
+				term.filterDirectory,
 				vector,
 				db,
 			);
@@ -293,15 +311,17 @@ export class LanceDbIndex implements CodebaseIndex {
 		}
 
 		allResults = allResults
-			.filter((r) => r._distance!! >= minimumScore)
+			.filter((r) => r._distance!! >= term.minimumScore)
 			.sort((a, b) => a._distance!! - b._distance!!)
-			.slice(0, n);
+			.slice(0, term.n);
 
 		const sqliteDb = await SqliteDb.get();
 		const data = await sqliteDb.all(
-			`SELECT * FROM lance_db_cache WHERE uuid in (${allResults
-				.map((r) => `'${r.uuid}'`)
-				.join(",")})`,
+			`SELECT *
+       FROM lance_db_cache
+       WHERE uuid in (${allResults
+               .map((r) => `'${r.uuid}'`)
+               .join(",")})`,
 		);
 
 		return data.map((d) => {

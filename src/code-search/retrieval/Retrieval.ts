@@ -1,9 +1,9 @@
 import { IdeAction } from "../../editor/editor-api/IdeAction";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { Chunk } from "../chunk/_base/Chunk";
-import { BranchAndDir } from "../indexing/_base/CodebaseIndex";
 import { FullTextSearchCodebaseIndex } from "../search/FullTextSearch";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
+import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
 
 export interface ContextSubmenuItem {
 	id: string;
@@ -17,22 +17,6 @@ export interface ContextItem {
 	description: string;
 	editing?: boolean;
 	editable?: boolean;
-}
-
-export class RetrievalQueryTerm {
-	query = "";
-	n = 0;
-	tags: BranchAndDir[];
-	filterDirectory?: string;
-	language?: string;
-
-	constructor(query: string, n: number, tags: BranchAndDir[], filterDirectory?: string, language?: string) {
-		this.query = query;
-		this.n = n;
-		this.tags = tags;
-		this.filterDirectory = filterDirectory;
-		this.language = language;
-	}
 }
 
 export abstract class Retrieval {

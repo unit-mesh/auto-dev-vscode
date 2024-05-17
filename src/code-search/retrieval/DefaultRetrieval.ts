@@ -6,7 +6,8 @@ import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { getBasename } from "../utils/IndexPathHelper";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { channel } from "../../channel";
-import { ContextItem, Retrieval, RetrievalQueryTerm } from "./Retrieval";
+import { ContextItem, Retrieval } from "./Retrieval";
+import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
 
 export class DefaultRetrieval extends Retrieval {
 	private static instance: DefaultRetrieval;
@@ -75,12 +76,13 @@ export class DefaultRetrieval extends Retrieval {
 
 		let vecResults: Chunk[] = [];
 		try {
-			vecResults = await lanceDbIndex.retrieve(
+			vecResults = await lanceDbIndex.retrieve(new RetrievalQueryTerm(
 				fullInput,
 				nRetrieve,
 				tags,
 				filterDirectory,
-			);
+				language
+			));
 		} catch (e) {
 			console.warn("Error retrieving from embeddings:", e);
 		}
