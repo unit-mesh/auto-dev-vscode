@@ -28,6 +28,15 @@ export function tensorData(tensor: any) {
 	return [];
 }
 
+export function mergedTensor(tensor: any) : any {
+	// merge cpuData to data
+	if (tensor['data'] === undefined && tensor['cpuData'] !== undefined) {
+		tensor['data'] = tensor['cpuData'];
+	}
+
+	return tensor;
+}
+
 /**
  * Perform mean pooling of the last hidden state followed by a normalization step.
  * @param {Tensor} last_hidden_state Tensor of shape [batchSize, seqLength, embedDim]
