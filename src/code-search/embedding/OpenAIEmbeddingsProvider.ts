@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import AuthedEmbeddingsProvider, { AuthedEmbedOptions } from "./_base/AuthedEmbeddingsProvider";
+import { Embedding } from "./_base/Embedding";
 
 export class OpenAIEmbeddingsProvider extends AuthedEmbeddingsProvider {
 // https://platform.openai.com/docs/api-reference/embeddings/create is 2048
@@ -29,7 +30,7 @@ export class OpenAIEmbeddingsProvider extends AuthedEmbeddingsProvider {
 		return this.options.model ?? "openai";
 	}
 
-	async embed(chunks: string[]) {
+	async embed(chunks: string[]): Promise<Embedding[]> {
 		if (!this.options.apiBase?.endsWith("/")) {
 			this.options.apiBase += "/";
 		}
