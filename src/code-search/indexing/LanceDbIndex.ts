@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { v4 as uuidv4 } from "uuid";
-import { Connection, Table } from "vectordb";
+import { Connection, MetricType, Table } from "vectordb";
 
 import {
 	BranchAndDir,
@@ -41,6 +41,9 @@ interface LanceDbRow {
 	path: string;
 	cachekey: string;
 	vector: Embedding;
+
+	// _distance will be the score in the search results
+	_distance?: number;
 
 	[key: string]: any;
 }
@@ -264,6 +267,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		n: number,
 		tags: BranchAndDir[],
 		filterDirectory: string | undefined,
+		minimumScore: number = 0.618
 	): Promise<Chunk[]> {
 		const lancedb = await import("vectordb");
 		if (!lancedb.connect) {
@@ -289,7 +293,8 @@ export class LanceDbIndex implements CodebaseIndex {
 		}
 
 		allResults = allResults
-			.sort((a, b) => a._distance - b._distance)
+			.filter((r) => r._distance!! >= minimumScore)
+			.sort((a, b) => a._distance!! - b._distance!!)
 			.slice(0, n);
 
 		const sqliteDb = await SqliteDb.get();
@@ -334,7 +339,11 @@ export class LanceDbIndex implements CodebaseIndex {
 		} else {
 			query = query.limit(n);
 		}
-		const results = await query.execute();
+
+		const results = await query
+			.metricType(MetricType.Cosine)
+			.execute();
+
 		return results.slice(0, n) as any;
 	}
 }
