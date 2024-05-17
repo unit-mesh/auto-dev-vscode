@@ -88,6 +88,9 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
         - [x] [LanceDB](https://github.com/lancedb/lancedb)
         - [x] [vectordb](https://www.npmjs.com/package/vectordb)
     - [x] Semantic Search
+- [ ] Search strategy
+    - [ ] Hyde Document/Code strategy
+    - [x] Hyde Keywords strategy 
 - [ ] Extensions
     - [x] Build Tools
         - [x] Gradle
