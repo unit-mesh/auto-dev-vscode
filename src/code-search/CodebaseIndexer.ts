@@ -20,7 +20,7 @@ import { EmbeddingsProvider } from "./embedding/_base/EmbeddingsProvider";
 import { getComputeDeleteAddRemove } from "./refreshIndex";
 import { FullTextSearchCodebaseIndex } from "./search/FullTextSearch";
 import { ChunkCodebaseIndex } from "./indexing/ChunkCodebaseIndex";
-import { CodeSnippetsCodebaseIndex } from "./indexing/CodeSnippetsCodebaseIndex";
+import { CodeSnippetsCodebaseIndex } from "../code-context/_indexing/CodeSnippetsCodebaseIndex";
 
 export class CodebaseIndexer {
 	ide: IdeAction;
