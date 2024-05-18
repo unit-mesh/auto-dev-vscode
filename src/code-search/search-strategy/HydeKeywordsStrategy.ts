@@ -15,6 +15,7 @@ import { channel } from "../../channel";
 import { TextRange } from "../scope-graph/model/TextRange";
 import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
+import { StrategyOutput } from "./_base/StrategyOutput";
 
 export async function executeIns(instruction: string) {
 	console.log("\ninstruction: \n" + instruction);
@@ -109,7 +110,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		return docs;
 	}
 
-	async execute() {
+	async execute() : Promise<StrategyOutput> {
 		channel.appendLine("=".repeat(80));
 		channel.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
 		channel.appendLine("=".repeat(80));
@@ -120,20 +121,20 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 
 		this.step = HydeStep.Retrieve;
 		let queryTerm = this.createQueryTerm(keywords);
-		let chunks = await this.retrieveChunks(queryTerm);
+		let chunkItems = await this.retrieveChunks(queryTerm);
 
 		this.step = HydeStep.Evaluate;
 		let evaluateContext: KeywordEvaluateContext = {
 			step: this.step,
 			question: keywords.question,
-			code: chunks.map(item => item.text).join("\n"),
+			code: chunkItems.map(item => item.text).join("\n"),
 			language: ""
 		};
 
 		channel.appendLine("\n");
 		channel.appendLine(" --- Summary --- ");
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);
-		return await executeIns(evaluateIns);
+		return new StrategyOutput(await executeIns(evaluateIns), chunkItems);
 	}
 
 	private createQueryTerm(keywords: HydeKeywords) {

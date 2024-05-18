@@ -5,7 +5,6 @@ import { AutoDevExtension } from "../../AutoDevExtension";
 import { ChatMessage } from "../../llm-provider/ChatMessage";
 import { HydeStep } from "./_base/HydeStep";
 import { PromptManager } from "../../prompt-manage/PromptManager";
-import { HydeKeywords } from "./_base/HydeKeywords";
 import { channel } from "../../channel";
 import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
@@ -13,6 +12,7 @@ import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
 import { TextRange } from "../scope-graph/model/TextRange";
 import { executeIns, KeywordEvaluateContext, KeywordsProposeContext } from "./HydeKeywordsStrategy";
 import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
+import { StrategyOutput } from "./_base/StrategyOutput";
 
 /**
  * Generate hypothetical document base on user input, and then used to retrieve similar code by symbols.
@@ -103,7 +103,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 		return docs;
 	}
 
-	async execute() {
+	async execute(): Promise<StrategyOutput> {
 		channel.appendLine("=".repeat(80));
 		channel.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
 		channel.appendLine("=".repeat(80));
@@ -126,6 +126,6 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 		channel.appendLine("\n");
 		channel.appendLine(" --- Summary --- ");
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);
-		return await executeIns(evaluateIns);
+		return new StrategyOutput(await executeIns(evaluateIns), chunks);
 	}
 }

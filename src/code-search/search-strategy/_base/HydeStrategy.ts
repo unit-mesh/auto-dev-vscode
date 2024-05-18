@@ -1,5 +1,6 @@
 import { ChunkItem, Embedding } from "../../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./HydeDocument";
+import { StrategyOutput } from "./StrategyOutput";
 
 export type HydeQuery = string | RegExp | Embedding;
 
@@ -56,5 +57,10 @@ export interface HydeStrategy<T> {
 	 * @returns The most relevant code snippets
 	 */
 	clusterChunks: (docs: ChunkItem[]) => Promise<ChunkItem[]>;
+
+	/**
+	 * Executes the method and returns a Promise that resolves with a StrategyOutput object.
+	 */
+	execute(): Promise<StrategyOutput>;
 }
 

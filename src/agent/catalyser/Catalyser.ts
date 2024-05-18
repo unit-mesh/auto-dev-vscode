@@ -3,6 +3,7 @@ import { channel } from "../../channel";
 import { HydeKeywordsStrategy } from "../../code-search/search-strategy/HydeKeywordsStrategy";
 import { SystemActionType } from "../../editor/action/setting/SystemActionType";
 import { HydeCodeStrategy } from "../../code-search/search-strategy/HydeCodeStrategy";
+import { StrategyOutput } from "../../code-search/search-strategy/_base/StrategyOutput";
 
 export class Catalyser {
 	private static instance: Catalyser;
@@ -25,7 +26,7 @@ export class Catalyser {
 	async query(query: string, type: SystemActionType): Promise<void> {
 		channel.append("Semantic search for code: " + query + "\n");
 
-		let evaluateOutput = "";
+		let evaluateOutput : StrategyOutput | undefined = undefined;
 		switch (type) {
 			case SystemActionType.SemanticSearchKeyword:
 				let keywordsStrategy = new HydeKeywordsStrategy(query, this.extension);
@@ -38,6 +39,11 @@ export class Catalyser {
 			default:
 				channel.append("Unknown action type: " + type + "\n");
 				break;
+		}
+
+		if (!evaluateOutput) {
+			channel.append("No output from the strategy\n");
+			return;
 		}
 
 		this.extension.sidebar?.webviewProtocol?.request("userInput", {
