@@ -26,7 +26,7 @@ export class Catalyser {
 	async query(query: string, type: SystemActionType): Promise<void> {
 		channel.append("Semantic search for code: " + query + "\n");
 
-		let evaluateOutput : StrategyOutput | undefined = undefined;
+		let evaluateOutput: StrategyOutput | undefined = undefined;
 		switch (type) {
 			case SystemActionType.SemanticSearchKeyword:
 				let keywordsStrategy = new HydeKeywordsStrategy(query, this.extension);
@@ -49,8 +49,13 @@ export class Catalyser {
 		if (evaluateOutput.chunks.length > 0) {
 			channel.appendLine("Found " + evaluateOutput.chunks.length + " code snippets\n");
 			for (let chunk of evaluateOutput.chunks) {
-				channel.appendLine("Code snippet: " + chunk.file + " " + chunk.range);
-				// a file path will be like: `build.gradle.kts (0-5)`, we need to parse file from name
+				// a file path will be like: `build.gradle.kts (0-5)`, we need to parse range from name
+				let rangeResult = chunk.name.match(/\((\d+)-(\d+)\)/);
+
+				let start = rangeResult ? parseInt(rangeResult[1]) : 0;
+				let end = rangeResult ? parseInt(rangeResult[2]) : chunk.text.length;
+
+				channel.appendLine("File: " + chunk.file + " (" + start + " - " + end + ")");
 			}
 		}
 	}

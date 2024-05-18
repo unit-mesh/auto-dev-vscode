@@ -90,6 +90,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 		result.forEach((item: ContextItem) => {
 			chunks.push({
 				text: item.content,
+				name: item.name,
 				file: item.path,
 				range: TextRange.empty(),
 				embedding: []

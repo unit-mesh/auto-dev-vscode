@@ -96,6 +96,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		let chunks: ChunkItem[] = [];
 		result.forEach((item: ContextItem) => {
 			chunks.push({
+				name: item.name,
 				text: item.content,
 				file: item.path,
 				range: TextRange.empty(),
