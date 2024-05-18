@@ -46,8 +46,13 @@ export class Catalyser {
 			return;
 		}
 
-		this.extension.sidebar?.webviewProtocol?.request("userInput", {
-			input: evaluateOutput,
-		});
+		if (evaluateOutput.chunks.length > 0) {
+			channel.appendLine("Found " + evaluateOutput.chunks.length + " code snippets\n");
+			for (let chunk of evaluateOutput.chunks) {
+				channel.appendLine("Code snippet: " + chunk.file);
+				// a file path will be like: `build.gradle.kts (0-5)`, we need to parse file from name
+				// const file = chunk.file.split(" ")[0];
+			}
+		}
 	}
 }
