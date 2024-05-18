@@ -23,7 +23,7 @@ export class DefaultRetrieval extends Retrieval {
 		return DefaultRetrieval.instance;
 	}
 
-	/// todo: add indextypes
+	/// todo: add index types
 	async retrieve(
 		fullInput: string,
 		ide: IdeAction,
@@ -107,6 +107,7 @@ export class DefaultRetrieval extends Retrieval {
 				const description = `${r.filepath} (${r.startLine}-${r.endLine})`;
 				return {
 					name,
+					path: r.filepath,
 					description,
 					content: `\`\`\`${name}\n${r.content}\n\`\`\``,
 				};

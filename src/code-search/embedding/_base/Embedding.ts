@@ -12,4 +12,5 @@ export interface ChunkItem {
 	text: string;
 	range: TextRange;
 	embedding: Embedding;
+	score?: number;
 }

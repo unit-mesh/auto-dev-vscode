@@ -14,6 +14,7 @@ export interface ContextSubmenuItem {
 export interface ContextItem {
 	content: string;
 	name: string;
+	path: string;
 	description: string;
 	editing?: boolean;
 	editable?: boolean;

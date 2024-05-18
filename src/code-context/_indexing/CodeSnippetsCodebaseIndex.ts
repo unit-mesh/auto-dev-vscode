@@ -196,6 +196,7 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 
 		return {
 			name: row.title,
+			path: row.path,
 			description: getBasename(row.path, 2),
 			content: `\`\`\`${getBasename(row.path)}\n${row.content}\n\`\`\``,
 		};

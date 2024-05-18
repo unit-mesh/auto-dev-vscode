@@ -85,7 +85,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		let options: RetrieveOption = {
 			filterDirectory: undefined,
 			filterLanguage: language,
-			withFullTextSearch: false,
+			withFullTextSearch: true,
 			withSemanticSearch: true,
 		};
 
@@ -97,7 +97,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		result.forEach((item: ContextItem) => {
 			chunks.push({
 				text: item.content,
-				file: item.name,
+				file: item.path,
 				range: TextRange.empty(),
 				embedding: []
 			});
