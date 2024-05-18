@@ -5,7 +5,7 @@ import { PromptManager } from "../../prompt-manage/PromptManager";
 import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 import { HydeStep } from "./_base/HydeStep";
 import { ChatMessage } from "../../llm-provider/ChatMessage";
-import { QuestionKeywords } from "./utils/QuestionKeywords";
+import { HydeKeywords } from "./_base/HydeKeywords";
 import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
@@ -46,7 +46,7 @@ export async function executeIns(instruction: string) {
  * - Medium: Recently Documents
  * - Low: All Documents
  */
-export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
+export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 	documentType = HydeDocumentType.Keywords;
 	message: ChatMessage[] = [];
 	query: string;
@@ -69,12 +69,12 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 		return await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, proposeContext);
 	}
 
-	async generateDocument(): Promise<HydeDocument<QuestionKeywords>> {
+	async generateDocument(): Promise<HydeDocument<HydeKeywords>> {
 		let proposeIns = await this.instruction();
 		channel.appendLine(" --- Generated keyword --- ");
 		let proposeOut = await executeIns(proposeIns);
-		let keywords = QuestionKeywords.from(proposeOut);
-		return new HydeDocument<QuestionKeywords>(this.documentType, keywords);
+		let keywords = HydeKeywords.from(proposeOut);
+		return new HydeDocument<HydeKeywords>(this.documentType, keywords);
 	}
 
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
@@ -84,7 +84,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 		let options: RetrieveOption = {
 			filterDirectory: undefined,
 			filterLanguage: language,
-			withFullTextSearch: true,
+			withFullTextSearch: false,
 			withSemanticSearch: true,
 		};
 
@@ -136,7 +136,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<QuestionKeywords> {
 		return await executeIns(evaluateIns);
 	}
 
-	private createQueryTerm(keywords: QuestionKeywords) {
+	private createQueryTerm(keywords: HydeKeywords) {
 		return keywords.basic?.[0] + " " + keywords.single?.[0] + " " + keywords.localization?.[0];
 	}
 }

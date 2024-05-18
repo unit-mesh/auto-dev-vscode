@@ -5,7 +5,7 @@ import { AutoDevExtension } from "../../AutoDevExtension";
 import { ChatMessage } from "../../llm-provider/ChatMessage";
 import { HydeStep } from "./_base/HydeStep";
 import { PromptManager } from "../../prompt-manage/PromptManager";
-import { QuestionKeywords } from "./utils/QuestionKeywords";
+import { HydeKeywords } from "./_base/HydeKeywords";
 import { channel } from "../../channel";
 import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";

@@ -1,4 +1,4 @@
-export class QuestionKeywords {
+export class HydeKeywords {
 	question: string = '';
 	basic: string[] = [];
 	single: string[] = [];
@@ -18,7 +18,7 @@ export class QuestionKeywords {
 	 * - calculate, average
 	 * - jisuan, pingjunshu, pingjun
 	 * "
-	 * output will be: {@link QuestionKeywords}
+	 * output will be: {@link HydeKeywords}
 	 * ```
 	 * {
 	 *   "basic": ["calculate average", "average", "average calculation"],
@@ -27,7 +27,7 @@ export class QuestionKeywords {
 	 * }
 	 * ```
 	 */
-	static from(content: string): QuestionKeywords {
+	static from(content: string): HydeKeywords {
 		// first line is the question
 		let question = '';
 		// get first line without leading and trailing whitespaces, and not starting with '-'
@@ -62,6 +62,6 @@ export class QuestionKeywords {
 			i++;
 		}
 
-		return new QuestionKeywords(question, basic, single, localization);
+		return new HydeKeywords(question, basic, single, localization);
 	}
 }
