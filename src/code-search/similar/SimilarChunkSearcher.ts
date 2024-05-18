@@ -55,7 +55,14 @@ export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSe
 
 	public extractChunks(mostRecentFiles: TextDocument[]) {
 		return mostRecentFiles.map(file => {
-			return file.getText().split("\n", this.snippetLength);
+			let lines = file.getText().split("\n");
+
+			let chunks: string[] = [];
+			for (let i = 0; i < lines.length; i += this.snippetLength) {
+				chunks.push(lines.slice(i, i + this.snippetLength).join("\n"));
+			}
+
+			return chunks;
 		});
 	}
 
