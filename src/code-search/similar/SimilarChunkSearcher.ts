@@ -3,6 +3,7 @@ import path from "path";
 import { SimilarSearchElement } from "./SimilarSearchElementBuilder";
 import { JaccardSimilarity } from "./algorithm/JaccardSimilarity";
 import { SimilarSearcher } from "./algorithm/SimilarSearcher";
+import { SimilarChunk } from "./SimilarChunk";
 
 export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSearcher<TextDocument> {
 	private static instance_: SimilarChunkSearcher;
@@ -22,31 +23,34 @@ export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSe
 	maxRelevantFiles: number = 20;
 	snippetLength: number = 60;
 
-	query(element: SimilarSearchElement): string[] {
+	query(element: SimilarSearchElement): SimilarChunk[] {
 		let similarChunks = this.similarChunksWithPaths(element);
-		// todo: handle for length
+		similarChunks = similarChunks.filter(it => it.path !== element.path);
 		return similarChunks;
 	}
 
-	private similarChunksWithPaths(element: SimilarSearchElement): string [] {
+	private similarChunksWithPaths(element: SimilarSearchElement): SimilarChunk [] {
 		let mostRecentFiles = this.getMostRecentFiles(element.languageId);
 		// todo: update for calculate the relative path
 		let mostRecentFilesRelativePaths = mostRecentFiles.map(it => this.relativePathTo(it.uri));
 
 		let chunks = this.extractChunks(mostRecentFiles);
-
 		let jaccardSimilarities = this.tokenLevelJaccardSimilarity(element.beforeCursor, chunks);
 
-		let paths: string[] = [];
-		let chunksList: string[] = [];
-
+		let similarChunks: SimilarChunk[] = [];
 		jaccardSimilarities.forEach((jaccardList, fileIndex) => {
 			let maxIndex = jaccardList.indexOf(Math.max(...jaccardList));
-			paths.push(mostRecentFilesRelativePaths[fileIndex]!!);
-			chunksList.push(chunks[fileIndex][maxIndex]);
+			let targetChunk = chunks[fileIndex][maxIndex];
+
+			if (targetChunk) {
+				similarChunks.push({
+					path: mostRecentFilesRelativePaths[fileIndex]!!,
+					text: targetChunk
+				});
+			}
 		});
 
-		return chunksList;
+		return similarChunks;
 	}
 
 	public extractChunks(mostRecentFiles: TextDocument[]) {

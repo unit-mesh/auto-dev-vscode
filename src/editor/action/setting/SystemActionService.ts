@@ -7,6 +7,7 @@ import { channel } from "../../../channel";
 import { SimilarChunkSearcher } from "../../../code-search/similar/SimilarChunkSearcher";
 import { SimilarSearchElementBuilder } from "../../../code-search/similar/SimilarSearchElementBuilder";
 import { Catalyser } from "../../../agent/catalyser/Catalyser";
+import { SimilarChunk } from "../../../code-search/similar/SimilarChunk";
 
 /**
  * A better example will be: [QuickInput Sample](https://github.com/microsoft/vscode-extension-samples/tree/main/quickinput-sample)
@@ -63,8 +64,12 @@ export class SystemActionService implements Service {
 
 	async searchSimilarCode(extension: AutoDevExtension) {
 		let searchElement = SimilarSearchElementBuilder.from(window.activeTextEditor).build();
-		let queryResult = SimilarChunkSearcher.instance().query(searchElement);
-		channel.append("Similar code search result: \n" + queryResult.join("\n") + "\n");
+		let queryResult: SimilarChunk[] = SimilarChunkSearcher.instance().query(searchElement);
+		channel.append("Similar code search result: \n");
+		queryResult.forEach(chunk => {
+			channel.append("File: " + chunk.path + "\n");
+			channel.append("Text: " + chunk.text + "\n");
+		});
 	}
 
 	async indexingAction(extension: AutoDevExtension) {
