@@ -92,7 +92,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 				text: item.content,
 				name: item.name,
 				file: item.path,
-				range: TextRange.empty(),
+				range: item.range,
 				embedding: []
 			});
 		});

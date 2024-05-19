@@ -4,6 +4,7 @@ import { Chunk } from "../chunk/_base/Chunk";
 import { FullTextSearchCodebaseIndex } from "../search/FullTextSearch";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
+import { TextRange } from "../scope-graph/model/TextRange";
 
 export interface ContextSubmenuItem {
 	id: string;
@@ -15,6 +16,7 @@ export interface ContextItem {
 	content: string;
 	name: string;
 	path: string;
+	range: TextRange;
 	description: string;
 	editing?: boolean;
 	editable?: boolean;

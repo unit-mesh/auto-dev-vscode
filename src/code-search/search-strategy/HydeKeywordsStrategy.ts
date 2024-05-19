@@ -99,7 +99,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 				name: item.name,
 				text: item.content,
 				file: item.path,
-				range: TextRange.empty(),
+				range: item.range,
 				embedding: []
 			});
 		});

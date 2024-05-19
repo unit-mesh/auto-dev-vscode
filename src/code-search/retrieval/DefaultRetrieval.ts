@@ -8,6 +8,7 @@ import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { channel } from "../../channel";
 import { ContextItem, Retrieval, RetrieveOption } from "./Retrieval";
 import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
+import { Point, TextRange } from "../scope-graph/model/TextRange";
 
 export class DefaultRetrieval extends Retrieval {
 	private static instance: DefaultRetrieval;
@@ -105,9 +106,16 @@ export class DefaultRetrieval extends Retrieval {
 			...results.map((r) => {
 				const name = `${getBasename(r.filepath)} (${r.startLine}-${r.endLine})`;
 				const description = `${r.filepath} (${r.startLine}-${r.endLine})`;
+				const range = new TextRange(
+					new Point(r.startLine, 0, 0),
+					new Point(r.endLine, 0, 0),
+					r.content
+				);
+
 				return {
 					name,
 					path: r.filepath,
+					range: range,
 					description,
 					content: `\`\`\`${name}\n${r.content}\n\`\`\``,
 				};
