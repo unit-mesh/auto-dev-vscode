@@ -55,7 +55,7 @@ export class Catalyser {
 				let start = rangeResult ? parseInt(rangeResult[1]) : 0;
 				let end = rangeResult ? parseInt(rangeResult[2]) : chunk.text.length;
 
-				channel.appendLine("File: " + chunk.file + " (" + start + " - " + end + ")");
+				channel.appendLine("File: " + chunk.path + " (" + start + " - " + end + ")");
 			}
 		}
 	}

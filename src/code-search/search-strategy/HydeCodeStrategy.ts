@@ -91,7 +91,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 			chunks.push({
 				text: item.content,
 				name: item.name,
-				file: item.path,
+				path: item.path,
 				range: item.range,
 				embedding: []
 			});

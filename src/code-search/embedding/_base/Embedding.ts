@@ -8,8 +8,10 @@ export interface ScoredItem<T> {
 }
 
 export interface ChunkItem {
+	/// file name with range
 	name: string;
-	file: string;
+	/// path
+	path: string;
 	text: string;
 	range: TextRange;
 	embedding: Embedding;

@@ -98,7 +98,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 			chunks.push({
 				name: item.name,
 				text: item.content,
-				file: item.path,
+				path: item.path,
 				range: item.range,
 				embedding: []
 			});
