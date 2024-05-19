@@ -18,6 +18,7 @@ import { getParserForFile } from "../../editor/language/parser/ParserUtil";
 import { tagToString } from "../../code-search/refreshIndex";
 import { getBasename } from "../../code-search/utils/IndexPathHelper";
 import { ContextItem, ContextSubmenuItem } from "../../code-search/retrieval/Retrieval";
+import { Point, TextRange } from "../../code-search/scope-graph/model/TextRange";
 
 /**
  * for provider {@link CodeContextProvider}
@@ -193,10 +194,16 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 	static async getForId(id: number): Promise<ContextItem> {
 		const db = await SqliteDb.get();
 		const row = await db.get(`SELECT * FROM code_snippets WHERE id = ?`, [id]);
+		const range = new TextRange(
+			new Point(row.startLine, 0, 0),
+			new Point(row.endLine, 0, 0),
+			row.content
+		);
 
 		return {
 			name: row.title,
 			path: row.path,
+			range,
 			description: getBasename(row.path, 2),
 			content: `\`\`\`${getBasename(row.path)}\n${row.content}\n\`\`\``,
 		};
