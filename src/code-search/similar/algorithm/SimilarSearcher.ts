@@ -2,7 +2,7 @@ import { SimilarSearchElement } from "../SimilarSearchElementBuilder";
 import { SimilarChunk } from "../SimilarChunk";
 
 export interface SimilarSearcher<T> {
-	query(element: SimilarSearchElement): SimilarChunk[];
+	search(element: SimilarSearchElement): SimilarChunk[];
 
 	extractChunks(mostRecentFiles: T[]): string[][];
 

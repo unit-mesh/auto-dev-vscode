@@ -5,7 +5,9 @@ nav_order: 1
 parent: Semantic
 ---
 
-## Tech Trends
+## Semantic Search RAG Strategy
+
+### Tech Trends in Overview
 
 - GitHub Copilot Chat
     - TfIDF
@@ -15,4 +17,9 @@ parent: Semantic
     - Full Text Search
     - Snippet Search
     - Semantic Search
+
+### Our Strategy
+
+- HydeCodeStrategy
+- HydeKeywordsStrategy
 

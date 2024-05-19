@@ -23,7 +23,7 @@ export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSe
 	maxRelevantFiles: number = 20;
 	snippetLength: number = 60;
 
-	query(element: SimilarSearchElement): SimilarChunk[] {
+	search(element: SimilarSearchElement): SimilarChunk[] {
 		let similarChunks = this.similarChunksWithPaths(element);
 		similarChunks = similarChunks.filter(it => it.path !== element.path);
 		return similarChunks;
