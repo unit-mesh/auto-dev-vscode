@@ -10,16 +10,35 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
 
   public webviewProtocol!: AutoDevWebviewProtocol;
 
+  /**
+   * 构造函数
+   *
+   * @param _context vscode扩展上下文
+   * @param windowId 窗口ID，默认为空字符串
+   */
   constructor(
     private readonly _context: vscode.ExtensionContext,
     private readonly windowId: string = ""
   ) {}
 
+  /**
+   * 获取 webview 对象
+   *
+   * @returns 返回 webview 对象
+   */
   get webview() {
     return this._webview;
   }
 
   public static readonly viewType = "autodev.autodevGUIView";
+  /**
+   * 解析Webview视图
+   *
+   * @param webviewView Webview视图对象
+   * @param _context Webview视图解析上下文
+   * @param _token 取消令牌
+   * @returns 无返回值
+   */
   async resolveWebviewView(
     webviewView: vscode.WebviewView,
     _context: vscode.WebviewViewResolveContext<unknown>,
@@ -36,6 +55,16 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
     );
   }
 
+  /**
+   * 获取侧边栏内容的 HTML 字符串
+   *
+   * @param context VSCode 扩展上下文
+   * @param panel WebviewPanel 或 WebviewView 对象
+   * @param page 页面名称，默认为 undefined
+   * @param edits 编辑操作，默认为 undefined
+   * @param isFullScreen 是否全屏显示，默认为 false
+   * @returns 侧边栏内容的 HTML 字符串
+   */
   async getSidebarContent(
     context: vscode.ExtensionContext | undefined,
     panel: vscode.WebviewPanel | vscode.WebviewView,
