@@ -71,10 +71,12 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
     - [x] Custom prompt
         - [x] Align to IDE version
     - [ ] Json Schema validation
+        - [ ] Settings 
+        - [ ] Custom Prompt 
 - [ ] Custom Agent
     - [ ] Custom Agent
     - [ ] Custom Agent API
-- [ ] Custom Chat Server
+- [ ] Custom LLM Server
     - [x] [ollama chat server](./examples/ollama-chat-server/README.md)
 - [ ] Local Text Search
     - [x] TF-IDF
@@ -105,6 +107,7 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
     - [ ] Terminal
 - [ ] Docs with RAG
     - [ ] spike: Auto Generate doc based on sourcecode
+    - [ ] Custom Document embedding server for RAG 
     - [ ] Ask business doc
         - [ ] Markdown
         - [ ] RDF
