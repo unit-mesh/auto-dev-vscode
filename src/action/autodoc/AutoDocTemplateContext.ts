@@ -1,4 +1,4 @@
-import { TemplateContext } from "../../../prompt-manage/template/TemplateContext";
+import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 
 export interface AutoDocTemplateContext extends TemplateContext {
 	startSymbol: string;

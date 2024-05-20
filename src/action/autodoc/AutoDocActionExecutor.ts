@@ -1,19 +1,19 @@
 import vscode, { Position } from "vscode";
 
-import { NamedElement } from "../../ast/NamedElement";
-import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../language/LanguageCommentMap";
-import { PromptManager } from "../../../prompt-manage/PromptManager";
-import { LlmProvider } from "../../../llm-provider/LlmProvider";
-import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
-import { insertCodeByRange, selectCodeInRange } from "../../editor";
-import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
-import { StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownCodeBlock";
-import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
+import { NamedElement } from "../../editor/ast/NamedElement";
+import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../editor/language/LanguageCommentMap";
+import { PromptManager } from "../../prompt-manage/PromptManager";
+import { LlmProvider } from "../../llm-provider/LlmProvider";
+import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
+import { insertCodeByRange, selectCodeInRange } from "../../editor/editor";
+import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
+import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
+import { CreateToolchainContext } from "../../toolchain-context/ToolchainContextProvider";
 import { ActionExecutor } from "../_base/ActionExecutor";
 import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
-import { MarkdownTextProcessor } from "../../../markdown/MarkdownTextProcessor";
-import { ActionType } from "../../../prompt-manage/ActionType";
-import { channel } from "../../../channel";
+import { MarkdownTextProcessor } from "../../markdown/MarkdownTextProcessor";
+import { ActionType } from "../../prompt-manage/ActionType";
+import { channel } from "../../channel";
 
 export class AutoDocActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;

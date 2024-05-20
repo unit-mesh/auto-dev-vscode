@@ -1,13 +1,13 @@
 import { window } from "vscode";
 
 import { SystemActionType, SystemActionHandler } from "./SystemActionType";
-import { Service } from "../../../service/Service";
-import { AutoDevExtension } from "../../../AutoDevExtension";
-import { channel } from "../../../channel";
-import { SimilarChunkSearcher } from "../../../code-search/similar/SimilarChunkSearcher";
-import { SimilarSearchElementBuilder } from "../../../code-search/similar/SimilarSearchElementBuilder";
-import { Catalyser } from "../../../agent/catalyser/Catalyser";
-import { SimilarChunk } from "../../../code-search/similar/SimilarChunk";
+import { Service } from "../../service/Service";
+import { AutoDevExtension } from "../../AutoDevExtension";
+import { channel } from "../../channel";
+import { SimilarChunkSearcher } from "../../code-search/similar/SimilarChunkSearcher";
+import { SimilarSearchElementBuilder } from "../../code-search/similar/SimilarSearchElementBuilder";
+import { Catalyser } from "../../agent/catalyser/Catalyser";
+import { SimilarChunk } from "../../code-search/similar/SimilarChunk";
 
 /**
  * A better example will be: [QuickInput Sample](https://github.com/microsoft/vscode-extension-samples/tree/main/quickinput-sample)

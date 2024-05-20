@@ -1,18 +1,18 @@
 import vscode, { env } from "vscode";
 
 import { ActionExecutor } from "../_base/ActionExecutor";
-import { NamedElement } from "../../ast/NamedElement";
-import { TestGenProviderManager } from "../../../code-context/TestGenProviderManager";
-import { PromptManager } from "../../../prompt-manage/PromptManager";
-import { ChatMessage, ChatRole } from "../../../llm-provider/ChatMessage";
-import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
-import { LlmProvider } from "../../../llm-provider/LlmProvider";
-import { StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownCodeBlock";
-import { CreateToolchainContext } from "../../../toolchain-context/ToolchainContextProvider";
-import { ActionType } from "../../../prompt-manage/ActionType";
-import { RelevantCodeProviderManager } from "../../../code-context/RelevantCodeProviderManager";
-import { channel } from "../../../channel";
-import { TreeSitterFileManager } from "../../cache/TreeSitterFileManager";
+import { NamedElement } from "../../editor/ast/NamedElement";
+import { TestGenProviderManager } from "../../code-context/TestGenProviderManager";
+import { PromptManager } from "../../prompt-manage/PromptManager";
+import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
+import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
+import { LlmProvider } from "../../llm-provider/LlmProvider";
+import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
+import { CreateToolchainContext } from "../../toolchain-context/ToolchainContextProvider";
+import { ActionType } from "../../prompt-manage/ActionType";
+import { RelevantCodeProviderManager } from "../../code-context/RelevantCodeProviderManager";
+import { channel } from "../../channel";
+import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
 
 export class AutoTestActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoTest;

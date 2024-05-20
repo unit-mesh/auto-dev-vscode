@@ -1,4 +1,4 @@
-import { AutoDevExtension } from "../../../AutoDevExtension";
+import { AutoDevExtension } from "../../AutoDevExtension";
 
 export enum SystemActionType {
 	Indexing = "Indexing codebase",

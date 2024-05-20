@@ -1,13 +1,13 @@
 import vscode, { InputBox } from "vscode";
 
-import { Git } from "../../../types/git";
-import { GitAction } from "../../editor-api/scm/GitAction";
-import { LlmProvider } from "../../../llm-provider/LlmProvider";
-import { CustomActionPrompt } from "../../../prompt-manage/custom-action/CustomActionPrompt";
-import { PromptManager } from "../../../prompt-manage/PromptManager";
-import { ActionType } from "../../../prompt-manage/ActionType";
-import { TemplateContext } from "../../../prompt-manage/template/TemplateContext";
-import { AutoDevStatus, AutoDevStatusManager } from "../../editor-api/AutoDevStatusManager";
+import { Git } from "../../types/git";
+import { GitAction } from "../../editor/editor-api/scm/GitAction";
+import { LlmProvider } from "../../llm-provider/LlmProvider";
+import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
+import { PromptManager } from "../../prompt-manage/PromptManager";
+import { ActionType } from "../../prompt-manage/ActionType";
+import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
+import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
 
 export class CommitMessageGenAction {
 	extension: vscode.Extension<Git>;

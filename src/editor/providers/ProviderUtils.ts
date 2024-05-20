@@ -3,7 +3,7 @@ import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import vscode, { Position, Range } from "vscode";
 import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider";
 import { AutoDevCodeActionProvider } from "./AutoDevCodeActionProvider";
-import { RenameLookupExecutor } from "../action/refactor/RenameLookupExecutor";
+import { RenameLookupExecutor } from "../../action/refactor/RenameLookupExecutor";
 import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
 import { SettingService } from "../../settings/SettingService";
 import { channel } from "../../channel";

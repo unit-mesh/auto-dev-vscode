@@ -1,7 +1,7 @@
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { channel } from "../../channel";
 import { HydeKeywordsStrategy } from "../../code-search/search-strategy/HydeKeywordsStrategy";
-import { SystemActionType } from "../../editor/action/setting/SystemActionType";
+import { SystemActionType } from "../../action/setting/SystemActionType";
 import { HydeCodeStrategy } from "../../code-search/search-strategy/HydeCodeStrategy";
 import { StrategyOutput } from "../../code-search/search-strategy/_base/StrategyOutput";
 import { NamedChunk } from "../../code-search/embedding/_base/NamedChunk";

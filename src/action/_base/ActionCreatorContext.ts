@@ -1,6 +1,6 @@
 import vscode from "vscode";
 
-import { NamedElement } from "../../ast/NamedElement";
+import { NamedElement } from "../../editor/ast/NamedElement";
 
 export interface ActionCreatorContext {
 	namedElementBlocks: NamedElement[],

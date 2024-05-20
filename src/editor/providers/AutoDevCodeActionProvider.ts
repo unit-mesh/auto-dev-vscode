@@ -5,8 +5,8 @@ import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
 import { NamedElement } from "../ast/NamedElement";
 import { providerContainer } from "../../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../../ProviderTypes";
-import { ActionCreator } from "../action/_base/ActionCreator";
-import { ActionCreatorContext } from "../action/_base/ActionCreatorContext";
+import { ActionCreator } from "../../action/_base/ActionCreator";
+import { ActionCreatorContext } from "../../action/_base/ActionCreatorContext";
 import { createNamedElement } from "../../code-context/ast/TreeSitterWrapper";
 
 export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {

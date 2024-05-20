@@ -3,9 +3,9 @@ import { injectable } from "inversify";
 
 import { ActionCreator } from "../_base/ActionCreator";
 import { ActionCreatorContext } from "../_base/ActionCreatorContext";
-import { NamedElement } from "../../ast/NamedElement";
-import { CodeElementType } from "../../codemodel/CodeElementType";
-import { StructurerProviderManager } from "../../../code-context/StructurerProviderManager";
+import { NamedElement } from "../../editor/ast/NamedElement";
+import { CodeElementType } from "../../editor/codemodel/CodeElementType";
+import { StructurerProviderManager } from "../../code-context/StructurerProviderManager";
 
 @injectable()
 export class GenApiDataActionCreator implements ActionCreator {
