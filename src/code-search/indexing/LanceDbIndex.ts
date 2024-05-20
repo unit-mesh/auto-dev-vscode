@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { v4 as uuidv4 } from "uuid";
-import { Connection, MetricType, Table } from "vectordb";
+// import { Connection, MetricType, Table } from "vectordb";
 
 import {
 	CodebaseIndex,
@@ -35,6 +34,7 @@ import { getBasename, getLanceDbPath } from "../utils/IndexPathHelper";
 import { Embedding } from "../embedding/_base/Embedding";
 import { RetrievalQueryTerm } from "../retrieval/RetrievalQueryTerm";
 import { channel } from "../../channel";
+import { uuid } from "../../editor/webview/uuid";
 
 // LanceDB  converts to lowercase, so names must all be lowercase
 interface LanceDbRow {
@@ -99,9 +99,7 @@ export class LanceDbIndex implements CodebaseIndex {
 			// Calculate embeddings
 			let embeddings: Embedding[] = [];
 			try {
-				embeddings = await this.embeddingsProvider.embed(
-					chunks.map((c) => c.content),
-				);
+				embeddings = await this.embeddingsProvider.embed(chunks.map((c) => c.content));
 			} catch (e) {
 				console.error("Failed to embed chunks", items[i].path, e);
 				continue;
@@ -114,7 +112,7 @@ export class LanceDbIndex implements CodebaseIndex {
 					vector: embeddings[j],
 					path: items[i].path,
 					cachekey: items[i].cacheKey,
-					uuid: uuidv4(),
+					uuid: uuid()
 				};
 				const chunk = chunks[j];
 				yield [
@@ -154,11 +152,13 @@ export class LanceDbIndex implements CodebaseIndex {
 		const tableName = this.tableNameForTag(tag);
 		const db = await lancedb.connect(getLanceDbPath());
 
+		channel.appendLine(`== [LanceDB] Indexing ${tagToString(tag)}`);
+
 		const sqlite = await SqliteDb.get();
 		await this.createSqliteCacheTable(sqlite);
 
 		// Compute
-		let table: Table<number[]> | undefined = undefined;
+		let table: any = undefined;
 		let needToCreateTable = true;
 		const existingTables = await db.tableNames();
 
@@ -187,6 +187,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		};
 
 		let computedRows: LanceDbRow[] = [];
+
 		for await (const update of this.computeChunks(results.compute)) {
 			if (Array.isArray(update)) {
 				const [progress, row, data, desc] = update;
@@ -206,11 +207,16 @@ export class LanceDbIndex implements CodebaseIndex {
 
 				yield { progress, desc };
 			} else {
-				await addComputedLanceDbRows(update, computedRows);
-				computedRows = [];
+				try {
+					await addComputedLanceDbRows(update, computedRows);
+					computedRows = [];
+				} catch (e) {
+					channel.appendLine("Error adding computed rows: " + e);
+				}
 			}
 		}
 
+		channel.appendLine("Starting insert to cache");
 		// Add tag - retrieve the computed info from lance sqlite cache
 		for (let { path, cacheKey } of results.addTag) {
 			const stmt = await sqlite.prepare(
@@ -320,7 +326,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		n: number,
 		directory: string | undefined,
 		vector: Embedding,
-		db: Connection, /// lancedb.Connection
+		db: any, /// lancedb.Connection
 	): Promise<LanceDbRow[]> {
 		const tableName = this.tableNameForTag(tag);
 		const tableNames = await db.tableNames();
@@ -339,7 +345,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		}
 
 		const results = await query
-			.metricType(MetricType.Cosine)
+			.metricType("cosine")
 			.execute();
 
 		return results.slice(0, n) as any;

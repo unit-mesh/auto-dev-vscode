@@ -70,8 +70,8 @@ export default defineConfig((api) => {
       }),
     ],
     build: {
-      minify: !isDev,
-      sourcemap: isDev,
+      minify: false,
+      sourcemap: true,
       copyPublicDir: false,
       lib: {
         entry: "src/extension.ts",
