@@ -266,6 +266,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		if (!lancedb.connect) {
 			throw new Error("LanceDB failed to load a native module");
 		}
+
 		const [vector] = await this.embeddingsProvider?.embed([term.query]) ?? [[]];
 		if (!vector) {
 			return [];
