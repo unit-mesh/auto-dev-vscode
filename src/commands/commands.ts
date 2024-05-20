@@ -15,6 +15,7 @@ import { DefaultLanguageService } from "../editor/language/service/DefaultLangua
 import { CommitMessageGenAction } from "../action/devops/CommitMessageGenAction";
 import { RelevantCodeProviderManager } from "../code-context/RelevantCodeProviderManager";
 import { TreeSitterFileManager } from "../editor/cache/TreeSitterFileManager";
+import { AutoDevWebviewProtocol } from "../editor/webview/AutoDevWebviewProtocol";
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
@@ -34,7 +35,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 	},
 	[AutoDevCommand.DebugTerminal]: async () => {
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
-		const terminalContents = await extension.ideAction.getTerminalContents();
+		const terminalContents = await extension.ideAction.getTerminalContents(1);
 		extension.sidebar.webviewProtocol?.request("userInput", {
 			input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
 		});
@@ -170,8 +171,54 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 				channel.append(`current outputs: ${JSON.stringify(output)}\n`);
 			});
 		}
+	},
+	[AutoDevCommand.GUIFocusInput]: async () => {
+		if (!getFullScreenTab()) {
+			vscode.commands.executeCommand("autodev.autodevGUIView.focus");
+		}
+		extension.sidebar.webviewProtocol?.request("focusAutoDevInput", undefined);
+		await addHighlightedCodeToContext(false, extension.sidebar.webviewProtocol);
 	}
 });
+
+async function addHighlightedCodeToContext(
+	edit: boolean,
+	webviewProtocol: AutoDevWebviewProtocol | undefined,
+) {
+	const editor = vscode.window.activeTextEditor;
+	if (editor) {
+		const selection = editor.selection;
+		if (selection.isEmpty) return;
+		const range = new vscode.Range(selection.start, selection.end);
+		const contents = editor.document.getText(range);
+		const rangeInFileWithContents = {
+			filepath: editor.document.uri.fsPath,
+			contents,
+			range: {
+				start: {
+					line: selection.start.line,
+					character: selection.start.character,
+				},
+				end: {
+					line: selection.end.line,
+					character: selection.end.character,
+				},
+			},
+		};
+
+		webviewProtocol?.request("highlightedCode", {
+			rangeInFileWithContents,
+		});
+	}
+}
+
+function getFullScreenTab() {
+	const tabs = vscode.window.tabGroups.all.flatMap((tabGroup) => tabGroup.tabs);
+	return tabs.find(
+		(tab) => (tab.input as any)?.viewType?.endsWith("continue.continueGUIView"),
+	);
+}
+
 
 export function registerCommands(extension: AutoDevExtension) {
 	const commands = commandsMap(extension);

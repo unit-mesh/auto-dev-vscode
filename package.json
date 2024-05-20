@@ -414,9 +414,19 @@
     ],
     "keybindings": [
       {
+        "command": "autodev.focusAutoDevInput",
+        "mac": "cmd+l",
+        "key": "ctrl+l"
+      },
+      {
         "command": "autodev.debugTerminal",
         "mac": "cmd+shift+r",
         "key": "ctrl+shift+r"
+      },
+      {
+        "command": "autodev.systemAction",
+        "mac": "cmd+i",
+        "key": "ctrl+i"
       },
       {
         "command": "autodev.editor.suggestCommand",

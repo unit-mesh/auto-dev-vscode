@@ -411,7 +411,7 @@ function TipTapEditor(props: TipTapEditorProps) {
   );
 
   useWebviewListener(
-    "focusContinueInput",
+    "focusAutoDevInput",
     async (data) => {
       if (!props.isMainInput) {
         return;
@@ -428,7 +428,7 @@ function TipTapEditor(props: TipTapEditorProps) {
   );
 
   useWebviewListener(
-    "focusContinueInputWithoutClear",
+    "focusAutoDevInputWithoutClear",
     async () => {
       if (!props.isMainInput) {
         return;
@@ -441,7 +441,7 @@ function TipTapEditor(props: TipTapEditorProps) {
   );
 
   useWebviewListener(
-    "focusContinueInputWithNewSession",
+    "focusAutoDevInputWithNewSession",
     async () => {
       if (!props.isMainInput) {
         return;

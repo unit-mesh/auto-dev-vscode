@@ -6,8 +6,8 @@ import { useWebviewListener } from "./useWebviewListener";
 const openGUITypes: (keyof ReverseWebviewProtocol)[] = [
   "highlightedCode",
   "newSessionWithPrompt",
-  "focusContinueInput",
-  "focusContinueInputWithoutClear",
+  "focusAutoDevInput",
+  "focusAutoDevInputWithoutClear",
   "newSession",
 ];
 

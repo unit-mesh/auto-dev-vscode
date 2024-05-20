@@ -105,9 +105,9 @@ export type ReverseWebviewProtocol = {
     getDefaultModelTitle: [undefined, string];
     newSessionWithPrompt: [{ prompt: string }, void];
     userInput: [{ input: string }, void];
-    focusContinueInput: [undefined, void];
-    focusContinueInputWithoutClear: [undefined, void];
-    focusContinueInputWithNewSession: [undefined, void];
+    focusAutoDevInput: [undefined, void];
+    focusAutoDevInputWithoutClear: [undefined, void];
+    focusAutoDevInputWithNewSession: [undefined, void];
     highlightedCode: [{ rangeInFileWithContents: RangeInFileWithContents }, void];
     addModel: [undefined, void];
     openSettings: [undefined, void];
