@@ -39,6 +39,10 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 	}
 
 	async init(basepath: string = __dirname) {
+		if (this.session) {
+			return;
+		}
+
 		const { env, AutoTokenizer } = await import('@xenova/transformers');
 		this.env = env;
 		env.allowLocalModels = true;
