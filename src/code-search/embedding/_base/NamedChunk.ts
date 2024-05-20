@@ -17,7 +17,14 @@ export interface NamedChunkItem {
 
 export class NamedChunk {
 	static async create(chunk: ChunkItem): Promise<NamedChunkItem> {
-		let document = vscode.workspace.textDocuments.filter(doc => doc.uri.fsPath === chunk.path)[0];
+		let document;
+		try {
+			const fileUri = vscode.Uri.file(chunk.path);
+			document = await vscode.workspace.openTextDocument(fileUri);
+		} catch (error) {
+			return Promise.reject(error);
+		}
+
 		let elementBuilder = await createNamedElement(document);
 
 		let namedElements = elementBuilder.getElementForSelection(chunk.range.start.line, chunk.range.end.line,);

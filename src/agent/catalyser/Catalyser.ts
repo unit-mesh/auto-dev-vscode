@@ -4,6 +4,7 @@ import { HydeKeywordsStrategy } from "../../code-search/search-strategy/HydeKeyw
 import { SystemActionType } from "../../editor/action/setting/SystemActionType";
 import { HydeCodeStrategy } from "../../code-search/search-strategy/HydeCodeStrategy";
 import { StrategyOutput } from "../../code-search/search-strategy/_base/StrategyOutput";
+import { NamedChunk } from "../../code-search/embedding/_base/NamedChunk";
 
 export class Catalyser {
 	private static instance: Catalyser;
@@ -40,6 +41,13 @@ export class Catalyser {
 				channel.append("Unknown action type: " + type + "\n");
 				break;
 		}
+
+		// evaluateOutput?.chunks.forEach(async chunk => {
+		// 	let namedChunk = await NamedChunk.create(chunk);
+		// 	namedChunk.namedElements.forEach(element => {
+		// 		console.log("Element: " + element.blockContent);
+		// 	});
+		// });
 
 		if (!evaluateOutput) {
 			channel.append("No output from the strategy\n");
