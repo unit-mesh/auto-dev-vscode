@@ -137,6 +137,11 @@ const initialState: State = {
         provider: "alibabatongyi",
         model: "qwen-turbo",
       },
+      {
+        title: "Custom OpenAI Compatible Model",
+        provider: "openapi",
+        model: "custom",
+      },
       // {
       //   title: "GPT-4 Vision (Free Trial)",
       //   provider: "free-trial",
