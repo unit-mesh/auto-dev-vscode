@@ -4,7 +4,6 @@ import {
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { JSONContent } from "@tiptap/react";
-import { usePostHog } from "posthog-js/react";
 import {
   Fragment,
   useCallback,
@@ -134,7 +133,6 @@ interface GUIProps {
 
 function GUI(props: GUIProps) {
   // #region Hooks
-  const posthog = usePostHog();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -234,7 +232,6 @@ function GUI(props: GUIProps) {
           if (u >= 250) {
             dispatch(setShowDialog(true));
             dispatch(setDialogMessage(<FTCDialog />));
-            posthog?.capture("ftc_reached");
             return;
           }
         } else {
@@ -265,10 +262,6 @@ function GUI(props: GUIProps) {
                 <form
                   onSubmit={(e: any) => {
                     e.preventDefault();
-                    posthog?.capture("user_interest_form", {
-                      name: e.target.elements[0].value,
-                      email: e.target.elements[1].value,
-                    });
                     dispatch(
                       setDialogMessage(
                         <div className="text-center p-4">

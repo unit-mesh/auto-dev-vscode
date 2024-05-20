@@ -1,4 +1,3 @@
-import { usePostHog } from "posthog-js/react";
 import React, { useContext, useLayoutEffect } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -23,7 +22,6 @@ function AddDocsDialog() {
   const { addItem } = useContext(SubmenuContextProvidersContext);
 
   const ref = React.useRef<HTMLInputElement>(null);
-  const posthog = usePostHog();
 
   useLayoutEffect(() => {
     setTimeout(() => {
@@ -67,7 +65,6 @@ function AddDocsDialog() {
             title: docsTitle,
             description: new URL(docsUrl).hostname,
           });
-          posthog.capture("add_docs", { url: docsUrl });
         }}
       >
         Done
