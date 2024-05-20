@@ -62,13 +62,13 @@ variables list: [https://ide.unitmesh.cc/variables](https://ide.unitmesh.cc/vari
     You are an experienced software development engineer skilled in using Test-Driven Development (TDD) to develop software.
     You need to help users write test code based on their requirements.
     
-    ${frameworkContext}
+    ${context.frameworkContext}
     
     The current class-related code is as follows:
     
-    ${beforeCursor}
+    ${context.beforeCursor}
     
-    The user's requirement is: ${selection}
+    The user's requirement is: ${context.selection}
     
     Please use ```@Test to begin writing your code block:
 
@@ -97,12 +97,12 @@ example: [https://github.com/unit-mesh/untitled/tree/english/prompts](https://gi
     
     Question: 开发一个出租车计费功能，它的计算规则是这样的：不超过8公里时每公里收费0.8元，超过8公里则每公里加收50%长途费，停车等待时每分钟加收0.25元。
     Answer: ###
-    ${commentSymbol} Given 出租车行驶了5公里（8公里以内），未发生等待，When 计费，Then 收费4元
-    ${commentSymbol} Given 出租车行驶了5公里（8公里以内），等待10分钟，When 计费，Then 收费6.5元
-    ${commentSymbol} Given 出租车恰好行驶了8公里，未发生等待，When 计费，Then 收费6.4元
-    ${commentSymbol} Given 出租车恰好行驶了8公里，等待10分钟，When 计费，Then 收费8.9元
+    ${context.commentSymbol} Given 出租车行驶了5公里（8公里以内），未发生等待，When 计费，Then 收费4元
+    ${context.commentSymbol} Given 出租车行驶了5公里（8公里以内），等待10分钟，When 计费，Then 收费6.5元
+    ${context.commentSymbol} Given 出租车恰好行驶了8公里，未发生等待，When 计费，Then 收费6.4元
+    ${context.commentSymbol} Given 出租车恰好行驶了8公里，等待10分钟，When 计费，Then 收费8.9元
     ###
-    Question: ${selection}
+    Question: ${context.selection}
     Answer: ###
 
 完整的 TDD
