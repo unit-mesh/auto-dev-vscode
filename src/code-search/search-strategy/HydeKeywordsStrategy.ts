@@ -134,6 +134,11 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 			language: ""
 		};
 
+		if (chunkItems.length === 0) {
+			channel.appendLine("No code snippets found.");
+			return new StrategyOutput("", []);
+		}
+
 		channel.appendLine("\n");
 		channel.appendLine(" --- Summary --- ");
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);

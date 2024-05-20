@@ -67,7 +67,11 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		for (let i = 0; i < chunks.length; i += this.MaxGroupSize) {
 			let chunkGroup = chunks.slice(i, i + this.MaxGroupSize,);
 			for (const chunk of chunkGroup) {
-				outputs.push(await this.embedChunk(chunk));
+				try {
+					outputs.push(await this.embedChunk(chunk));
+				} catch (e) {
+					channel.appendLine("Failed to embed chunk" + chunk + e?.toString());
+				}
 			}
 		}
 

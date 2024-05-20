@@ -34,6 +34,7 @@ import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
 import { getBasename, getLanceDbPath } from "../utils/IndexPathHelper";
 import { Embedding } from "../embedding/_base/Embedding";
 import { RetrievalQueryTerm } from "../retrieval/RetrievalQueryTerm";
+import { channel } from "../../channel";
 
 // LanceDB  converts to lowercase, so names must all be lowercase
 interface LanceDbRow {
@@ -269,6 +270,7 @@ export class LanceDbIndex implements CodebaseIndex {
 
 		const [vector] = await this.embeddingsProvider?.embed([term.query]) ?? [[]];
 		if (!vector) {
+			channel.appendLine("Failed to embed query: " + term.query);
 			return [];
 		}
 
