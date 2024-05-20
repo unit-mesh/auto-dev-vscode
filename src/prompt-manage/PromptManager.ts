@@ -80,11 +80,10 @@ export class PromptManager {
 		let template: string | undefined;
 
 		// only for english in this version
-		// let humanLanguage = vscode.env.language;
-		// if (humanLanguage !== "zh-cn") {
-		// 	humanLanguage = "en";
-		// }
-		let humanLanguage = "en";
+		let humanLanguage = vscode.env.language;
+		if (humanLanguage !== "zh-cn") {
+			humanLanguage = "en";
+		}
 
 		template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/hyde/${hydeType}/${step}.vm`);
 
