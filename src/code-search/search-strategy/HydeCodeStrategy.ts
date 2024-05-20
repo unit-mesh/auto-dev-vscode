@@ -54,10 +54,12 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 	}
 
 	async instruction(): Promise<string> {
+		let chatContext = await PromptManager.getInstance().collectByCurrentDocument();
 		let proposeContext: KeywordsProposeContext = {
 			step: this.step,
 			question: this.query,
-			language: ""
+			language: "",
+			chatContext: chatContext.map(item => item.text).join("\n - ")
 		};
 
 		return await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, proposeContext);

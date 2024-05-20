@@ -10,6 +10,7 @@ import { CustomActionTemplateContext } from "./custom-action/CustomActionTemplat
 import { CustomActionExecutePrompt } from "./custom-action/CustomActionExecutePrompt";
 import { HydeStep } from "../code-search/search-strategy/_base/HydeStep";
 import { HydeDocumentType } from "../code-search/search-strategy/_base/HydeDocument";
+import { NamedElement } from "../editor/ast/NamedElement";
 
 export class PromptManager {
 	private static _instance: PromptManager;
@@ -28,6 +29,27 @@ export class PromptManager {
 
 	async collectToolchain(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
 		return ToolchainContextManager.instance().collectContextItems(context);
+	}
+
+	async collectByCurrentDocument(): Promise<ToolchainContextItem[]> {
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			throw new Error("No active text editor found.");
+		}
+
+		const document = editor.document;
+		const language = document.languageId;
+		const content = document.getText();
+		const filename = document.fileName;
+
+		const context: CreateToolchainContext = {
+			action: "CollectByCurrentDocument",
+			language,
+			content,
+			filename,
+		};
+
+		return this.collectToolchain(context);
 	}
 
 	async constructContext(): Promise<CustomActionTemplateContext> {

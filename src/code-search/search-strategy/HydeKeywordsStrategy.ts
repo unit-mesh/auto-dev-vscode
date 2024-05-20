@@ -61,10 +61,12 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 	}
 
 	async instruction(): Promise<string> {
+		let chatContext = await PromptManager.getInstance().collectByCurrentDocument();
 		let proposeContext: KeywordsProposeContext = {
 			step: this.step,
 			question: this.query,
-			language: ""
+			language: "",
+			chatContext: chatContext.map(item => item.text).join("\n - ")
 		};
 
 		return await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, proposeContext);
@@ -146,6 +148,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 export interface KeywordsProposeContext extends TemplateContext {
 	step: HydeStep,
 	question: string,
+	chatContext: string
 }
 
 export interface KeywordEvaluateContext extends TemplateContext {

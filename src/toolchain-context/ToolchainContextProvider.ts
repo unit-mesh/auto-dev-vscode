@@ -12,7 +12,7 @@ export interface CreateToolchainContext {
 	language: string;
 	filename: string;
 	content: string;
-	element: NamedElement;
+	element?: NamedElement;
 	graph?: ScopeGraph;
 	extraItems?: ToolchainContextItem[];
 }
