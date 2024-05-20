@@ -39,6 +39,10 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 		let allRanges: NamedElement[] = [];
 		allRanges = allRanges.concat(methodRanges, classRanges);
 
+		if (allRanges.length === 0) {
+			return [];
+		}
+
 		const creatorContext: ActionCreatorContext = {
 			document: document,
 			lang: lang,

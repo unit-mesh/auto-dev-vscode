@@ -90,7 +90,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		// 启动构建工具观察者
 		await new BuildToolObserver().startWatch();
 
-		// 初始化本地嵌入提供者
+		// 初始化本地 Embedding 提供者
 		LocalEmbeddingProvider.getInstance().init(context.extensionPath);
 	});
 

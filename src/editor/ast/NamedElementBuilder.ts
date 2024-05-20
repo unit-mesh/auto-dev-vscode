@@ -128,8 +128,7 @@ export class NamedElementBuilder {
 			const root = this.tree.rootNode;
 			const matches = query?.matches(root);
 
-			return (
-				matches?.flatMap((match) => {
+			return (matches?.flatMap((match) => {
 					let blockNode = match.captures[0].node;
 					const idNode = match.captures[1].node;
 
@@ -156,10 +155,9 @@ export class NamedElementBuilder {
 					}
 
 					return blockRange;
-				}) ?? []
-			);
+				}) ?? []);
 		} catch (error) {
-			console.error(error);
+			console.error(`NamedElementBuilder for ${this.langConfig}`, error);
 			return [];
 		}
 	}

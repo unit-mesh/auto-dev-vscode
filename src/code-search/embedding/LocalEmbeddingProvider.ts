@@ -55,7 +55,8 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 		});
 
 		channel.appendLine("embedding provider initialized");
-		// console.log(await this.embed(['blog']));
+		let value = await this.embed(['hello']);
+		channel.appendLine("'hello' text's first 10 values" + value[0].slice(0, 10).join(", "));
 	}
 
 	async embed(chunks: string[]): Promise<Embedding[]> {
