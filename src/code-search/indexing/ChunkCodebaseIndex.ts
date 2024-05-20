@@ -1,9 +1,10 @@
 import {
 	CodebaseIndex,
-	IndexTag,
 	IndexingProgressUpdate,
-	RefreshIndexResults,
-	MarkCompleteCallback, IndexResultType
+	IndexResultType,
+	IndexTag,
+	MarkCompleteCallback,
+	RefreshIndexResults
 } from "./_base/CodebaseIndex";
 import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
 import { tagToString } from "../refreshIndex";
@@ -11,6 +12,19 @@ import { Chunk } from "../chunk/_base/Chunk";
 import { MAX_CHUNK_SIZE } from "../utils/constants";
 import { getBasename } from "../utils/IndexPathHelper";
 import { ChunkerManager } from "../chunk/ChunkerManager";
+import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
+import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
+import { Symbol } from "../scope-graph/model/Symbol";
+
+async function buildSymbols(chunk: Chunk): Promise<string> {
+	try {
+		let tsfile = await TreeSitterFile.create(chunk.content, chunk.language, new DefaultLanguageService(), chunk.filepath);
+		let scopeGraph = await tsfile.scopeGraph();
+		return Symbol.symbolLocations(scopeGraph, chunk.content);
+	} catch (e) {
+		return "";
+	}
+}
 
 export class ChunkCodebaseIndex implements CodebaseIndex {
 	static artifactId: string = "chunks";
@@ -22,6 +36,7 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 		this.readFile = readFile;
 	}
 
+	/// add for symbols
 	private async _createTables(db: DatabaseConnection) {
 		await db.exec(`CREATE TABLE IF NOT EXISTS chunks (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +46,8 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
       startLine INTEGER NOT NULL,
       endLine INTEGER NOT NULL,
       content TEXT NOT NULL,
-      language TEXT DEFAULT NULL
+      language TEXT DEFAULT NULL,
+      symbols TEXT DEFAULT NULL
     )`);
 
 		await db.exec(`CREATE TABLE IF NOT EXISTS chunk_tags (
@@ -53,8 +69,9 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 		const tagString = tagToString(tag);
 
 		async function handleChunk(chunk: Chunk) {
+			let symbols = await buildSymbols(chunk);
 			const { lastID } = await db.run(
-				`INSERT INTO chunks (cacheKey, path, idx, startLine, endLine, content, language) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+				`INSERT INTO chunks (cacheKey, path, idx, startLine, endLine, content, language, symbols) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
 				[
 					chunk.digest,
 					chunk.filepath,
@@ -63,6 +80,7 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 					chunk.endLine,
 					chunk.content,
 					chunk.language,
+					symbols
 				],
 			);
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// import { Connection, MetricType, Table } from "vectordb";
+import { Connection, MetricType, Table } from "vectordb";
 
 import {
 	CodebaseIndex,
@@ -158,7 +158,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		await this.createSqliteCacheTable(sqlite);
 
 		// Compute
-		let table: any = undefined;
+		let table: Table | undefined = undefined;
 		let needToCreateTable = true;
 		const existingTables = await db.tableNames();
 

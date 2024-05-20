@@ -125,9 +125,8 @@ export class FullTextSearchCodebaseIndex implements CodebaseIndex {
     FROM fts
     JOIN fts_metadata ON fts.rowid = fts_metadata.id
     JOIN chunk_tags ON fts_metadata.chunkId = chunk_tags.chunkId
-    WHERE fts MATCH '${text.replace(/\?/g, "",)}'
-      AND chunk_tags.tag IN (${tagStrings.map(() => "?").join(",")}) 
-      ${ filterPaths ? `AND fts_metadata.path IN (${filterPaths.map(() => "?").join(",")})` : ""}
+    WHERE fts MATCH '${text.replace(/\?/g, "",)}' AND chunk_tags.tag IN (${tagStrings.map(() => "?").join(",")})
+      ${ filterPaths ? `AND fts_metadata.path IN (${filterPaths.map(() => "?").join(",")})` : "" }
     ORDER BY rank
     LIMIT ?`;
 
