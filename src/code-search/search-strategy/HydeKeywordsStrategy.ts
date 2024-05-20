@@ -12,7 +12,6 @@ import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActi
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { channel } from "../../channel";
-import { TextRange } from "../scope-graph/model/TextRange";
 import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
 import { StrategyOutput } from "./_base/StrategyOutput";

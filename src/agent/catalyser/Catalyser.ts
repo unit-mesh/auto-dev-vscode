@@ -55,6 +55,7 @@ export class Catalyser {
 		}
 
 		if (evaluateOutput.chunks.length > 0) {
+			channel.append("\n")
 			channel.appendLine("Found " + evaluateOutput.chunks.length + " code snippets\n");
 			for (let chunk of evaluateOutput.chunks) {
 				// a file path will be like: `build.gradle.kts (0-5)`, we need to parse range from name
