@@ -62,6 +62,10 @@ export default defineConfig((api) => {
             src: "models/",
             dest: "",
           },
+          {
+            src: "autodev_tutorial.py",
+            dest: "",
+          },
         ],
       }),
     ],

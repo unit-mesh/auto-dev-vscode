@@ -14,4 +14,6 @@ export enum AutoDevCommand {
 	GenApiData = "autodev.genApiData",
 	GUIFocusInput = "autodev.focusAutoDevInput",
 	NewSession = "autodev.newSession",
+	// showTutorial
+	ShowTutorial = "autodev.showTutorial",
 }

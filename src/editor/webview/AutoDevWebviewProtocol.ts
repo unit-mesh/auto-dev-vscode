@@ -148,6 +148,9 @@ export class AutoDevWebviewProtocol {
             reply,
           });
           break;
+        case "showTutorial":
+          vscode.commands.executeCommand("autodev.showTutorial");
+          break;
         case "config/getBrowserSerialized":
           this.getBrowserSerialized({
             id: messageId,

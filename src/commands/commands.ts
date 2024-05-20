@@ -16,6 +16,9 @@ import { CommitMessageGenAction } from "../action/devops/CommitMessageGenAction"
 import { RelevantCodeProviderManager } from "../code-context/RelevantCodeProviderManager";
 import { TreeSitterFileManager } from "../editor/cache/TreeSitterFileManager";
 import { AutoDevWebviewProtocol } from "../editor/webview/AutoDevWebviewProtocol";
+import path from "path";
+import fs from "fs";
+import { getExtensionUri } from "../context";
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
@@ -182,7 +185,29 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 	[AutoDevCommand.NewSession]: () => {
 		extension.sidebar.webviewProtocol?.request("newSession", undefined);
 	},
+	[AutoDevCommand.ShowTutorial]: () => {
+		showTutorial();
+	},
 });
+
+export async function showTutorial() {
+	const tutorialPath = path.join(
+		getExtensionUri().fsPath,
+		"autodev_tutorial.py",
+	);
+	// Ensure keyboard shortcuts match OS
+	if (process.platform !== "darwin") {
+		let tutorialContent = fs.readFileSync(tutorialPath, "utf8");
+		tutorialContent = tutorialContent.replace("⌘", "^").replace("Cmd", "Ctrl");
+		fs.writeFileSync(tutorialPath, tutorialContent);
+	}
+
+	const doc = await vscode.workspace.openTextDocument(
+		vscode.Uri.file(tutorialPath),
+	);
+	await vscode.window.showTextDocument(doc, { preview: false });
+}
+
 
 async function addHighlightedCodeToContext(
 	edit: boolean,
