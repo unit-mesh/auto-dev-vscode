@@ -20,6 +20,6 @@ parent: Semantic
 
 ### Our Strategy
 
-- HydeCodeStrategy
-- HydeKeywordsStrategy
+- HydeCodeStrategy reference to GitHub Copilot
+- HydeKeywordsStrategy reference to Bloop: HydeDoc
 

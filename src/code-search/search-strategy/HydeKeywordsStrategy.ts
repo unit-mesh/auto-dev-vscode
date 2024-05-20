@@ -1,4 +1,4 @@
-import { HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
+import { executeIns, HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
 import { ChunkItem } from "../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
 import { PromptManager } from "../../prompt-manage/PromptManager";
@@ -8,34 +8,10 @@ import { ChatMessage } from "../../llm-provider/ChatMessage";
 import { HydeKeywords } from "./_base/HydeKeywords";
 import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
 import { AutoDevExtension } from "../../AutoDevExtension";
-import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
-import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
-import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { channel } from "../../channel";
 import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
 import { StrategyOutput } from "./_base/StrategyOutput";
-
-export async function executeIns(instruction: string) {
-	console.log("\ninstruction: \n" + instruction);
-	let result = "";
-	try {
-		let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
-		let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
-		for await (let chatMessage of response) {
-			channel.append(chatMessage.content);
-			result += chatMessage.content;
-		}
-
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
-		return result;
-	} catch (e) {
-		console.log("error:" + e);
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
-		return "";
-	}
-}
 
 /**
  * The `HydeKeywordsStrategy` class is a part of the Hyde Strategy pattern and is used to generate keywords from a query.

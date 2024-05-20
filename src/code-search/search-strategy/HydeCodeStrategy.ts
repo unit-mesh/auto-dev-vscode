@@ -1,5 +1,5 @@
 import { ChunkItem } from "../embedding/_base/Embedding";
-import { HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
+import { executeIns, HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
 import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { ChatMessage } from "../../llm-provider/ChatMessage";
@@ -9,8 +9,7 @@ import { channel } from "../../channel";
 import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
 import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
-import { TextRange } from "../scope-graph/model/TextRange";
-import { executeIns, KeywordEvaluateContext, KeywordsProposeContext } from "./HydeKeywordsStrategy";
+import { KeywordEvaluateContext, KeywordsProposeContext } from "./HydeKeywordsStrategy";
 import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
 import { StrategyOutput } from "./_base/StrategyOutput";
 

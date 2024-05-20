@@ -1,6 +1,10 @@
 import { ChunkItem, Embedding } from "../../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./HydeDocument";
 import { StrategyOutput } from "./StrategyOutput";
+import { CustomActionPrompt } from "../../../prompt-manage/custom-action/CustomActionPrompt";
+import { AutoDevStatus, AutoDevStatusManager } from "../../../editor/editor-api/AutoDevStatusManager";
+import { LlmProvider } from "../../../llm-provider/LlmProvider";
+import { channel } from "../../../channel";
 
 export type HydeQuery = string | RegExp | Embedding;
 
@@ -64,3 +68,23 @@ export interface HydeStrategy<T> {
 	execute(): Promise<StrategyOutput>;
 }
 
+export async function executeIns(instruction: string) {
+	console.log("\ninstruction: \n" + instruction);
+	let result = "";
+	try {
+		let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
+		let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
+		for await (let chatMessage of response) {
+			channel.append(chatMessage.content);
+			result += chatMessage.content;
+		}
+
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
+		return result;
+	} catch (e) {
+		console.log("error:" + e);
+		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
+		return "";
+	}
+}
