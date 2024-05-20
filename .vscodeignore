@@ -47,3 +47,4 @@ bin
 tsconfig.node.json
 pre-download-build.js
 docs
+bin/**/build.tar.gz

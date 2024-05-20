@@ -45,25 +45,17 @@ for (const target of targets) {
   const downloadUrl = `https://github.com/TryGhost/node-sqlite3/releases/download/v5.1.7/sqlite3-v5.1.7-napi-v6-${
     target === "win32-arm64" ? "win32-ia32" : target
   }.tar.gz`;
-   // 检查下载文件是否存在
-   const filePath = `${targetDir}/build.tar.gz`;
-   if (fs.existsSync(filePath)) {
-     console.log(`[info] File already exists: ${filePath}`);
-   } else {
-     // 如果文件不存在，下载文件
-     console.log(`[info] Downloading ${target}...`);
-     execSync(`curl -L -o ${targetDir}/build.tar.gz ${downloadUrl}`);
-   }
+  execSync(`curl -L -o ${targetDir}/build.tar.gz ${downloadUrl}`);
   execSync(`cd ${targetDir} && tar -xvzf build.tar.gz`);
   fs.copyFileSync(
     `${targetDir}/build/Release/node_sqlite3.node`,
     `${targetDir}/node_sqlite3.node`,
   );
-  // fs.unlinkSync(`${targetDir}/build.tar.gz`);
-  // fs.rmSync(`${targetDir}/build`, {
-  //   recursive: true,
-  //   force: true,
-  // });
+  fs.unlinkSync(`${targetDir}/build.tar.gz`);
+  fs.rmSync(`${targetDir}/build`, {
+    recursive: true,
+    force: true,
+  });
 }
 
 console.log("[info] Downloading prebuilt lancedb...");
