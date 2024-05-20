@@ -12,5 +12,6 @@ export enum AutoDevCommand {
 	SystemAction = "autodev.systemAction",
 	GenerateCommitMessage = "autodev.git.generateCommitMessage",
 	GenApiData = "autodev.genApiData",
-	GUIFocusInput = "autodev.focusAutoDevInput"
+	GUIFocusInput = "autodev.focusAutoDevInput",
+	NewSession = "autodev.newSession",
 }

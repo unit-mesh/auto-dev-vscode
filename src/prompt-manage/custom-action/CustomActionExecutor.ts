@@ -48,7 +48,7 @@ export class CustomActionExecutor {
 
 		switch (prompt.interaction) {
 			case InteractionType.ChatPanel:
-				await extension.sidebar.webviewProtocol.request("userInput", { input: outputText });
+				await extension.sidebar.webviewProtocol.request("newSessionWithPrompt", { input: outputText });
 				break;
 			case InteractionType.AppendCursor:
 				CustomActionExecutor.insertText(editor, outputText);

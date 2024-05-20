@@ -178,7 +178,10 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		}
 		extension.sidebar.webviewProtocol?.request("focusAutoDevInput", undefined);
 		await addHighlightedCodeToContext(false, extension.sidebar.webviewProtocol);
-	}
+	},
+	[AutoDevCommand.NewSession]: () => {
+		extension.sidebar.webviewProtocol?.request("newSession", undefined);
+	},
 });
 
 async function addHighlightedCodeToContext(
