@@ -1,37 +1,34 @@
 ---
 layout: default
-title: Hyde Code Strategy
-nav_order: 3
-parent: Semantic
+title: Hyde Keywords Strategy
+nav_order: 2
+parent: Catalyser
 ---
 
-Code file: HydeCodeStrategy.ts
+Code file: HydeKeywordsStrategy.ts
 
-1. generate hyde doc code from the user query
-2. retrieve code snippets by hyde code from the codebase
+1. generate keywords from the user query
+2. retrieve code snippets by query from the codebase
 3. summarize the code snippets and return the result
 
 ```typescript
-		channel.appendLine("=".repeat(80));
-channel.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
-channel.appendLine("=".repeat(80));
-
 this.step = HydeStep.Propose;
 let documents = await this.generateDocument();
-let hydeCode = documents.content;
+let keywords = documents.content;
 
 this.step = HydeStep.Retrieve;
-let chunks = await this.retrieveChunks(hydeCode);
+let queryTerm = this.createQueryTerm(keywords);
+let chunkItems = await this.retrieveChunks(queryTerm);
 
 this.step = HydeStep.Evaluate;
 let evaluateContext: KeywordEvaluateContext = {
 	step: this.step,
-	question: this.query,
-	code: chunks.map(item => item.text).join("\n"),
+	question: keywords.question,
+	code: chunkItems.map(item => item.text).join("\n"),
 	language: ""
 };
 
-if (chunks.length === 0) {
+if (chunkItems.length === 0) {
 	channel.appendLine("No code snippets found.");
 	return new StrategyOutput("", []);
 }
@@ -39,5 +36,5 @@ if (chunks.length === 0) {
 channel.appendLine("\n");
 channel.appendLine(" --- Summary --- ");
 let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);
-return new StrategyOutput(await executeIns(evaluateIns), chunks);
+return new StrategyOutput(await executeIns(evaluateIns), chunkItems);
 ```
