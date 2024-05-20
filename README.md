@@ -71,8 +71,8 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
     - [x] Custom prompt
         - [x] Align to IDE version
     - [ ] Json Schema validation
-        - [ ] Settings 
-        - [ ] Custom Prompt 
+        - [ ] Settings
+        - [ ] Custom Prompt
 - [ ] Custom Agent
     - [ ] Custom Agent
     - [ ] Custom Agent API
@@ -90,6 +90,14 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
         - [x] [LanceDB](https://github.com/lancedb/lancedb)
         - [x] [vectordb](https://www.npmjs.com/package/vectordb)
     - [x] Semantic Search
+    - [ ] Embedding Service
+        - [ ] Local
+            - [x] Sentence Transformer
+        - [ ] Remote - Custom Embedding Server
+            - [ ] Local Server
+                - [ ] [Dmeta-embedding Mini](https://huggingface.co/DMetaSoul/Dmeta-embedding-zh-small) for Doc
+            - [ ] Remote Server
+                - [ ] OpenAI
 - [ ] Search strategy
     - [x] Hyde Document/Code strategy
     - [x] Hyde Keywords strategy
@@ -107,7 +115,7 @@ If you are interested in AutoDev, you can join our WeChat group by scanning the 
     - [ ] Terminal
 - [ ] Docs with RAG
     - [ ] spike: Auto Generate doc based on sourcecode
-    - [ ] Custom Document embedding server for RAG 
+    - [ ] Custom Document embedding server for RAG
     - [ ] Ask business doc
         - [ ] Markdown
         - [ ] RDF
