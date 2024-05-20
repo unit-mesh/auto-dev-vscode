@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Semantic
+title: Catalyser
 nav_order: 4
 has_children: true
 permalink: /catalyser

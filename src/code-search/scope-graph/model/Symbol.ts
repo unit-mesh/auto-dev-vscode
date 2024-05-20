@@ -20,7 +20,7 @@ export class Symbol {
 	 *
 	 * Note: This method does not modify the original scope graph or buffer.
 	 */
-	static symbolLocations(scopeGraph: ScopeGraph, buffer: string) {
+	public static symbolLocations(scopeGraph: ScopeGraph, buffer: string): string {
 		let symbols = scopeGraph.symbols()
 			.map(sym => buffer.slice(sym.range.start.byte, sym.range.end.byte))
 			.reduce((set, sym) => set.add(sym), new Set());
