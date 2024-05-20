@@ -11,6 +11,9 @@ permalink: /quick-start
 
 In the vscode configuration, search for `autodev`, or click the ⚙️ button in the lower right footer of the dialog panel
 
+在当前的设计里，由于精力不足，在 UI 设计上我们基于 Continue 的设计，因此会出现一些不符合直觉的地方，我们会在后续的版本中逐渐优化。诸如于：
+**Chat UI 和代码中的 LLM 模型需要分开配置。
+
 ## Basic
 
 This is the default configuration and can be overridden in different functional areas.

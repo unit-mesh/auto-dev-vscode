@@ -132,6 +132,14 @@ export class AutoDevWebviewProtocol {
         case "openConfigJson":
           this.openSettings();
           break;
+        case "errorPopup":
+          vscode.window.showErrorMessage(message.data.message, "Show Logs")
+            .then((selection) => {
+              if (selection === "Show Logs") {
+                vscode.commands.executeCommand("workbench.action.toggleDevTools");
+              }
+            });
+          break;
         case "onLoad":
           this.onLoad({
             id: messageId,
