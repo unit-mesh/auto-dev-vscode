@@ -5,6 +5,9 @@ import { FullTextSearchCodebaseIndex } from "../search/FullTextSearch";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
 import { TextRange } from "../scope-graph/model/TextRange";
+import { GitAction } from "../../editor/editor-api/scm/GitAction";
+import { Commit } from "../../types/git";
+import { TfIdfSemanticChunkSearch } from "../search/TfIdfSemanticChunkSearch";
 
 export interface ContextSubmenuItem {
 	id: string;
@@ -69,6 +72,22 @@ export abstract class Retrieval {
 				a.endLine === b.endLine
 			);
 		});
+	}
+
+	/**
+	 * TODO: according commit messages to get by chunks
+	 * CommitHistoryIndexer is responsible for indexing commit history of a codebase.
+	 * Then, you can use {@link TfIdfSemanticChunkSearch} to search relative to commit history
+	 *
+	 * Based on Chunk indexing, we can get the commit change of code base, then it can be the user commits.
+	 */
+	async retrieveGit(git: GitAction, term: RetrievalQueryTerm) : Promise<Chunk[]> {
+		let commits: Commit[] = await git.getAllHistoryCommits();
+
+		// tfidf search by commit message
+		TfIdfSemanticChunkSearch
+
+		return [];
 	}
 
 	async retrieveFts(term: RetrievalQueryTerm): Promise<Chunk[]> {

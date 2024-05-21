@@ -1,6 +1,6 @@
 import vscode, { Uri } from "vscode";
 import * as util from "node:util";
-import { Repository } from "../../../types/git";
+import { Change, Commit, Repository } from "../../../types/git";
 import { DiffManager } from "../../diff/DiffManager";
 
 export const asyncExec = util.promisify(require("child_process").exec);
@@ -109,5 +109,44 @@ export class GitAction {
 		} else {
 			return "NONE";
 		}
+	}
+
+	async getAllHistoryCommits(maxEntries: number = 500): Promise<Commit[]> {
+		const commits: Commit[] = [];
+		for (const dir of this.getWorkspaceDirectories()) {
+			const repo = await this.getRepo(vscode.Uri.file(dir));
+			if (!repo) {
+				continue;
+			}
+
+			commits.push(...(await repo.log({ maxEntries: maxEntries })));
+		}
+
+		return commits;
+	}
+
+	async getChangeByHash(hash: string): Promise<string> {
+		let diffs = [];
+
+		for (const dir of this.getWorkspaceDirectories()) {
+			const repo = await this.getRepo(vscode.Uri.file(dir));
+			if (!repo) {
+				continue;
+			}
+
+			diffs.push(await this.getChangeByHashInRepo(repo, hash));
+		}
+
+		return diffs.join("\n\n");
+	}
+
+	async getChangeByHashInRepo(repository: Repository, hash: string): Promise<string> {
+		const commit = await repository.getCommit(hash);
+		if (!commit) {
+			throw new Error(`Commit with hash ${hash} not found in repository`);
+		}
+
+		const diff = await repository.diffWithHEAD(commit.hash);
+		return this.parseGitDiff(repository, diff);
 	}
 }
