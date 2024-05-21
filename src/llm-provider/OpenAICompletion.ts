@@ -1,10 +1,11 @@
-import { ChatMessage } from "./ChatMessage";
+import { ChatMessage, ChatRole } from "./ChatMessage";
 import { streamSse } from "./stream";
 import { RequestOptions } from "node:http";
 import { LlmConfig } from "../settings/LlmConfig";
 
 type RequestInfo = Request | string;
 
+/// todo: extract for abstract API of completion
 export class OpenAICompletion {
 	private engine?: string;
 	private apiKey?: string;
@@ -28,6 +29,15 @@ export class OpenAICompletion {
 		}
 
 		return output;
+	}
+
+	async complete(prompt: string) {
+		let completion = "";
+		for await (const chunk of this._streamChat([{ role: ChatRole.User, content: prompt }])) {
+			completion += chunk.content;
+		}
+
+		return completion;
 	}
 
 	async* _streamChat(messages: ChatMessage[]): AsyncGenerator<ChatMessage> {

@@ -4,6 +4,7 @@ import { getBasename } from "../utils/IndexPathHelper";
 import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
 import { PromptManager } from "../../prompt-manage/PromptManager";
 import { ActionType } from "../../prompt-manage/ActionType";
+import { OpenAICompletion } from "../../llm-provider/OpenAICompletion";
 
 export interface RerankContext extends TemplateContext {
   query: string;
@@ -29,21 +30,12 @@ const RERANK_PROMPT = async (
 
 export class LLMReranker implements Reranker {
   name = "llmReranker";
-
-  constructor(private readonly llm: any) {}
+  constructor(private readonly llm: OpenAICompletion) {}
 
   async scoreChunk(chunk: Chunk, query: string): Promise<number> {
-    const completion = await this.llm.complete(
-      RERANK_PROMPT(query, getBasename(chunk.filepath), chunk.content),
-      {
-        maxTokens: 1,
-        model:
-          this.llm.providerName.startsWith("openai") &&
-          this.llm.model.startsWith("gpt-4")
-            ? "gpt-3.5-turbo"
-            : this.llm.model,
-      },
-    );
+    let prompt = await RERANK_PROMPT(query, getBasename(chunk.filepath), chunk.content);
+
+    const completion = await this.llm.complete(prompt);
 
     if (!completion) {
       // TODO: Why is this happening?
