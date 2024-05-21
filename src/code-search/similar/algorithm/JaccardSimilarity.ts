@@ -1,12 +1,11 @@
 import { StopwordsBasedTokenizer } from "../../tokenizer/StopwordsBasedTokenizer";
 
 /**
- * `JaccardSimilarity` is a TypeScript class that provides methods to calculate the Jaccard similarity between strings.
- * Jaccard similarity is a measure of the similarity between two sets and is defined as the size of the intersection
- * divided by the size of the union of the two sets.
+ * Calculates the similarity score between a given path and a set of strings.
  *
- * @export
- * @class JaccardSimilarity
+ * @param path The path to calculate similarity for.
+ * @param sets The set of strings to compare with the path.
+ * @returns A number representing the similarity score between the path and the set of strings.
  */
 export class JaccardSimilarity {
 	/**
@@ -35,6 +34,13 @@ export class JaccardSimilarity {
 		return intersectionSize / unionSize;
 	}
 
+	/**
+	 * Calculates the similarity score between a given path and a set of strings.
+	 *
+	 * @param path The path to calculate similarity for.
+	 * @param sets The set of strings to compare with the path.
+	 * @returns A number representing the similarity score between the path and the set of strings.
+	 */
 	public pathSimilarity(path: string, sets: Set<string>): number {
 		const splitPath = path.split("/");
 		const set1 = splitPath

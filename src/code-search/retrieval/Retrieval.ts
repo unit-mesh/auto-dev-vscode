@@ -92,6 +92,8 @@ export abstract class Retrieval {
 		});
 	}
 
+	private similarity = new JaccardSimilarity();
+
 	/**
 	 * TODO: according commit messages to get by chunks
 	 * CommitHistoryIndexer is responsible for indexing commit history of a codebase.
@@ -140,7 +142,7 @@ export abstract class Retrieval {
 			const changeChunks: Chunk[] = changes.map((change, index) => {
 				let language = languageFromPath(change.filename);
 
-				let similarityScore = new JaccardSimilarity().pathSimilarity(change.filename, querySet);
+				let similarityScore = this.similarity.pathSimilarity(change.filename, querySet);
 
 				// similarityScore > 0.5
 				if (similarityScore < 0.5) {
