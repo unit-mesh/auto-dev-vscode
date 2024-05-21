@@ -9,7 +9,6 @@ import { HydeKeywords } from "./_base/HydeKeywords";
 import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { channel } from "../../channel";
-import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
 import { StrategyOutput } from "./_base/StrategyOutput";
 
@@ -57,7 +56,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
 		let language = undefined;
-		let embeddingsProvider = this.extension.embeddingsProvider ?? LocalEmbeddingProvider.getInstance();
+		let embeddingsProvider = this.extension.embeddingsProvider!!;
 		let retrieval = DefaultRetrieval.getInstance();
 		let options: RetrieveOption = {
 			filterDirectory: undefined,

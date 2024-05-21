@@ -6,7 +6,6 @@ import { ChatMessage } from "../../llm-provider/ChatMessage";
 import { HydeStep } from "./_base/HydeStep";
 import { PromptManager } from "../../prompt-manage/PromptManager";
 import { channel } from "../../channel";
-import { LocalEmbeddingProvider } from "../embedding/LocalEmbeddingProvider";
 import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
 import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
 import { KeywordEvaluateContext, KeywordsProposeContext } from "./HydeKeywordsStrategy";
@@ -74,7 +73,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
 		let language = undefined;
-		let embeddingsProvider = this.extension.embeddingsProvider ?? LocalEmbeddingProvider.getInstance();
+		let embeddingsProvider = this.extension.embeddingsProvider!!;
 		let retrieval = DefaultRetrieval.getInstance();
 		let options: RetrieveOption = {
 			filterDirectory: undefined,

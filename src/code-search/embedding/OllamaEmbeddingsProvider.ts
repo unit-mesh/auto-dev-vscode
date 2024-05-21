@@ -24,7 +24,7 @@ async function embedOne(
 	return (await resp.json()).embedding;
 }
 
-class OllamaEmbeddingsProvider extends AuthedEmbeddingsProvider {
+export class OllamaEmbeddingsProvider extends AuthedEmbeddingsProvider {
 	static defaultOptions: Partial<AuthedEmbedOptions> | undefined = {
 		apiBase: "http://localhost:11434/",
 	};
@@ -41,5 +41,3 @@ class OllamaEmbeddingsProvider extends AuthedEmbeddingsProvider {
 		return results;
 	}
 }
-
-export default OllamaEmbeddingsProvider;
