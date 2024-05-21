@@ -99,19 +99,23 @@ export class DefaultRetrieval extends Retrieval {
 		 * Since the official API don't have this feature, this part is commented out
 		 * TODO: fix {@link GitAction#getChangeByHashInRepo} to make this works
 		 */
-		if (options.withGitChange) {
+		if (options.withCommitMessageSearch) {
 			// Source: Git
-			let gitResults = await this.retrieveGit(ide.git, new RetrievalQueryTerm(
-				fullInput,
-				nRetrieve / 2,
-				tags,
-				options.filterDirectory,
-				options.filterLanguage
-			));
+			try {
+				let gitResults = await this.retrieveGit(ide.git, new RetrievalQueryTerm(
+					fullInput,
+					nRetrieve / 2,
+					tags,
+					options.filterDirectory,
+					options.filterLanguage
+				));
 
-			channel.appendLine(`== [Codebase] Found ${gitResults.length} results from Git`);
-			// retrievalResults.push(...gitResults);
-			console.log("Git results:", gitResults);
+				channel.appendLine(`== [Codebase] Found ${gitResults.length} results from Git`);
+				// retrievalResults.push(...gitResults);
+				console.log("Git results:", gitResults);
+			} catch (e) {
+				console.warn("Error retrieving from git:", e);
+			}
 		}
 
 		let results: Chunk[] = this.deduplicateChunks(retrievalResults);

@@ -245,14 +245,12 @@ export class GitAction {
 		return diffs.join("\n\n");
 	}
 
-	/// todo: make it works
 	async getChangeByHashInRepo(repository: Repository, hash: string): Promise<string> {
 		const commit = await repository.getCommit(hash);
 		if (!commit) {
 			throw new Error(`Commit with hash ${hash} not found in repository`);
 		}
 
-		const diff: Change[] = await repository.diffWith(hash);
-		return diff.map((change) => change.toString()).join("\n");
+		return this.exec(repository.rootUri.fsPath, 'show', hash);
 	}
 }

@@ -7,7 +7,7 @@ import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
 import { TextRange } from "../scope-graph/model/TextRange";
 import { GitAction } from "../../editor/editor-api/scm/GitAction";
 import { Commit } from "../../types/git";
-import { TfIdfSemanticChunkSearch } from "../search/TfIdfSemanticChunkSearch";
+import { TfIdfChunkSearch } from "../search/TfIdfChunkSearch";
 
 export interface ContextSubmenuItem {
 	id: string;
@@ -26,11 +26,26 @@ export interface ContextItem {
 }
 
 export interface RetrieveOption {
+	/**
+	 * filter the codebase by directory
+	 */
 	filterDirectory: string | undefined;
+	/**
+	 * filter the codebase by language
+	 */
 	filterLanguage: string | undefined;
+	/**
+	 * search the codebase by full text search, with {@link FullTextSearchCodebaseIndex}
+	 */
 	withFullTextSearch: boolean;
+	/**
+	 * search the codebase by semantic search, with {@link LanceDbIndex}
+	 */
 	withSemanticSearch: boolean;
-	withGitChange: boolean | undefined;
+	/**
+	 * provider commit message for keywords, which is used for {@link TfIdfChunkSearch} and {@link HydeKeywordsStrategy}
+ 	 */
+	withCommitMessageSearch: boolean | undefined;
 }
 
 export abstract class Retrieval {
@@ -78,12 +93,12 @@ export abstract class Retrieval {
 	/**
 	 * TODO: according commit messages to get by chunks
 	 * CommitHistoryIndexer is responsible for indexing commit history of a codebase.
-	 * Then, you can use {@link TfIdfSemanticChunkSearch} to search relative to commit history
+	 * Then, you can use {@link TfIdfChunkSearch} to search relative to commit history
 	 *
 	 * Based on Chunk indexing, we can get the commit change of code base, then it can be the user commits.
 	 */
 	async retrieveGit(git: GitAction, term: RetrievalQueryTerm, threshold: number = 0.6): Promise<Chunk[]> {
-		let tfIdfTextSearch = new TfIdfSemanticChunkSearch();
+		let tfIdfTextSearch = new TfIdfChunkSearch();
 		let commits: Commit[] = await git.getHistoryCommits();
 
 		// tfidf search by commit message get index
@@ -92,13 +107,17 @@ export abstract class Retrieval {
 
 		// search by commit message
 		let results: number[] = tfIdfTextSearch.search(term.query);
-		let indexes = results.map((score, index) =>
-			score > threshold ? index : -1
-		);
+		let indexes = results
+			.map((score, index) => score > threshold ? index : -1)
+			.filter((index) => index !== -1)
+			.sort((a, b) => results[b] - results[a]);
 
 		if (indexes.length === 0) {
 			return [];
 		}
+
+		// take by term.n
+		indexes = indexes.slice(0, term.n);
 
 		// get the commit change
 		let chunks: Chunk[] = [];

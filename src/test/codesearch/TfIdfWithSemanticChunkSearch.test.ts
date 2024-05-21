@@ -1,7 +1,7 @@
 const Parser = require("web-tree-sitter");
 import { TfIdf } from "../../code-search/search/tfidf/Tfidf";
 
-import { TfIdfSemanticChunkSearch } from '../../code-search/search/TfIdfSemanticChunkSearch';
+import { TfIdfChunkSearch } from '../../code-search/search/TfIdfChunkSearch';
 import { TermSplitter } from "../../code-search/search/tfidf/TermSplitter";
 import { TestLanguageService } from "../TestLanguageService";
 import { CollapsedCodeChunker } from "../../code-search/chunk/_base/CollapsedCodeChunker";
@@ -9,10 +9,10 @@ import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
 import { LanguageProfileUtil } from "../../code-context/_base/LanguageProfile";
 
 describe('TfIdfWithSemanticChunkSearch', () => {
-    let tfIdfWithSemanticChunkSearch: TfIdfSemanticChunkSearch;
+    let tfIdfWithSemanticChunkSearch: TfIdfChunkSearch;
 
     beforeEach(() => {
-        tfIdfWithSemanticChunkSearch = new TfIdfSemanticChunkSearch();
+        tfIdfWithSemanticChunkSearch = new TfIdfChunkSearch();
     });
 
     describe('addDocument', () => {

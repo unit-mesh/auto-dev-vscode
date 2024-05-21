@@ -21,7 +21,7 @@ import { SearchOptions } from "./_base/SearchOptions";
  *
  * Example usage of the class is provided in the class description.
  */
-export class TfIdfSemanticChunkSearch implements SemanticSearch {
+export class TfIdfChunkSearch implements SemanticSearch {
 	private tfidf: TfIdf<string, ChunkItem>;
 
 	constructor() {
