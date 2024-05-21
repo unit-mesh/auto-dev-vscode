@@ -251,6 +251,7 @@ export class GitAction {
 			throw new Error(`Commit with hash ${hash} not found in repository`);
 		}
 
+		// todo: split show by multiple content with git changes
 		return this.exec(repository.rootUri.fsPath, 'show', hash);
 	}
 }

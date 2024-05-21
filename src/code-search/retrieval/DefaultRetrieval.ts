@@ -95,16 +95,19 @@ export class DefaultRetrieval extends Retrieval {
 			retrievalResults.push(...vecResults);
 		}
 
-		/**
-		 * Since the official API don't have this feature, this part is commented out
-		 * TODO: fix {@link GitAction#getChangeByHashInRepo} to make this works
-		 */
-		if (options.withCommitMessageSearch) {
+
+		let isLessThanN = retrievalResults.length < nRetrieve;
+		if (options.withCommitMessageSearch && isLessThanN) {
+			/**
+			 * the Commit content always too loong, if we want to search commit message, we need to reduce the number of retrieval
+			 */
+			let remaining = (nRetrieve - retrievalResults.length) / 2;
+
 			// Source: Git
 			try {
 				let gitResults = await this.retrieveGit(ide.git, new RetrievalQueryTerm(
 					fullInput,
-					nRetrieve / 2,
+					remaining,
 					tags,
 					options.filterDirectory,
 					options.filterLanguage
