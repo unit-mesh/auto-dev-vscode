@@ -266,7 +266,7 @@ export class GitAction {
 			}
 
 			if (EXT_LANGUAGE_MAP[ext]) {
-				output += `// ${change.change}\n`;
+				output += `${change.change}\n`;
 			}
 		});
 
