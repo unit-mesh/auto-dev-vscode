@@ -2,7 +2,7 @@
 layout: default
 title: Normal Chat
 parent: Basic Features
-nav_order: 3
+nav_order: 1
 permalink: /features/chat
 ---
 
