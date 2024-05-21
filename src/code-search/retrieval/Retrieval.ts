@@ -9,6 +9,7 @@ import { GitAction } from "../../editor/editor-api/scm/GitAction";
 import { Commit } from "../../types/git";
 import { TfIdfChunkSearch } from "../search/TfIdfChunkSearch";
 import { languageFromPath } from "../../editor/language/ExtensionLanguageMap";
+import { JaccardSimilarity } from "../similar/algorithm/JaccardSimilarity";
 
 export interface ContextSubmenuItem {
 	id: string;
@@ -106,6 +107,8 @@ export abstract class Retrieval {
 		let commitMessages = commits.map((commit) => commit.message);
 		tfIdfTextSearch.addDocuments(commitMessages);
 
+		let querySet = new Set(term.query.split(" "));
+
 		// search by commit message
 		let results: number[] = tfIdfTextSearch.search(term.query);
 		let indexes = results
@@ -137,6 +140,13 @@ export abstract class Retrieval {
 			const changeChunks: Chunk[] = changes.map((change, index) => {
 				let language = languageFromPath(change.filename);
 
+				let similarityScore = new JaccardSimilarity().pathSimilarity(change.filename, querySet);
+
+				// similarityScore > 0.5
+				if (similarityScore < 0.5) {
+					return undefined;
+				}
+
 				return {
 					language: language,
 					digest: commit.hash,
@@ -146,7 +156,7 @@ export abstract class Retrieval {
 					endLine: 0,
 					index: index
 				};
-			});
+			}).filter((chunk) => chunk !== undefined) as Chunk[];
 
 			chunks.push(...changeChunks);
 		}
