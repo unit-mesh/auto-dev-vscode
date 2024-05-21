@@ -22,6 +22,8 @@ THE SOFTWARE.
 
 import { RegexpTokenizer, stopwords, WordTokenizer } from "natural";
 
+let ourStopwords = stopwords;
+
 declare type DocumentType = string | string[] | Record<string, string>;
 declare type TfIdfCallback = (i: number, measure: number, key?: string | Record<string, any>) => void;
 
@@ -88,7 +90,7 @@ export class TfIdf<K, V> {
 			if (typeof document[term] === 'function') {
 				document[term] = 0;
 			}
-			if (!stopOut || stopwords.indexOf(term) < 0) {
+			if (!stopOut || ourStopwords.indexOf(term) < 0) {
 				document[term] = (document[term] ? document[term] + 1 : 1);
 			}
 
@@ -166,7 +168,7 @@ export class TfIdf<K, V> {
 		});
 	}
 
-	tfidfs(terms: string | string[], callback?: TfIdfCallback) {
+	tfidfs(terms: string | string[], callback?: TfIdfCallback): number[] {
 		const tfidfs = new Array(this.documents.length);
 
 		for (let i = 0; i < this.documents.length; i++) {
@@ -205,8 +207,7 @@ export class TfIdf<K, V> {
 			return false;
 		}
 
-		// @ts-ignore
-		stopwords = customStopwords;
+		ourStopwords = customStopwords;
 		return true;
 	}
 }

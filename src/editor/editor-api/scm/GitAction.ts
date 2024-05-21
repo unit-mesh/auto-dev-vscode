@@ -111,7 +111,7 @@ export class GitAction {
 		}
 	}
 
-	async getAllHistoryCommits(maxEntries: number = 500): Promise<Commit[]> {
+	async getHistoryCommits(maxEntries: number = 50): Promise<Commit[]> {
 		const commits: Commit[] = [];
 		for (const dir of this.getWorkspaceDirectories()) {
 			const repo = await this.getRepo(vscode.Uri.file(dir));
@@ -146,7 +146,7 @@ export class GitAction {
 			throw new Error(`Commit with hash ${hash} not found in repository`);
 		}
 
-		const diff = await repository.diffWithHEAD(commit.hash);
-		return this.parseGitDiff(repository, diff);
+		const diff: Change[] = await repository.diffWith(hash);
+		return diff.map((change) => change.toString()).join("\n");
 	}
 }

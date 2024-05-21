@@ -32,7 +32,7 @@ export class TfIdfSemanticChunkSearch implements SemanticSearch {
 		document.forEach(chunk => this.tfidf.addDocument(chunk));
 	}
 
-	search(query: string, callback?: TfIdfCallback): string[] {
+	search(query: string, callback?: TfIdfCallback): number[] {
 		return this.tfidf.tfidfs(query, callback);
 	}
 

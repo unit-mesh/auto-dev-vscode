@@ -64,6 +64,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 			filterLanguage: language,
 			withFullTextSearch: true,
 			withSemanticSearch: true,
+			withGitChange: false,
 		};
 
 		let result: ContextItem[] = await retrieval.retrieve(
