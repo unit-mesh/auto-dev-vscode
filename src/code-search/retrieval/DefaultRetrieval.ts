@@ -95,6 +95,10 @@ export class DefaultRetrieval extends Retrieval {
 			retrievalResults.push(...vecResults);
 		}
 
+		/**
+		 * Since the official API don't have this feature, this part is commented out
+		 * TODO: fix {@link GitAction#getChangeByHashInRepo} to make this works
+		 */
 		if (options.withGitChange) {
 			// Source: Git
 			let gitResults = await this.retrieveGit(ide.git, new RetrievalQueryTerm(

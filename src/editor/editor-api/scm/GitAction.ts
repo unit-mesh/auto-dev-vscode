@@ -69,7 +69,7 @@ export class GitAction {
 	}
 
 	async getRepositoryChanges(repository: Repository): Promise<string> {
-		let diffResult = await repository.diff(true) || await repository.diff();
+		let diffResult: string = await repository.diff(true) || await repository.diff();
 		if (diffResult !== '') {
 			return this.parseGitDiff(repository, diffResult);
 		} else {
@@ -111,7 +111,7 @@ export class GitAction {
 		}
 	}
 
-	async getHistoryCommits(maxEntries: number = 50): Promise<Commit[]> {
+	async getHistoryCommits(maxEntries: number = 500): Promise<Commit[]> {
 		const commits: Commit[] = [];
 		for (const dir of this.getWorkspaceDirectories()) {
 			const repo = await this.getRepo(vscode.Uri.file(dir));
@@ -126,7 +126,7 @@ export class GitAction {
 	}
 
 	async getChangeByHash(hash: string): Promise<string> {
-		let diffs = [];
+		let diffs: string[] = [];
 
 		for (const dir of this.getWorkspaceDirectories()) {
 			const repo = await this.getRepo(vscode.Uri.file(dir));
@@ -140,6 +140,7 @@ export class GitAction {
 		return diffs.join("\n\n");
 	}
 
+	/// todo: make it works
 	async getChangeByHashInRepo(repository: Repository, hash: string): Promise<string> {
 		const commit = await repository.getCommit(hash);
 		if (!commit) {
