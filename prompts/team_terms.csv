@@ -1,2 +1,6 @@
 id, term, localized
-yyds, YYDS, 永远的神
+yyds, YYDS, 永远的神,
+embedding, embedding, 向量化
+model, model, 模型
+team-prompts,Team Prompts, 团队 AI 提示词
+prompt-override, Prompt Override, AI 提示词覆盖

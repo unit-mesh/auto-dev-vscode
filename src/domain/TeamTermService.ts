@@ -10,6 +10,31 @@ import { SettingService } from "../settings/SettingService";
 
 @injectable()
 export class TeamTermService implements Service {
+	terms: TeamTerm[] = [];
+
+	private static instance_: TeamTermService;
+
+	static instance() {
+		if (!this.instance_) {
+			this.instance_ = new TeamTermService();
+		}
+
+		return this.instance_;
+	}
+
+	constructor() {
+	}
+
+	fetch(): TeamTerm[] {
+		if (this.terms.length) {
+			return this.terms;
+		}
+
+		let teamTerms = this.from();
+		this.terms = teamTerms;
+		return teamTerms;
+	}
+
 	from(paths: string = 'team_terms.csv'): TeamTerm[] {
 		const workspace = vscode.workspace.workspaceFolders?.[0];
 		if (!workspace) {
@@ -35,6 +60,7 @@ export class TeamTermService implements Service {
 			let record;
 			while (record = parser.read()) {
 				terms.push({
+					id: record.id,
 					term: record.term,
 					localized: record.localized
 				});
