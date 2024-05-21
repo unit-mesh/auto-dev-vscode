@@ -12,5 +12,6 @@
   "configuration.completion.title": "Code Completion",
   "configuration.chat.title": "Chat",
   "configuration.prompts.title": "AI Prompts",
-  "configuration.legacy.title": "Deprecated"
+  "configuration.legacy.title": "Deprecated",
+  "configuration.embedding.title": "Embedding Model"
 }

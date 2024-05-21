@@ -11,3 +11,9 @@ export interface EmbeddingsProvider {
 	 */
 	embed(chunks: string[]): Promise<Embedding[]>;
 }
+
+export enum EmbeddingsProviderType {
+	Local = "local",
+	OpenAI = "openai",
+	Ollama = "ollama",
+}

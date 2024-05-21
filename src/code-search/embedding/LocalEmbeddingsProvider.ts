@@ -25,7 +25,6 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 	session: InferenceSession | undefined;
 	MaxGroupSize: number = 4;
 
-	// singleton
 	private static instance: LocalEmbeddingsProvider;
 
 	private constructor() {

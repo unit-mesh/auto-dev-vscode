@@ -12,5 +12,6 @@
   "configuration.completion.title": "代码补全",
   "configuration.chat.title": "对话",
   "configuration.prompts.title": "AI 提示",
-  "configuration.legacy.title": "即将废弃"
+  "configuration.legacy.title": "即将废弃",
+  "configuration.embedding.title": "向量化模型"
 }

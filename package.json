@@ -296,6 +296,22 @@
         }
       },
       {
+        "title": "%configuration.embedding.title%",
+        "properties": {
+          "autodev.embedding.model": {
+            "type": "string",
+            "enum": [
+              "local",
+              "openai",
+              "ollama"
+            ],
+            "default": "local",
+            "description": "Model for overwrite provider in the base configuration",
+            "markdownDescription": "The method that will be used to generate codebase embeddings. The default is transformers.js, which will run locally in the browser. Learn about the other options [here](https://vscode.unitmesh.cc)."
+          }
+        }
+      },
+      {
         "title": "%configuration.legacy.title%",
         "properties": {
           "autodev.customPromptDir": {
