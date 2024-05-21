@@ -44,3 +44,4 @@ vite.config.mjs
 bin
 build/
 examples/ollama-chat-server/demo/chat.mjs
+prompts
