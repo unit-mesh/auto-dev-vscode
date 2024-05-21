@@ -37,4 +37,12 @@ describe('JaccardSimilarity', () => {
             expect(result).to.be.closeTo(0.33, 0.01);
         });
     });
+
+    it('should return the correct similarity score', () => {
+        const path1 = 'folder1/folder2/file1';
+        const set2 = new Set(['folder1', 'folder2', 'file2']);
+        const expectedScore = 2 / 3; // Assuming Jaccard similarity score calculation
+        const actualScore = jaccardSimilarity.pathSimilarity(path1, set2);
+        expect(actualScore).to.equal(expectedScore);
+    });
 });

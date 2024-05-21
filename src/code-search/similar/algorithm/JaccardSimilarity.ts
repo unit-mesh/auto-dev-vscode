@@ -34,4 +34,17 @@ export class JaccardSimilarity {
 		const unionSize: number = new Set([...set1, ...set2]).size;
 		return intersectionSize / unionSize;
 	}
+
+	public pathSimilarity(path: string, sets: Set<string>): number {
+		const splitPath = path.split("/");
+		const set1 = splitPath
+			.map(it => this.tokenize(it))
+			.reduce((acc, it) => new Set([...acc, ...it]), new Set<string>());
+
+		/// tokenize for sets too
+		const set2 = Array.from(sets).map(it => this.tokenize(it))
+			.reduce((acc, it) => new Set([...acc, ...it]), new Set<string>());
+
+		return this.similarityScore(set1, set2);
+	}
 }
