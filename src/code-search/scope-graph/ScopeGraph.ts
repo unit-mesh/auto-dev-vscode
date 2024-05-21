@@ -9,7 +9,6 @@ import { Reference } from "./node/Reference";
 import { NodeKind } from "./node/NodeKind";
 import { LanguageProfile } from "../../code-context/_base/LanguageProfile";
 import { ScopeDebug } from "../../test/ScopeDebug";
-import { TestOnly } from "../../ops/TestOnly";
 import { ImportWithRefs } from "./model/ImportWithRefs";
 import { DefToScope, EdgeKind, ImportToScope, RefToDef, RefToImport, ScopeToScope } from "./edge/EdgeKind";
 import { nameOfSymbol } from "./model/SymbolId";
@@ -226,7 +225,6 @@ export class ScopeGraph {
 			});
 	}
 
-	@TestOnly
 	allLocalDefs(): NodeKind[] {
 		return this.graph.nodes()
 			.filter(node => this.graph.getNodeAttributes(node) instanceof LocalDef)
