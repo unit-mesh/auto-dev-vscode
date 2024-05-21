@@ -27,11 +27,15 @@ import * as iconv from 'iconv-lite';
 
 import { API, Change, Commit, GitExtension, Repository } from "../../../types/git";
 import { DiffManager } from "../../diff/DiffManager";
+import { ParsedFileChange, parseGitLog } from "./GitParser";
+import { SUPPORTED_LANGUAGES } from "../../language/SupportedLanguage";
+import { EXT_LANGUAGE_MAP } from "../../language/ExtensionLanguageMap";
 
 export const asyncExec = util.promisify(require("child_process").exec);
 
 export class StopWatch {
 	private started = new Date().getTime();
+
 	public get elapsedTime() {
 		return new Date().getTime() - this.started;
 	}
@@ -251,7 +255,21 @@ export class GitAction {
 			throw new Error(`Commit with hash ${hash} not found in repository`);
 		}
 
-		// todo: split show by multiple content with git changes
-		return this.exec(repository.rootUri.fsPath, 'show', hash);
+		let gitOutput = await this.exec(repository.rootUri.fsPath, 'show', '--format=', hash);
+		let changes = parseGitLog(gitOutput);
+
+		let output: string = "";
+		changes.filter((change: ParsedFileChange) => {
+			let ext = change.filename.split('.').pop();
+			if (!ext) {
+				return false;
+			}
+
+			if (EXT_LANGUAGE_MAP[ext]) {
+				output += `// ${change.change}\n`;
+			}
+		});
+
+		return output;
 	}
 }
