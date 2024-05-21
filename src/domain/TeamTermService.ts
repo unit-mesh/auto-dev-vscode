@@ -5,11 +5,11 @@ import { parse } from 'csv-parse';
 import { injectable } from "inversify";
 
 import { Service } from "../service/Service";
-import { DomainTerm } from "./DomainTerm";
+import { TeamTerm } from "./TeamTerm";
 
 @injectable()
-export class DomainTermService implements Service {
-	from(paths: string = 'domain_terms.csv'): DomainTerm[] {
+export class TeamTermService implements Service {
+	from(paths: string = 'team_terms.csv'): TeamTerm[] {
 		const workspace = vscode.workspace.workspaceFolders?.[0];
 		if (!workspace) {
 			throw new Error('No workspace found');
@@ -27,7 +27,7 @@ export class DomainTermService implements Service {
 
 		file.pipe(parser);
 
-		const terms: DomainTerm[] = [];
+		const terms: TeamTerm[] = [];
 
 		parser.on('readable', function () {
 			let record;

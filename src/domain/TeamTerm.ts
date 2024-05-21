@@ -1,4 +1,4 @@
-export interface DomainTerm {
+export interface TeamTerm {
 	id?: string;
 	// origin language, like Chinese
 	localized: string;

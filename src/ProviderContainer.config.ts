@@ -25,7 +25,7 @@ import { GoStructurerProvider } from "./code-context/go/GoStructurerProvider";
 import { LanguageProfile } from "./code-context/_base/LanguageProfile";
 import { languageContainer } from "./ProviderLanguageProfile.config";
 import { ProjectService } from "./service/ProjectService";
-import { DomainTermService } from "./domain/DomainTermService";
+import { TeamTermService } from "./domain/TeamTermService";
 import { Service } from "./service/Service";
 
 const providerContainer = new Container();
@@ -76,6 +76,6 @@ languageContainer.getAll<LanguageProfile>(PROVIDER_TYPES.LanguageProfile).forEac
 	providerContainer.bind(PROVIDER_TYPES.LanguageProfile).toConstantValue(profile);
 });
 
-providerContainer.bind<Service>(PROVIDER_TYPES.ProjectService).to(DomainTermService);
+providerContainer.bind<Service>(PROVIDER_TYPES.ProjectService).to(TeamTermService);
 
 export { providerContainer };
