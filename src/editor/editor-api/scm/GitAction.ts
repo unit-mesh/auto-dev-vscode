@@ -234,8 +234,8 @@ export class GitAction {
 		return commits;
 	}
 
-	async getChangeByHash(hash: string): Promise<string> {
-		let diffs: string[] = [];
+	async getChangeByHash(hash: string): Promise<ParsedFileChange[]> {
+		let diffs: ParsedFileChange[] = [];
 
 		for (const dir of this.getWorkspaceDirectories()) {
 			const repo = await this.getRepo(vscode.Uri.file(dir));
@@ -243,13 +243,13 @@ export class GitAction {
 				continue;
 			}
 
-			diffs.push(await this.getChangeByHashInRepo(repo, hash));
+			diffs.push(...(await this.getChangeByHashInRepo(repo, hash)));
 		}
 
-		return diffs.join("\n\n");
+		return diffs;
 	}
 
-	async getChangeByHashInRepo(repository: Repository, hash: string): Promise<string> {
+	async getChangeByHashInRepo(repository: Repository, hash: string): Promise<ParsedFileChange[]> {
 		const commit = await repository.getCommit(hash);
 		if (!commit) {
 			throw new Error(`Commit with hash ${hash} not found in repository`);
@@ -258,7 +258,7 @@ export class GitAction {
 		let gitOutput = await this.exec(repository.rootUri.fsPath, 'show', '--format=', hash);
 		let changes = parseGitLog(gitOutput);
 
-		let output: string = "";
+		let output: ParsedFileChange[] = [];
 		changes.filter((change: ParsedFileChange) => {
 			let ext = change.filename.split('.').pop();
 			if (!ext) {
@@ -266,7 +266,7 @@ export class GitAction {
 			}
 
 			if (EXT_LANGUAGE_MAP[ext]) {
-				output += `${change.change}\n`;
+				output.push(change);
 			}
 		});
 

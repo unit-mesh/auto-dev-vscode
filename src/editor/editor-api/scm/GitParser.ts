@@ -1,6 +1,7 @@
 export interface ParsedFileChange {
 	status: string;
-	change: string;
+	///
+	content: string;
 	filename: string;
 }
 
@@ -14,7 +15,7 @@ export function parseGitLog(log: string): ParsedFileChange[] {
 			if (currentFile && currentFile.filename) {
 				changes.push(currentFile as ParsedFileChange);
 			}
-			currentFile = { filename: '', status: '', change: '' };
+			currentFile = { filename: '', status: '', content: '' };
 			const parts = line.split(' ');
 			currentFile.filename = parts[2].substring(2); // remove the 'a/' prefix
 		} else if (line.startsWith('index')) {
@@ -24,9 +25,9 @@ export function parseGitLog(log: string): ParsedFileChange[] {
 		} else if (line.startsWith('+++')) {
 			currentFile!.status = line.includes('/dev/null') ? 'deleted' : 'added';
 		} else if (line.startsWith('@@')) {
-			currentFile!.change += line + '\n';
+			currentFile!.content += line + '\n';
 		} else if (line.startsWith('+') || line.startsWith('-') || line.startsWith(' ')) {
-			currentFile!.change += line + '\n';
+			currentFile!.content += line + '\n';
 		}
 	}
 

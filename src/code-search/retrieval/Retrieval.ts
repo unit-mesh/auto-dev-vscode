@@ -8,6 +8,7 @@ import { TextRange } from "../scope-graph/model/TextRange";
 import { GitAction } from "../../editor/editor-api/scm/GitAction";
 import { Commit } from "../../types/git";
 import { TfIdfChunkSearch } from "../search/TfIdfChunkSearch";
+import { languageFromPath } from "../../editor/language/ExtensionLanguageMap";
 
 export interface ContextSubmenuItem {
 	id: string;
@@ -129,21 +130,25 @@ export abstract class Retrieval {
 			let commit = commits[index];
 			let changes = await git.getChangeByHash(commit.hash);
 
-			if (changes === "") {
+			if (changes.length === 0) {
 				continue;
 			}
 
-			let chunk: Chunk = {
-				language: "",
-				digest: commit.hash,
-				filepath: commit.hash,
-				content: changes,
-				startLine: 0,
-				endLine: 0,
-				index: 0
-			};
+			const changeChunks: Chunk[] = changes.map((change, index) => {
+				let language = languageFromPath(change.filename);
 
-			chunks.push(chunk);
+				return {
+					language: language,
+					digest: commit.hash,
+					filepath: commit.hash,
+					content: change.content,
+					startLine: 0,
+					endLine: 0,
+					index: index
+				};
+			});
+
+			chunks.push(...changeChunks);
 		}
 
 		return chunks;

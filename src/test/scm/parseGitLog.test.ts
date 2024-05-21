@@ -17,7 +17,7 @@ index 123..456 789
 				{
 					filename: 'test.txt',
 					status: 'added',
-					change: '@@ -1,3 +1,2 @@\n-test line 1\n test line 2\n+test line 3\n'
+					content: '@@ -1,3 +1,2 @@\n-test line 1\n test line 2\n+test line 3\n'
 				}
 			];
 
@@ -42,7 +42,7 @@ index 123..456 789
 				{
 					filename: 'test.txt',
 					status: 'added',
-					change: ''
+					content: ''
 				}
 			];
 
