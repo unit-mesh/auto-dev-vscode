@@ -1,20 +1,78 @@
-import vscode, { Uri } from "vscode";
+/**
+ * Copyright (c) 2015 DonJayamanne
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+import vscode, { extensions, Uri } from "vscode";
 import * as util from "node:util";
-import { Change, Commit, Repository } from "../../../types/git";
+import { Writable } from "node:stream";
+import { spawn } from "node:child_process";
+import * as iconv from 'iconv-lite';
+
+import { API, Change, Commit, GitExtension, Repository } from "../../../types/git";
 import { DiffManager } from "../../diff/DiffManager";
 
 export const asyncExec = util.promisify(require("child_process").exec);
 
-export class GitAction {
-	private async _getRepo(forDirectory: vscode.Uri): Promise<Repository | null> {
-		// Use the native git extension to get the branch name
-		const extension = vscode.extensions.getExtension("vscode.git");
-		if (typeof extension === "undefined" || !extension.isActive || typeof vscode.workspace.workspaceFolders === "undefined") {
-			return null;
-		}
+export class StopWatch {
+	private started = new Date().getTime();
+	public get elapsedTime() {
+		return new Date().getTime() - this.started;
+	}
+}
 
-		const git = extension.exports.getAPI(1);
-		return git.getRepository(forDirectory);
+function decode(buffers: Buffer, encoding: string): string {
+	return iconv.decode(buffers, encoding);
+}
+
+const DEFAULT_ENCODING = 'utf8';
+const isWindows = /^win/.test(process.platform);
+
+export class GitAction {
+	public gitApi: Promise<API>;
+	private gitExecutablePath: Promise<string>;
+
+	constructor() {
+		// based on: https://github.com/DonJayamanne/gitHistoryVSCode/blob/main/src/adapter/exec/gitCommandExec.ts
+		this.gitApi = new Promise(async resolve => {
+			const extension = extensions.getExtension<GitExtension>('vscode.git');
+			if (!extension?.isActive) {
+				await extension?.activate();
+			}
+
+			const api = extension!.exports.getAPI(1);
+			// Wait for the API to get initialized.
+			api.onDidChangeState(() => {
+				if (api.state === 'initialized') {
+					resolve(api);
+				}
+			});
+			if (api.state === 'initialized') {
+				resolve(api);
+			}
+		});
+
+		this.gitExecutablePath = this.gitApi.then(api => api.git.path);
+	}
+
+	private async _getRepo(forDirectory: vscode.Uri): Promise<Repository | null> {
+		return (await this.gitApi).getRepository(forDirectory);
 	}
 
 	async getRepo(forDirectory: vscode.Uri): Promise<Repository | undefined> {
@@ -79,6 +137,53 @@ export class GitAction {
 
 	async parseGitDiff(repository: Repository, diffResult: string): Promise<string> {
 		return DiffManager.simplifyDiff(repository, diffResult);
+	}
+
+	public exec(cwd: string, ...args: string[]): Promise<string>;
+	// tslint:disable-next-line:unified-signatures
+	public exec(options: { cwd: string; shell?: boolean }, ...args: string[]): Promise<string>;
+	public exec(options: { cwd: string; encoding: 'binary' }, destination: Writable, ...args: string[]): Promise<void>;
+	// tslint:disable-next-line:no-any
+	public async exec(options: any, ...args: any[]): Promise<any> {
+		let gitPath = await this.gitExecutablePath;
+		gitPath = isWindows ? gitPath.replace(/\\/g, '/') : gitPath;
+		const childProcOptions = typeof options === 'string' ? { cwd: options, encoding: DEFAULT_ENCODING } : options;
+		if (typeof childProcOptions.encoding !== 'string' || childProcOptions.encoding.length === 0) {
+			childProcOptions.encoding = DEFAULT_ENCODING;
+		}
+		const binaryOuput = childProcOptions.encoding === 'binary';
+		const destination: Writable = binaryOuput ? args.shift() : undefined;
+		const gitPathCommand = childProcOptions.shell && gitPath.indexOf(' ') > 0 ? `"${gitPath}"` : gitPath;
+		const stopWatch = new StopWatch();
+		const gitShow = spawn(gitPathCommand, args, childProcOptions);
+
+		let stdout: Buffer = new Buffer('');
+		let stderr: Buffer = new Buffer('');
+
+		if (binaryOuput) {
+			gitShow.stdout.pipe(destination);
+		} else {
+			gitShow.stdout.on('data', data => {
+				stdout = Buffer.concat([stdout, data as Buffer]);
+			});
+		}
+
+		gitShow.stderr.on('data', data => {
+			stderr = Buffer.concat([stderr, data as Buffer]);
+		});
+
+		return new Promise<any>((resolve, reject) => {
+			gitShow.on('error', reject);
+			gitShow.on('close', code => {
+				if (code === 0) {
+					const stdOut = binaryOuput ? undefined : decode(stdout, childProcOptions.encoding);
+					resolve(stdOut);
+				} else {
+					const stdErr = binaryOuput ? undefined : decode(stderr, childProcOptions.encoding);
+					reject({ code, error: stdErr });
+				}
+			});
+		});
 	}
 
 	async getHistoryMessages(repository: Repository) {
