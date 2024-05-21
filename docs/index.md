@@ -9,7 +9,7 @@ permalink: /
 <p align="center">
   <img src="https://plugins.jetbrains.com/files/21520/412905/icon/pluginIcon.svg" width="160px" height="160px" />
 </p>
-<h1 align="center">AutoDev VSCode</h1>
+<h1 align="center">AutoDev for VSCode</h1>
 <p align="center">
     <a href="https://marketplace.visualstudio.com/items?itemName=Phodal.autodev">
         <img src="https://img.shields.io/visual-studio-marketplace/v/Phodal.autodev" alt="Visual Studio Marketplace Version" />
@@ -28,77 +28,112 @@ permalink: /
 
 JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.com/unit-mesh/auto-dev)
 
-## Todos
-
 - [ ] Custom LLM config
-  - [x] OpenAI Compatible
+    - [x] OpenAI Compatible
 - [ ] Provider API design
-  - [x] ChatContext
-  - [x] Structurer
-  - [ ] RelatedCode
-  - [ ] SimilarChunk?
+    - [x] LanguageProfile
+    - [x] ToolchainContextProvider / ChatContextProvider
+    - [x] BuildToolProvider
+    - [x] Structurer
+    - [x] TestGenProvider
+    - [x] RelatedCode
+    - [x] SimilarChunk
+    - [x] ActionCreator
 - [ ] Chat mode
-  - [ ] Chat UI
-  - [ ] Chat with selection
-  - [ ] Chat with code
-- [ ] Touch Point
-  - [X] QuickPick
-  - [x] ContextMenu
-  - [x] QuickFix
-  - [ ] Terminal
-  - [ ] Commit Message
-  - [x] CodeLens
-- [ ] Semantic Analysis for multiple languages
-  - [x] TreeSitter
-    - [x] Class level
-    - [x] Method level
-    - [x] spike for Variable level, since is not easy to implement
-  - [ ] Language Server Protocol
-    - [ ] Java
-    - [ ] Python
-  - [ ] Backend Worker for TreeSitter analysis
+    - [x] Chat UI
+    - [x] Chat with selection
+- [ ] Touch-point, aka: [Contribution Point](https://code.visualstudio.com/api/references/contribution-points)
+    - [X] QuickPick
+    - [x] ContextMenu
+    - [x] QuickFix
+    - [x] CodeLens
+    - [x] Terminal
+    - [x] Commit Message for SCM
+    - [ ] Fix when error
+    - [ ] Comments Title: `comments/comment/title`
+    - [ ] Fix testings: `testing/message/context`
+- [ ] Action by AstNode
+    - [x] TreeSitter
+        - [x] Class level
+        - [x] Method level
+        - [x] spike for Variable level, since is not easy to implement
+    - [ ] ~~Language Server Protocol~~
+        - [ ] ~~Java~~
+        - [ ] ~~Python~~
+    - [ ] Backend Worker for TreeSitter analysis
 - [ ] DevIns language support
-  - [ ] Syntax Highlight
-  - [ ] Custom command
+    - [ ] Syntax Highlight
+    - [ ] Custom command
+    - [ ] Input Language
 - [ ] Custom prompt
-  - [ ] Json Schema validation
-  - [ ] Custom prompt settings
+    - [x] Custom prompt settings
+    - [x] Custom prompt
+        - [x] Align to IDE version
+    - [ ] Json Schema validation
+        - [ ] Settings
+        - [ ] Custom Prompt
 - [ ] Custom Agent
-  - [ ] Custom Agent
-  - [ ] Custom Agent API
+    - [ ] Custom Agent
+    - [ ] Custom Agent API
+- [ ] Custom LLM Server
+    - [x] [ollama chat server](./examples/ollama-chat-server/README.md)
+- [ ] Local Text Search
+    - [x] TF-IDF
+        - [natural](https://naturalnode.github.io/natural/tfidf.html)
+    - [x] Simple Text Embedding
+- [ ] Local Semantic Search
+    - [x] ONNX Runtime
+    - [x] Transformer.js
+        - [x] [transformers](https://xenova.github.io/transformers.js/)
+    - [x] Embedding Database
+        - [x] [LanceDB](https://github.com/lancedb/lancedb)
+        - [x] [vectordb](https://www.npmjs.com/package/vectordb)
+    - [x] Semantic Search
+    - [ ] Embedding Service
+        - [ ] Local
+            - [x] Sentence Transformer
+        - [ ] Remote - Custom Embedding Server
+            - [ ] Local Server
+                - [ ] [Dmeta-embedding Mini](https://huggingface.co/DMetaSoul/Dmeta-embedding-zh-small) for Doc
+            - [ ] Remote Server
+                - [ ] OpenAI
+- [ ] Search strategy
+    - [x] Hyde Document/Code strategy
+    - [x] Hyde Keywords strategy
+    - [ ] Symbol search
+- RAG Strategy
+    - [ ] Pre-information build
+    - [ ] Post-symbol recovery
 - [ ] Extensions
-  - [ ] Database
-  - [ ] Terminal
-  - [ ] UI
-- [ ] Local embedding
-  - [ ] TF-IDF
-    - [natural]((https://naturalnode.github.io/natural/tfidf.html)
-  - [ ] Simple Text Embedding
-  - [ ] ONNX Runtime
-  - [ ] Embedding Database
-    - [ ] [LanceDB](https://github.com/lancedb/lancedb) spike
-      - [vectordb](https://www.npmjs.com/package/vectordb)
-    - [ ] [RocksDB](https://github.com/facebook/rocksdb) spike
+    - [x] Build Tools
+        - [x] Gradle
+        - [x] Go Mod
+        - [x] NPM
+        - [x] Toml
+    - [ ] Database
+    - [ ] Terminal
+- [ ] Docs with RAG
+    - [ ] spike: Auto Generate doc based on sourcecode
+    - [ ] Custom Document embedding server for RAG
+    - [ ] Ask business doc
+        - [ ] Markdown
+        - [ ] RDF
 - [ ] l18n
-  -  [x] init
+    -  [x] init
 
-## Fine-tuning model
+## Resources
 
-AutoDev fine-tune models:
+- Code search [Sweep](https://github.com/sweepai/sweep)
+- TreeSitter [Playground](https://tree-sitter.github.io/tree-sitter/playground)
 
-| name          | model download (HuggingFace)                                    | finetune Notebook                    | model download (OpenBayes)                                                          |
-|---------------|-----------------------------------------------------------------|--------------------------------------|-------------------------------------------------------------------------------------|
-| DeepSeek 6.7B | [AutoDev Coder](https://huggingface.co/unit-mesh/autodev-coder) | [finetune.ipynb](finetunes/deepseek) | [AutoDev Coder](https://openbayes.com/console/phodal/models/rCmer1KQSgp/9/overview) |
+## LICENSE
 
-### Language Support (for Fine-tuning)
+Inspired and based on：
 
-We follow [Chapi](https://github.com/phodal/chapi) AST analysis engine for language support tier.
-
-| Features                  | Java | Python | Go | Kotlin | JS/TS | C/C++ | C# | Scala | Rust | ArkTS |
-|---------------------------|------|--------|----|--------|-------|-------|----|-------|------|-------|
-| Chat Language Context     | ✅    | ✅      | ✅  | ✅      | ✅     | ✅     |    |       | ✅    | ✅     | 
-| Structure AST             | ✅    |        | ✅  | ✅      | ✅     | ✅     |    |       |      |       | 
-| Doc Generation            | ✅    | ✅      | ✅  | ✅      | ✅     |       |    |       | ✅    | ✅     | 
-| Precision Test Generation | ✅    | ✅      | ✅  | ✅      | ✅     |       |    |       | ✅    |       | 
-| Precision Code Generation | ✅    |        |    | ✅      |       |       |    |       |      |       | 
-| AutoCRUD                  | ✅    |        |    | ✅      |       |       |    |       |      |       | 
+- AI-based Coding Editor [Continue](https://github.com/continuedev/continue) for LLM provider and CodeCompletion.
+- AI-based conversational search [Bloop](https://github.com/BloopAI/bloop) for indexes and code search.
+- AI-powered coding wizard [AutoDev](https://github.com/unit-mesh/auto-dev) for AutoTasking.
+- TreeSitter-based architecture analysis: [Guarding](https://github.com/modernizing/guarding)
+- Static SCA analyser: [ArchGuard](https://github.com/archguard/archguard)
+- DevIns parser based
+  on [VSCode Markdown](https://github.com/microsoft/vscode/blob/main/extensions/markdown-basics/syntaxes/markdown.tmLanguage.json)
