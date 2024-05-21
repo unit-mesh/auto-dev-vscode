@@ -6,6 +6,7 @@ import { injectable } from "inversify";
 
 import { Service } from "../service/Service";
 import { TeamTerm } from "./TeamTerm";
+import { SettingService } from "../settings/SettingService";
 
 @injectable()
 export class TeamTermService implements Service {
@@ -15,7 +16,8 @@ export class TeamTermService implements Service {
 			throw new Error('No workspace found');
 		}
 
-		const csvPath = path.join(workspace.uri.fsPath, paths);
+		let promptsDir = SettingService.instance().customPromptsDir();
+		const csvPath = path.join(workspace.uri.fsPath, promptsDir, paths);
 
 		const file = fs.createReadStream(csvPath);
 

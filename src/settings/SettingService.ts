@@ -51,8 +51,7 @@ export class SettingService {
 
     const customDir = config.get<string>("prompts.customDir");
 
-    // TODO: Legacy config migration
-    if (customDir == null) {
+    if (!customDir) {
       return config.get<string>("customPromptDir", "prompts");
     }
 
