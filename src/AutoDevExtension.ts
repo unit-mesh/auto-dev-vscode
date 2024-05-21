@@ -7,11 +7,10 @@ import { DiffManager } from "./editor/diff/DiffManager";
 import { StructurerProviderManager } from "./code-context/StructurerProviderManager";
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
 import { AutoDevWebviewProtocol } from "./editor/webview/AutoDevWebviewProtocol";
-import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingProvider";
 import { SqliteDb } from "./code-search/database/SqliteDb";
-import { getExtensionUri } from "./context";
 import { channel } from "./channel";
 import { EmbeddingsProvider } from "./code-search/embedding/_base/EmbeddingsProvider";
+import { EmbeddingsProviderManager } from "./code-search/embedding/EmbeddingsProviderManager";
 
 export class AutoDevExtension {
 	// the WebView for interacting with the editor
@@ -68,15 +67,11 @@ export class AutoDevExtension {
 		if (dirs) {
 			channel.appendLine("start indexing dirs:" + dirs);
 
-			// todo: load config for create embedding provider
-			let localInference = LocalEmbeddingProvider.getInstance();
-			let fsPath = getExtensionUri().fsPath;
-			that.embeddingsProvider = localInference;
-			localInference.init(fsPath).then(() => {
-				const indexer = new CodebaseIndexer(localInference, this.ideAction);
-				this.refreshCodebaseIndex(indexer, dirs).then(r => {
-					channel.appendLine("indexing finished");
-				});
+			that.embeddingsProvider = EmbeddingsProviderManager.create();
+
+			const indexer = new CodebaseIndexer(that.embeddingsProvider, this.ideAction);
+			this.refreshCodebaseIndex(indexer, dirs).then(r => {
+				channel.appendLine("indexing finished");
 			});
 		}
 	}

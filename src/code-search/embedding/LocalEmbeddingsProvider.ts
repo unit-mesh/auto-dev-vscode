@@ -18,7 +18,7 @@ const InferenceSessionCreate = (...args: any[]) => {
 /**
  * Which will use ONNXRuntime and all-MiniLM-L6-v2 to embed the text.
  */
-export class LocalEmbeddingProvider implements EmbeddingsProvider {
+export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 	id: string = "local";
 	env: any;
 	tokenizer: any;
@@ -26,16 +26,16 @@ export class LocalEmbeddingProvider implements EmbeddingsProvider {
 	MaxGroupSize: number = 4;
 
 	// singleton
-	private static instance: LocalEmbeddingProvider;
+	private static instance: LocalEmbeddingsProvider;
 
 	private constructor() {
 	}
 
-	static getInstance(): LocalEmbeddingProvider {
-		if (!LocalEmbeddingProvider.instance) {
-			LocalEmbeddingProvider.instance = new LocalEmbeddingProvider();
+	static getInstance(): LocalEmbeddingsProvider {
+		if (!LocalEmbeddingsProvider.instance) {
+			LocalEmbeddingsProvider.instance = new LocalEmbeddingsProvider();
 		}
-		return LocalEmbeddingProvider.instance;
+		return LocalEmbeddingsProvider.instance;
 	}
 
 	async init(basepath: string = __dirname) {

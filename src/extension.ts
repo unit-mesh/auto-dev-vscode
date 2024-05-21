@@ -4,7 +4,6 @@ import "reflect-metadata";
 import Parser from "web-tree-sitter";
 
 import { registerCommands } from "./commands/commands";
-import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
 import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
 import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
@@ -22,7 +21,8 @@ import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
 import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";
 import { SettingService } from "./settings/SettingService";
-import { LocalEmbeddingProvider } from "./code-search/embedding/LocalEmbeddingProvider";
+import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
+import { EmbeddingsProviderManager } from "./code-search/embedding/EmbeddingsProviderManager";
 
 (globalThis as any).self = globalThis;
 
@@ -91,7 +91,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		await new BuildToolObserver().startWatch();
 
 		// 初始化本地 Embedding 提供者
-		LocalEmbeddingProvider.getInstance().init(context.extensionPath);
+		EmbeddingsProviderManager.init(context);
 	});
 
 	// 注册 WebView 视图提供者
