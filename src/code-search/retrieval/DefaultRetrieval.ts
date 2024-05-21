@@ -95,6 +95,21 @@ export class DefaultRetrieval extends Retrieval {
 			retrievalResults.push(...vecResults);
 		}
 
+		if (options.withGitChange) {
+			// Source: Git
+			let gitResults = await this.retrieveGit(ide.git, new RetrievalQueryTerm(
+				fullInput,
+				nRetrieve / 2,
+				tags,
+				options.filterDirectory,
+				options.filterLanguage
+			));
+
+			channel.appendLine(`== [Codebase] Found ${gitResults.length} results from Git`);
+			// retrievalResults.push(...gitResults);
+			console.log("Git results:", gitResults);
+		}
+
 		let results: Chunk[] = this.deduplicateChunks(retrievalResults);
 		if (results.length === 0) {
 			channel.appendLine(`== [Codebase] No results found for @codebase context provider.`);

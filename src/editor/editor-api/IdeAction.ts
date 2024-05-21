@@ -1,4 +1,7 @@
+import { GitAction } from "./scm/GitAction";
+
 export interface IdeAction {
+  git: GitAction;
   getTerminalContents(): Promise<string>;
   runCommand(command: string): Promise<void>;
   readFile(filepath: string): Promise<string>;

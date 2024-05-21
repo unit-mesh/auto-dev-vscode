@@ -30,6 +30,7 @@ export interface RetrieveOption {
 	filterLanguage: string | undefined;
 	withFullTextSearch: boolean;
 	withSemanticSearch: boolean;
+	withGitChange: boolean | undefined;
 }
 
 export abstract class Retrieval {
@@ -81,13 +82,39 @@ export abstract class Retrieval {
 	 *
 	 * Based on Chunk indexing, we can get the commit change of code base, then it can be the user commits.
 	 */
-	async retrieveGit(git: GitAction, term: RetrievalQueryTerm) : Promise<Chunk[]> {
+	async retrieveGit(git: GitAction, term: RetrievalQueryTerm): Promise<Chunk[]> {
+		let tfIdfTextSearch = new TfIdfSemanticChunkSearch();
 		let commits: Commit[] = await git.getAllHistoryCommits();
 
-		// tfidf search by commit message
-		TfIdfSemanticChunkSearch
+		// tfidf search by commit message get index
+		let commitMessages = commits.map((commit) => commit.message);
+		tfIdfTextSearch.addDocuments(commitMessages);
 
-		return [];
+		// search by commit message
+		let results = tfIdfTextSearch.search(term.query);
+		// get the commit index
+		let commitIndex = results.map((result) => commitMessages.indexOf(result));
+
+		// get the commit change
+		let chunks: Chunk[] = [];
+		for (let index of commitIndex) {
+			let commit = commits[index];
+			let changes = await git.getChangeByHash(commit.hash);
+
+			let chunk: Chunk = {
+				language: "",
+				digest: commit.hash,
+				filepath: commit.hash,
+				content: changes,
+				startLine: 0,
+				endLine: 0,
+				index: 0
+			};
+
+			chunks.push(chunk);
+		}
+
+		return chunks;
 	}
 
 	async retrieveFts(term: RetrievalQueryTerm): Promise<Chunk[]> {
