@@ -10,7 +10,6 @@ import { CustomActionTemplateContext } from "./custom-action/CustomActionTemplat
 import { CustomActionExecutePrompt } from "./custom-action/CustomActionExecutePrompt";
 import { HydeStep } from "../code-search/search-strategy/_base/HydeStep";
 import { HydeDocumentType } from "../code-search/search-strategy/_base/HydeDocument";
-import { NamedElement } from "../editor/ast/NamedElement";
 
 export class PromptManager {
 	private static _instance: PromptManager;
@@ -148,6 +147,9 @@ export class PromptManager {
 				break;
 			case ActionType.GenCommitMessage:
 				template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/practises/gen-commit-msg.vm`);
+				break;
+			case ActionType.LlmReranker:
+				template = await templateRender.getTemplate(`prompts/model/${humanLanguage}/reranker/llm-reranker.vm`);
 				break;
 			default:
 				break;

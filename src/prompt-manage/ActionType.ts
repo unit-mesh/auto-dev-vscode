@@ -5,4 +5,5 @@ export enum ActionType {
 	QuickAction,
 	Rename,
 	GenCommitMessage,
+	LlmReranker,
 }

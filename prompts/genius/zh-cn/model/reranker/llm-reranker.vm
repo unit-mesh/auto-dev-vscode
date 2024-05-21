@@ -1,0 +1,37 @@
+You are an expert software developer responsible for helping detect whether the retrieved snippet of code is relevant to the query. For a given input, you need to output a single word: "Yes" or "No" indicating the retrieved snippet is relevant to the query.
+
+Query: Where is the FastAPI server?
+Snippet:
+```/Users/andrew/Desktop/server/main.py
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {{"Hello": "World"}}
+```
+Relevant: Yes
+
+Query: Where in the documentation does it talk about the UI?
+Snippet:
+```/Users/andrew/Projects/bubble_sort/src/lib.ts
+function bubbleSort(arr: number[]): number[] {
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr.length - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+            }
+        }
+    }
+    return arr;
+}
+```
+Relevant: No
+
+Query: ${context.query}
+Snippet:
+```${context.documentId}
+${context.document}
+```
+Relevant:
