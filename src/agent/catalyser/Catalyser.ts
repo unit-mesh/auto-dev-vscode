@@ -5,6 +5,7 @@ import { SystemActionType } from "../../action/setting/SystemActionType";
 import { HydeCodeStrategy } from "../../code-search/search-strategy/HydeCodeStrategy";
 import { StrategyOutput } from "../../code-search/search-strategy/_base/StrategyOutput";
 import { NamedChunk } from "../../code-search/embedding/_base/NamedChunk";
+import { TeamTermService } from "../../domain/TeamTermService";
 
 export class Catalyser {
 	private static instance: Catalyser;
@@ -27,6 +28,9 @@ export class Catalyser {
 	async query(query: string, type: SystemActionType): Promise<void> {
 		channel.append("Semantic search for code: " + query + "\n");
 
+		// fill detail to query
+		// TeamTermService.instance()
+
 		let evaluateOutput: StrategyOutput | undefined = undefined;
 		switch (type) {
 			case SystemActionType.SemanticSearchKeyword:
@@ -42,20 +46,13 @@ export class Catalyser {
 				break;
 		}
 
-		// evaluateOutput?.chunks.forEach(async chunk => {
-		// 	let namedChunk = await NamedChunk.create(chunk);
-		// 	namedChunk.namedElements.forEach(element => {
-		// 		console.log("Element: " + element.blockContent);
-		// 	});
-		// });
-
 		if (!evaluateOutput) {
 			channel.append("No output from the strategy\n");
 			return;
 		}
 
 		if (evaluateOutput.chunks.length > 0) {
-			channel.append("\n")
+			channel.append("\n");
 			channel.appendLine("Found " + evaluateOutput.chunks.length + " code snippets\n");
 			for (let chunk of evaluateOutput.chunks) {
 				// a file path will be like: `build.gradle.kts (0-5)`, we need to parse range from name
