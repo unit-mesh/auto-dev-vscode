@@ -32,11 +32,15 @@ export class TfIdfSemanticChunkSearch implements SemanticSearch {
 		document.forEach(chunk => this.tfidf.addDocument(chunk));
 	}
 
-	searchChunks(items: string[], maxResults: number, options: SearchOptions, cancellationToken: CancellationToken): Promise<any[]> {
-		throw new Error("Method not implemented.");
+	search(query: string, callback?: TfIdfCallback): string[] {
+		return this.tfidf.tfidfs(query, callback);
 	}
 
-	search(query: string, callback?: TfIdfCallback) {
-		return this.tfidf.tfidfs(query, callback);
+	searchChunks(items: string[], maxResults: number, options: SearchOptions, cancellationToken: CancellationToken): Promise<any[]> {
+		let values = items.map(async item => {
+			return this.search(item);
+		});
+
+		return Promise.all(values);
 	}
 }
