@@ -6,6 +6,7 @@ import { HydeCodeStrategy } from "../../code-search/search-strategy/HydeCodeStra
 import { StrategyOutput } from "../../code-search/search-strategy/_base/StrategyOutput";
 import { NamedChunk } from "../../code-search/embedding/_base/NamedChunk";
 import { TeamTermService } from "../../domain/TeamTermService";
+import { QueryExpansion } from "../../domain/QueryExpansion";
 
 export class Catalyser {
 	private static instance: Catalyser;
@@ -27,18 +28,17 @@ export class Catalyser {
 
 	async query(query: string, type: SystemActionType): Promise<void> {
 		channel.append("Semantic search for code: " + query + "\n");
-
-		// fill detail to query
-		// TeamTermService.instance()
+		let expandedQuery = QueryExpansion.instance().expand(query);
+		channel.append("Expanded query: " + expandedQuery + "\n");
 
 		let evaluateOutput: StrategyOutput | undefined = undefined;
 		switch (type) {
 			case SystemActionType.SemanticSearchKeyword:
-				let keywordsStrategy = new HydeKeywordsStrategy(query, this.extension);
+				let keywordsStrategy = new HydeKeywordsStrategy(expandedQuery, this.extension);
 				evaluateOutput = await keywordsStrategy.execute();
 				break;
 			case SystemActionType.SemanticSearchCode:
-				let strategy = new HydeCodeStrategy(query, this.extension);
+				let strategy = new HydeCodeStrategy(expandedQuery, this.extension);
 				evaluateOutput = await strategy.execute();
 				break;
 			default:

@@ -19,7 +19,7 @@ export class QueryExpansion {
 		const terms: TeamTerm[] = TeamTermService.instance().fetch();
 
 		terms.forEach((term) => {
-			query = query.replace(new RegExp(term.localized, 'g'), term.localized + '(' + term.term + ')');
+			query = query.replace(term.localized, term.localized + '(' + term.term + ')');
 		});
 
 		return query;
