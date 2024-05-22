@@ -92,23 +92,9 @@ export class TreeSitterFile {
 		return new TreeSitterFile(source, tree, tsConfig, parser, language, fsPath);
 	}
 
-	// pub sub <id, listener>
-	private changeOnceListeners: Map<string, () => void> = new Map();
-
 	update(tree: Parser.Tree, sourcecode: string) {
 		this.tree = tree;
 		this.sourcecode = sourcecode;
-
-		this.changeOnceListeners.forEach((listener, id) => {
-			listener();
-			this.changeOnceListeners.delete(id);
-		});
-	}
-
-	onChangeOnce(param: () => void) {
-		const id = uuid();
-		this.changeOnceListeners.set(id, param);
-		return id;
 	}
 
 	static async fromParser(parser: Parser, languageService: TSLanguageService, langId: SupportedLanguage, code: string): Promise<TreeSitterFile> {
