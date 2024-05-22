@@ -48,6 +48,8 @@ export class TreeSitterFileManager implements vscode.Disposable {
 			const editParams = this.createEditParams(change, event.document);
 			tree.edit(editParams);
 		}
+
+		this.getDocument(uri)!!.update(tree);
 	}
 
 	static async create(document: vscode.TextDocument): Promise<TreeSitterFile> {

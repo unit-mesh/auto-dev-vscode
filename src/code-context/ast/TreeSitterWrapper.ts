@@ -15,3 +15,7 @@ export async function createNamedElement(document: vscode.TextDocument): Promise
 	let file = await TreeSitterFileManager.create(document);
 	return new NamedElementBuilder(file);
 }
+
+export async function createTreeSitterFile(document: vscode.TextDocument): Promise<TreeSitterFile> {
+	return TreeSitterFileManager.create(document);
+}

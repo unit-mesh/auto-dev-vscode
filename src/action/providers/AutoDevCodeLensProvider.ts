@@ -1,17 +1,19 @@
 import * as vscode from "vscode";
-import { l10n } from "vscode";
+import { EventEmitter, l10n } from "vscode";
 
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { AutoDevExtension } from "../../AutoDevExtension";
-import { TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
+import { TreeSitterFile, TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
 import { NamedElement } from "../../editor/ast/NamedElement";
-import { createNamedElement } from "../../code-context/ast/TreeSitterWrapper";
+import { createTreeSitterFile } from "../../code-context/ast/TreeSitterWrapper";
+import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
+	private _eventEmitter: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
+	onDidChangeCodeLenses: vscode.Event<void> = this._eventEmitter.event;
+
 	constructor(private readonly context: AutoDevExtension) {
 	}
-
-	onDidChangeCodeLenses: vscode.Event<void> | undefined;
 
 	provideCodeLenses(
 		document: vscode.TextDocument,
@@ -23,16 +25,33 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 				return [];
 			}
 
-			const builder = await createNamedElement(document);
-			const classRanges: NamedElement[] | TreeSitterFileError = builder.buildClass();
-			const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
-			let lenses: vscode.CodeLens[] = [];
+			let tsfile = await createTreeSitterFile(document);
+			let codeLens = this.buildForLens(tsfile, document);
 
-			const testLens = this.setupTestIfNotExists(classRanges.concat(methodRanges), document);
-			const chatLens = this.setupQuickChat(methodRanges, document);
+			tsfile.onChange(() => {
+				this.refresh();
+			});
 
-			return lenses.concat(testLens, chatLens);
+			return codeLens;
 		})();
+	}
+
+	public refresh(): void {
+		this._eventEmitter.fire();
+	}
+
+	private buildForLens(tsfile: TreeSitterFile, document: vscode.TextDocument) {
+		let builder = new NamedElementBuilder(tsfile);
+
+		const classRanges: NamedElement[] | TreeSitterFileError = builder.buildClass();
+		const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
+		let lenses: vscode.CodeLens[] = [];
+
+		const testLens = this.setupTestIfNotExists(classRanges.concat(methodRanges), document);
+		const chatLens = this.setupQuickChat(methodRanges, document);
+
+		let codeLens = lenses.concat(testLens, chatLens);
+		return codeLens;
 	}
 
 	private setupTestIfNotExists(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {

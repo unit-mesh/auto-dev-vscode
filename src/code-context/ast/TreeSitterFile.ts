@@ -10,8 +10,8 @@ import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 
 export class TreeSitterFile {
+	public tree: Tree;
 	readonly sourcecode: string;
-	readonly tree: Tree;
 	readonly languageProfile: LanguageProfile;
 	readonly parser: Parser | undefined = undefined;
 	readonly tsLanguage: Parser.Language;
@@ -89,6 +89,18 @@ export class TreeSitterFile {
 		}
 
 		return new TreeSitterFile(source, tree, tsConfig, parser, language, fsPath);
+	}
+
+	// pub sub
+	private listeners: (() => void)[] = [];
+
+	update(tree: Parser.Tree) {
+		this.tree = tree;
+		this.listeners.forEach((l) => l());
+	}
+
+	onChange(param: () => void) {
+		this.listeners.push(param);
 	}
 
 	static async fromParser(parser: Parser, languageService: TSLanguageService, langId: SupportedLanguage, code: string): Promise<TreeSitterFile> {
