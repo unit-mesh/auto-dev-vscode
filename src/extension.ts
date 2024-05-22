@@ -39,7 +39,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	// 创建侧边栏视图提供者
 	const sidebar = new AutoDevWebviewViewProvider(context);
 
-	// 创建 VSCode 动作对象
 	const action = new VSCodeAction();
 
 	// 创建最近文档管理器
@@ -55,7 +54,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// 初始化解析器
 	Parser.init().then(async () => {
-		// 注册代码透镜提供者
+		// 注册 CodeLens 提供者
 		registerCodeLensProviders(extension);
 
 		// 注册 AutoDev 提供者
@@ -64,12 +63,11 @@ export async function activate(context: vscode.ExtensionContext) {
 		// 注册快速修复提供者
 		registerQuickFixProvider(extension);
 
-		// 注册命令
+		// 注册命令集
 		registerCommands(extension);
 
 		// 如果设置服务中启用了重命名功能
 		if (SettingService.instance().isEnableRename()) {
-			// 注册重命名动作
 			registerRenameAction(extension);
 		}
 
@@ -77,7 +75,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.workspace.onDidChangeConfiguration(() => {
 			if (SettingService.instance().isEnableRename()) {
 				// 如果启用了重命名功能，则注册重命名动作（待优化）
-				// todo: make it works better
 				registerRenameAction(extension);
 			} else {
 				// 否则不做任何操作
