@@ -24,13 +24,14 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 			}
 
 			const builder = await createNamedElement(document);
+			const classRanges: NamedElement[] | TreeSitterFileError = builder.buildClass();
 			const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
 			let lenses: vscode.CodeLens[] = [];
 
-			const docLens = this.setupTestIfNotExists(methodRanges, document);
+			const testLens = this.setupTestIfNotExists(classRanges.concat(methodRanges), document);
 			const chatLens = this.setupQuickChat(methodRanges, document);
 
-			return lenses.concat(docLens, chatLens);
+			return lenses.concat(testLens, chatLens);
 		})();
 	}
 
