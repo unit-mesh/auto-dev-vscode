@@ -9,14 +9,23 @@ import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
 import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
 import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
 
-export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
+export class AutoDevCodeLensProvider implements vscode.CodeLensProvider, vscode.Disposable {
 	private _eventEmitter: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
 	onDidChangeCodeLenses: vscode.Event<void> = this._eventEmitter.event;
 
+	private onDidChangeTextDocument: vscode.Disposable;
+
 	constructor(private readonly context: AutoDevExtension) {
-		vscode.workspace.onDidChangeTextDocument(async (event) => {
-			this.refresh();
+		this.onDidChangeTextDocument = vscode.workspace.onDidChangeTextDocument(async (event) => {
+			if (SUPPORTED_LANGUAGES.includes(event.document.languageId)) {
+				this.refresh();
+			}
 		});
+	}
+
+	dispose() {
+		this._eventEmitter.dispose();
+		this.onDidChangeTextDocument.dispose();
 	}
 
 	provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
