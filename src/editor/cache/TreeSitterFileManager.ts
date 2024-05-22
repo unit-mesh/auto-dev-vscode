@@ -4,12 +4,13 @@ import vscode, { TextDocumentChangeEvent, Uri } from "vscode";
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { isSupportedLanguage } from "../language/SupportedLanguage";
 import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
-import { PositionUtil } from "../ast/PositionUtil";
+import { LRUCache } from "lru-cache";
 
 export class TreeSitterFileManager implements vscode.Disposable {
 	private documentUpdateListener: vscode.Disposable;
+	private cache: LRUCache<Uri, TreeSitterFile> = new LRUCache({ max: 20 });
 
-	private cache: Map<Uri, TreeSitterFile>;
+	// private cache: Map<Uri, TreeSitterFile>;
 	private static instance: TreeSitterFileManager;
 
 	public static getInstance(): TreeSitterFileManager {
@@ -21,8 +22,6 @@ export class TreeSitterFileManager implements vscode.Disposable {
 	}
 
 	constructor() {
-		this.cache = new Map<Uri, TreeSitterFile>();
-
 		this.documentUpdateListener = vscode.workspace.onDidChangeTextDocument(async (event) => {
 			if (!isSupportedLanguage(event.document.languageId)) {
 				return;
@@ -51,7 +50,6 @@ export class TreeSitterFileManager implements vscode.Disposable {
 		}
 
 		tsfile!!.update(tree, event.document.getText());
-		// todo replace cache to LRUCache;
 		this.setDocument(uri, tsfile!!);
 	}
 
