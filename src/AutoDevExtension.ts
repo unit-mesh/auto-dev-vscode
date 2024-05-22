@@ -91,4 +91,11 @@ export class AutoDevExtension {
 			that.webviewProtocol?.request("indexProgress", update);
 		}
 	}
+
+	openSettings() {
+		const context = this.extensionContext;
+		vscode.commands.executeCommand("workbench.action.openSettings", {
+			query: "@ext:" + context.extension.id,
+		});
+	}
 }

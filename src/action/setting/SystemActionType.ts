@@ -5,6 +5,7 @@ export enum SystemActionType {
 	SemanticSearchKeyword = "Natural language search (Hyde Keyword strategy)",
 	SemanticSearchCode = "Natural language search (Hyde Code strategy)",
 	SimilarCodeSearch = "Search for similar code (Recently + TF-IDF)",
+	OpenSettings = "Open settings",
 }
 
 export type SystemActionHandler = (extension: AutoDevExtension, type: SystemActionType) => void;

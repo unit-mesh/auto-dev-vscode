@@ -34,6 +34,7 @@ export class SystemActionService implements Service {
 			[SystemActionType.SemanticSearchKeyword]: this.intentionSemanticSearch.bind(this),
 			[SystemActionType.SemanticSearchCode]: this.intentionSemanticSearch.bind(this),
 			[SystemActionType.SimilarCodeSearch]: this.searchSimilarCode.bind(this),
+			[SystemActionType.OpenSettings]: extension.openSettings.bind(extension),
 		};
 
 		pick.items = Object.keys(items).map(label => ({ label }));
