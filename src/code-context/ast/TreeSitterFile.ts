@@ -12,7 +12,7 @@ const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 
 export class TreeSitterFile {
 	public tree: Tree;
-	readonly sourcecode: string;
+	sourcecode: string;
 	readonly languageProfile: LanguageProfile;
 	readonly parser: Parser | undefined = undefined;
 	readonly tsLanguage: Parser.Language;
@@ -95,8 +95,10 @@ export class TreeSitterFile {
 	// pub sub <id, listener>
 	private changeOnceListeners: Map<string, () => void> = new Map();
 
-	update(tree: Parser.Tree) {
+	update(tree: Parser.Tree, sourcecode: string) {
 		this.tree = tree;
+		this.sourcecode = sourcecode;
+
 		this.changeOnceListeners.forEach((listener, id) => {
 			listener();
 			this.changeOnceListeners.delete(id);
