@@ -1,10 +1,10 @@
-import { Edit } from "web-tree-sitter";
+import { Edit, Point } from "web-tree-sitter";
 import vscode, { TextDocumentChangeEvent, Uri } from "vscode";
 
 import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
 import { isSupportedLanguage } from "../language/SupportedLanguage";
-import { PositionUtil } from "../ast/PositionUtil";
 import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
+import { PositionUtil } from "../ast/PositionUtil";
 
 export class TreeSitterFileManager implements vscode.Disposable {
 	private documentUpdateListener: vscode.Disposable;
@@ -27,14 +27,15 @@ export class TreeSitterFileManager implements vscode.Disposable {
 			if (!isSupportedLanguage(event.document.languageId)) {
 				return;
 			}
+
 			await this.updateCacheOnChange(event);
 		});
 	}
 
 	private async updateCacheOnChange(event: TextDocumentChangeEvent) {
 		const uri = event.document.uri;
-		// get from cache
-		const tree = this.getDocument(uri)?.tree;
+		let tsfile = this.getDocument(uri);
+		const tree = tsfile?.tree;
 		if (!tree) {
 			if (!this.cache.has(uri)) {
 				const file = await TreeSitterFileManager.create(event.document);
@@ -49,7 +50,8 @@ export class TreeSitterFileManager implements vscode.Disposable {
 			tree.edit(editParams);
 		}
 
-		this.getDocument(uri)!!.update(tree);
+		tsfile!!.update(tree);
+		this.setDocument(uri, tsfile!!);
 	}
 
 	static async create(document: vscode.TextDocument): Promise<TreeSitterFile> {
@@ -62,7 +64,7 @@ export class TreeSitterFileManager implements vscode.Disposable {
 		const langId = document.languageId;
 
 		const file = await TreeSitterFile.create(src, langId, new DefaultLanguageService(), document.uri.fsPath);
-		TreeSitterFileManager.getInstance().setDocument(document.uri,file);
+		TreeSitterFileManager.getInstance().setDocument(document.uri, file);
 		return file;
 	}
 

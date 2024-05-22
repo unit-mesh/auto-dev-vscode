@@ -10,7 +10,6 @@ export namespace PositionUtil {
 		return { row: position.line, column: position.character };
 	}
 
-
 	export function selectionFromNode(node: SyntaxNode): Selection {
 		const start = fromNode(node.startPosition);
 		const end = fromNode(node.endPosition);

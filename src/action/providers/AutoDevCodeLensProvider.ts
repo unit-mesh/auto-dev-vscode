@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { EventEmitter, l10n } from "vscode";
+import { l10n } from "vscode";
 
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { AutoDevExtension } from "../../AutoDevExtension";
@@ -7,6 +7,7 @@ import { TreeSitterFile, TreeSitterFileError } from "../../code-context/ast/Tree
 import { NamedElement } from "../../editor/ast/NamedElement";
 import { createTreeSitterFile } from "../../code-context/ast/TreeSitterWrapper";
 import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
+import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 	private _eventEmitter: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
@@ -25,14 +26,14 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 				return [];
 			}
 
-			let tsfile = await createTreeSitterFile(document);
-			let codeLens = this.buildForLens(tsfile, document);
+			let tsfile = await TreeSitterFileManager.create(document);
 
-			tsfile.onChange(() => {
+			tsfile.onChangeOnce(() => {
+				console.log("TreeSitterFile changed");
 				this.refresh();
 			});
 
-			return codeLens;
+			return this.buildForLens(tsfile, document);
 		})();
 	}
 

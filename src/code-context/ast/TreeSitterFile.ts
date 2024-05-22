@@ -5,6 +5,7 @@ import { ScopeBuilder } from "../../code-search/scope-graph/ScopeBuilder";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
+import { uuid } from "../../editor/webview/uuid";
 
 
 const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
@@ -91,16 +92,21 @@ export class TreeSitterFile {
 		return new TreeSitterFile(source, tree, tsConfig, parser, language, fsPath);
 	}
 
-	// pub sub
-	private listeners: (() => void)[] = [];
+	// pub sub <id, listener>
+	private changeOnceListeners: Map<string, () => void> = new Map();
 
 	update(tree: Parser.Tree) {
 		this.tree = tree;
-		this.listeners.forEach((l) => l());
+		this.changeOnceListeners.forEach((listener, id) => {
+			listener();
+			this.changeOnceListeners.delete(id);
+		});
 	}
 
-	onChange(param: () => void) {
-		this.listeners.push(param);
+	onChangeOnce(param: () => void) {
+		const id = uuid();
+		this.changeOnceListeners.set(id, param);
+		return id;
 	}
 
 	static async fromParser(parser: Parser, languageService: TSLanguageService, langId: SupportedLanguage, code: string): Promise<TreeSitterFile> {
