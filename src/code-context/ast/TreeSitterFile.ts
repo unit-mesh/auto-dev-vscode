@@ -4,6 +4,7 @@ import { LanguageProfile, LanguageProfileUtil } from "../_base/LanguageProfile";
 import { ScopeBuilder } from "../../code-search/scope-graph/ScopeBuilder";
 import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
 import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
+import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 
 
 const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
@@ -90,14 +91,13 @@ export class TreeSitterFile {
 		return new TreeSitterFile(source, tree, tsConfig, parser, language, fsPath);
 	}
 
-	static async fromParser(parser: Parser, languageService: TSLanguageService, langId: string, code: string): Promise<TreeSitterFile> {
+	static async fromParser(parser: Parser, languageService: TSLanguageService, langId: SupportedLanguage, code: string): Promise<TreeSitterFile> {
 		let langConfig = LanguageProfileUtil.from(langId)!!;
-		const language = await langConfig.grammar(languageService, "typescript")!!;
+		const language = await langConfig.grammar(languageService, langId)!!;
 		parser.setLanguage(language);
 
 		let tree = parser.parse(code);
-		let tsf = new TreeSitterFile(code,  tree, langConfig, parser, language!!, "");
-		return tsf;
+		return new TreeSitterFile(code, tree, langConfig, parser, language!!, "");
 	}
 
 	/**
