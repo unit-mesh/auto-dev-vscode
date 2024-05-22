@@ -16,7 +16,7 @@ import {
 	registerQuickFixProvider,
 	registerRenameAction,
 	registerWebViewProvider
-} from "./editor/providers/ProviderUtils";
+} from "./action/ProviderRegister";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
 import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";

@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 
 import { AutoDevExtension } from "../../AutoDevExtension";
-import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
-import { NamedElement } from "../ast/NamedElement";
+import { SUPPORTED_LANGUAGES } from "../../editor/language/SupportedLanguage";
+import { NamedElement } from "../../editor/ast/NamedElement";
 import { providerContainer } from "../../ProviderContainer.config";
 import { PROVIDER_TYPES } from "../../ProviderTypes";
-import { ActionCreator } from "../../action/_base/ActionCreator";
-import { ActionCreatorContext } from "../../action/_base/ActionCreatorContext";
+import { ActionCreator } from "../_base/ActionCreator";
+import { ActionCreatorContext } from "../_base/ActionCreatorContext";
 import { createNamedElement } from "../../code-context/ast/TreeSitterWrapper";
 
 export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {

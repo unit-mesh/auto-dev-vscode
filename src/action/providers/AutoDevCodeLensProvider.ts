@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import { l10n } from "vscode";
 
-import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../language/SupportedLanguage";
+import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
-import { NamedElement } from "../ast/NamedElement";
+import { NamedElement } from "../../editor/ast/NamedElement";
 import { createNamedElement } from "../../code-context/ast/TreeSitterWrapper";
 
 export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {

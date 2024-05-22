@@ -1,12 +1,12 @@
-import { AutoDevExtension } from "../../AutoDevExtension";
-import { SUPPORTED_LANGUAGES } from "../language/SupportedLanguage";
+import { AutoDevExtension } from "../AutoDevExtension";
+import { SUPPORTED_LANGUAGES } from "../editor/language/SupportedLanguage";
 import vscode, { Position, Range } from "vscode";
-import { AutoDevCodeLensProvider } from "./AutoDevCodeLensProvider";
-import { AutoDevCodeActionProvider } from "./AutoDevCodeActionProvider";
-import { RenameLookupExecutor } from "../../action/refactor/RenameLookupExecutor";
-import { AutoDevQuickFixProvider } from "./AutoDevQuickFixProvider";
-import { SettingService } from "../../settings/SettingService";
-import { channel } from "../../channel";
+import { AutoDevCodeLensProvider } from "./providers/AutoDevCodeLensProvider";
+import { AutoDevCodeActionProvider } from "./providers/AutoDevCodeActionProvider";
+import { RenameLookupExecutor } from "./refactor/RenameLookupExecutor";
+import { AutoDevQuickFixProvider } from "./providers/AutoDevQuickFixProvider";
+import { SettingService } from "../settings/SettingService";
+import { channel } from "../channel";
 
 export function registerCodeLensProviders(context: AutoDevExtension) {
 	const filter = SUPPORTED_LANGUAGES.map(it => ({ language: it } as vscode.DocumentFilter));
