@@ -29,7 +29,7 @@ export abstract class CodeActionCreator implements ActionCreator {
 		for (let nameBlock of context.namedElementBlocks) {
 			switch (nameBlock.codeElementType) {
 				case CodeElementType.Structure:
-					if (nameBlock.identifierRange.contains(context.range)) {
+					if (nameBlock.blockRange.contains(context.range)) {
 						let classAction = this.buildClassAction(context, nameBlock);
 						if (classAction)  {
 							actions.push(classAction);
