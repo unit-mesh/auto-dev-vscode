@@ -27,6 +27,7 @@ import { languageContainer } from "./ProviderLanguageProfile.config";
 import { ProjectService } from "./service/ProjectService";
 import { TeamTermService } from "./domain/TeamTermService";
 import { Service } from "./service/Service";
+import { PythonTestGenProvider } from "./code-context/python/PythonTestGenProvider";
 
 const providerContainer = new Container();
 
@@ -66,6 +67,8 @@ providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to
 providerContainer.bind<BuildToolProvider>(PROVIDER_TYPES.BuildToolProvider).to(GoBuildToolProvider);
 providerContainer.bind<StructurerProvider>(PROVIDER_TYPES.StructurerProvider).to(GoStructurerProvider);
 
+// Python
+providerContainer.bind<TestGenProvider>(PROVIDER_TYPES.TestGenProvider).to(PythonTestGenProvider);
 
 /**
  * TODO: improve the design for LanguageProfile

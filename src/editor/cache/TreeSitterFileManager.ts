@@ -23,6 +23,11 @@ export class TreeSitterFileManager implements vscode.Disposable {
 		return TreeSitterFileManager.instance;
 	}
 
+	// just to make sense for init
+	init() {
+
+	}
+
 	constructor() {
 		this.documentUpdateListener = vscode.workspace.onDidChangeTextDocument(async (event) => {
 			if (!isSupportedLanguage(event.document.languageId)) {

@@ -2,7 +2,7 @@
   "AutoComment": "生成注释",
   "autodev.command.genApiData": "生成 API 数据",
   "autodev.command.quickChat": "AutoDev 快速聊天",
-  "autodev.command.explain": "解释此代码",
+  "autodev.command.explainThis": "解释此代码",
   "autodev.command.fixThis": "修复此代码",
   "AutoTest": "生成测试",
   "configuration.openai.title": "OpenAI",

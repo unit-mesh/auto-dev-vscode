@@ -4,7 +4,7 @@ export enum AutoDevCommand {
 	DebugTerminal = "autodev.debugTerminal",
 	AutoComment = "autodev.autoComment",
 	AutoTest = "autodev.autoTest",
-	Explain = "autodev.explain",
+	ExplainThis = "autodev.explainThis",
 	FixThis = "autodev.fixThis",
 	MenuAutoComment = "autodev.menu.autoComment",
 	TerminalExplainContextMenu = "autodev.terminal.explainTerminalSelectionContextMenu",

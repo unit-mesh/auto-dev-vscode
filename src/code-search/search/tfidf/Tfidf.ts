@@ -19,13 +19,96 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+let ourStopwords = [
+	'about', 'above', 'after', 'again', 'all', 'also', 'am', 'an', 'and', 'another',
+	'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below',
+	'between', 'both', 'but', 'by', 'came', 'can', 'cannot', 'come', 'could', 'did',
+	'do', 'does', 'doing', 'during', 'each', 'few', 'for', 'from', 'further', 'get',
+	'got', 'has', 'had', 'he', 'have', 'her', 'here', 'him', 'himself', 'his', 'how',
+	'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'like', 'make', 'many', 'me',
+	'might', 'more', 'most', 'much', 'must', 'my', 'myself', 'never', 'now', 'of', 'on',
+	'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own',
+	'said', 'same', 'see', 'she', 'should', 'since', 'so', 'some', 'still', 'such', 'take', 'than',
+	'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they',
+	'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was',
+	'way', 'we', 'well', 'were', 'what', 'where', 'when', 'which', 'while', 'who',
+	'whom', 'with', 'would', 'why', 'you', 'your', 'yours', 'yourself',
+	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+	'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '$', '1',
+	'2', '3', '4', '5', '6', '7', '8', '9', '0', '_']
 
-import { RegexpTokenizer, stopwords, WordTokenizer } from "natural";
-
-let ourStopwords = stopwords;
 
 declare type DocumentType = string | string[] | Record<string, string>;
 declare type TfIdfCallback = (i: number, measure: number, key?: string | Record<string, any>) => void;
+
+export class Tokenizer {
+	trim(array: string[]): string[] {
+		while (array[array.length - 1] === '') {
+			array.pop();
+		}
+
+		while (array[0] === '') {
+			array.shift();
+		}
+
+		return array;
+	}
+}
+
+
+export declare interface RegexTokenizerOptions {
+	pattern?: RegExp
+	discardEmpty?: boolean
+	gaps?: boolean
+}
+
+
+export class RegexpTokenizer extends Tokenizer {
+	_pattern: RegExp = /\s+/;
+	discardEmpty: boolean = true;
+	_gaps: boolean | undefined;
+
+	constructor (opts?: RegexTokenizerOptions) {
+		super();
+		const options = opts || {};
+		this._pattern = options.pattern || this._pattern;
+		this.discardEmpty = options.discardEmpty || true;
+
+		// Match and split on GAPS not the actual WORDS
+		this._gaps = options.gaps;
+
+		if (this._gaps === undefined) {
+			this._gaps = true;
+		}
+	}
+
+	tokenize (s: string): string[] {
+		let results;
+
+		if (this._gaps) {
+			results = s.split(this._pattern);
+			return (this.discardEmpty) ? this.without(results, '', ' ') : results;
+		} else {
+			results = s.match(this._pattern);
+			if (results) {
+				return results;
+			} else {
+				return [];
+			}
+		}
+	}
+
+	without(arr: any[], ...values: any[]) {
+		return arr.filter(item => !values.includes(item));
+	}
+}
+
+export class WordTokenizer extends RegexpTokenizer {
+	constructor (options?: RegexTokenizerOptions) {
+		super(options);
+		this._pattern = /[^A-Za-zА-Яа-я0-9_]+/;
+	}
+}
 
 /// based on: https://github.com/NaturalNode/natural/blob/master/lib/natural/tfidf/tfidf.js
 export class TfIdf<K, V> {

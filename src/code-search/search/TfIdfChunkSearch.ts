@@ -1,4 +1,3 @@
-import { TfIdfCallback } from "natural/lib/natural/tfidf";
 import { ChunkItem } from "../embedding/_base/Embedding";
 import { TfIdf } from "./tfidf/Tfidf";
 import { SemanticSearch } from "./_base/SemanticSearch";
@@ -32,8 +31,8 @@ export class TfIdfChunkSearch implements SemanticSearch {
 		document.forEach(chunk => this.tfidf.addDocument(chunk));
 	}
 
-	search(query: string, callback?: TfIdfCallback): number[] {
-		return this.tfidf.tfidfs(query, callback);
+	search(query: string): number[] {
+		return this.tfidf.tfidfs(query);
 	}
 
 	searchChunks(items: string[], maxResults: number, options: SearchOptions, cancellationToken: CancellationToken): Promise<any[]> {

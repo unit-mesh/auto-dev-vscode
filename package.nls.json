@@ -2,7 +2,7 @@
   "AutoComment": "Generate Documentation",
   "autodev.command.genApiData": "Generate API Data",
   "autodev.command.quickChat": "AutoDev Quick Chat",
-  "autodev.command.explain": "Explain This",
+  "autodev.command.explainThis": "Explain This",
   "autodev.command.fixThis": "AutoDev Fix this",
   "AutoTest": "Generate Test",
   "configuration.openai.title": "OpenAI",

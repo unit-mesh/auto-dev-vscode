@@ -63,7 +63,7 @@ export class AutoDevStatusManager {
 		}
 	}
 
-	create() {
+	initStatusBar() {
 		const autoDevStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 		autoDevStatusBar.command = "autodev.systemAction";
 		autoDevStatusBar.text = "$(autodev-pair)";

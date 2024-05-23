@@ -15,10 +15,7 @@ import { DefaultLanguageService } from "../editor/language/service/DefaultLangua
 import { CommitMessageGenAction } from "../action/devops/CommitMessageGenAction";
 import { RelevantCodeProviderManager } from "../code-context/RelevantCodeProviderManager";
 import { TreeSitterFileManager } from "../editor/cache/TreeSitterFileManager";
-import { AutoDevWebviewProtocol } from "../editor/webview/AutoDevWebviewProtocol";
-import path from "path";
-import fs from "fs";
-import { getExtensionUri } from "../context";
+import { addHighlightedCodeToContext, getFullScreenTab, showTutorial } from "./commandsUtils";
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
@@ -39,7 +36,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 	[AutoDevCommand.DebugTerminal]: async () => {
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 		const terminalContents = await extension.ideAction.getTerminalContents(1);
-		extension.sidebar.webviewProtocol?.request("userInput", {
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
 			input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
 		});
 	},
@@ -84,7 +81,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		const workspaceEdit = edit || new vscode.WorkspaceEdit();
 		await new AutoTestActionExecutor(textDocument, nameElement, workspaceEdit).execute();
 	},
-	[AutoDevCommand.Explain]: async () => {
+	[AutoDevCommand.ExplainThis]: async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			return;
@@ -100,12 +97,29 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 			input = document.getText();
 		}
 
-		extension.sidebar.webviewProtocol?.request("userInput", { input });
-
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { prompt: `Explain this: 
+${input}` });
 	},
-	[AutoDevCommand.FixThis]: async (document: vscode.TextDocument, range: NamedElement) => {
-		//
+	[AutoDevCommand.FixThis]: async () => {
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			return;
+		}
+		let selection: string = editor.document.getText(editor.selection);
+
+		let document = editor.document;
+		let input;
+
+		if (selection.length > 0) {
+			input = selection;
+		} else {
+			input = document.getText();
+		}
+
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
+			prompt: `How do I fix this problem in the above code?: ${input}`,
+		});
 	},
 	[AutoDevCommand.MenuAutoComment]: async () => {
 		const editor = vscode.window.activeTextEditor;
@@ -129,19 +143,11 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 	[AutoDevCommand.TerminalExplainContextMenu]: async () => {
 		//
 	},
-	[AutoDevCommand.ActionQuickAction]: async (
-		document: vscode.TextDocument,
-		range: NamedElement,
-		edit: vscode.WorkspaceEdit
-	) => {
+	[AutoDevCommand.ActionQuickAction]: async (document: vscode.TextDocument, range: NamedElement, edit: vscode.WorkspaceEdit) => {
 		let quickActionService = QuickActionService.instance();
 		await quickActionService.show(extension);
 	},
-	[AutoDevCommand.SystemAction]: async (
-		document: vscode.TextDocument,
-		range: NamedElement,
-		edit: vscode.WorkspaceEdit
-	) => {
+	[AutoDevCommand.SystemAction]: async (document: vscode.TextDocument, range: NamedElement, edit: vscode.WorkspaceEdit) => {
 		await SystemActionService.instance().show(extension);
 	},
 	[AutoDevCommand.GenerateCommitMessage]: async () => {
@@ -188,64 +194,6 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		showTutorial();
 	},
 });
-
-export async function showTutorial() {
-	const tutorialPath = path.join(
-		getExtensionUri().fsPath,
-		"autodev_tutorial.py",
-	);
-	// Ensure keyboard shortcuts match OS
-	if (process.platform !== "darwin") {
-		let tutorialContent = fs.readFileSync(tutorialPath, "utf8");
-		tutorialContent = tutorialContent.replace("⌘", "^").replace("Cmd", "Ctrl");
-		fs.writeFileSync(tutorialPath, tutorialContent);
-	}
-
-	const doc = await vscode.workspace.openTextDocument(
-		vscode.Uri.file(tutorialPath),
-	);
-	await vscode.window.showTextDocument(doc, { preview: false });
-}
-
-
-async function addHighlightedCodeToContext(
-	edit: boolean,
-	webviewProtocol: AutoDevWebviewProtocol | undefined,
-) {
-	const editor = vscode.window.activeTextEditor;
-	if (editor) {
-		const selection = editor.selection;
-		if (selection.isEmpty) return;
-		const range = new vscode.Range(selection.start, selection.end);
-		const contents = editor.document.getText(range);
-		const rangeInFileWithContents = {
-			filepath: editor.document.uri.fsPath,
-			contents,
-			range: {
-				start: {
-					line: selection.start.line,
-					character: selection.start.character,
-				},
-				end: {
-					line: selection.end.line,
-					character: selection.end.character,
-				},
-			},
-		};
-
-		webviewProtocol?.request("highlightedCode", {
-			rangeInFileWithContents,
-		});
-	}
-}
-
-function getFullScreenTab() {
-	const tabs = vscode.window.tabGroups.all.flatMap((tabGroup) => tabGroup.tabs);
-	return tabs.find(
-		(tab) => (tab.input as any)?.viewType?.endsWith("continue.continueGUIView"),
-	);
-}
-
 
 export function registerCommands(extension: AutoDevExtension) {
 	const commands = commandsMap(extension);

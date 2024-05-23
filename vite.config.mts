@@ -21,7 +21,7 @@ export default defineConfig((api) => {
     plugins: [
       externalizeDeps({
         deps: false,
-        include: ["vscode"],
+        include: ["vscode", "onnxruntime-web"],
       }),
       isDev && dts(),
       viteStaticCopy({

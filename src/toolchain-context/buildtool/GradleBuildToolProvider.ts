@@ -29,21 +29,6 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 		return GradleBuildToolProvider.instance_;
 	}
 
-	async startWatch() {
-		if (await this.isApplicable()) {
-			return;
-		}
-
-		channel.appendLine("GradleBuildToolProvider startWatch");
-
-		try {
-			this.deps = await this.getDependencies();
-			this.gradleInfo = await this.getGradleVersion();
-		} catch (e) {
-			console.info(e);
-		}
-	}
-
 	async getDependencies(): Promise<PackageDependencies> {
 		if (!await this.isApplicable()) {
 			return { name: this.getToolingName(), version: "unknown", path: "", dependencies: [], packageManager: PackageManger.GRADLE };
