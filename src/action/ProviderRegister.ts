@@ -7,6 +7,7 @@ import { AutoDevCodeActionProvider } from "./providers/AutoDevCodeActionProvider
 import { AutoDevQuickFixProvider } from "./providers/AutoDevQuickFixProvider";
 import { channel } from "../channel";
 import { AutoDevRenameProvider } from "./refactor/rename/AutoDevRenameProvider";
+import { SettingService } from "../settings/SettingService";
 
 export function registerCodeLensProviders(context: AutoDevExtension) {
 	const filter = SUPPORTED_LANGUAGES.map(it => ({ language: it } as vscode.DocumentFilter));
@@ -54,4 +55,19 @@ export function registerRenameAction(extension: AutoDevExtension) {
 			new AutoDevRenameProvider()
 		)
 	);
+}
+
+export function configRename(extension: AutoDevExtension) {
+	if (SettingService.instance().isEnableRename()) {
+		registerRenameAction(extension);
+	}
+
+	vscode.workspace.onDidChangeConfiguration(() => {
+		if (SettingService.instance().isEnableRename()) {
+			// 如果启用了重命名功能，则注册重命名动作（待优化）
+			registerRenameAction(extension);
+		} else {
+			// 否则不做任何操作
+		}
+	});
 }

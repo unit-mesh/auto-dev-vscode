@@ -147,11 +147,7 @@ ${input}` });
 		let quickActionService = QuickActionService.instance();
 		await quickActionService.show(extension);
 	},
-	[AutoDevCommand.SystemAction]: async (
-		document: vscode.TextDocument,
-		range: NamedElement,
-		edit: vscode.WorkspaceEdit
-	) => {
+	[AutoDevCommand.SystemAction]: async (document: vscode.TextDocument, range: NamedElement, edit: vscode.WorkspaceEdit) => {
 		await SystemActionService.instance().show(extension);
 	},
 	[AutoDevCommand.GenerateCommitMessage]: async () => {
