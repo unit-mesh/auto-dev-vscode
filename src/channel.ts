@@ -1,3 +1,5 @@
 import vscode from "vscode";
 
-export const channel = vscode.window.createOutputChannel("AutoDev");
+export const channel = vscode.window.createOutputChannel("AutoDev", {
+	log: true
+});

@@ -15,7 +15,8 @@ import {
 	registerCodeLensProviders,
 	registerQuickFixProvider,
 	registerRenameAction,
-	registerWebViewProvider
+	registerWebViewProvider,
+	registerCodeSuggestionProvider
 } from "./action/ProviderRegister";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
@@ -62,6 +63,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		// 注册快速修复提供者
 		registerQuickFixProvider(extension);
+
+		registerCodeSuggestionProvider(extension);
 
 		// 注册命令集
 		registerCommands(extension);
