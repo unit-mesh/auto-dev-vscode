@@ -43,14 +43,14 @@ ${message}
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 		const terminalContents = await extension.ideAction.getTerminalContents(1);
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
-			input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
+			prompt: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
 		});
 	},
 	[AutoDevCommand.TerminalExplainContextMenu]: async () => {
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 		const terminalContents = await extension.ideAction.getTerminalContents(1);
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
-			input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
+			prompt: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
 		});
 	},
 	[AutoDevCommand.AutoComment]: async (
