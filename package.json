@@ -386,9 +386,9 @@
         "group": "AutoDev"
       },
       {
-        "command": "autodev.explain",
+        "command": "autodev.explainThis",
         "category": "AutoDev",
-        "title": "%autodev.command.explain%",
+        "title": "%autodev.command.explainThis%",
         "group": "AutoDev"
       },
       {
@@ -478,7 +478,7 @@
           "group": "autodev@1"
         },
         {
-          "command": "autodev.explain",
+          "command": "autodev.explainThis",
           "when": "editorHasSelection",
           "group": "autodevAction@1"
         },

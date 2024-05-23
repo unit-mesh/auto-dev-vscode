@@ -84,7 +84,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		const workspaceEdit = edit || new vscode.WorkspaceEdit();
 		await new AutoTestActionExecutor(textDocument, nameElement, workspaceEdit).execute();
 	},
-	[AutoDevCommand.Explain]: async () => {
+	[AutoDevCommand.ExplainThis]: async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			return;
@@ -101,7 +101,8 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		}
 
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
-		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { input });
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { prompt: `Explain this: 
+${input}` });
 	},
 	[AutoDevCommand.FixThis]: async (document: vscode.TextDocument, range: NamedElement) => {
 		//
