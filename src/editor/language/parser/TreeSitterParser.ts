@@ -229,4 +229,3 @@ export async function getLanguage(
     return undefined;
   }
 }
-

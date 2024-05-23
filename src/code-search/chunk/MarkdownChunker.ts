@@ -111,3 +111,7 @@ export class MarkdownChunker implements Chunker {
 	}
 }
 
+export function extractMarkdownCodeBlockContent(content: string) {
+  const iter = content.matchAll(/^```.*\n([\s\S]*?)?```/gm);
+  return Array.from(iter).map((result) => result[1].trim());
+}

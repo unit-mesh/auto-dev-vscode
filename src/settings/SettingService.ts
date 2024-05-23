@@ -98,11 +98,27 @@ export class SettingService {
 
     if (params.apiKey || params.project) {return params;}
 
-    // TODO: Legacy config migration
+    return this.getLegacyOpenAIConfig();
+  }
+
+  getLegacyOpenAIConfig(): LlmConfig {
+    const config = this.config;
+    
+    let baseURL = config.get<string>("openaiCompatibleConfig.apiBase", "");
+
+    // https://api.openai.com => https://api.openai.com/v1/
+    if (baseURL) {
+      if (baseURL.includes('/v1')) {
+        baseURL = addEndingSlash(baseURL);
+      } else {
+        baseURL = removeEndingSlash(baseURL) + '/v1/';
+      }
+    }
+
     return {
       provider: "openai",
       apiType: config.get<string>("openaiCompatibleConfig.apiType", ""),
-      baseURL: config.get<string>("openaiCompatibleConfig.apiBase", ""),
+      baseURL: baseURL,
       apiKey: config.get<string>("openaiCompatibleConfig.apiKey", ""),
       model: config.get<string>("openaiCompatibleConfig.model", ""),
     };
@@ -132,7 +148,7 @@ export class SettingService {
 
   getCodeCompletionConfig(): LlmConfig {
     const config = this.getOpenAIConfig();
-    const model = this.config.get<string>("autodev.completion.model");
+    const model = this.config.get<string>("completion.model");
 
     // Override model if it's set
     if (model) {
@@ -152,3 +168,8 @@ export class SettingService {
     this.disposables = [];
   }
 }
+
+const removeEndingSlash = (str: string): string =>
+  str.replace(/\/$/, '');
+
+const addEndingSlash = (str: string): string =>  str.endsWith('/') ? str : `${str}/`;

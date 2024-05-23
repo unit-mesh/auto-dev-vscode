@@ -14,7 +14,9 @@ import {
 	registerAutoDevProviders,
 	registerCodeLensProviders,
 	registerQuickFixProvider,
-	registerWebViewProvider
+	registerRenameAction,
+	registerWebViewProvider,
+	registerCodeSuggestionProvider
 } from "./action/ProviderRegister";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
 import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";
@@ -31,6 +33,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		registerCodeLensProviders(extension);
 		registerAutoDevProviders(extension);
 		registerQuickFixProvider(extension);
+		registerCodeSuggestionProvider(extension);
+
+		// 注册命令集
 		registerCommands(extension);
 		configRename(extension);
 

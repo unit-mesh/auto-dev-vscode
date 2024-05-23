@@ -4,6 +4,7 @@ import { AutoDevExtension } from "../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../editor/language/SupportedLanguage";
 import { AutoDevCodeLensProvider } from "./providers/AutoDevCodeLensProvider";
 import { AutoDevCodeActionProvider } from "./providers/AutoDevCodeActionProvider";
+import { AutoDevCodeSuggestionProvider } from './providers/AutoDevCodeSuggestionProvider';
 import { AutoDevQuickFixProvider } from "./providers/AutoDevQuickFixProvider";
 import { channel } from "../channel";
 import { AutoDevRenameProvider } from "./refactor/rename/AutoDevRenameProvider";
@@ -53,6 +54,13 @@ export function registerRenameAction(extension: AutoDevExtension) {
 	channel.appendLine("rename action enabled");
 	extension.extensionContext.subscriptions.push(vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES,
 			new AutoDevRenameProvider()
+		)
+	);
+}
+
+export function registerCodeSuggestionProvider(extension: AutoDevExtension) {
+	extension.extensionContext.subscriptions.push(vscode.languages.registerInlineCompletionItemProvider(SUPPORTED_LANGUAGES,
+			new AutoDevCodeSuggestionProvider()
 		)
 	);
 }
