@@ -107,7 +107,7 @@ export class SettingService {
     let baseURL = config.get<string>("openaiCompatibleConfig.apiBase", "");
 
     // https://api.openai.com => https://api.openai.com/v1/
-    if (baseURL && !baseURL.includes('/v1')) {
+    if (baseURL) {
       if (baseURL.includes('/v1')) {
         baseURL = addEndingSlash(baseURL);
       } else {
