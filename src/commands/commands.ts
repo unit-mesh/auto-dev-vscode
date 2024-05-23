@@ -39,7 +39,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 	[AutoDevCommand.DebugTerminal]: async () => {
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 		const terminalContents = await extension.ideAction.getTerminalContents(1);
-		extension.sidebar.webviewProtocol?.request("userInput", {
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
 			input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
 		});
 	},
@@ -100,9 +100,8 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 			input = document.getText();
 		}
 
-		extension.sidebar.webviewProtocol?.request("userInput", { input });
-
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { input });
 	},
 	[AutoDevCommand.FixThis]: async (document: vscode.TextDocument, range: NamedElement) => {
 		//

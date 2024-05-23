@@ -452,7 +452,7 @@
     ],
     "submenus": [
       {
-        "id": "autodev",
+        "id": "autodev.submenus",
         "label": "AutoDev"
       }
     ],
@@ -466,12 +466,12 @@
       ],
       "editor/context": [
         {
-          "submenu": "autodev",
-          "when": "!editorReadonly",
+          "submenu": "autodev.submenus",
+          "when": "(!editorReadonly || editorHasSelection)",
           "group": "1_autodev@0"
         }
       ],
-      "autodev": [
+      "autodev.submenus": [
         {
           "command": "autodev.action.quickAction",
           "when": "!editorReadonly",
@@ -479,7 +479,7 @@
         },
         {
           "command": "autodev.explain",
-          "when": "!editorReadonly",
+          "when": "editorHasSelection",
           "group": "autodevAction@1"
         },
         {
