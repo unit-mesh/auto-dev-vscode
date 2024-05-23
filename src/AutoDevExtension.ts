@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 
 import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
 import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
-import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { StructurerProviderManager } from "./code-context/StructurerProviderManager";
 import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
@@ -17,7 +16,6 @@ export class AutoDevExtension {
 	sidebar: AutoDevWebviewViewProvider;
 	ideAction: VSCodeAction;
 	diffManager: DiffManager;
-	documentManager: RecentlyDocumentManager;
 	extensionContext: vscode.ExtensionContext;
 	structureProvider: StructurerProviderManager | undefined;
 	private webviewProtocol: AutoDevWebviewProtocol;
@@ -26,13 +24,11 @@ export class AutoDevExtension {
 	constructor(
 		sidebar: AutoDevWebviewViewProvider,
 		action: VSCodeAction,
-		documentManager: RecentlyDocumentManager,
 		diffManager: DiffManager,
 		context: vscode.ExtensionContext) {
 		this.sidebar = sidebar;
 		this.ideAction = action;
 		this.diffManager = diffManager;
-		this.documentManager = documentManager;
 		this.extensionContext = context;
 
 		this.webviewProtocol = this.sidebar.webviewProtocol;

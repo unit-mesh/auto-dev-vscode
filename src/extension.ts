@@ -5,7 +5,6 @@ import Parser from "web-tree-sitter";
 
 import { registerCommands } from "./commands/commands";
 import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
-import { RecentlyDocumentManager } from "./editor/document/RecentlyDocumentManager";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { AutoDevExtension } from "./AutoDevExtension";
 import { removeExtensionContext, setExtensionContext } from './context';
@@ -25,17 +24,14 @@ import { EmbeddingsProviderManager } from "./code-search/embedding/EmbeddingsPro
 
 (globalThis as any).self = globalThis;
 
-
 export async function activate(context: vscode.ExtensionContext) {
 	setExtensionContext(context);
 
 	const sidebar = new AutoDevWebviewViewProvider(context);
 	const action = new VSCodeAction();
-	const documentManager = new RecentlyDocumentManager();
 	const diffManager = new DiffManager();
-
 	const extension = new AutoDevExtension(
-		sidebar, action, documentManager, diffManager, context,
+		sidebar, action, diffManager, context,
 	);
 
 	Parser.init().then(async () => {
@@ -45,16 +41,21 @@ export async function activate(context: vscode.ExtensionContext) {
 		registerCommands(extension);
 		configRename(extension);
 
-		TreeSitterFileManager.getInstance();
-		await new BuildToolObserver().startWatch();
+		// for embedding and file parser
+		TreeSitterFileManager.getInstance().init();
 		EmbeddingsProviderManager.init(context);
+
+		// for watch toolset
+		new BuildToolObserver().startWatch();
 	});
 
 	registerWebViewProvider(extension);
 
-	documentManager.bindChanges();
-	AutoDevStatusManager.instance.create();
-	channel.show();
+	AutoDevStatusManager.instance.initStatusBar();
+	// check is Dev model
+	if (process.env.NODE_ENV === "development") {
+		channel.show();
+	}
 }
 
 export function deactivate() {
