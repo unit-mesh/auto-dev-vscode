@@ -28,6 +28,10 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider, vscode.
 		this.onDidChangeTextDocument.dispose();
 	}
 
+	public refresh(): void {
+		this._eventEmitter.fire();
+	}
+
 	provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
 		return (async () => {
 			const languageId = document.languageId as SupportedLanguage;
@@ -50,12 +54,7 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider, vscode.
 		})();
 	}
 
-	public refresh(): void {
-		this._eventEmitter.fire();
-	}
-
 	private buildForLens(builder: NamedElementBuilder, document: vscode.TextDocument) {
-
 		const classRanges: NamedElement[] | TreeSitterFileError = builder.buildClass();
 		const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
 

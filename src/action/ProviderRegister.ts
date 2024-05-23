@@ -52,10 +52,8 @@ export function registerRenameAction(extension: AutoDevExtension) {
 	channel.appendLine("rename action enabled");
 
 	let disposable = vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES, {
-		async prepareRename(document, position, token): Promise<undefined | Range | {
-			range: Range;
-			placeholder: string;
-		}> {
+		async prepareRename(document, position, token):
+			Promise<undefined | Range | { range: Range; placeholder: string; }> {
 			let range = document.getWordRangeAtPosition(position);
 			if (!range) {
 				return undefined;
