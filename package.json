@@ -615,8 +615,7 @@
     "test": "vitest --run --coverage.enabled",
     "test:watch": "vitest --silent=false",
     "vscode:prepublish": "npm run build",
-    "pa": "vsce package",
-    "antlr4ts": "antlr4ts -visitor src/grammar/cmake/CMake.g4"
+    "pa": "vsce package"
   },
   "dependencies": {
     "@apache-arrow/ts": "^14.0.2",
@@ -629,7 +628,6 @@
     "@unit-mesh/treesitter-artifacts": "^1.6.1",
     "@vscode/l10n": "^0.0.18",
     "@xenova/transformers": "^2.17.1",
-    "antlr4ts": "^0.5.0-alpha.4",
     "apache-arrow": "^14.0.2",
     "cheerio": "^1.0.0-rc.12",
     "csv": "^6.3.8",
