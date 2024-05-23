@@ -15,10 +15,7 @@ import { DefaultLanguageService } from "../editor/language/service/DefaultLangua
 import { CommitMessageGenAction } from "../action/devops/CommitMessageGenAction";
 import { RelevantCodeProviderManager } from "../code-context/RelevantCodeProviderManager";
 import { TreeSitterFileManager } from "../editor/cache/TreeSitterFileManager";
-import { AutoDevWebviewProtocol } from "../editor/webview/AutoDevWebviewProtocol";
-import path from "path";
-import fs from "fs";
-import { getExtensionUri } from "../context";
+import { addHighlightedCodeToContext, getFullScreenTab, showTutorial } from "./commandsUtils";
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
@@ -146,11 +143,7 @@ ${input}` });
 	[AutoDevCommand.TerminalExplainContextMenu]: async () => {
 		//
 	},
-	[AutoDevCommand.ActionQuickAction]: async (
-		document: vscode.TextDocument,
-		range: NamedElement,
-		edit: vscode.WorkspaceEdit
-	) => {
+	[AutoDevCommand.ActionQuickAction]: async (document: vscode.TextDocument, range: NamedElement, edit: vscode.WorkspaceEdit) => {
 		let quickActionService = QuickActionService.instance();
 		await quickActionService.show(extension);
 	},
@@ -205,64 +198,6 @@ ${input}` });
 		showTutorial();
 	},
 });
-
-export async function showTutorial() {
-	const tutorialPath = path.join(
-		getExtensionUri().fsPath,
-		"autodev_tutorial.py",
-	);
-	// Ensure keyboard shortcuts match OS
-	if (process.platform !== "darwin") {
-		let tutorialContent = fs.readFileSync(tutorialPath, "utf8");
-		tutorialContent = tutorialContent.replace("⌘", "^").replace("Cmd", "Ctrl");
-		fs.writeFileSync(tutorialPath, tutorialContent);
-	}
-
-	const doc = await vscode.workspace.openTextDocument(
-		vscode.Uri.file(tutorialPath),
-	);
-	await vscode.window.showTextDocument(doc, { preview: false });
-}
-
-
-async function addHighlightedCodeToContext(
-	edit: boolean,
-	webviewProtocol: AutoDevWebviewProtocol | undefined,
-) {
-	const editor = vscode.window.activeTextEditor;
-	if (editor) {
-		const selection = editor.selection;
-		if (selection.isEmpty) return;
-		const range = new vscode.Range(selection.start, selection.end);
-		const contents = editor.document.getText(range);
-		const rangeInFileWithContents = {
-			filepath: editor.document.uri.fsPath,
-			contents,
-			range: {
-				start: {
-					line: selection.start.line,
-					character: selection.start.character,
-				},
-				end: {
-					line: selection.end.line,
-					character: selection.end.character,
-				},
-			},
-		};
-
-		webviewProtocol?.request("highlightedCode", {
-			rangeInFileWithContents,
-		});
-	}
-}
-
-function getFullScreenTab() {
-	const tabs = vscode.window.tabGroups.all.flatMap((tabGroup) => tabGroup.tabs);
-	return tabs.find(
-		(tab) => (tab.input as any)?.viewType?.endsWith("continue.continueGUIView"),
-	);
-}
-
 
 export function registerCommands(extension: AutoDevExtension) {
 	const commands = commandsMap(extension);
