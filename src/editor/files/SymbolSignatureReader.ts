@@ -1,3 +1,4 @@
+/* eslint-disable curly */
 import * as vscode from "vscode";
 import { extractMarkdownCodeBlockContent } from "../../code-search/chunk/MarkdownChunker";
 import { LRUCache } from "lru-cache";
@@ -91,7 +92,7 @@ export class SymbolSignatureReader {
 		>("vscode.executeDocumentSymbolProvider", uri);
 
 		if (!documentSymbols) {
-			return []
+			return [];
 		}
 
 		cache.set(uri.path, documentSymbols);
@@ -153,7 +154,7 @@ export class SymbolSignatureReader {
 		const content = hovers[0]?.contents[0];
 		if (!content) return;
 
-		const text = "string" == typeof content ? content : content.value;
+		const text = "string" === typeof content ? content : content.value;
 		return text ? extractMarkdownCodeBlockContent(text)[0] : undefined;
 	}
 

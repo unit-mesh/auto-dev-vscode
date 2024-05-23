@@ -2,6 +2,7 @@ import { ChatMessage, ChatRole } from "./ChatMessage";
 import { streamSse } from "./stream";
 import { RequestOptions } from "node:http";
 import { LlmConfig } from "../settings/LlmConfig";
+import { channel } from "../channel";
 
 type RequestInfo = Request | string;
 
@@ -31,18 +32,50 @@ export class OpenAICompletion {
 		return output;
 	}
 
-	async complete(prompt: string) {
+	async complete(prompt: string, params?: any, signal?: AbortSignal) {
 		let completion = "";
-		for await (const chunk of this._streamChat([{ role: ChatRole.User, content: prompt }])) {
+		for await (const chunk of this._streamChat([{ role: ChatRole.User, content: prompt }], params, signal)) {
 			completion += chunk.content;
 		}
 
 		return completion;
 	}
 
-	async* _streamChat(messages: ChatMessage[]): AsyncGenerator<ChatMessage> {
+	async createCompletion<T = any>(params: any, signal?: AbortSignal): Promise<T | undefined> {
+		let url = this._getEndpoint("completions");
+		
+		channel.debug(`(OpenAICompletion): Chat stream request with ${url}`);
+
+		const body = {
+			model: this.model,
+			...params
+		};
+
+		channel.debug(`(OpenAICompletion): Completion stream submitting request with body: ${JSON.stringify(body)}`);
+
+		const completion = await this.fetch(url, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${this.apiKey}`,
+				"api-key": this.apiKey ?? "", // For Azure
+			},
+			body: JSON.stringify(body),
+			signal,
+		}).then(res => res.json()).catch(error => {
+			channel.debug(`(OpenAICompletion): fetch error: ${error.message}`);
+		});
+
+		if (completion) {
+			channel.debug(`(OpenAICompletion): fetch done: ${JSON.stringify(completion)}`);
+		}
+		
+		return completion;
+	}
+
+	async* _streamChat(messages: ChatMessage[], params?: any, signal?: AbortSignal): AsyncGenerator<ChatMessage> {
 		let body = {
-			...this._convertArgs({}, messages),
+			...this._convertArgs(params || {}, messages),
 			stream: true,
 		};
 		// Empty messages cause an error in LM Studio
@@ -50,7 +83,11 @@ export class OpenAICompletion {
 			...m,
 			content: m.content === "" ? " " : m.content,
 		})) as any;
-		let url = this._getEndpoint("v1/chat/completions");
+		let url = this._getEndpoint("chat/completions");
+
+
+		channel.debug(`(OpenAICompletion): Chat stream request with ${url}`);
+		channel.debug(`(OpenAICompletion): Chat stream submitting request with body: ${JSON.stringify(body)}`);
 
 		const response = await this.fetch(url, {
 			method: "POST",
@@ -60,6 +97,7 @@ export class OpenAICompletion {
 				"api-key": this.apiKey ?? "", // For Azure
 			},
 			body: JSON.stringify(body),
+			signal,
 		});
 
 		for await (const value of streamSse(response)) {
@@ -85,7 +123,7 @@ export class OpenAICompletion {
 	}
 
 	private _getEndpoint(
-		endpoint: "v1/chat/completions" | "completions" | "models",
+		endpoint: "chat/completions" | "completions" | "models",
 	) {
 		if (this.apiType === "azure") {
 			return new URL(

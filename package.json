@@ -278,9 +278,9 @@
             "description": "Model for overwrite provider in the base configuration",
             "markdownDescription": "Model for overwrite provider in the base configuration. Currently only supports OpenAI, see `#autodev.openai.model#`"
           },
-          "autodev.completion.prompt": {
+          "autodev.completion.template": {
             "type": "string",
-            "default": "The following are all the types available. Use these types while considering how to complete the code provided. Do not repeat or use these types in your answer.\n{additionalContext}\n-----\n<fim_prefix>{prefix}<fim_suffix>{suffix}<fim_middle>",
+            "default": "<fim_prefix>{prefix}<fim_suffix>{suffix}<fim_middle>",
             "description": "Prompt of code model"
           },
           "autodev.completion.stops": {
@@ -297,6 +297,11 @@
             "type": "boolean",
             "default": false,
             "description": "Enable rename suggestion"
+          },
+          "autodev.suggestion.enableCodeCompletion": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable code completion"
           }
         }
       },
