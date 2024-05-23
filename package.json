@@ -484,7 +484,7 @@
         },
         {
           "command": "autodev.fixThis",
-          "when": "!editorReadonly",
+          "when": "editorHasSelection",
           "group": "autodevAction@2"
         },
         {

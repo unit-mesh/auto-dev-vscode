@@ -104,8 +104,25 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { prompt: `Explain this: 
 ${input}` });
 	},
-	[AutoDevCommand.FixThis]: async (document: vscode.TextDocument, range: NamedElement) => {
-		//
+	[AutoDevCommand.FixThis]: async () => {
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			return;
+		}
+		let selection: string = editor.document.getText(editor.selection);
+
+		let document = editor.document;
+		let input;
+
+		if (selection.length > 0) {
+			input = selection;
+		} else {
+			input = document.getText();
+		}
+
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
+			prompt: `How do I fix this problem in the above code?: ${input}`,
+		});
 	},
 	[AutoDevCommand.MenuAutoComment]: async () => {
 		const editor = vscode.window.activeTextEditor;
