@@ -17,7 +17,6 @@ import {
 	registerWebViewProvider
 } from "./action/ProviderRegister";
 import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
-import { BuildToolObserver } from "./toolchain-context/buildtool/BuildToolObserver";
 import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";
 import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
 import { EmbeddingsProviderManager } from "./code-search/embedding/EmbeddingsProviderManager";
@@ -26,13 +25,7 @@ import { EmbeddingsProviderManager } from "./code-search/embedding/EmbeddingsPro
 
 export async function activate(context: vscode.ExtensionContext) {
 	setExtensionContext(context);
-
-	const sidebar = new AutoDevWebviewViewProvider(context);
-	const action = new VSCodeAction();
-	const diffManager = new DiffManager();
-	const extension = new AutoDevExtension(
-		sidebar, action, diffManager, context,
-	);
+	const extension = setupAutoDevExtension(context);
 
 	Parser.init().then(async () => {
 		registerCodeLensProviders(extension);
@@ -44,9 +37,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		// for embedding and file parser
 		TreeSitterFileManager.getInstance().init();
 		EmbeddingsProviderManager.init(context);
-
-		// for watch toolset
-		new BuildToolObserver().startWatch();
 	});
 
 	registerWebViewProvider(extension);
@@ -56,6 +46,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (process.env.NODE_ENV === "development") {
 		channel.show();
 	}
+}
+
+function setupAutoDevExtension(context: vscode.ExtensionContext) {
+	const sidebar = new AutoDevWebviewViewProvider(context);
+	const action = new VSCodeAction();
+	const diffManager = new DiffManager();
+
+	return new AutoDevExtension(
+		sidebar, action, diffManager, context,
+	);
 }
 
 export function deactivate() {
