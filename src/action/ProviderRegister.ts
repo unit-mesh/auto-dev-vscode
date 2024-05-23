@@ -1,12 +1,12 @@
+import vscode from "vscode";
+
 import { AutoDevExtension } from "../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../editor/language/SupportedLanguage";
-import vscode, { Position, Range } from "vscode";
 import { AutoDevCodeLensProvider } from "./providers/AutoDevCodeLensProvider";
 import { AutoDevCodeActionProvider } from "./providers/AutoDevCodeActionProvider";
-import { RenameLookupExecutor } from "./refactor/RenameLookupExecutor";
 import { AutoDevQuickFixProvider } from "./providers/AutoDevQuickFixProvider";
-import { SettingService } from "../settings/SettingService";
 import { channel } from "../channel";
+import { AutoDevRenameProvider } from "./refactor/rename/AutoDevRenameProvider";
 
 export function registerCodeLensProviders(context: AutoDevExtension) {
 	const filter = SUPPORTED_LANGUAGES.map(it => ({ language: it } as vscode.DocumentFilter));
@@ -50,33 +50,8 @@ export function registerWebViewProvider(extension: AutoDevExtension) {
 
 export function registerRenameAction(extension: AutoDevExtension) {
 	channel.appendLine("rename action enabled");
-
-	let disposable = vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES, {
-		async prepareRename(document, position, token):
-			Promise<undefined | Range | { range: Range; placeholder: string; }> {
-			let range = document.getWordRangeAtPosition(position);
-			if (!range) {
-				return undefined;
-			}
-
-			if (!SettingService.instance().isEnableRename()) {
-				return range;
-			}
-
-			return await RenameLookupExecutor.suggest(document, position, token);
-		},
-
-		provideRenameEdits(document, position: Position, newName: string, token) {
-			let range = document.getWordRangeAtPosition(position);
-			if (!range) {
-				return;
-			}
-
-			let edit = new vscode.WorkspaceEdit();
-			edit.replace(document.uri, range, newName);
-			return edit;
-		}
-	});
-
-	extension.extensionContext.subscriptions.push(disposable);
+	extension.extensionContext.subscriptions.push(vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES,
+			new AutoDevRenameProvider()
+		)
+	);
 }

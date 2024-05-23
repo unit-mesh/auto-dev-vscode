@@ -1,12 +1,12 @@
 import vscode, { Position, Range } from "vscode";
-import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
-import { PromptManager } from "../../prompt-manage/PromptManager";
-import { ActionType } from "../../prompt-manage/ActionType";
-import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
-import { LlmProvider } from "../../llm-provider/LlmProvider";
-import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
-import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
-import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
+import { NamedElementBuilder } from "../../../editor/ast/NamedElementBuilder";
+import { PromptManager } from "../../../prompt-manage/PromptManager";
+import { ActionType } from "../../../prompt-manage/ActionType";
+import { TemplateContext } from "../../../prompt-manage/template/TemplateContext";
+import { LlmProvider } from "../../../llm-provider/LlmProvider";
+import { CustomActionPrompt } from "../../../prompt-manage/custom-action/CustomActionPrompt";
+import { AutoDevStatus, AutoDevStatusManager } from "../../../editor/editor-api/AutoDevStatusManager";
+import { TreeSitterFileManager } from "../../../editor/cache/TreeSitterFileManager";
 
 export class RenameLookupExecutor {
 	static async suggest(document: vscode.TextDocument, position: Position, token: vscode.CancellationToken): Promise<undefined | Range | {
