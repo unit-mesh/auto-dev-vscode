@@ -45,7 +45,8 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider, vscode.
 				tsfile = await TreeSitterFileManager.create(document);
 			}
 
-			return this.buildForLens(tsfile, document);
+			let tsFileElementBuilder = new NamedElementBuilder(tsfile);
+			return this.buildForLens(tsFileElementBuilder, document);
 		})();
 	}
 
@@ -53,20 +54,19 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider, vscode.
 		this._eventEmitter.fire();
 	}
 
-	private buildForLens(tsfile: TreeSitterFile, document: vscode.TextDocument) {
-		let builder = new NamedElementBuilder(tsfile);
+	private buildForLens(builder: NamedElementBuilder, document: vscode.TextDocument) {
 
 		const classRanges: NamedElement[] | TreeSitterFileError = builder.buildClass();
 		const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
 
 		let elements = classRanges.concat(methodRanges);
-		const testLens = this.setupTestIfNotExists(elements, document);
+		const testLens = this.setupTestCodeLen(elements, document);
 		const chatLens = this.setupQuickChat(elements, document);
 
 		return ([] as vscode.CodeLens[]).concat(testLens, chatLens);
 	}
 
-	private setupTestIfNotExists(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
+	private setupTestCodeLen(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
 		return methodRanges.map((namedElement) => {
 			if (namedElement.isTestFile()) {
 				return;
