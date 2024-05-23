@@ -51,7 +51,6 @@ export function registerWebViewProvider(extension: AutoDevExtension) {
 }
 
 export function registerRenameAction(extension: AutoDevExtension) {
-	channel.appendLine("rename action enabled");
 	extension.extensionContext.subscriptions.push(vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES,
 			new AutoDevRenameProvider()
 		)
