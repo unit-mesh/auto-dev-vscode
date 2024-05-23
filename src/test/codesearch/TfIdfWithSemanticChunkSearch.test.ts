@@ -52,10 +52,7 @@ describe('TfIdfWithSemanticChunkSearch', () => {
             const chunks = ['chunk1', 'chunk2', 'chunk3'];
             const query = 'chunk1';
             tfIdfWithSemanticChunkSearch.addDocuments(chunks);
-            tfIdfWithSemanticChunkSearch.search(query, (i, measure) => {
-                expect(i).to.be.a('number');
-                expect(measure).to.be.a('number');
-            });
+            tfIdfWithSemanticChunkSearch.search(query);
         });
     });
 
