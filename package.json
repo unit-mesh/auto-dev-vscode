@@ -293,6 +293,17 @@
             ],
             "description": "Stop words of code model"
           },
+          "autodev.completion.enableLegacyMode": {
+            "type": "boolean",
+            "default": false,
+            "description": "Use legacy \"/v1/completion\" instead of \"/v1/chat/completion\"",
+            "markdownDescription": "Use legacy `/v1/completion` instead of `/v1/chat/completion`"
+          },
+          "autodev.completion.requestDelay": {
+            "type": "integer",
+            "default": 500,
+            "markdownDescription": "Code auto-completion delay request time. Avoid excessive consumption of API tokens. `requestDelay` only works if `#autodev.suggestion.enableCodeCompletion#` is enabled."
+          },
           "autodev.suggestion.enableRename": {
             "type": "boolean",
             "default": false,
