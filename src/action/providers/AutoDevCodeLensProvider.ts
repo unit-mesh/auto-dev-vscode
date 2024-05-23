@@ -58,13 +58,12 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider, vscode.
 
 		const classRanges: NamedElement[] | TreeSitterFileError = builder.buildClass();
 		const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
-		let lenses: vscode.CodeLens[] = [];
 
-		const testLens = this.setupTestIfNotExists(classRanges.concat(methodRanges), document);
-		const chatLens = this.setupQuickChat(methodRanges, document);
+		let elements = classRanges.concat(methodRanges);
+		const testLens = this.setupTestIfNotExists(elements, document);
+		const chatLens = this.setupQuickChat(elements, document);
 
-		let codeLens = lenses.concat(testLens, chatLens);
-		return codeLens;
+		return ([] as vscode.CodeLens[]).concat(testLens, chatLens);
 	}
 
 	private setupTestIfNotExists(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
