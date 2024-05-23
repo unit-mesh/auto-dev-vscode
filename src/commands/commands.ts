@@ -19,10 +19,16 @@ import { addHighlightedCodeToContext, getFullScreenTab, showTutorial } from "./c
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
+		let language = vscode.window.activeTextEditor?.document.languageId ?? "";
+
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
 			prompt: `${
 				edit ? "/edit " : ""
-			}${code}\n\nHow do I fix this problem in the above code?: ${message}`,
+			}${code}\n\nHow do I fix this problem in the above code?: 
+\`\`\`${language}
+${message}
+\`\`\`
+`,
 		});
 
 		if (!edit) {
@@ -34,6 +40,13 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		}, (err) => vscode.window.showErrorMessage(err.message));
 	},
 	[AutoDevCommand.DebugTerminal]: async () => {
+		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
+		const terminalContents = await extension.ideAction.getTerminalContents(1);
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
+			input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
+		});
+	},
+	[AutoDevCommand.TerminalExplainContextMenu]: async () => {
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 		const terminalContents = await extension.ideAction.getTerminalContents(1);
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
@@ -82,6 +95,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		await new AutoTestActionExecutor(textDocument, nameElement, workspaceEdit).execute();
 	},
 	[AutoDevCommand.ExplainThis]: async () => {
+		let language = vscode.window.activeTextEditor?.document.languageId ?? "";
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			return;
@@ -98,8 +112,11 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		}
 
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
-		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { prompt: `Explain this: 
-${input}` });
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { prompt: `Explain this:
+\`\`\`${language} 
+${input}
+\`\`\`
+` });
 	},
 	[AutoDevCommand.FixThis]: async () => {
 		const editor = vscode.window.activeTextEditor;
@@ -139,9 +156,6 @@ ${input}` });
 		}
 
 		await new AutoDocActionExecutor(document, ranges[0], edit).execute();
-	},
-	[AutoDevCommand.TerminalExplainContextMenu]: async () => {
-		//
 	},
 	[AutoDevCommand.ActionQuickAction]: async (document: vscode.TextDocument, range: NamedElement, edit: vscode.WorkspaceEdit) => {
 		let quickActionService = QuickActionService.instance();
