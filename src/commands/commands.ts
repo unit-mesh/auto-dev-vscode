@@ -45,13 +45,16 @@ ${message}
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
 			prompt: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
 		});
+
+		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 	},
 	[AutoDevCommand.TerminalExplainContextMenu]: async () => {
-		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 		const terminalContents = await extension.ideAction.getTerminalContents(1);
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
 			prompt: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
 		});
+
+		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 	},
 	[AutoDevCommand.AutoComment]: async (
 		document: vscode.TextDocument,
@@ -111,12 +114,13 @@ ${message}
 			input = document.getText();
 		}
 
-		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { prompt: `Explain this:
 \`\`\`${language} 
 ${input}
 \`\`\`
 ` });
+
+		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 	},
 	[AutoDevCommand.FixThis]: async () => {
 		const editor = vscode.window.activeTextEditor;
@@ -137,6 +141,8 @@ ${input}
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
 			prompt: `How do I fix this problem in the above code?: ${input}`,
 		});
+
+		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 	},
 	[AutoDevCommand.MenuAutoComment]: async () => {
 		const editor = vscode.window.activeTextEditor;

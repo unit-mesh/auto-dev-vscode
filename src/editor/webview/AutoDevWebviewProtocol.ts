@@ -159,7 +159,9 @@ export class AutoDevWebviewProtocol {
             reply,
           });
           break;
-        // case "history/save"
+        case "history/save":
+          // todo: add support;
+          break;
         case "llm/streamChat":
           this.streamChat({
             id: messageId,
