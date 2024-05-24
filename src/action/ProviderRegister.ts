@@ -6,7 +6,6 @@ import { AutoDevCodeLensProvider } from "./providers/AutoDevCodeLensProvider";
 import { AutoDevCodeActionProvider } from "./providers/AutoDevCodeActionProvider";
 import { AutoDevCodeSuggestionProvider } from './providers/AutoDevCodeSuggestionProvider';
 import { AutoDevQuickFixProvider } from "./providers/AutoDevQuickFixProvider";
-import { channel } from "../channel";
 import { AutoDevRenameProvider } from "./refactor/rename/AutoDevRenameProvider";
 import { SettingService } from "../settings/SettingService";
 

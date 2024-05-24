@@ -10,7 +10,7 @@ export class JavaProfile implements LanguageProfile {
 	languageIds = ['java'];
 	fileExtensions = ['java'];
 	grammar = (langService: TSLanguageService) => langService.getLanguage('java');
-	isTestFile = (filePath: string) => filePath.endsWith('.test.java') && filePath.includes('src/test');
+	isTestFile = (filePath: string) => filePath.endsWith('Test.java') && filePath.includes('src/test');
 	scopeQuery = new MemoizedQuery(javascm);
 	hoverableQuery = new MemoizedQuery(`
       [(identifier)

@@ -61,6 +61,20 @@ export interface LanguageProfile {
 	isTestFile: (filePath: string) => boolean;
 }
 
+/**
+ * The `MemoizedQuery` class is a TypeScript class that provides a way to cache and reuse a query.
+ * This class is designed to improve performance by avoiding the overhead of recompiling the same query multiple times.
+ *
+ * The `MemoizedQuery` class has two private properties: `queryStr` and `compiledQuery`.
+ * `queryStr` is a string that represents the query to be compiled and executed.
+ * `compiledQuery` is an instance of the `Query` class that represents the compiled query. It is initially undefined and gets assigned when the `query` method is called for the first time.
+ *
+ * The constructor of the `MemoizedQuery` class takes a single argument: `scopeQuery`. This argument is a string that represents the query to be compiled and executed. The constructor assigns `scopeQuery` to `queryStr`.
+ *
+ * The `query` method of the `MemoizedQuery` class takes a single argument: `language`. This argument is an instance of the `Language` class that represents the language in which the query is written. The `query` method checks if `compiledQuery` is defined. If it is, the method returns `compiledQuery`. If it is not, the method compiles `queryStr` using the `query` method of the `language` object, assigns the result to `compiledQuery`, and then returns `compiledQuery`.
+ *
+ * The `MemoizedQuery` class is exported, which means that it can be imported and used in other TypeScript files.
+ */
 export class MemoizedQuery {
 	private readonly queryStr: string;
 	private compiledQuery: Query | undefined;
