@@ -1,3 +1,9 @@
+---
+layout: default
+title: Configuration
+nav_order: 3
+---
+
 # Configuration
 
 ## Basic
@@ -41,7 +47,7 @@ See [开通 DashScope 并创建 API-KEY](https://help.aliyun.com/zh/dashscope/de
 
 ## Chat
 
-### Models
+### Chat Models
 
 Shows in chat panel model selection list.
 
@@ -55,10 +61,12 @@ Shows in chat panel model selection list.
   - **type** `string | undefined`
 - **apiKey** LLM API key, Default use provider config.
   - **type** `string | undefined`
-- **secret Key** Only Baidu QianFan provider
+- **secretKey** Only Baidu QianFan provider
   - **type** `string | undefined`
 - **model** Model name
   - **type** `string`
+- **multimodel** Is it multi-model
+  - **type** `boolean`
 - **temperature** Amount of randomness injected into the response. Ranges from 0 to 1.
   - **type** `number | undefined`
 - **maxTokens** A maximum number of tokens to generate before stopping.
@@ -179,6 +187,5 @@ Config OpenAI example:
     "model": "moonshot-v1-8k",
     "apiBase": "https://api.moonshot.cn/v1",
     "apiKey": "xxx"
-  },
-  "autodev.completion.model": "openai",
+  }
 ```

@@ -243,6 +243,7 @@ export class AutoDevCodeSuggestionProvider
           (error as Error).message
         }`
       );
+      channel.show();
     }
   }
 

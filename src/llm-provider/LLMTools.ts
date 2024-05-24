@@ -6,9 +6,11 @@ import * as vscode from "vscode";
 import { ChatBaiduWenxin } from "./chat-models/wenxin";
 import { ChatAlibabaTongyi } from "./chat-models/tongyi";
 import { SettingService } from "../settings/SettingService";
+import { channel } from "../channel";
 
 interface LLMConfig extends ChatModelCallOptions {
   title: string;
+  multimodel?: boolean;
 }
 
 // TODO Support configuration updates
@@ -17,7 +19,12 @@ export function getChatModelList(): LLMConfig[] {
 
   // TODO: Legacy config migration
   const legacyChatModels = setting.get<LLMConfig[]>("chatModels");
-  if (legacyChatModels) {return legacyChatModels;}
+  if (legacyChatModels) {
+    channel.warn(
+      "Deprecated: autodev.chatModels no longer supports, Please use `autodev.chat.models` instead."
+    );
+    return legacyChatModels;
+  }
 
   return setting.get<LLMConfig[]>("chat.models", []);
 }
@@ -41,14 +48,16 @@ export function callAI(data: {
     return;
   }
 
+  const { multimodel, ...options } = config;
+
   const model = createChatModel({
-    ...config,
+    ...options,
     ...data.completionOptions,
   });
 
   return model.stream(
     data.messages.map((choice: any) => {
-      if (config.provider === "qianfan") {
+      if (!multimodel || config.provider === "qianfan") {
         return new ChatMessage({
           role: choice.role,
           content: choice.content[0].text,
@@ -127,7 +136,7 @@ export function createChatModel(options: ChatModelCallOptions) {
 export function createAnthropicChatModel(config: ChatModelCallOptions) {
   const defaults = SettingService.instance().getAnthropicConfig();
 
-  return new ChatAnthropic({
+  const callOptions = {
     streaming: true,
     anthropicApiKey: config.apiKey || defaults.apiKey,
     anthropicApiUrl: config.baseURL || defaults.baseURL,
@@ -138,14 +147,18 @@ export function createAnthropicChatModel(config: ChatModelCallOptions) {
     clientOptions: {
       ...config.clientOptions,
     },
-  });
+  };
+
+  channel.debug("(LLM): Use Anthropic provider send", callOptions);
+
+  return new ChatAnthropic(callOptions);
 }
 
 export function createOpenAIChatModel(config: ChatModelCallOptions) {
   const defaults = SettingService.instance().getOpenAIConfig();
 
   if (defaults.apiType === "azure") {
-    return new AzureChatOpenAI({
+    const azureCallOptions = {
       streaming: true,
       apiKey: config.apiKey || defaults.apiKey,
       model: config.model || defaults.model,
@@ -157,15 +170,17 @@ export function createOpenAIChatModel(config: ChatModelCallOptions) {
       configuration: {
         ...config.clientOptions,
       },
-    });
+    };
+
+    channel.debug("(LLM): Use OpenAI provider send to Azure", azureCallOptions);
+    return new AzureChatOpenAI(azureCallOptions);
   }
 
-  return new ChatOpenAI({
+  const openaiCallOptions = {
     streaming: true,
     apiKey: config.apiKey || defaults.apiKey,
     model: config.model || defaults.model,
     temperature: config.temperature,
-    azureOpenAIApiKey: config.secretKey,
     stop: config.stop,
     maxTokens: config.maxTokens,
     configuration: {
@@ -174,31 +189,43 @@ export function createOpenAIChatModel(config: ChatModelCallOptions) {
       project: defaults.project,
       ...config.clientOptions,
     },
-  });
+  };
+
+  channel.debug("(LLM): Use OpenAI provider send", openaiCallOptions);
+
+  return new ChatOpenAI(openaiCallOptions);
 }
 
 export function createQianFanChatModel(config: ChatModelCallOptions) {
   const defaults = SettingService.instance().getQianFanConfig();
 
-  return new ChatBaiduWenxin({
+  const callOptions = {
     ...config.clientOptions,
     streaming: true,
     baiduApiKey: config.apiKey || defaults.apiKey,
     baiduSecretKey: config.secretKey || defaults.secretKey,
     model: config.model || defaults.model,
     temperature: config.temperature,
-  });
+  };
+
+  channel.debug("(LLM): Use QianFan provider send", callOptions);
+
+  return new ChatBaiduWenxin(callOptions);
 }
 
 export function createTongYiChatModel(config: ChatModelCallOptions) {
   const defaults = SettingService.instance().getTongYiConfig();
 
-  return new ChatAlibabaTongyi({
+  const callOptions = {
     ...config.clientOptions,
     streaming: true,
     alibabaApiKey: config.apiKey || defaults.apiKey,
     model: config.model || defaults.model,
     temperature: config.temperature,
     enableSearch: defaults.enableSearch,
-  });
+  };
+
+  channel.debug("(LLM): Use TongYi provider send", callOptions);
+
+  return new ChatAlibabaTongyi(callOptions);
 }

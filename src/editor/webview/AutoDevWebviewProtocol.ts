@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { getExtensionContext, getExtensionUri } from "../../context";
 import { callAI, getChatModelList } from "../../llm-provider/LLMTools";
 import { channel } from "../../channel";
+import { SettingService } from '../../settings/SettingService';
 import { uuid } from "./uuid";
 
 type WebviewEvent = {
@@ -16,7 +17,9 @@ export class AutoDevWebviewProtocol {
   private _onMessage = new vscode.EventEmitter<any>();
   _webview: vscode.Webview;
   _webviewListener?: vscode.Disposable;
-
+  
+  private config: SettingService;
+  
   get onMessage() {
     return this._onMessage.event;
   }
@@ -46,7 +49,9 @@ export class AutoDevWebviewProtocol {
 
     this._webviewListener = this._webview.onDidReceiveMessage(async (msg) => {
       if (!msg.messageType || !msg.messageId) {
-        throw new Error("Invalid webview protocol msg: " + JSON.stringify(msg));
+        channel.error("(AutoDevWebview): Invalid webview protocol msg: ", msg);
+        channel.show();
+        return;
       }
 
       const respond = (message: any) =>
@@ -106,6 +111,11 @@ export class AutoDevWebviewProtocol {
 
   constructor(webview: vscode.Webview) {
     this._webview = webview;
+
+    this.config = SettingService.instance();
+    this.config.onDidChange(() => {
+      this.send('configUpdate');
+    });
 
     webview.onDidReceiveMessage((message) => {
       const messageId = message && message.messageId;
@@ -171,7 +181,7 @@ export class AutoDevWebviewProtocol {
           });
           break;
         default:
-          console.log("unknown message type: %s", messageType);
+          channel.warn("(AutoDevWebview): unknown message type: %s", messageType);
       }
     });
   }
@@ -217,7 +227,7 @@ export class AutoDevWebviewProtocol {
   }
 
   async streamChat({ data, reply, type }: WebviewEvent) {
-    console.log("streamChat", JSON.stringify(data));
+    channel.debug("(AutoDevWebview): Chat stream request with body", JSON.stringify(data));
 
     try {
       const completion = await callAI(data);
@@ -234,6 +244,8 @@ export class AutoDevWebviewProtocol {
         });
       }
     } catch (err) {
+      channel.error('(AutoDevWebview): Chat stream response error: ', err);
+      channel.show();
       reply(type, {
         content: `Error: ${(err as Error).message}`,
       });
@@ -244,7 +256,7 @@ export class AutoDevWebviewProtocol {
     }
   }
 
-  private send(messageType: string, data: any, messageId?: string): string {
+  private send(messageType: string, data?: unknown, messageId?: string): string {
     // channel.appendLine(`Sending message: ${messageType}`);
     const id = messageId ?? uuid();
     this._webview?.postMessage({
