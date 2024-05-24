@@ -31,11 +31,11 @@ function useChatHandler(dispatch: Dispatch) {
   const defaultModel = useSelector(defaultModelSelector);
 
   const slashCommands = useSelector(
-    (store: RootState) => store.state.config.slashCommands || [],
+    (store: RootState) => store.state.config.slashCommands || []
   );
 
   const contextItems = useSelector(
-    (state: RootState) => state.state.contextItems,
+    (state: RootState) => state.state.contextItems
   );
 
   const history = useSelector((store: RootState) => store.state.history);
@@ -45,13 +45,17 @@ function useChatHandler(dispatch: Dispatch) {
     activeRef.current = active;
   }, [active]);
 
-  async function _streamNormalInput(messages: ChatMessage[]) {
-    const abortController = new AbortController();
+  async function _streamNormalInput(
+    messages: ChatMessage[],
+    abortController: AbortController
+  ) {
     const cancelToken = abortController.signal;
     const gen = llmStreamChat(defaultModel.title, cancelToken, messages);
     let next = await gen.next();
 
     while (!next.done) {
+      if (cancelToken.aborted) return;
+
       if (!activeRef.current) {
         abortController.abort();
         break;
@@ -67,7 +71,7 @@ function useChatHandler(dispatch: Dispatch) {
   }
 
   const getSlashCommandForInput = (
-    input: MessageContent,
+    input: MessageContent
   ): [SlashCommandDescription, string] | undefined => {
     let slashCommand: SlashCommandDescription | undefined;
     let slashCommandName: string | undefined;
@@ -80,7 +84,7 @@ function useChatHandler(dispatch: Dispatch) {
     if (lastText.startsWith("/")) {
       slashCommandName = lastText.split(" ")[0].substring(1);
       slashCommand = slashCommands.find(
-        (command) => command.name === slashCommandName,
+        (command) => command.name === slashCommandName
       );
     }
     if (!slashCommand || !slashCommandName) {
@@ -97,8 +101,8 @@ function useChatHandler(dispatch: Dispatch) {
     input: string,
     historyIndex: number,
     selectedCode: RangeInFile[],
+    abortController: AbortController
   ) {
-    const abortController = new AbortController();
     const cancelToken = abortController.signal;
     const modelTitle = defaultModel.title;
 
@@ -114,7 +118,7 @@ function useChatHandler(dispatch: Dispatch) {
         historyIndex,
         selectedCode,
       },
-      cancelToken,
+      cancelToken
     )) {
       if (!activeRef.current) {
         abortController.abort();
@@ -126,7 +130,22 @@ function useChatHandler(dispatch: Dispatch) {
     }
   }
 
+  const abortControllers: AbortController[] = [];
+
+  function stopResponse() {
+    if (abortControllers.length) {
+      abortControllers.forEach((ac) => ac.abort());
+      abortControllers.length = 0;
+    }
+  }
+
   async function streamResponse(editorState: JSONContent, index?: number) {
+    stopResponse();
+    
+    const abortController = new AbortController();
+
+    abortControllers.push(abortController);
+
     try {
       if (typeof index === "number") {
         dispatch(resubmitAtIndex({ index, editorState }));
@@ -135,8 +154,9 @@ function useChatHandler(dispatch: Dispatch) {
       }
 
       // Resolve context providers and construct new history
-      const [contextItems, selectedCode, content] =
-        await resolveEditorContent(editorState);
+      const [contextItems, selectedCode, content] = await resolveEditorContent(
+        editorState
+      );
 
       const message: ChatMessage = {
         role: "user",
@@ -158,7 +178,7 @@ function useChatHandler(dispatch: Dispatch) {
           message,
           index: historyIndex,
           contextItems,
-        }),
+        })
       );
 
       // TODO: hacky way to allow rerender
@@ -170,7 +190,7 @@ function useChatHandler(dispatch: Dispatch) {
       let commandAndInput = getSlashCommandForInput(content);
 
       if (!commandAndInput) {
-        await _streamNormalInput(messages);
+        await _streamNormalInput(messages, abortController);
       } else {
         const [slashCommand, commandInput] = commandAndInput;
         await _streamSlashCommand(
@@ -179,19 +199,23 @@ function useChatHandler(dispatch: Dispatch) {
           commandInput,
           historyIndex,
           selectedCode,
+          abortController
         );
       }
     } catch (e) {
+      if (abortController.signal.aborted) return;
+
       console.log("Continue: error streaming response: ", e);
       postToIde("errorPopup", {
         message: `Error streaming response: ${e.message}`,
       });
     } finally {
+      if (abortController.signal.aborted) return;
       dispatch(setInactive());
     }
   }
 
-  return { streamResponse };
+  return { streamResponse, stopResponse };
 }
 
 export default useChatHandler;

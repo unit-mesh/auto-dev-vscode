@@ -31,7 +31,12 @@ import useChatHandler from "../hooks/useChatHandler";
 import useHistory from "../hooks/useHistory";
 import { useWebviewListener } from "../hooks/useWebviewListener";
 import { defaultModelSelector } from "../redux/selectors/modelSelectors";
-import { newSession, setInactive } from "../redux/slices/stateSlice";
+import {
+  newSession,
+  setMessageAtIndex,
+  setInactive,
+  setActive,
+} from "../redux/slices/stateSlice";
 import {
   setDialogEntryOn,
   setDialogMessage,
@@ -247,7 +252,7 @@ function GUI(props: GUIProps) {
         let currentCount = parseInt(counter);
         localStorage.setItem(
           "mainTextEntryCounter",
-          (currentCount + 1).toString(),
+          (currentCount + 1).toString()
         );
         if (currentCount === 300) {
           dispatch(
@@ -266,8 +271,8 @@ function GUI(props: GUIProps) {
                       setDialogMessage(
                         <div className="text-center p-4">
                           Thanks! We'll be in touch soon.
-                        </div>,
-                      ),
+                        </div>
+                      )
                     );
                   }}
                   style={{
@@ -301,8 +306,8 @@ function GUI(props: GUIProps) {
                     Submit
                   </button>
                 </form>
-              </div>,
-            ),
+              </div>
+            )
           );
           dispatch(setDialogEntryOn(false));
           dispatch(setShowDialog(true));
@@ -317,7 +322,7 @@ function GUI(props: GUIProps) {
       defaultModel,
       state,
       streamResponse,
-    ],
+    ]
   );
 
   const { saveSession } = useHistory(dispatch);
@@ -328,7 +333,34 @@ function GUI(props: GUIProps) {
       saveSession();
       mainTextInputRef.current?.focus?.();
     },
-    [saveSession],
+    [saveSession]
+  );
+
+  useWebviewListener(
+    "newSessionWithPrompt",
+    async (data) => {
+      dispatch(newSession());
+      dispatch(
+        setMessageAtIndex({
+          message: { role: "user", content: data.prompt },
+          index: 0,
+        })
+      );
+      dispatch(setActive());
+      streamResponse(
+        {
+          type: "doc",
+          content: [
+            {
+              type: "paragraph",
+              content: [{ type: "text", text: data.prompt }],
+            },
+          ],
+        },
+        0
+      );
+    },
+    []
   );
 
   const isLastUserInput = useCallback(
@@ -342,7 +374,7 @@ function GUI(props: GUIProps) {
       }
       return !foundLaterUserInput;
     },
-    [state.history],
+    [state.history]
   );
 
   return (

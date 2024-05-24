@@ -1,11 +1,11 @@
 import { JSONContent } from "@tiptap/react";
 import { ContextItemWithId } from "../../shims/typings";
-import { useDispatch, useSelector } from "react-redux";
+import { /* useDispatch, */ useSelector } from "react-redux";
 import styled, { keyframes } from "styled-components";
 import { defaultBorderRadius, vscBackground } from "..";
-import { useWebviewListener } from "../../hooks/useWebviewListener";
+// import { useWebviewListener } from "../../hooks/useWebviewListener";
 import { selectSlashCommands } from "../../redux/selectors";
-import { newSession, setMessageAtIndex } from "../../redux/slices/stateSlice";
+// import { newSession, setMessageAtIndex } from "../../redux/slices/stateSlice";
 import { RootState } from "../../redux/store";
 import ContextItemsPeek from "./ContextItemsPeek";
 import TipTapEditor from "./TipTapEditor";
@@ -61,7 +61,7 @@ interface ContinueInputBoxProps {
 }
 
 function ContinueInputBox(props: ContinueInputBoxProps) {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const active = useSelector((store: RootState) => store.state.active);
   const availableSlashCommands = useSelector(selectSlashCommands);
@@ -69,21 +69,21 @@ function ContinueInputBox(props: ContinueInputBoxProps) {
     (store: RootState) => store.state.config.contextProviders
   );
 
-  useWebviewListener(
-    "newSessionWithPrompt",
-    async (data) => {
-      if (props.isMainInput) {
-        dispatch(newSession());
-        dispatch(
-          setMessageAtIndex({
-            message: { role: "user", content: data.prompt },
-            index: 0,
-          })
-        );
-      }
-    },
-    [props.isMainInput]
-  );
+  // useWebviewListener(
+  //   "newSessionWithPrompt",
+  //   async (data) => {
+  //     if (props.isMainInput) {
+  //       dispatch(newSession());
+  //       dispatch(
+  //         setMessageAtIndex({
+  //           message: { role: "user", content: data.prompt },
+  //           index: 0,
+  //         })
+  //       );
+  //     }
+  //   },
+  //   [props.isMainInput]
+  // );
 
   return (
     <div

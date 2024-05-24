@@ -34,11 +34,14 @@ function findChatModelConfig(title: string) {
   return chatModels.find((model) => model.title === title);
 }
 
-export function callAI(data: {
-  title: string;
-  completionOptions?: object;
-  messages: any[];
-}) {
+export function callAI(
+  data: {
+    title: string;
+    completionOptions?: object;
+    messages: any[];
+  },
+  signal?: AbortSignal
+) {
   const config = findChatModelConfig(data.title);
 
   if (!config) {
@@ -68,7 +71,10 @@ export function callAI(data: {
         role: choice.role,
         content: choice.content,
       });
-    })
+    }),
+    {
+      signal,
+    }
   );
 }
 
