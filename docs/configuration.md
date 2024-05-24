@@ -187,6 +187,5 @@ Config OpenAI example:
     "model": "moonshot-v1-8k",
     "apiBase": "https://api.moonshot.cn/v1",
     "apiKey": "xxx"
-  },
-  "autodev.completion.model": "openai",
+  }
 ```
