@@ -10,7 +10,7 @@ import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { channel } from "../../channel";
 import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
-import { StrategyOutput } from "./_base/StrategyOutput";
+import { StrategyFinalPrompt } from "./_base/StrategyFinalPrompt";
 
 /**
  * The `HydeKeywordsStrategy` class is a part of the Hyde Strategy pattern and is used to generate keywords from a query.
@@ -88,7 +88,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		return docs;
 	}
 
-	async execute() : Promise<StrategyOutput> {
+	async execute() : Promise<StrategyFinalPrompt> {
 		channel.appendLine("=".repeat(80));
 		channel.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
 		channel.appendLine("=".repeat(80));
@@ -111,13 +111,13 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 
 		if (chunkItems.length === 0) {
 			channel.appendLine("No code snippets found.");
-			return new StrategyOutput("", []);
+			return new StrategyFinalPrompt("", []);
 		}
 
 		channel.appendLine("\n");
 		channel.appendLine(" --- Summary --- ");
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);
-		return new StrategyOutput(await executeIns(evaluateIns), chunkItems);
+		return new StrategyFinalPrompt(evaluateIns, chunkItems);
 	}
 
 	private createQueryTerm(keywords: HydeKeywords) {

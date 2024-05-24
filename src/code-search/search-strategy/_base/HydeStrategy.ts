@@ -1,6 +1,6 @@
 import { ChunkItem, Embedding } from "../../embedding/_base/Embedding";
 import { HydeDocument, HydeDocumentType } from "./HydeDocument";
-import { StrategyOutput } from "./StrategyOutput";
+import { StrategyFinalPrompt } from "./StrategyFinalPrompt";
 import { CustomActionPrompt } from "../../../prompt-manage/custom-action/CustomActionPrompt";
 import { AutoDevStatus, AutoDevStatusManager } from "../../../editor/editor-api/AutoDevStatusManager";
 import { LlmProvider } from "../../../llm-provider/LlmProvider";
@@ -65,7 +65,7 @@ export interface HydeStrategy<T> {
 	/**
 	 * Executes the method and returns a Promise that resolves with a StrategyOutput object.
 	 */
-	execute(): Promise<StrategyOutput>;
+	execute(): Promise<StrategyFinalPrompt>;
 }
 
 export async function executeIns(instruction: string) {
@@ -76,10 +76,10 @@ export async function executeIns(instruction: string) {
 		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
 		let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
 		for await (let chatMessage of response) {
-			channel.append(chatMessage.content);
 			result += chatMessage.content;
 		}
 
+		channel.append(result);
 		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
 		return result;
 	} catch (e) {

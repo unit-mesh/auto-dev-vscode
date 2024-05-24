@@ -3,7 +3,7 @@ import { channel } from "../../channel";
 import { HydeKeywordsStrategy } from "../../code-search/search-strategy/HydeKeywordsStrategy";
 import { SystemActionType } from "../../action/setting/SystemActionType";
 import { HydeCodeStrategy } from "../../code-search/search-strategy/HydeCodeStrategy";
-import { StrategyOutput } from "../../code-search/search-strategy/_base/StrategyOutput";
+import { StrategyFinalPrompt } from "../../code-search/search-strategy/_base/StrategyFinalPrompt";
 import { NamedChunk } from "../../code-search/embedding/_base/NamedChunk";
 import { TeamTermService } from "../../domain/TeamTermService";
 import { QueryExpansion } from "../../domain/QueryExpansion";
@@ -31,30 +31,33 @@ export class Catalyser {
 		let expandedQuery = QueryExpansion.instance().expand(query);
 		channel.append("Expanded query: " + expandedQuery + "\n");
 
-		let evaluateOutput: StrategyOutput | undefined = undefined;
+		let finalPrompt: StrategyFinalPrompt | undefined = undefined;
 		switch (type) {
 			case SystemActionType.SemanticSearchKeyword:
 				let keywordsStrategy = new HydeKeywordsStrategy(expandedQuery, this.extension);
-				evaluateOutput = await keywordsStrategy.execute();
+				finalPrompt = await keywordsStrategy.execute();
 				break;
 			case SystemActionType.SemanticSearchCode:
 				let strategy = new HydeCodeStrategy(expandedQuery, this.extension);
-				evaluateOutput = await strategy.execute();
+				finalPrompt = await strategy.execute();
 				break;
 			default:
 				channel.append("Unknown action type: " + type + "\n");
 				break;
 		}
 
-		if (!evaluateOutput) {
+		if (!finalPrompt) {
 			channel.append("No output from the strategy\n");
 			return;
 		}
 
-		if (evaluateOutput.chunks.length > 0) {
-			channel.append("\n");
-			channel.appendLine("Found " + evaluateOutput.chunks.length + " code snippets\n");
-			for (let chunk of evaluateOutput.chunks) {
+		this.extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
+			prompt: finalPrompt.prompt,
+		});
+
+		if (finalPrompt.chunks.length > 0) {
+			channel.appendLine("Found " + finalPrompt.chunks.length + " code snippets\n");
+			for (let chunk of finalPrompt.chunks) {
 				// a file path will be like: `build.gradle.kts (0-5)`, we need to parse range from name
 				let rangeResult = chunk.name.match(/\((\d+)-(\d+)\)/);
 

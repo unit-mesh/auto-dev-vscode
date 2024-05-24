@@ -10,7 +10,7 @@ import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
 import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
 import { KeywordEvaluateContext, KeywordsProposeContext } from "./HydeKeywordsStrategy";
 import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
-import { StrategyOutput } from "./_base/StrategyOutput";
+import { StrategyFinalPrompt } from "./_base/StrategyFinalPrompt";
 
 /**
  * Generate hypothetical document base on user input, and then used to retrieve similar code by symbols.
@@ -105,7 +105,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 		return docs;
 	}
 
-	async execute(): Promise<StrategyOutput> {
+	async execute(): Promise<StrategyFinalPrompt> {
 		channel.appendLine("=".repeat(80));
 		channel.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
 		channel.appendLine("=".repeat(80));
@@ -127,12 +127,12 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 
 		if (chunks.length === 0) {
 			channel.appendLine("No code snippets found.");
-			return new StrategyOutput("", []);
+			return new StrategyFinalPrompt("", []);
 		}
 
 		channel.appendLine("\n");
 		channel.appendLine(" --- Summary --- ");
 		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);
-		return new StrategyOutput(await executeIns(evaluateIns), chunks);
+		return new StrategyFinalPrompt(evaluateIns, chunks);
 	}
 }
