@@ -44,6 +44,11 @@ export class TeamTermService implements Service {
 		let promptsDir = SettingService.instance().customPromptsDir();
 		const csvPath = path.join(workspace.uri.fsPath, promptsDir, paths);
 
+		if (!fs.existsSync(csvPath)) {
+			console.info('No team terms file found');
+			return [];
+		}
+
 		const file = fs.createReadStream(csvPath);
 
 		const parser = parse({

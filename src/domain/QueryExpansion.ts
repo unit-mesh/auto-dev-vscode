@@ -16,7 +16,12 @@ export class QueryExpansion {
 	}
 
 	expand(query: string): string {
-		const terms: TeamTerm[] = TeamTermService.instance().fetch();
+		let terms: TeamTerm[] = [];
+		try {
+			terms = TeamTermService.instance().fetch();
+		} catch (e) {
+			console.info(e);
+		}
 
 		terms.forEach((term) => {
 			query = query.replace(term.localized, term.localized + '(' + term.term + ')');
