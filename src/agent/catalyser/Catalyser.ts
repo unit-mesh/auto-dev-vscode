@@ -51,8 +51,8 @@ export class Catalyser {
 			return;
 		}
 
-		this.extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
-			prompt: finalPrompt.prompt,
+		this.extension.sidebar.webviewProtocol?.request("userInput", {
+			input: finalPrompt.prompt,
 		});
 
 		if (finalPrompt.chunks.length > 0) {
