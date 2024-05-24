@@ -44,14 +44,14 @@ export class OpenAICompletion {
 	async createCompletion<T = any>(params: any, signal?: AbortSignal): Promise<T | undefined> {
 		let url = this._getEndpoint("completions");
 		
-		channel.debug(`(OpenAICompletion): Chat stream request with ${url}`);
+		channel.debug(`(OpenAICompletion): Completion request with url: ${url}`);
 
 		const body = {
 			model: this.model,
 			...params
 		};
 
-		channel.debug(`(OpenAICompletion): Completion stream submitting request with body: ${JSON.stringify(body)}`);
+		channel.debug(`(OpenAICompletion): Completion request with body: ${JSON.stringify(body)}`);
 
 		const completion = await this.fetch(url, {
 			method: "POST",
@@ -87,7 +87,7 @@ export class OpenAICompletion {
 
 
 		channel.debug(`(OpenAICompletion): Chat stream request with ${url}`);
-		channel.debug(`(OpenAICompletion): Chat stream submitting request with body: ${JSON.stringify(body)}`);
+		channel.debug(`(OpenAICompletion): Chat stream request with body: ${JSON.stringify(body)}`);
 
 		const response = await this.fetch(url, {
 			method: "POST",

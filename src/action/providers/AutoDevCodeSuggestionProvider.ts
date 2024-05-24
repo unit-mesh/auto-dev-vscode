@@ -3,10 +3,7 @@
 import * as vscode from "vscode";
 
 import { channel } from "../../channel";
-import {
-  CrossFileContextAnalyzer,
-  NeighborSnippet,
-} from "../../editor/files/CrossFileContextAnalyzer";
+import { CrossFileContextAnalyzer } from "../../editor/files/CrossFileContextAnalyzer";
 import { SettingService } from "../../settings/SettingService";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 
@@ -28,21 +25,40 @@ export class AutoDevCodeSuggestionProvider
 
   config = SettingService.instance();
 
+  // TODO: Whether the smart processing is triggered after the complement or for the first time
   async provideInlineCompletionItems(
     document: vscode.TextDocument,
     position: vscode.Position,
     context: vscode.InlineCompletionContext,
     token: vscode.CancellationToken
   ): Promise<vscode.InlineCompletionItem[]> {
-    if (!this.config.get("suggestion.enableCodeCompletion")) return [];
+    const config = this.config;
+
+    if (!config.get("suggestion.enableCodeCompletion")) return [];
 
     if (document.lineCount >= 8000) {
       channel.debug("(AutoDevCodeSuggestionProvider): skip long file");
       return [];
     }
 
-    if (document.getText().trim().length < MIN_CONTEXT_LENGTH) {
+    if (document.getText().length < MIN_CONTEXT_LENGTH) {
       channel.debug("(AutoDevCodeSuggestionProvider): not enough context");
+      return [];
+    }
+
+    const requestDelay = config.get<number>("completion.requestDelay", 500);
+
+    await new Promise<void>((resolve) => {
+      const timerId = setTimeout(resolve, requestDelay);
+
+      token.onCancellationRequested(() => {
+        clearTimeout(timerId);
+        resolve();
+      });
+    });
+
+    if (token.isCancellationRequested) {
+      channel.debug("(AutoDevCodeSuggestionProvider): during debounce");
       return [];
     }
 
@@ -102,10 +118,56 @@ export class AutoDevCodeSuggestionProvider
       .replace("{prefix}", prefix)
       .replace("{suffix}", suffix);
 
-    return this.sendCodeCompleteRequest(prompt, token);
+    return this.createCodeCompletion(prompt, token);
   }
 
-  async sendCodeCompleteRequest(
+  async createCodeCompletion(prompt: string, token: vscode.CancellationToken) {
+    if (this.config.get<boolean>("completion.enableLegacyMode") === true) {
+      return this.sendLegacyCodeCompletionRequest(prompt, token);
+    }
+
+    return this.sendCodeCompletionRequest(prompt, token);
+  }
+
+  async sendCodeCompletionRequest(
+    prompt: string,
+    token: vscode.CancellationToken
+  ): Promise<string | undefined> {
+    const t0 = performance.now();
+    const llm = LlmProvider.codeCompletion();
+
+    const ac = new AbortController();
+
+    token.onCancellationRequested(() => {
+      ac.abort();
+    });
+
+    const completion = await llm.complete(
+      prompt,
+      {
+        temperature: 0.4,
+        topP: 0.2,
+        frequencyPenalty: 1.1,
+        stop: this.config.get<string[]>("completion.stops") || CODE_STOR_WORDS,
+      },
+      ac.signal
+    );
+
+    if (token.isCancellationRequested || ac.signal.aborted) {
+      channel.debug("(AutoDevCodeSuggestionProvider): vscode cancelled");
+      return;
+    }
+
+    channel.debug(
+      `(AutoDevCodeSuggestionProvider): Code stream finished in ${(
+        performance.now() - t0
+      ).toFixed(2)} ms with contents: ${completion}`
+    );
+
+    return completion;
+  }
+
+  async sendLegacyCodeCompletionRequest(
     prompt: string,
     token: vscode.CancellationToken
   ): Promise<string | undefined> {
