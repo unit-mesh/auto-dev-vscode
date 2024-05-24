@@ -1,3 +1,145 @@
+# [0.3.0](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.2.6...v0.3.0) (2024-05-24)
+
+
+### Bug Fixes
+
+* compatible apiBase ([e3ea70e](https://github.com/unit-mesh/auto-dev-vscode/commit/e3ea70e4e57178e8776606556f27fb5ebff45116))
+* **editor-api:** remove comment prefix from change output ([34f5ad6](https://github.com/unit-mesh/auto-dev-vscode/commit/34f5ad6f57fce6898c220e9fac3be3baec1c6bb5))
+
+
+### Features
+
+* **action:** rearrange refresh method and improve prepareRename readability ([4af9d78](https://github.com/unit-mesh/auto-dev-vscode/commit/4af9d78b6740fc3b3c26ba3a78ae6a10c77a8f6a))
+* add code completions ([236b564](https://github.com/unit-mesh/auto-dev-vscode/commit/236b5645392a048d09dc5b95f4b4acc8af8b8c68))
+* **AutoDevCodeLensProvider:** implement vscode.Disposable interface [#37](https://github.com/unit-mesh/auto-dev-vscode/issues/37) ([74ce9c7](https://github.com/unit-mesh/auto-dev-vscode/commit/74ce9c7ac7a788df9e13701b28ff5dea13979668))
+* **autoDevCommand:** rename Explain to ExplainThis and update prompt message [#37](https://github.com/unit-mesh/auto-dev-vscode/issues/37) ([596f81c](https://github.com/unit-mesh/auto-dev-vscode/commit/596f81c5574f4ce4255dc8a29cae544046d0d7d6))
+* **code-lens:** add test lens for classes and methods [#37](https://github.com/unit-mesh/auto-dev-vscode/issues/37) ([822af60](https://github.com/unit-mesh/auto-dev-vscode/commit/822af603f69f14df47e28e22ed8bdec0384261fa))
+* **code-search:** add Git change retrieval option [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([cb89f82](https://github.com/unit-mesh/auto-dev-vscode/commit/cb89f828791287d6822d6bd9543ed74ddb51d1ca))
+* **code-search:** add Jaccard similarity for better search results [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([8a51b88](https://github.com/unit-mesh/auto-dev-vscode/commit/8a51b888e0d62ba565c06b61683fc7e70558c89b))
+* **code-search:** enhance search strategies and retrieval methods [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([17b658e](https://github.com/unit-mesh/auto-dev-vscode/commit/17b658ec818cbba0e663b3fddbe1868f7e413f8a))
+* **code-search:** increase history commits limit and add type annotations [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([0f4359e](https://github.com/unit-mesh/auto-dev-vscode/commit/0f4359e8d5ef9270516b0072afb76671c9148b6c))
+* **commands:** add language context to AutoDev commands [#38](https://github.com/unit-mesh/auto-dev-vscode/issues/38) ([71e7d0d](https://github.com/unit-mesh/auto-dev-vscode/commit/71e7d0da63835a72338437889f464f355b67bbea))
+* **commands:** replace 'input' with 'prompt' in newSessionWithPrompt request [#38](https://github.com/unit-mesh/auto-dev-vscode/issues/38) ([076ef1b](https://github.com/unit-mesh/auto-dev-vscode/commit/076ef1b7444b7fae1c3bd3a6fcbea85d83f59638))
+* **commands:** replace userInput with newSessionWithPrompt in AutoDevCommand ([b60e2d5](https://github.com/unit-mesh/auto-dev-vscode/commit/b60e2d583a7c14737c14429a8140eefcf46a6711))
+* **commands:** update FixThis command to handle active editor [#37](https://github.com/unit-mesh/auto-dev-vscode/issues/37) ([c7f3b93](https://github.com/unit-mesh/auto-dev-vscode/commit/c7f3b93f25ebba049b87257ca896499c0e8f4f28))
+* **docs:** add basic features documentation ([3c5008c](https://github.com/unit-mesh/auto-dev-vscode/commit/3c5008c86b2176792e1e67e4fa14a9da0d9cacce))
+* **domain:** add QueryExpansion class for query expansion [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([508ea9f](https://github.com/unit-mesh/auto-dev-vscode/commit/508ea9f5ea71afb59335e0470144f074febc4afb))
+* **editor-api:** add Git log parsing functionality [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([2b4e4b6](https://github.com/unit-mesh/auto-dev-vscode/commit/2b4e4b6b77e931b25656bf8701ed9c841f11e768))
+* **editor-api:** enhance GitAction class with new methods and improvements [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([d78ecf4](https://github.com/unit-mesh/auto-dev-vscode/commit/d78ecf427f82b5d4fbdfdcfd86e93d86ed47880c))
+* **editor:** add case for history save in AutoDevWebviewProtocol.ts ([7334dcf](https://github.com/unit-mesh/auto-dev-vscode/commit/7334dcf8a847bd8671a26588e518b2c0015c95e7))
+* **editor:** enhance TreeSitterFileManager with new methods and imports [#37](https://github.com/unit-mesh/auto-dev-vscode/issues/37) ([5779016](https://github.com/unit-mesh/auto-dev-vscode/commit/57790161718020be5355df8804fabd06331c13bc))
+* **editor:** refactor TreeSitterFileManager and related classes [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([b0b8962](https://github.com/unit-mesh/auto-dev-vscode/commit/b0b8962ac81ef1b4eaf78dc6cec946b655695922))
+* **editor:** replace Map with LRUCache in TreeSitterFileManager [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([34e9069](https://github.com/unit-mesh/auto-dev-vscode/commit/34e90690bb7b99751bb535c5b79011f2ac61ebe1))
+* **editor:** update edit params creation in TreeSitterFileManager [#37](https://github.com/unit-mesh/auto-dev-vscode/issues/37) ([ba95e6d](https://github.com/unit-mesh/auto-dev-vscode/commit/ba95e6d2e92925f42cd277ce984de62452fc3a45))
+* **editor:** update TreeSitterFileManager and TreeSitterFile [#37](https://github.com/unit-mesh/auto-dev-vscode/issues/37) ([32ea13e](https://github.com/unit-mesh/auto-dev-vscode/commit/32ea13eca640ff3c33bf079b77084b5d05b99eef))
+* **embeddings:** add support for multiple provider types [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([f7d59bd](https://github.com/unit-mesh/auto-dev-vscode/commit/f7d59bd28d0d3901901422015b91a08277e44233))
+* **extension:** add openSettings action ([d8626a9](https://github.com/unit-mesh/auto-dev-vscode/commit/d8626a9e7822c087cd0b6391e5da232341b771e7))
+* **JaccardSimilarity:** add path similarity method [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([4e8bdaa](https://github.com/unit-mesh/auto-dev-vscode/commit/4e8bdaacb92a33c3f11310d5340466cb208c0fcd))
+* **llm:** update LLMReranker constructor and complete method [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([0a768e4](https://github.com/unit-mesh/auto-dev-vscode/commit/0a768e43111d2429e668db3a855dd61f20f9a9db))
+* **prompt:** add LlmReranker prompt support [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([f349c26](https://github.com/unit-mesh/auto-dev-vscode/commit/f349c2652ef6ddd116efa7ab1043fff287fc610a))
+* **PythonProfile:** add Python language support [#38](https://github.com/unit-mesh/auto-dev-vscode/issues/38) ([c35c536](https://github.com/unit-mesh/auto-dev-vscode/commit/c35c536c2f704095ef4f9da241c0701dbae2e09a))
+* **refactor:** move RenameLookupExecutor and add AutoDevRenameProvider ([cf7e195](https://github.com/unit-mesh/auto-dev-vscode/commit/cf7e195abdfc7abd6d6c366bde5e0e9995f22768))
+* **reranker:** add LLMReranker for code snippet relevance ([2e15f76](https://github.com/unit-mesh/auto-dev-vscode/commit/2e15f76e5b034371d377dcac43974d49b631b1f5))
+* **retrieval:** add git history retrieval functionality [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([13399fb](https://github.com/unit-mesh/auto-dev-vscode/commit/13399fbe87a1442be7d511b30071413107a219f5))
+* **search:** enable commit message search in HydeKeywordsStrategy [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([94e4f2a](https://github.com/unit-mesh/auto-dev-vscode/commit/94e4f2af617cbce94818f12c7ab4b7e78f653112))
+* **search:** implement searchChunks method in TfIdfSemanticChunkSearch ([2333c90](https://github.com/unit-mesh/auto-dev-vscode/commit/2333c90d992c1b1f7c843a27e14ee78e3dbde8a2))
+* **search:** replace GitChange with CommitMessageSearch and rename TfIdfSemanticChunkSearch [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([3e0730d](https://github.com/unit-mesh/auto-dev-vscode/commit/3e0730dabc45b6d16c371295207e0ad56c103eb1))
+* **search:** replace natural from sourcecode for size, and add custom stopwords and tokenizer classes ([2e91025](https://github.com/unit-mesh/auto-dev-vscode/commit/2e910251b3f1a5504dd1de87a237a1920dacd3d4))
+* support for code-completion request delay and legacy mode ([61624ec](https://github.com/unit-mesh/auto-dev-vscode/commit/61624ecdc97f48f479677327e4836c721cf0971c))
+* **team-terms:** add new terms and improve service [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([256d2b6](https://github.com/unit-mesh/auto-dev-vscode/commit/256d2b6f6d918a93f3730822d3a0ac38678bbb87))
+* **team:** add support for custom team terms [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([e20d160](https://github.com/unit-mesh/auto-dev-vscode/commit/e20d160c087354bbf9f999a32fbcf8a70a541052))
+* **test-generation:** add Python test generation provider [#38](https://github.com/unit-mesh/auto-dev-vscode/issues/38) ([e3ffa72](https://github.com/unit-mesh/auto-dev-vscode/commit/e3ffa72c6161554aa0c7b8236ddb86f65cf464d0))
+
+
+### Reverts
+
+* Revert "refactor(action): update identifierRange to blockRange in CodeActionCreator" ([9707b6f](https://github.com/unit-mesh/auto-dev-vscode/commit/9707b6f8e83f5a44df27f2c78b0b08458600fe8e))
+
+
+
+## [0.2.6](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.2.5...v0.2.6) (2024-05-20)
+
+
+### Bug Fixes
+
+* **build:** simplify pre-download script and update .vscodeignore ([13812aa](https://github.com/unit-mesh/auto-dev-vscode/commit/13812aaccaa669aa1a60988f83f791ae610fe610))
+* **code-search:** handle empty code snippets gracefully [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([ddc0d9d](https://github.com/unit-mesh/auto-dev-vscode/commit/ddc0d9dbe9e8b3b4740f809674dee5f29a7f419f))
+* **editor:** handle empty ranges in AutoDevCodeActionProvider [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([9b85a5c](https://github.com/unit-mesh/auto-dev-vscode/commit/9b85a5c80d916ce51553c9bc0c5a240a4bf640f6))
+
+
+### Features
+
+* **autoDev:** add GUI focus input command [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([2916f14](https://github.com/unit-mesh/auto-dev-vscode/commit/2916f144c08541c32e9f5f4077af02f8ec70e6f3))
+* **commands:** add support for new session creation [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([4ab97ac](https://github.com/unit-mesh/auto-dev-vscode/commit/4ab97ac3ea1f37e42a7df1550842edd0d262870d))
+* **embedding:** add session check before initialization [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([2c133af](https://github.com/unit-mesh/auto-dev-vscode/commit/2c133af4746d5f5ee4d19c565a9dbd290d583d64))
+* **tutorial:** add AutoDev tutorial file and showTutorial command ([a50f1dd](https://github.com/unit-mesh/auto-dev-vscode/commit/a50f1dd1e076aaa8795a59741b0d4fc5178490a7))
+
+
+
+## [0.2.5](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.2.4...v0.2.5) (2024-05-20)
+
+
+### Features
+
+* **code-context:** add TextRange support for code snippets retrieval [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([d7e7647](https://github.com/unit-mesh/auto-dev-vscode/commit/d7e7647a1c0f72c7ee4a8105256c2709fb349df1))
+* **code-search:** add support for specifying text ranges in search results [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([ff6c907](https://github.com/unit-mesh/auto-dev-vscode/commit/ff6c9070eb00da48fd21b8eb53b4eae7d96cffb7))
+* **editor:** add error popup with show logs option [#20](https://github.com/unit-mesh/auto-dev-vscode/issues/20) ([ec8910d](https://github.com/unit-mesh/auto-dev-vscode/commit/ec8910db99bf0ec32ba15b18f85387e106c539ec))
+* **embedding:** add NamedChunk creation for code chunks [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([017a539](https://github.com/unit-mesh/auto-dev-vscode/commit/017a539be3a694933668a945a0a268bbadd60163))
+* **embedding:** add support for named elements in chunk items [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([f1d2b27](https://github.com/unit-mesh/auto-dev-vscode/commit/f1d2b277dee2ce6bc0b8c08067250c8c3cba1d82))
+* **prompt:** add chat context to propose context [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([147075b](https://github.com/unit-mesh/auto-dev-vscode/commit/147075b07d5b37c3fbb2eec6f93e40ad06721ec0))
+* **redux:** add custom OpenAI compatible model support ([8668f01](https://github.com/unit-mesh/auto-dev-vscode/commit/8668f01d97e9079258ee7153a05164e052ddb75c))
+
+
+
+## [0.2.4](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.2.3...v0.2.4) (2024-05-18)
+
+
+### Bug Fixes
+
+* **code-search:** improve error message handling [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([ca37823](https://github.com/unit-mesh/auto-dev-vscode/commit/ca3782318cae1c7bee5c74af02183df4bfe7a125))
+
+
+### Features
+
+* **code-search:** enable full text search and update file paths [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([358c61c](https://github.com/unit-mesh/auto-dev-vscode/commit/358c61cd03205b84a7a8080d702899f96b888b9f))
+* **embedding:** add mergedTensor function for tensor merging [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([a7b7743](https://github.com/unit-mesh/auto-dev-vscode/commit/a7b77434dcb2ffb879b187b0aca109ab6c9227fd))
+* **embedding:** add OllamaEmbeddingsProvider [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([2e7e6c5](https://github.com/unit-mesh/auto-dev-vscode/commit/2e7e6c56d34cdd61ca709942324b69a9a5f68166))
+
+
+
+## [0.2.3](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.2.2...v0.2.3) (2024-05-17)
+
+
+### Bug Fixes
+
+* fix error path issue ([628ad1b](https://github.com/unit-mesh/auto-dev-vscode/commit/628ad1b3a4d411c086f9d48c8ea5b710df52cf87))
+* openai chat model configuration ([397cc68](https://github.com/unit-mesh/auto-dev-vscode/commit/397cc68d5b71248b474d64e8caafb51b108c75b3))
+
+
+### Features
+
+* add ollama chat server example ([a01098f](https://github.com/unit-mesh/auto-dev-vscode/commit/a01098fc9b7bde45156c5d8598184572073ceb64))
+* **code-search:** add language parameter to retrieval and search [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([b7e7254](https://github.com/unit-mesh/auto-dev-vscode/commit/b7e7254d89e0482821db5f5484e245084bd50a18))
+* **code-search:** add logging for keywords and chunks [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([940cb96](https://github.com/unit-mesh/auto-dev-vscode/commit/940cb967c726212463d30fdd6ea9ce00518cf530))
+* **code-search:** add minimum score filter to search results [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([7c7f46c](https://github.com/unit-mesh/auto-dev-vscode/commit/7c7f46cf37c9b6a07ff13ce2787bc6ccb1c105b8))
+* **code-search:** add support for text ranges in code search [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([193bd4c](https://github.com/unit-mesh/auto-dev-vscode/commit/193bd4c65ffbaee54d4617003f4bdbe0228b94b5))
+* **code-search:** add support for Tree-sitter language tags [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([cc11fe8](https://github.com/unit-mesh/auto-dev-vscode/commit/cc11fe8f923c0671ea338a02532ee24f44d39982))
+* **docs:** add Toml support to README.md ([2509063](https://github.com/unit-mesh/auto-dev-vscode/commit/2509063661acd27fb761327ae3d5be93814d033c))
+* **editor:** add channel logging for AutoDocActionExecutor ([734cd49](https://github.com/unit-mesh/auto-dev-vscode/commit/734cd498c21529713b2a3b66fef880ad0dc22b22))
+* **genius:** add code search assistant functionality [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([f292050](https://github.com/unit-mesh/auto-dev-vscode/commit/f292050b09ad1a53c2d5abbc347121ec40322698))
+* **llm-provider:** add support for dynamic strategy ([bac95ce](https://github.com/unit-mesh/auto-dev-vscode/commit/bac95ce4cf053a777a8cf9257021495b94195f13))
+* **llm:** add LLM strategy options for code and chat completion [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([62acbe1](https://github.com/unit-mesh/auto-dev-vscode/commit/62acbe1b3c0337d493feab6962b3ae24f23b2ae6))
+* **parser:** add support for Kotlin language [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([4615ea5](https://github.com/unit-mesh/auto-dev-vscode/commit/4615ea53f11200f79af2256b333a89e4fa511ac9))
+* **prompts:** add code snippet response for code search engine query [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([96c65ea](https://github.com/unit-mesh/auto-dev-vscode/commit/96c65ea0a28f15934ca5dae789a106903077edaa))
+* **search:** add support for Hypothetical Document Embedding (HyDE) [#30](https://github.com/unit-mesh/auto-dev-vscode/issues/30) ([c1c6942](https://github.com/unit-mesh/auto-dev-vscode/commit/c1c6942dde50025a865264b4a7e73e87e5e9638b))
+
+
+### Reverts
+
+* revert to pass for CI ([61b8244](https://github.com/unit-mesh/auto-dev-vscode/commit/61b8244ad8394f1f6bdf33b6ec30dd18c65a766a))
+
+
+
 ## [0.2.2](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.2.1...v0.2.2) (2024-05-14)
 
 
