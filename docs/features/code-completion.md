@@ -2,8 +2,7 @@
 layout: default
 title: Code Completions
 parent: Basic Features
-nav_order: 5
-permalink: /features/code-completion
+nav_order: 1
 ---
 
 Automatically completes your code based on the position of your cursor.

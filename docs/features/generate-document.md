@@ -2,8 +2,7 @@
 layout: default
 title: Generate Doc
 parent: Basic Features
-nav_order: 6
-permalink: /features/gen-doc
+nav_order: 4
 ---
 
 1. Select a code fragment and right-click to open the context menu.
