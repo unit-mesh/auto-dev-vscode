@@ -22,104 +22,53 @@ permalink: /
     </a>
 </p>
 
-
 > 🧙‍AutoDev: The AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful
 > bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀
 
-JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.com/unit-mesh/auto-dev)
+## Roadmap
 
-- [ ] Custom LLM config
-    - [x] OpenAI Compatible
-- [ ] Provider API design
-    - [x] LanguageProfile
-    - [x] ToolchainContextProvider / ChatContextProvider
-    - [x] BuildToolProvider
-    - [x] Structurer
-    - [x] TestGenProvider
-    - [x] RelatedCode
-    - [x] SimilarChunk
-    - [x] ActionCreator
-- [ ] Chat mode
-    - [x] Chat UI
-    - [x] Chat with selection
-- [ ] Touch-point, aka: [Contribution Point](https://code.visualstudio.com/api/references/contribution-points)
-    - [X] QuickPick
-    - [x] ContextMenu
-    - [x] QuickFix
-    - [x] CodeLens
-    - [x] Terminal
-    - [x] Commit Message for SCM
-    - [ ] Fix when error
-    - [ ] Comments Title: `comments/comment/title`
-    - [ ] Fix testings: `testing/message/context`
-- [ ] Action by AstNode
-    - [x] TreeSitter
-        - [x] Class level
-        - [x] Method level
-        - [x] spike for Variable level, since is not easy to implement
-    - [ ] ~~Language Server Protocol~~
-        - [ ] ~~Java~~
-        - [ ] ~~Python~~
-    - [ ] Backend Worker for TreeSitter analysis
-- [ ] DevIns language support
-    - [ ] Syntax Highlight
-    - [ ] Custom command
-    - [ ] Input Language
-- [ ] Custom prompt
-    - [x] Custom prompt settings
-    - [x] Custom prompt
-        - [x] Align to IDE version
-    - [ ] Json Schema validation
-        - [ ] Settings
-        - [ ] Custom Prompt
-- [ ] Custom Agent
-    - [ ] Custom Agent
-    - [ ] Custom Agent API
-- [ ] Custom LLM Server
-    - [x] [ollama chat server](./examples/ollama-chat-server/README.md)
-- [ ] Local Text Search
-    - [x] TF-IDF
-        - [natural](https://naturalnode.github.io/natural/tfidf.html)
-    - [x] Simple Text Embedding
-- [ ] Local Semantic Search
-    - [x] ONNX Runtime
-    - [x] Transformer.js
-        - [x] [transformers](https://xenova.github.io/transformers.js/)
-    - [x] Embedding Database
-        - [x] [LanceDB](https://github.com/lancedb/lancedb)
-        - [x] [vectordb](https://www.npmjs.com/package/vectordb)
-    - [x] Semantic Search
-    - [ ] Embedding Service
-        - [ ] Local
-            - [x] Sentence Transformer
-        - [ ] Remote - Custom Embedding Server
-            - [ ] Local Server
-                - [ ] [Dmeta-embedding Mini](https://huggingface.co/DMetaSoul/Dmeta-embedding-zh-small) for Doc
-            - [ ] Remote Server
-                - [ ] OpenAI
-- [ ] Search strategy
-    - [x] Hyde Document/Code strategy
-    - [x] Hyde Keywords strategy
-    - [ ] Symbol search
-- RAG Strategy
-    - [ ] Pre-information build
-    - [ ] Post-symbol recovery
-- [ ] Extensions
-    - [x] Build Tools
-        - [x] Gradle
-        - [x] Go Mod
-        - [x] NPM
-        - [x] Toml
-    - [ ] Database
-    - [ ] Terminal
-- [ ] Docs with RAG
-    - [ ] spike: Auto Generate doc based on sourcecode
-    - [ ] Custom Document embedding server for RAG
-    - [ ] Ask business doc
-        - [ ] Markdown
-        - [ ] RDF
-- [ ] l18n
-    -  [x] init
+Normal features
+
+| Feature                | VSCode Status | IDEA Status |
+|------------------------|---------------|-------------|
+| Chat mode              | ✅             | ✅           |
+| Code completion        | ✅             | ✅           |
+| AutoDoc                | ✅             | ✅           |
+| Custom Prompt          | ✅             | ✅           |
+| Prompt Overwrite       | ✅             | ✅           |
+| Commit Message         | ✅             | ✅           |
+| Gen API Data           | ✅             | ✅           |
+| AutoTest               | ✅             | ✅           |
+| Refactoring: Rename    | ✅             | ✅           |
+| Refactoring: fix       | ✅             | ✅           |
+| Refactoring: with Lint | ❌             | ✅           |
+| CLI Suggest            | ❌             | ✅           |
+
+Natural Language search features
+
+| Feature                | VSCode Status | IDEA Status |
+|------------------------|---------------|-------------|
+| Custom RAG             | ✅             | ❌           |
+| NL Semantic Search     | ✅             | ❌           |
+| Multiple RAG Strategy  | ✅             | ❌           |
+
+DevOps features
+
+| Feature                | VSCode Status | IDEA Status |
+|------------------------|---------------|-------------|
+| Dockerfile             | ❌             | ✅           |
+| CI/CD                  | ❌             | ✅           |
+
+AI Agent features
+
+| Feature                | VSCode Status | IDEA Status |
+|------------------------|---------------|-------------|
+| AI Agent: DevIns Lang  | ❌             | ✅           |
+| AI Agent: Custom Agent | ❌             | ✅           |
+| AI Agent: AutoCRUD     | ❌             | ✅           |
+| AI Agent: AutoArkUI    | ❌             | ✅           |
+| AI Agent: AutoSQL      | ❌             | ✅           |
+| AI Agent: AutoPage     | ❌             | ✅           |
 
 ## Resources
 
