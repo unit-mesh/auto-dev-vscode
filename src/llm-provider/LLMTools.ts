@@ -10,6 +10,7 @@ import { channel } from "../channel";
 
 interface LLMConfig extends ChatModelCallOptions {
   title: string;
+  multimodel?: boolean;
 }
 
 // TODO Support configuration updates
@@ -19,7 +20,9 @@ export function getChatModelList(): LLMConfig[] {
   // TODO: Legacy config migration
   const legacyChatModels = setting.get<LLMConfig[]>("chatModels");
   if (legacyChatModels) {
-    channel.warn('Deprecated: autodev.chatModels no longer supports, Please use `autodev.chat.models` instead.');
+    channel.warn(
+      "Deprecated: autodev.chatModels no longer supports, Please use `autodev.chat.models` instead."
+    );
     return legacyChatModels;
   }
 
@@ -45,14 +48,16 @@ export function callAI(data: {
     return;
   }
 
+  const { multimodel, ...options } = config;
+
   const model = createChatModel({
-    ...config,
+    ...options,
     ...data.completionOptions,
   });
 
   return model.stream(
     data.messages.map((choice: any) => {
-      if (config.provider === "qianfan") {
+      if (!multimodel || config.provider === "qianfan") {
         return new ChatMessage({
           role: choice.role,
           content: choice.content[0].text,
@@ -167,10 +172,7 @@ export function createOpenAIChatModel(config: ChatModelCallOptions) {
       },
     };
 
-    channel.debug(
-      "(LLM): Use OpenAI provider send to Azure",
-      azureCallOptions
-    );
+    channel.debug("(LLM): Use OpenAI provider send to Azure", azureCallOptions);
     return new AzureChatOpenAI(azureCallOptions);
   }
 
