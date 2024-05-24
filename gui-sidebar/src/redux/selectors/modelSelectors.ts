@@ -2,7 +2,7 @@ import { DEFAULT_MAX_TOKENS } from "../../shims/llm-constants";
 import { RootState } from "../store";
 
 export const defaultModelSelector = (state: RootState) => {
-  const title = state.state.defaultModelTitle;
+  const title = state.state.defaultModelTitle ?? "";
   return state.state.config.models.find((model) => model.title === title);
 };
 

@@ -50,7 +50,7 @@ function useChatHandler(dispatch: Dispatch) {
     abortController: AbortController
   ) {
     const cancelToken = abortController.signal;
-    const gen = llmStreamChat(defaultModel.title, cancelToken, messages);
+    const gen = llmStreamChat(defaultModel?.title , cancelToken, messages);
     let next = await gen.next();
 
     while (!next.done) {
@@ -104,7 +104,7 @@ function useChatHandler(dispatch: Dispatch) {
     abortController: AbortController
   ) {
     const cancelToken = abortController.signal;
-    const modelTitle = defaultModel.title;
+    const modelTitle = defaultModel?.title;
 
     for await (const update of ideStreamRequest(
       "command/run",
