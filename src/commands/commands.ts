@@ -113,7 +113,8 @@ ${message}
 			input = document.getText();
 		}
 
-		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { prompt: `Explain this:
+		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { prompt:
+`${l10n.t("Explain this code")}:
 \`\`\`${language} 
 ${input}
 \`\`\`

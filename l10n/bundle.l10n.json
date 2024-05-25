@@ -7,5 +7,6 @@
   "lang.java.prompt.useJunit4": "This project uses JUnit 4, you should import `org.junit.Test` and use `@Test` annotation.",
   "lang.java.prompt.useJunit5": "This project uses JUnit 5, you should import `org.junit.jupiter.api.Test` and use `@Test` annotation.",
   "How do I fix this problem in the above code?": "How do I fix this problem in the above code?",
-  "I got the following error, can you please help explain how to fix it?": "I got the following error, can you please help explain how to fix it?"
+  "I got the following error, can you please help explain how to fix it?": "I got the following error, can you please help explain how to fix it?",
+  "Explain this code": "Explain this code"
 }
