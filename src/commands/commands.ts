@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { l10n } from "vscode";
 
 import { AutoDevExtension } from "../AutoDevExtension";
 import { NamedElement } from "../editor/ast/NamedElement";
@@ -22,9 +23,7 @@ const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (e
 		let language = vscode.window.activeTextEditor?.document.languageId ?? "";
 
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
-			prompt: `${
-				edit ? "/edit " : ""
-			}${code}\n\nHow do I fix this problem in the above code?: 
+			prompt: `${edit ? "/edit " : ""}${code}\n\n${l10n.t("How do I fix this problem in the above code?")}: 
 \`\`\`${language}
 ${message}
 \`\`\`
@@ -43,7 +42,7 @@ ${message}
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 		const terminalContents = await extension.ideAction.getTerminalContents(1);
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
-			prompt: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
+			prompt: `${l10n.t("I got the following error, can you please help explain how to fix it?")}\n\n${terminalContents.trim()}`,
 		});
 
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
@@ -51,7 +50,7 @@ ${message}
 	[AutoDevCommand.TerminalExplainContextMenu]: async () => {
 		const terminalContents = await extension.ideAction.getTerminalContents(1);
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
-			prompt: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
+			prompt: `${l10n.t("I got the following error, can you please help explain how to fix it?")}\n\n${terminalContents.trim()}`,
 		});
 
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
@@ -139,7 +138,7 @@ ${input}
 		}
 
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
-			prompt: `How do I fix this problem in the above code?: ${input}`,
+			prompt: `\`${l10n.t("I got the following error, can you please help explain how to fix it?")}: ${input}`,
 		});
 
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
