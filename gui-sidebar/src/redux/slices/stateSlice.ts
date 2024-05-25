@@ -98,22 +98,22 @@ const initialState: State = {
   active: false,
   config: {
     slashCommands: [
-      {
-        name: "edit",
-        description: "Edit selected code",
-      },
-      {
-        name: "comment",
-        description: "Write comments for the selected code",
-      },
-      {
-        name: "share",
-        description: "Download and share this session",
-      },
-      {
-        name: "cmd",
-        description: "Generate a shell command",
-      },
+      // {
+      //   name: "edit",
+      //   description: "Edit selected code",
+      // },
+      // {
+      //   name: "comment",
+      //   description: "Write comments for the selected code",
+      // },
+      // {
+      //   name: "share",
+      //   description: "Download and share this session",
+      // },
+      // {
+      //   name: "cmd",
+      //   description: "Generate a shell command",
+      // },
       {
         name: "codespace-keywords",
         description: "Convert user query to keyword, search and explain in codespace",
@@ -149,37 +149,7 @@ const initialState: State = {
         title: "Custom OpenAI Compatible Model",
         provider: "openapi",
         model: "custom",
-      },
-      // {
-      //   title: "GPT-4 Vision (Free Trial)",
-      //   provider: "free-trial",
-      //   model: "gpt-4-vision-preview",
-      // },
-      // {
-      //   title: "GPT-3.5-Turbo (Free Trial)",
-      //   provider: "free-trial",
-      //   model: "gpt-3.5-turbo",
-      // },
-      // {
-      //   title: "Gemini Pro (Free Trial)",
-      //   provider: "free-trial",
-      //   model: "gemini-pro",
-      // },
-      // {
-      //   title: "Codellama 70b (Free Trial)",
-      //   provider: "free-trial",
-      //   model: "codellama-70b",
-      // },
-      // {
-      //   title: "Mixtral (Free Trial)",
-      //   provider: "free-trial",
-      //   model: "mistral-8x7b",
-      // },
-      // {
-      //   title: "Claude 3 Sonnet (Free Trial)",
-      //   provider: "free-trial",
-      //   model: "claude-3-sonnet-20240229",
-      // },
+      }
     ],
   },
   title: "New Session",

@@ -17,6 +17,8 @@ import { CommitMessageGenAction } from "../action/devops/CommitMessageGenAction"
 import { RelevantCodeProviderManager } from "../code-context/RelevantCodeProviderManager";
 import { TreeSitterFileManager } from "../editor/cache/TreeSitterFileManager";
 import { addHighlightedCodeToContext, getFullScreenTab, showTutorial } from "./commandsUtils";
+import { Catalyser } from "../agent/catalyser/Catalyser";
+import { SystemActionType } from "../action/setting/SystemActionType";
 
 const commandsMap: (extension: AutoDevExtension) => AutoDevCommandOperation = (extension) => ({
 	[AutoDevCommand.QuickFix]: async (message: string, code: string, edit: boolean) => {
@@ -213,6 +215,12 @@ ${input}
 	[AutoDevCommand.ShowTutorial]: () => {
 		showTutorial();
 	},
+	[AutoDevCommand.CodespaceKeywordsAnalysis]: async (input: string) => {
+		Catalyser.getInstance(extension).query(input, SystemActionType.SemanticSearchKeyword);
+	},
+	[AutoDevCommand.CodespaceCodeAnalysis]: async (input: string) => {
+		Catalyser.getInstance(extension).query(input, SystemActionType.SemanticSearchCode);
+	}
 });
 
 export function registerCommands(extension: AutoDevExtension) {

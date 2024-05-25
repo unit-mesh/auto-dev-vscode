@@ -16,4 +16,8 @@ export enum AutoDevCommand {
 	NewSession = "autodev.newSession",
 	// showTutorial
 	ShowTutorial = "autodev.showTutorial",
+	// autodev.codespaceKeywordsAnalysis
+	CodespaceKeywordsAnalysis = "autodev.codespaceKeywordsAnalysis",
+	// autodev.codespaceCodeAnalysis
+	CodespaceCodeAnalysis = "autodev.codespaceCodeAnalysis",
 }

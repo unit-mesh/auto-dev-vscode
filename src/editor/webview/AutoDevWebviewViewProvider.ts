@@ -45,9 +45,7 @@ export class AutoDevWebviewViewProvider implements vscode.WebviewViewProvider {
     _token: vscode.CancellationToken
   ): Promise<void> {
     this._webview = webviewView.webview;
-    this.webviewProtocol = new AutoDevWebviewProtocol(
-      this._webview,
-    );
+    this.webviewProtocol = new AutoDevWebviewProtocol(this._webview,);
 
     webviewView.webview.html = await this.getSidebarContent(
       this._context,

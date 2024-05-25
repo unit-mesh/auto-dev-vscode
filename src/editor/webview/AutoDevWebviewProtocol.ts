@@ -5,6 +5,7 @@ import { callAI, getChatModelList } from "../../llm-provider/LLMTools";
 import { channel } from "../../channel";
 import { SettingService } from "../../settings/SettingService";
 import { uuid } from "./uuid";
+import { AutoDevCommand } from "../../commands/autoDevCommand";
 
 type WebviewEvent = {
   id: string;
@@ -194,10 +195,36 @@ export class AutoDevWebviewProtocol {
             reply,
           });
           break;
+        case "command/run":
+          this.handleCommandRun(message);
+          break;
         default:
           channel.warn("(AutoDevWebview): unknown message type: ", messageType);
       }
     });
+  }
+
+  private handleCommandRun(message: any) {
+    let commandName = "/" + message.data.slashCommandName;
+    let input = message.data.input;
+
+    // Check if input starts with the commandName
+    if (input.startsWith(commandName)) {
+      // Remove the commandName from the input
+      input = input.slice(commandName.length);
+    }
+
+    switch (message.data.slashCommandName) {
+      case "codespace-keywords":
+        vscode.commands.executeCommand(AutoDevCommand.CodespaceKeywordsAnalysis, input);
+        break;
+      case "codespace-code":
+        vscode.commands.executeCommand(AutoDevCommand.CodespaceCodeAnalysis, input);
+        break;
+      default:
+        channel.warn("(AutoDevWebview): unknown slash command: ", message.slashCommandName);
+        break;
+    }
   }
 
   onLoad({ type, reply }: WebviewEvent) {
