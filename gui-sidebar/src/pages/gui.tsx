@@ -244,31 +244,27 @@ function GUI(props: GUIProps) {
     [saveSession]
   );
 
-  useWebviewListener(
-    "newSessionWithPrompt",
-    async (data) => {
-      dispatch(newSession());
-      dispatch(
-        setMessageAtIndex({
-          message: { role: "user", content: data.prompt },
-          index: 0,
-        })
-      );
-      dispatch(setActive());
-      streamResponse(
-        {
-          type: "doc",
-          content: [
-            {
-              type: "paragraph",
-              content: [{ type: "text", text: data.prompt }],
-            },
-          ],
-        },
-        0
-      );
-    },
-    []
+  useWebviewListener("newSessionWithPrompt", async (data) => {
+    dispatch(newSession());
+    dispatch(
+      setMessageAtIndex({
+        message: { role: "user", content: data.prompt },
+        index: 0,
+      }));
+    dispatch(setActive());
+    streamResponse(
+      {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [{ type: "text", text: data.prompt }],
+          },
+        ],
+      },
+      0
+    );
+    }, [defaultModel, streamResponse]
   );
 
   const isLastUserInput = useCallback(
