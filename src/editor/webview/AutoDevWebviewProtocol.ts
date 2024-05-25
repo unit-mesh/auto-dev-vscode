@@ -195,10 +195,7 @@ export class AutoDevWebviewProtocol {
           });
           break;
         default:
-          channel.warn(
-            "(AutoDevWebview): unknown message type: %s",
-            messageType
-          );
+          channel.warn("(AutoDevWebview): unknown message type: ", messageType);
       }
     });
   }

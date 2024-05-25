@@ -114,6 +114,14 @@ const initialState: State = {
         name: "cmd",
         description: "Generate a shell command",
       },
+      {
+        name: "codespace-keywords",
+        description: "Convert user query to keyword, search and explain in codespace",
+      },
+      {
+        name: "codespace-code",
+        description: "Convert user query to code, search and explain in codespace",
+      }
     ],
     contextProviders: [],
     models: [

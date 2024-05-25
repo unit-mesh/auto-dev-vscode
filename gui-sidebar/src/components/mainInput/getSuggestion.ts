@@ -144,7 +144,7 @@ export function getMentionSuggestion(
         action: () => {
           ideRequest(
             "openUrl",
-            "https://continue.dev/docs/customization/context-providers#built-in-context-providers"
+            "https://autodev.dev/customize/context-providers"
           );
         },
         description: "",
