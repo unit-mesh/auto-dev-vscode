@@ -208,9 +208,7 @@ export class AutoDevWebviewProtocol {
     let commandName = "/" + message.data.slashCommandName;
     let input = message.data.input;
 
-    // Check if input starts with the commandName
     if (input.startsWith(commandName)) {
-      // Remove the commandName from the input
       input = input.slice(commandName.length);
     }
 
