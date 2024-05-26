@@ -1,4 +1,4 @@
-import { Position, Selection } from "vscode";
+import vscode, { Position, Selection } from "vscode";
 import { Point, SyntaxNode } from "web-tree-sitter";
 
 export namespace PositionUtil {
@@ -18,5 +18,23 @@ export namespace PositionUtil {
 
 	export function selectionToNode(selection: Selection): [Point, Point] {
 		return [toPoint(selection.start), toPoint(selection.end)];
+	}
+}
+
+export function selectCodeInRange(start: vscode.Position, end: vscode.Position) {
+	const editor = vscode.window.activeTextEditor;
+	if (editor) {
+		const newSelection = new vscode.Selection(start, end);
+		editor.selection = newSelection;
+		editor.revealRange(newSelection);
+	}
+}
+
+export function insertCodeByRange(textRange: Position, doc: string) {
+	const editor = vscode.window.activeTextEditor;
+	if (editor) {
+		editor.edit((editBuilder) => {
+			editBuilder.insert(textRange, doc);
+		});
 	}
 }

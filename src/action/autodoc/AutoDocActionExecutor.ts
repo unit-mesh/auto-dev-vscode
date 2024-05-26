@@ -5,7 +5,6 @@ import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../editor/language/LanguageCommen
 import { PromptManager } from "../../prompt-manage/PromptManager";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
-import { insertCodeByRange, selectCodeInRange } from "../../editor/editor";
 import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
 import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
 import { CreateToolchainContext } from "../../toolchain-context/ToolchainContextProvider";
@@ -14,6 +13,7 @@ import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
 import { MarkdownTextProcessor } from "../../markdown/MarkdownTextProcessor";
 import { ActionType } from "../../prompt-manage/ActionType";
 import { channel } from "../../channel";
+import { insertCodeByRange, selectCodeInRange } from "../../editor/ast/PositionUtil";
 
 export class AutoDocActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
