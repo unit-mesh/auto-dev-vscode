@@ -50,7 +50,6 @@
   "enabledApiProposals": [
     "contribSourceControlHistoryItemGroupMenu",
     "contribSourceControlHistoryItemMenu",
-    "contribSourceControlInputBoxMenu",
     "contribSourceControlTitleMenu"
   ],
   "contributes": {
@@ -542,12 +541,6 @@
           "when": "scmProvider == git",
           "command": "autodev.git.generateCommitMessage",
           "group": "navigation"
-        }
-      ],
-      "scm/inputBox": [
-        {
-          "command": "autodev.git.generateCommitMessage",
-          "when": "scmProvider == git"
         }
       ],
       "commandPalette": [
