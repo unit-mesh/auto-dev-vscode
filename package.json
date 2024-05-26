@@ -47,11 +47,7 @@
     "onView:autodevGUIView"
   ],
   "main": "./dist/extension.js",
-  "enabledApiProposals": [
-    "contribSourceControlHistoryItemGroupMenu",
-    "contribSourceControlHistoryItemMenu",
-    "contribSourceControlTitleMenu"
-  ],
+  "enabledApiProposals": [],
   "contributes": {
     "configuration": [
       {
