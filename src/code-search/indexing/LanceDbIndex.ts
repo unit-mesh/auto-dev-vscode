@@ -101,7 +101,7 @@ export class LanceDbIndex implements CodebaseIndex {
 			try {
 				embeddings = await this.embeddingsProvider.embed(chunks.map((c) => c.content));
 			} catch (e) {
-				console.error("Failed to embed chunks", items[i].path, e);
+				console.warn("Failed to embed chunks", items[i].path, e);
 				continue;
 			}
 

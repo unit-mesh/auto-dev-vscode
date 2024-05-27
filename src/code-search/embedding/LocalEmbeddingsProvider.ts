@@ -24,6 +24,7 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 	tokenizer: any;
 	session: InferenceSession | undefined;
 	MaxGroupSize: number = 4;
+	MaxChunkSize: number = 512;
 
 	private static instance: LocalEmbeddingsProvider;
 
@@ -85,6 +86,12 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 	private async embedChunk(sequence: string) {
 		const { Tensor } = await import('@xenova/transformers');
 		let encodings = this.tokenizer(sequence);
+
+		// if dims > 512
+		if ((encodings.input_ids.dims?.[1] ?? 0) > this.MaxChunkSize) {
+			console.warn("Input sequence is too long, skipping embedding: " + sequence);
+			return [];
+		}
 
 		const inputIdsTensor = new ONNXTensor('int64', tensorData(encodings.input_ids), encodings.input_ids.dims);
 		const attentionMaskTensor = new ONNXTensor('int64', tensorData(encodings.attention_mask), encodings.attention_mask.dims);
