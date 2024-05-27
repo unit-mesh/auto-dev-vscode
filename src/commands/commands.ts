@@ -16,7 +16,7 @@ import { DefaultLanguageService } from "../editor/language/service/DefaultLangua
 import { CommitMessageGenAction } from "../action/devops/CommitMessageGenAction";
 import { RelevantCodeProviderManager } from "../code-context/RelevantCodeProviderManager";
 import { TreeSitterFileManager } from "../editor/cache/TreeSitterFileManager";
-import { addHighlightedCodeToContext, getFullScreenTab, showTutorial } from "./commandsUtils";
+import { addHighlightedCodeToContext, getFullScreenTab, getInput, showTutorial } from "./commandsUtils";
 import { Catalyser } from "../agent/catalyser/Catalyser";
 import { SystemActionType } from "../action/setting/SystemActionType";
 
@@ -99,22 +99,12 @@ ${message}
 		await new AutoTestActionExecutor(textDocument, nameElement, workspaceEdit).execute();
 	},
 	[AutoDevCommand.ExplainThis]: async () => {
-		let language = vscode.window.activeTextEditor?.document.languageId ?? "";
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
+		const input = getInput();
+		if (!input) {
 			return;
 		}
-		let selection: string = editor.document.getText(editor.selection);
 
-		let document = editor.document;
-		let input;
-
-		if (selection.length > 0) {
-			input = selection;
-		} else {
-			input = document.getText();
-		}
-
+		let language = vscode.window.activeTextEditor?.document.languageId ?? "";
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", { prompt:
 `${l10n.t("Explain this code")}:
 \`\`\`${language} 
@@ -125,19 +115,9 @@ ${input}
 		vscode.commands.executeCommand("autodev.autodevGUIView.focus");
 	},
 	[AutoDevCommand.FixThis]: async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
+		const input = getInput();
+		if (!input) {
 			return;
-		}
-		let selection: string = editor.document.getText(editor.selection);
-
-		let document = editor.document;
-		let input;
-
-		if (selection.length > 0) {
-			input = selection;
-		} else {
-			input = document.getText();
 		}
 
 		extension.sidebar.webviewProtocol?.request("newSessionWithPrompt", {
@@ -154,7 +134,7 @@ ${input}
 
 		let edit = new vscode.WorkspaceEdit();
 		let document = editor.document;
-		//
+
 		let elementBuilder = await createNamedElement(document);
 		let currentLine = editor.selection.active.line;
 		let ranges = elementBuilder.getElementForAction(currentLine);
