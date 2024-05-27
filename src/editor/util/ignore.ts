@@ -81,5 +81,11 @@ export const DEFAULT_IGNORE_DIRS = [
   "__pycache__",
   "site-packages",
   ".cache",
+  "gradlew",
+  "gradlew.bat",
+  "package-lock.json",
+  "yarn.lock",
+  "yarn-error.log",
+  "npm-debug.log"
 ];
 export const defaultIgnoreDir = ignore().add(DEFAULT_IGNORE_DIRS);
