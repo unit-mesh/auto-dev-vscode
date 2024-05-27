@@ -7,10 +7,11 @@ import { HydeStep } from "./_base/HydeStep";
 import { PromptManager } from "../../prompt-manage/PromptManager";
 import { channel } from "../../channel";
 import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
-import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
+import { RetrieveOption } from "../retrieval/Retrieval";
 import { KeywordEvaluateContext, KeywordsProposeContext } from "./HydeKeywordsStrategy";
 import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
 import { StrategyFinalPrompt } from "./_base/StrategyFinalPrompt";
+import { ContextItem } from "../../context-provider/_base/BaseContextProvider";
 
 /**
  * Generate hypothetical document base on user input, and then used to retrieve similar code by symbols.

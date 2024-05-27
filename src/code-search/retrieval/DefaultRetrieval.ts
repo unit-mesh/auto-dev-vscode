@@ -6,9 +6,10 @@ import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { getBasename } from "../utils/IndexPathHelper";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { channel } from "../../channel";
-import { ContextItem, Retrieval, RetrieveOption } from "./Retrieval";
+import { Retrieval, RetrieveOption } from "./Retrieval";
 import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
 import { Point, TextRange } from "../scope-graph/model/TextRange";
+import { ContextItem } from "../../context-provider/_base/BaseContextProvider";
 
 export class DefaultRetrieval extends Retrieval {
 	private static instance: DefaultRetrieval;

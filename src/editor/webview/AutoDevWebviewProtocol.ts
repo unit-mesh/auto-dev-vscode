@@ -195,6 +195,9 @@ export class AutoDevWebviewProtocol {
             reply,
           });
           break;
+        case "context/getContextItems":
+          channel.debug("(AutoDevWebview): context/getContextItems");
+          break;
         case "command/run":
           this.handleCommandRun(message);
           break;

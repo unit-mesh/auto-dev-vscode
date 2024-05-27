@@ -9,8 +9,9 @@ import { HydeKeywords } from "./_base/HydeKeywords";
 import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
 import { AutoDevExtension } from "../../AutoDevExtension";
 import { channel } from "../../channel";
-import { ContextItem, RetrieveOption } from "../retrieval/Retrieval";
+import { RetrieveOption } from "../retrieval/Retrieval";
 import { StrategyFinalPrompt } from "./_base/StrategyFinalPrompt";
+import { ContextItem } from "../../context-provider/_base/BaseContextProvider";
 
 /**
  * The `HydeKeywordsStrategy` class is a part of the Hyde Strategy pattern and is used to generate keywords from a query.

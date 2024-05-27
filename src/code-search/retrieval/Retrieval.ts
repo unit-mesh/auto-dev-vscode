@@ -4,28 +4,12 @@ import { Chunk } from "../chunk/_base/Chunk";
 import { FullTextSearchCodebaseIndex } from "../search/FullTextSearch";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
-import { TextRange } from "../scope-graph/model/TextRange";
 import { GitAction } from "../../editor/editor-api/scm/GitAction";
 import { Commit } from "../../types/git";
 import { TfIdfChunkSearch } from "../search/TfIdfChunkSearch";
 import { languageFromPath } from "../../editor/language/ExtensionLanguageMap";
 import { JaccardSimilarity } from "../similar/algorithm/JaccardSimilarity";
-
-export interface ContextSubmenuItem {
-	id: string;
-	title: string;
-	description: string;
-}
-
-export interface ContextItem {
-	content: string;
-	name: string;
-	path: string;
-	range: TextRange;
-	description: string;
-	editing?: boolean;
-	editable?: boolean;
-}
+import { ContextItem } from "../../context-provider/_base/BaseContextProvider";
 
 export interface RetrieveOption {
 	/**

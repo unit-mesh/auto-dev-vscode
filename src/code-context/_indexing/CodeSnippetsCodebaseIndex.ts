@@ -17,8 +17,8 @@ import { getLanguageForFile } from "../../editor/language/parser/TreeSitterParse
 import { getParserForFile } from "../../editor/language/parser/ParserUtil";
 import { tagToString } from "../../code-search/refreshIndex";
 import { getBasename } from "../../code-search/utils/IndexPathHelper";
-import { ContextItem, ContextSubmenuItem } from "../../code-search/retrieval/Retrieval";
 import { Point, TextRange } from "../../code-search/scope-graph/model/TextRange";
+import { ContextItem, ContextSubmenuItem } from "../../context-provider/_base/BaseContextProvider";
 
 /**
  * for provider {@link CodeContextProvider}
