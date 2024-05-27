@@ -1,4 +1,4 @@
-import vscode from "vscode";
+import vscode, { Disposable } from "vscode";
 
 import { AutoDevExtension } from "../AutoDevExtension";
 import { SUPPORTED_LANGUAGES } from "../editor/language/SupportedLanguage";
@@ -10,18 +10,18 @@ import { AutoDevRenameProvider } from "./refactor/rename/AutoDevRenameProvider";
 import { SettingService } from "../settings/SettingService";
 
 export function registerCodeLensProviders(context: AutoDevExtension) {
-	const filter = SUPPORTED_LANGUAGES.map(it => ({ language: it } as vscode.DocumentFilter));
-	const codelensProviderSub = vscode.languages.registerCodeLensProvider(
-		filter,
-		new AutoDevCodeLensProvider(context),
-	);
+	let disposables: Disposable[] = SUPPORTED_LANGUAGES.map((language) => {
+		return vscode.languages.registerCodeLensProvider({ language },
+			new AutoDevCodeLensProvider(context),
+		);
+	});
 
-	context.extensionContext.subscriptions.push(codelensProviderSub);
+	context.extensionContext.subscriptions.push(...disposables);
 }
 
 export function registerAutoDevProviders(context: AutoDevExtension) {
-	SUPPORTED_LANGUAGES.forEach((language) => {
-		vscode.languages.registerCodeActionsProvider({ language },
+	let disposables = SUPPORTED_LANGUAGES.map((language) => {
+		return vscode.languages.registerCodeActionsProvider({ language },
 			new AutoDevCodeActionProvider(context),
 			{
 				providedCodeActionKinds:
@@ -29,38 +29,42 @@ export function registerAutoDevProviders(context: AutoDevExtension) {
 			}
 		);
 	});
+
+	context.extensionContext.subscriptions.push(...disposables);
 }
 
 export function registerQuickFixProvider(context: AutoDevExtension) {
-	SUPPORTED_LANGUAGES.forEach((language) => {
-		vscode.languages.registerCodeActionsProvider({ language },
+	let disposables = SUPPORTED_LANGUAGES.map((language) => {
+		return vscode.languages.registerCodeActionsProvider({ language },
 			new AutoDevQuickFixProvider(),
 			{
 				providedCodeActionKinds: AutoDevQuickFixProvider.providedCodeActionKinds,
 			}
 		);
 	});
+
+	context.extensionContext.subscriptions.push(...disposables);
 }
 
 export function registerWebViewProvider(extension: AutoDevExtension) {
-	extension.extensionContext.subscriptions.push(vscode.window.registerWebviewViewProvider("autodev.autodevGUIView",
-			extension.sidebar, { webviewOptions: { retainContextWhenHidden: true }, }
-		)
+	let disposable = vscode.window.registerWebviewViewProvider("autodev.autodevGUIView",
+		extension.sidebar, { webviewOptions: { retainContextWhenHidden: true }, }
 	);
-}
 
-export function registerRenameAction(extension: AutoDevExtension) {
-	extension.extensionContext.subscriptions.push(vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES,
-			new AutoDevRenameProvider()
-		)
-	);
+	extension.extensionContext.subscriptions.push(disposable);
 }
 
 export function registerCodeSuggestionProvider(extension: AutoDevExtension) {
-	extension.extensionContext.subscriptions.push(vscode.languages.registerInlineCompletionItemProvider(SUPPORTED_LANGUAGES,
-			new AutoDevCodeSuggestionProvider()
-		)
+	let disposable = vscode.languages.registerInlineCompletionItemProvider(SUPPORTED_LANGUAGES,
+		new AutoDevCodeSuggestionProvider()
 	);
+
+	extension.extensionContext.subscriptions.push(disposable);
+}
+
+export function registerRenameAction(extension: AutoDevExtension) {
+	let disposable = vscode.languages.registerRenameProvider(SUPPORTED_LANGUAGES, new AutoDevRenameProvider());
+	extension.extensionContext.subscriptions.push(disposable);
 }
 
 export function registerRefactoringRename(extension: AutoDevExtension) {
