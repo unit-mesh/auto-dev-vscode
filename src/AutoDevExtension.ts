@@ -60,6 +60,8 @@ export class AutoDevExtension {
 		const that = this;
 		// waiting for index command
 		let dirs = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath);
+		channel.show();
+
 		if (dirs) {
 			channel.appendLine("start indexing dirs:" + dirs);
 
