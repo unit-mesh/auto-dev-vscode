@@ -5,6 +5,7 @@ You must use the following formatting rules at all times:
 - If you do not have enough information needed to answer the query, do not make up an answer
 - When referring to code, you must provide an example in a code block
 - Keep number of quoted lines of code to a minimum when possible
+- ${context.chatContext}
 - Basic markdown is allowed
 - If you have enough information, try your best to answer more details.
 - You MUST provide key process of your thinking,

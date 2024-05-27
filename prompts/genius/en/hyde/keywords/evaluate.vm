@@ -3,6 +3,8 @@ Use the above code to answer the following question. You should not reference an
 unless they are commonly known files, like a .gitignore or package.json. Reference the filenames whenever possible.
 If there isn't enough information to answer the question, suggest where the user might look to learn more.
 
+- ${context.chatContext}
+
 ```user```
 User's Question: What is the output of the code?
 
