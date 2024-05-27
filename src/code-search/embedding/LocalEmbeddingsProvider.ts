@@ -71,11 +71,23 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 		let outputs = [];
 		for (let i = 0; i < chunks.length; i += this.MaxGroupSize) {
 			let chunkGroup = chunks.slice(i, i + this.MaxGroupSize,);
-			for (const chunk of chunkGroup) {
+			for (const chunksString of chunkGroup) {
 				try {
-					outputs.push(await this.embedChunk(chunk));
+					let embededChunk = await this.embedChunk(chunksString);
+					outputs.push(embededChunk);
 				} catch (e) {
-					channel.appendLine("Failed to embed chunk" + chunk + e?.toString());
+					channel.appendLine("Failed to embed chunk" + e?.toString());
+					// try reembedding by reduce the chunk string to two chunk string
+					try {
+						channel.appendLine("Try to re-embed by reducing the chunk string to two chunk string");
+						let half = Math.floor(chunksString.length / 2);
+						let firstHalf = chunksString.substring(0, half);
+						let secondHalf = chunksString.substring(half);
+						outputs.push(await this.embedChunk(firstHalf));
+						outputs.push(await this.embedChunk(secondHalf));
+					} catch (e) {
+						channel.appendLine("Failed to re-embed chunk" + e?.toString());
+					}
 				}
 			}
 		}
@@ -83,7 +95,7 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 		return outputs;
 	}
 
-	private async embedChunk(sequence: string) {
+	private async embedChunk(sequence: string): Promise<Embedding> {
 		const { Tensor } = await import('@xenova/transformers');
 		let encodings = this.tokenizer(sequence);
 
