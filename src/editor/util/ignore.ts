@@ -81,6 +81,7 @@ export const DEFAULT_IGNORE_DIRS = [
   "__pycache__",
   "site-packages",
   ".cache",
+  "gems",
   "gradlew",
   "gradlew.bat",
   "package-lock.json",

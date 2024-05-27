@@ -139,6 +139,21 @@ export class VSCodeAction implements IdeAction {
 		return repo?.state?.HEAD?.name || "NONE";
 	}
 
+	/**
+	 * `getStats` is an asynchronous method that retrieves the last modified time of all files in a given directory.
+	 *
+	 * @param directory A string representing the directory path from which to retrieve file statistics.
+	 *
+	 * @returns A Promise that resolves to an object. The object's keys are the file paths and the values are the last modified time (in milliseconds since the UNIX epoch) of each file.
+	 *
+	 * The method works by first listing all the contents of the workspace directory using the `listWorkspaceContents` method. It then maps over each file in the directory, retrieves its stats using the `vscode.workspace.fs.stat` method, and adds an entry to the `pathToLastModified` object with the file path as the key and the last modified time as the value.
+	 *
+	 * Note: The `vscode.workspace.fs.stat` method returns a `FileStat` object, from which the `mtime` property is extracted. The `mtime` property represents the last modified time of the file.
+	 *
+	 * @throws This method may throw an error if the `listWorkspaceContents` method or the `vscode.workspace.fs.stat` method fails.
+	 *
+	 * @async
+	 */
 	async getStats(directory: string): Promise<{ [path: string]: number }> {
 		const files = await this.listWorkspaceContents(directory);
 		const pathToLastModified: { [path: string]: number } = {};
