@@ -58,6 +58,11 @@ const DEFAULT_IGNORE_FILETYPES = [
   "*.profraw",
   "*.gcda",
   "*.gcno",
+  "gradlew",
+  "gradlew.bat",
+  "yarn.lock",
+  "yarn-error.log",
+  "npm-debug.log"
 ];
 export const defaultIgnoreFile = ignore().add(DEFAULT_IGNORE_FILETYPES);
 export const DEFAULT_IGNORE_DIRS = [
@@ -82,11 +87,5 @@ export const DEFAULT_IGNORE_DIRS = [
   "site-packages",
   ".cache",
   "gems",
-  "gradlew",
-  "gradlew.bat",
-  "package-lock.json",
-  "yarn.lock",
-  "yarn-error.log",
-  "npm-debug.log"
 ];
 export const defaultIgnoreDir = ignore().add(DEFAULT_IGNORE_DIRS);
