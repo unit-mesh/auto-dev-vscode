@@ -63,7 +63,7 @@ export function registerCodeSuggestionProvider(extension: AutoDevExtension) {
 	);
 }
 
-export function configRename(extension: AutoDevExtension) {
+export function registerRefactoringRename(extension: AutoDevExtension) {
 	if (SettingService.instance().isEnableRename()) {
 		registerRenameAction(extension);
 	}

@@ -10,11 +10,10 @@ import { AutoDevExtension } from "./AutoDevExtension";
 import { removeExtensionContext, setExtensionContext } from './context';
 import { channel } from "./channel";
 import {
-	configRename,
+	registerRefactoringRename,
 	registerAutoDevProviders,
 	registerCodeLensProviders,
 	registerQuickFixProvider,
-	registerRenameAction,
 	registerWebViewProvider,
 	registerCodeSuggestionProvider
 } from "./action/ProviderRegister";
@@ -37,7 +36,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		// 注册命令集
 		registerCommands(extension);
-		configRename(extension);
+		registerRefactoringRename(extension);
 
 		// for embedding and file parser
 		TreeSitterFileManager.getInstance().init();
@@ -47,7 +46,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	registerWebViewProvider(extension);
 
 	AutoDevStatusManager.instance.initStatusBar();
-	// check is Dev model
+
 	if (process.env.NODE_ENV === "development") {
 		channel.show();
 	}
