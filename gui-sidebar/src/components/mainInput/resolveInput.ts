@@ -17,6 +17,11 @@ interface MentionAttrs {
   query?: string;
 }
 
+export interface InputModifiers {
+  useCodebase: boolean;
+  noContext: boolean;
+}
+
 /**
  * This function converts the input from the editor to a string, resolving any context items
  * Context items are appended to the top of the prompt and then referenced within the input
@@ -25,7 +30,8 @@ interface MentionAttrs {
  */
 
 async function resolveEditorContent(
-  editorState: JSONContent
+  editorState: JSONContent,
+  modifiers?: InputModifiers,
 ): Promise<[ContextItemWithId[], RangeInFile[], MessageContent]> {
   let parts: MessagePart[] = [];
   let contextItemAttrs: MentionAttrs[] = [];
@@ -114,11 +120,31 @@ async function resolveEditorContent(
         fullInput: stripImages(parts),
         selectedCode,
       };
-      const resolvedItems = await ideRequest("context/getContextItems", data);
+      const resolvedItems = await ideRequest(
+        "context/getContextItems",
+        data,
+      );
       contextItems.push(...resolvedItems);
       for (const resolvedItem of resolvedItems) {
         contextItemsText += resolvedItem.content + "\n\n";
       }
+    }
+  }
+
+  // cmd+enter to use codebase
+  if (modifiers.useCodebase) {
+    const codebaseItems = await ideRequest(
+      "context/getContextItems",
+      {
+        name: "codebase",
+        query: "",
+        fullInput: stripImages(parts),
+        selectedCode,
+      },
+    );
+    contextItems.push(...codebaseItems);
+    for (const codebaseItem of codebaseItems) {
+      contextItemsText += codebaseItem.content + "\n\n";
     }
   }
 

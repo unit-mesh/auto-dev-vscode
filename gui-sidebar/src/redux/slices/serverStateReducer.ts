@@ -55,7 +55,7 @@ export const serverStateSlice = createSlice({
     ) => {
       state.slashCommands = [
         ...action.payload,
-        { name: "codebase", description: "Retrieve codebase context" },
+        // { name: "codebase", description: "Retrieve codebase context" },
         { name: "so", description: "Search StackOverflow" },
       ];
     },
