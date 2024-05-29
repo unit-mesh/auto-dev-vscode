@@ -63,7 +63,6 @@ export class GitVersionHistoryIndex implements CodebaseIndex {
 		        PRIMARY KEY (name, repo)
 		    );
 		`);
-
 	}
 
 	update(tag: IndexTag, results: RefreshIndexResults, markComplete: MarkCompleteCallback, repoName: string | undefined): AsyncGenerator<IndexingProgressUpdate, any, unknown> {
