@@ -1,15 +1,11 @@
 import { HistoryAgent } from "./_base/HistoryAgent";
 import { TimeTravelDebugger } from "./_base/TimeTravelDebugger";
-
-interface GitCommit {
-	hash: string; // 提交哈希值
-	message: string; // 提交信息
-	filesChanged: string[]; // 变更的文件列表
-}
+import { GitCommit } from "./_base/GitCommit";
 
 /**
- * TimeTravel is a debuggers tool that allows you to go back in time, through the history of your codebase.
- * TimeTravel use RPA pattern, Record And Replay, to record the changes made to the codebase and replay them.
+ * The TimeTravel class is a debugging tool that allows developers to navigate through the history of their codebase.
+ * It uses the Record And Replay (RPA) pattern to record changes made to the codebase and replay them.
+ *
  */
 export class TimeTravel extends HistoryAgent implements TimeTravelDebugger<GitCommit> {
 	name: string = "TimeTravel";
