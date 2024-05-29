@@ -4,7 +4,7 @@ import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewP
 import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
 import { DiffManager } from "./editor/diff/DiffManager";
 import { StructurerProviderManager } from "./code-context/StructurerProviderManager";
-import { CodebaseIndexer } from "./code-search/CodebaseIndexer";
+import { CodebaseIndexer } from "./code-search/indexing/CodebaseIndexer";
 import { AutoDevWebviewProtocol } from "./editor/webview/AutoDevWebviewProtocol";
 import { SqliteDb } from "./code-search/database/SqliteDb";
 import { channel } from "./channel";

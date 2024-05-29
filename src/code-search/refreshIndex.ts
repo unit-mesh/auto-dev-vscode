@@ -23,7 +23,7 @@ import {
   RefreshIndexResults
 } from "./indexing/_base/CodebaseIndex";
 import { SqliteDb } from "./database/SqliteDb";
-import { GlobalCacheCodeBaseIndex } from "./GlobalCacheCodeBaseIndex";
+import { GlobalCacheCodeBaseIndex } from "./indexing/GlobalCacheCodeBaseIndex";
 
 export function tagToString(tag: IndexTag): string {
   return `${tag.directory}::${tag.branch}::${tag.artifactId}`;

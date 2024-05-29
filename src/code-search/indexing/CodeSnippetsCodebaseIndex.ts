@@ -8,16 +8,16 @@ import {
 	IndexTag,
 	MarkCompleteCallback,
 	RefreshIndexResults
-} from "../../code-search/indexing/_base/CodebaseIndex";
+} from "./_base/CodebaseIndex";
 import { IdeAction } from "../../editor/editor-api/IdeAction";
-import { DatabaseConnection, SqliteDb } from "../../code-search/database/SqliteDb";
+import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
 import { EXT_LANGUAGE_MAP, languageFromPath } from "../../editor/language/ExtensionLanguageMap";
-import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
+import { ChunkWithoutID } from "../chunk/_base/Chunk";
 import { getLanguageForFile } from "../../editor/language/parser/TreeSitterParser";
 import { getParserForFile } from "../../editor/language/parser/ParserUtil";
-import { tagToString } from "../../code-search/refreshIndex";
-import { getBasename } from "../../code-search/utils/IndexPathHelper";
-import { Point, TextRange } from "../../code-search/scope-graph/model/TextRange";
+import { tagToString } from "../refreshIndex";
+import { getBasename } from "../utils/IndexPathHelper";
+import { Point, TextRange } from "../scope-graph/model/TextRange";
 import { ContextItem, ContextSubmenuItem } from "../../context-provider/_base/BaseContextProvider";
 
 /**

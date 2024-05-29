@@ -21,10 +21,10 @@ import {
   IndexTag,
   MarkCompleteCallback,
   RefreshIndexResults
-} from "../indexing/_base/CodebaseIndex";
+} from "./_base/CodebaseIndex";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { Chunk } from "../chunk/_base/Chunk";
-import { ChunkCodebaseIndex } from "../indexing/ChunkCodebaseIndex";
+import { ChunkCodebaseIndex } from "./ChunkCodebaseIndex";
 import { tagToString } from "../refreshIndex";
 
 export class FullTextSearchCodebaseIndex implements CodebaseIndex {

@@ -4,7 +4,7 @@ import {
 	IndexingProgressUpdate,
 	RefreshIndexResults,
 	MarkCompleteCallback
-} from "./_base/CodebaseIndex";
+} from "../_base/CodebaseIndex";
 
 export class ElasticSearchIndexer implements CodebaseIndex {
 	artifactId = "elasticsearch";

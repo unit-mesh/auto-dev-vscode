@@ -1,7 +1,7 @@
 import { IdeAction } from "../../editor/editor-api/IdeAction";
 import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
 import { Chunk } from "../chunk/_base/Chunk";
-import { FullTextSearchCodebaseIndex } from "../search/FullTextSearch";
+import { FullTextSearchCodebaseIndex } from "../indexing/FullTextSearchCodebaseIndex";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
 import { GitAction } from "../../editor/editor-api/scm/GitAction";

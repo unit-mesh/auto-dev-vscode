@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { CodebaseIndex, IndexingProgressUpdate, IndexTag, } from "./indexing/_base/CodebaseIndex";
-import { LanceDbIndex } from "./indexing/LanceDbIndex";
-import { IdeAction } from "../editor/editor-api/IdeAction";
-import { EmbeddingsProvider } from "./embedding/_base/EmbeddingsProvider";
-import { getComputeDeleteAddRemove } from "./refreshIndex";
-import { FullTextSearchCodebaseIndex } from "./search/FullTextSearch";
-import { ChunkCodebaseIndex } from "./indexing/ChunkCodebaseIndex";
-import { CodeSnippetsCodebaseIndex } from "../code-context/_indexing/CodeSnippetsCodebaseIndex";
+import { CodebaseIndex, IndexingProgressUpdate, IndexTag, } from "./_base/CodebaseIndex";
+import { LanceDbIndex } from "./LanceDbIndex";
+import { IdeAction } from "../../editor/editor-api/IdeAction";
+import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
+import { getComputeDeleteAddRemove } from "../refreshIndex";
+import { FullTextSearchCodebaseIndex } from "./FullTextSearchCodebaseIndex";
+import { ChunkCodebaseIndex } from "./ChunkCodebaseIndex";
+import { CodeSnippetsCodebaseIndex } from "./CodeSnippetsCodebaseIndex";
 
 export class CodebaseIndexer {
 	ide: IdeAction;

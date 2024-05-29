@@ -19,8 +19,8 @@ import {
 	IndexTag,
 	MarkCompleteCallback,
 	RefreshIndexResults
-} from "./indexing/_base/CodebaseIndex";
-import { DatabaseConnection, SqliteDb } from "./database/SqliteDb";
+} from "./_base/CodebaseIndex";
+import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
 
 export class GlobalCacheCodeBaseIndex implements CodebaseIndex {
 	private db: DatabaseConnection;
