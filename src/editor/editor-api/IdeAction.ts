@@ -1,4 +1,4 @@
-import { GitAction } from "./scm/GitAction";
+import { GitAction } from "../../git/GitAction";
 
 export interface IdeAction {
   git: GitAction;

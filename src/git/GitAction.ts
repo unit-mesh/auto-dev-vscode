@@ -25,11 +25,10 @@ import { Writable } from "node:stream";
 import { spawn } from "node:child_process";
 import * as iconv from 'iconv-lite';
 
-import { API, Change, Commit, GitExtension, Repository } from "../../../types/git";
-import { DiffManager } from "../../diff/DiffManager";
+import { API, Commit, GitExtension, Repository } from "../types/git";
+import { DiffManager } from "../editor/diff/DiffManager";
 import { ParsedFileChange, parseGitLog } from "./GitParser";
-import { SUPPORTED_LANGUAGES } from "../../language/SupportedLanguage";
-import { EXT_LANGUAGE_MAP } from "../../language/ExtensionLanguageMap";
+import { EXT_LANGUAGE_MAP } from "../editor/language/ExtensionLanguageMap";
 
 export const asyncExec = util.promisify(require("child_process").exec);
 

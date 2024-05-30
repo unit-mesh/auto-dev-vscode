@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import path from "path";
 import { TextDecoder } from "node:util";
 
-import { asyncExec, GitAction } from "./scm/GitAction";
+import { asyncExec, GitAction } from "../../git/GitAction";
 import { traverseDirectory } from "../util/traverseDirectory";
 import { defaultIgnoreFile } from "../util/ignore";
 

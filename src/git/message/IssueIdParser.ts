@@ -1,4 +1,4 @@
-import { GitCommit } from "../_base/GitCommit";
+import { GitCommit } from "../model/GitCommit";
 
 /**
  * Will parse the issue id from the commit message

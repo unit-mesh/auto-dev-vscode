@@ -1,7 +1,7 @@
 import vscode, { InputBox } from "vscode";
 
 import { Git } from "../../types/git";
-import { GitAction } from "../../editor/editor-api/scm/GitAction";
+import { GitAction } from "../../git/GitAction";
 import { LlmProvider } from "../../llm-provider/LlmProvider";
 import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
 import { PromptManager } from "../../prompt-manage/PromptManager";

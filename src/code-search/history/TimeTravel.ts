@@ -1,6 +1,6 @@
 import { HistoryAgent } from "./_base/HistoryAgent";
 import { TimeTravelDebugger } from "./_base/TimeTravelDebugger";
-import { GitCommit } from "./_base/GitCommit";
+import { GitCommit } from "../../git/model/GitCommit";
 
 /**
  * The TimeTravel class is a debugging tool that allows developers to navigate through the history of their codebase.

@@ -4,7 +4,7 @@ import { Chunk } from "../chunk/_base/Chunk";
 import { FullTextSearchCodebaseIndex } from "../indexing/FullTextSearchCodebaseIndex";
 import { RETRIEVAL_PARAMS } from "../utils/constants";
 import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
-import { GitAction } from "../../editor/editor-api/scm/GitAction";
+import { GitAction } from "../../git/GitAction";
 import { Commit } from "../../types/git";
 import { TfIdfChunkSearch } from "../search/TfIdfChunkSearch";
 import { languageFromPath } from "../../editor/language/ExtensionLanguageMap";

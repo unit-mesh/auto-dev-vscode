@@ -1,4 +1,4 @@
-import { GitCommit } from "./GitCommit";
+import { GitCommit } from "../../../git/model/GitCommit";
 
 export class HistoryBuilder {
 	/// build by issue id / story id
