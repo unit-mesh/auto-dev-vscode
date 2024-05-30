@@ -47,9 +47,9 @@ function decode(buffers: Buffer, encoding: string): string {
 const DEFAULT_ENCODING = 'utf8';
 const isWindows = /^win/.test(process.platform);
 
-export class GitAction {
+export class GitCommand {
 	public gitApi: Promise<API>;
-	private gitExecutablePath: Promise<string>;
+	public gitExecutablePath: Promise<string>;
 
 	constructor() {
 		// based on: https://github.com/DonJayamanne/gitHistoryVSCode/blob/main/src/adapter/exec/gitCommandExec.ts
@@ -72,6 +72,59 @@ export class GitAction {
 		});
 
 		this.gitExecutablePath = this.gitApi.then(api => api.git.path);
+	}
+
+	public exec(cwd: string, ...args: string[]): Promise<string>;
+	// tslint:disable-next-line:unified-signatures
+	public exec(options: { cwd: string; shell?: boolean }, ...args: string[]): Promise<string>;
+	public exec(options: { cwd: string; encoding: 'binary' }, destination: Writable, ...args: string[]): Promise<void>;
+	// tslint:disable-next-line:no-any
+	public async exec(options: any, ...args: any[]): Promise<any> {
+		let gitPath = await this.gitExecutablePath;
+		gitPath = isWindows ? gitPath.replace(/\\/g, '/') : gitPath;
+		const childProcOptions = typeof options === 'string' ? { cwd: options, encoding: DEFAULT_ENCODING } : options;
+		if (typeof childProcOptions.encoding !== 'string' || childProcOptions.encoding.length === 0) {
+			childProcOptions.encoding = DEFAULT_ENCODING;
+		}
+		const binaryOuput = childProcOptions.encoding === 'binary';
+		const destination: Writable = binaryOuput ? args.shift() : undefined;
+		const gitPathCommand = childProcOptions.shell && gitPath.indexOf(' ') > 0 ? `"${gitPath}"` : gitPath;
+		const stopWatch = new StopWatch();
+		const gitShow = spawn(gitPathCommand, args, childProcOptions);
+
+		let stdout: Buffer = new Buffer('');
+		let stderr: Buffer = new Buffer('');
+
+		if (binaryOuput) {
+			gitShow.stdout.pipe(destination);
+		} else {
+			gitShow.stdout.on('data', data => {
+				stdout = Buffer.concat([stdout, data as Buffer]);
+			});
+		}
+
+		gitShow.stderr.on('data', data => {
+			stderr = Buffer.concat([stderr, data as Buffer]);
+		});
+
+		return new Promise<any>((resolve, reject) => {
+			gitShow.on('error', reject);
+			gitShow.on('close', code => {
+				if (code === 0) {
+					const stdOut = binaryOuput ? undefined : decode(stdout, childProcOptions.encoding);
+					resolve(stdOut);
+				} else {
+					const stdErr = binaryOuput ? undefined : decode(stderr, childProcOptions.encoding);
+					reject({ code, error: stdErr });
+				}
+			});
+		});
+	}
+}
+
+export class GitAction extends GitCommand {
+	constructor() {
+		super();
 	}
 
 	private async _getRepo(forDirectory: vscode.Uri): Promise<Repository | null> {
@@ -140,53 +193,6 @@ export class GitAction {
 
 	async parseGitDiff(repository: Repository, diffResult: string): Promise<string> {
 		return DiffManager.simplifyDiff(repository, diffResult);
-	}
-
-	public exec(cwd: string, ...args: string[]): Promise<string>;
-	// tslint:disable-next-line:unified-signatures
-	public exec(options: { cwd: string; shell?: boolean }, ...args: string[]): Promise<string>;
-	public exec(options: { cwd: string; encoding: 'binary' }, destination: Writable, ...args: string[]): Promise<void>;
-	// tslint:disable-next-line:no-any
-	public async exec(options: any, ...args: any[]): Promise<any> {
-		let gitPath = await this.gitExecutablePath;
-		gitPath = isWindows ? gitPath.replace(/\\/g, '/') : gitPath;
-		const childProcOptions = typeof options === 'string' ? { cwd: options, encoding: DEFAULT_ENCODING } : options;
-		if (typeof childProcOptions.encoding !== 'string' || childProcOptions.encoding.length === 0) {
-			childProcOptions.encoding = DEFAULT_ENCODING;
-		}
-		const binaryOuput = childProcOptions.encoding === 'binary';
-		const destination: Writable = binaryOuput ? args.shift() : undefined;
-		const gitPathCommand = childProcOptions.shell && gitPath.indexOf(' ') > 0 ? `"${gitPath}"` : gitPath;
-		const stopWatch = new StopWatch();
-		const gitShow = spawn(gitPathCommand, args, childProcOptions);
-
-		let stdout: Buffer = new Buffer('');
-		let stderr: Buffer = new Buffer('');
-
-		if (binaryOuput) {
-			gitShow.stdout.pipe(destination);
-		} else {
-			gitShow.stdout.on('data', data => {
-				stdout = Buffer.concat([stdout, data as Buffer]);
-			});
-		}
-
-		gitShow.stderr.on('data', data => {
-			stderr = Buffer.concat([stderr, data as Buffer]);
-		});
-
-		return new Promise<any>((resolve, reject) => {
-			gitShow.on('error', reject);
-			gitShow.on('close', code => {
-				if (code === 0) {
-					const stdOut = binaryOuput ? undefined : decode(stdout, childProcOptions.encoding);
-					resolve(stdOut);
-				} else {
-					const stdErr = binaryOuput ? undefined : decode(stderr, childProcOptions.encoding);
-					reject({ code, error: stdErr });
-				}
-			});
-		});
 	}
 
 	async getHistoryMessages(repository: Repository) {
