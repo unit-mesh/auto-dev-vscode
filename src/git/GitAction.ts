@@ -27,7 +27,7 @@ import * as iconv from 'iconv-lite';
 
 import { API, Commit, GitExtension, Repository } from "../types/git";
 import { DiffManager } from "../editor/diff/DiffManager";
-import { ParsedFileChange, parseGitLog } from "./GitParser";
+import { ParsedFileChange, parseGitLog } from "./parser/SimpleGitLogParser";
 import { EXT_LANGUAGE_MAP } from "../editor/language/ExtensionLanguageMap";
 
 export const asyncExec = util.promisify(require("child_process").exec);

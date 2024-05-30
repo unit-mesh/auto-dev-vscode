@@ -90,5 +90,6 @@ Inspired and based on：
 - Static SCA analyser: [ArchGuard](https://github.com/archguard/archguard)
 - DevIns parser based
   on [VSCode Markdown](https://github.com/microsoft/vscode/blob/main/extensions/markdown-basics/syntaxes/markdown.tmLanguage.json)
+- Git parser based on [GitLens](https://github.com/gitkraken/vscode-gitlens) with MIT License
 
 AutoDev VSCode is licensed under the `Apache 2.0` license as defined in [LICENSE](./LICENSE).

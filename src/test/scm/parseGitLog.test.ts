@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ParsedFileChange, parseGitLog } from "../../git/GitParser";
+import { ParsedFileChange, parseGitLog } from "../../git/parser/SimpleGitLogParser";
 
 describe('GitParser', () => {
 	describe('parseGitLog', () => {
