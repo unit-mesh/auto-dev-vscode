@@ -293,7 +293,7 @@
           "autodev.completion.enableLegacyMode": {
             "type": "boolean",
             "default": false,
-            "description": "Use legacy \"/v1/completion\" instead of \"/v1/chat/completion\"",
+            "description": "Use legacy \"/v1/completions\" instead of \"/v1/chat/completions\"",
             "markdownDescription": "%autodev.completion.enableLegacyMode.markdownDescription%"
           },
           "autodev.completion.requestDelay": {
