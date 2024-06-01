@@ -132,7 +132,7 @@ async function resolveEditorContent(
   }
 
   // cmd+enter to use codebase
-  if (modifiers.useCodebase) {
+  if (modifiers?.useCodebase === true) {
     const codebaseItems = await ideRequest(
       "context/getContextItems",
       {
