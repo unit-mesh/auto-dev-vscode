@@ -235,7 +235,7 @@
         }
       },
       {
-        "title": "Chat",
+        "title": "%configuration.chat.title%",
         "properties": {
           "autodev.chat.models": {
             "type": "array",
