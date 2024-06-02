@@ -1,7 +1,5 @@
-/// <reference types="vitest" />
 import path from "node:path";
-import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
+import { defineConfig } from "vitest/config";
 import { externalizeDeps } from "vite-plugin-externalize-deps";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
@@ -15,7 +13,10 @@ export default defineConfig((api) => {
         // hack bindings of sqlite3
         bindings: path.join(__dirname, "vendors/bindings/index.js"),
         // hack onnxruntime-node
-        'onnxruntime-node': path.join(__dirname, "vendors/onnxruntime-node/index.cjs")
+        "onnxruntime-node": path.join(
+          __dirname,
+          "vendors/onnxruntime-node/index.cjs"
+        ),
       },
     },
     plugins: [
@@ -23,7 +24,6 @@ export default defineConfig((api) => {
         deps: false,
         include: ["vscode"],
       }),
-      isDev && dts(),
       viteStaticCopy({
         targets: [
           {
@@ -81,10 +81,13 @@ export default defineConfig((api) => {
       commonjsOptions: {
         ignoreDynamicRequires: true,
         dynamicRequireRoot: "/",
-        dynamicRequireTargets: [
-          './bin/napi-v3/**/onnxruntime_binding.node'
-        ],
-      }
+        dynamicRequireTargets: ["./bin/napi-v3/**/onnxruntime_binding.node"],
+      },
+      rollupOptions: {
+        output: {
+          inlineDynamicImports: true,
+        },
+      },
     },
     test: {
       include: ["src/test/**/*.test.ts"],
