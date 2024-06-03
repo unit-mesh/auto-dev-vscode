@@ -91,10 +91,11 @@ export class TeamPromptsBuilder {
 	}
 
 	private buildPrompts(promptsDir: string) {
-		const files = fs.readdirSync(promptsDir);
 		const prompts: TeamPromptAction[] = [];
 
 		try {
+			const files = fs.readdirSync(promptsDir);
+
 			const vmFiles = files.filter(file => file.endsWith('.vm'));
 
 			vmFiles.forEach(file => {
