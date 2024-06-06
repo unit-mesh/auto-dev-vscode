@@ -92,3 +92,9 @@ $ git merge upstream/master
 - 遇到问题时，请先确认这个问题是否已经在 issue 中有记录或者已被修复。
 - 提 issue 时，请用简短的语言描述遇到的问题，并添加出现问题时的环境和复现步骤。
 - 其他交流，请一律发布到 discussions。
+
+## 学习资料
+
+- `官方` [VSCode 插件开发文档](https://code.visualstudio.com/api)
+- `官方` [VSCode 插件示例](https://github.com/microsoft/vscode-extension-samples)
+- `社区中文版` [VSCode 插件开发文档](https://github.com/Liiked/VS-Code-Extension-Doc-ZH)
