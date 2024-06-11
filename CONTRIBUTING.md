@@ -21,21 +21,10 @@ To run extension, follow these steps.
 
     ```sh
     # vsce currently only supports npm
-    $ npm install
+    $ yarn install
     ```
 
-4. Installing GUI Dependencies
-
-    Please submit any functionality or other issues to the [continuedev/continue](https://github.com/continuedev/continue/tree/main/gui).
-
-    ```sh
-    $ cd gui-sidebar
-
-    # You can use yarn or pnpm
-    $ npm install && npm run watch
-    ```
-
-5. Now you can start it with [Run and Debug](https://code.visualstudio.com/docs/editor/debugging).
+4. Now you can start it with [Run and Debug](https://code.visualstudio.com/docs/editor/debugging).
 
 ## Running The Tests
 

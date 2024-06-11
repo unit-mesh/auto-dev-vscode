@@ -29,17 +29,7 @@
    $ npm install
    ```
 
-4. 安装 GUI 依赖
-
-   如有功能性或其他问题，请提交到 [continuedev/continue](https://github.com/continuedev/continue/tree/main/gui)。
-
-   ```sh
-   $ cd gui-sidebar
-
-   $ npm install && npm run watch
-   ```
-
-5. 现在，你可以使用编辑器的 [Run and Debug](https://code.visualstudio.com/docs/editor/debugging) 启动插件了。
+4. 现在，你可以使用编辑器的 [Run and Debug](https://code.visualstudio.com/docs/editor/debugging) 启动插件了。
 
 ## 运行测试
 
