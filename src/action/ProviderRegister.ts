@@ -1,4 +1,4 @@
-import { languages } from 'vscode';
+import { Disposable, languages } from 'vscode';
 
 import { SUPPORTED_LANGUAGES } from 'base/common/languages/languages';
 
@@ -9,8 +9,10 @@ import { AutoDevCodeSuggestionProvider } from './providers/AutoDevCodeSuggestion
 import { AutoDevQuickFixProvider } from './providers/AutoDevQuickFixProvider';
 import { AutoDevRenameProvider } from './refactor/rename/AutoDevRenameProvider';
 
-export function registerCodeLensProvider(context: AutoDevExtension) {
-	return languages.registerCodeLensProvider(SUPPORTED_LANGUAGES, new AutoDevCodeLensProvider(context));
+export function registerCodeLensProvider(autodev: AutoDevExtension) {
+	const codelensProvider = new AutoDevCodeLensProvider(autodev);
+
+	return Disposable.from(codelensProvider, languages.registerCodeLensProvider(SUPPORTED_LANGUAGES, codelensProvider));
 }
 
 export function registerAutoDevProviders(context: AutoDevExtension) {

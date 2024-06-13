@@ -1,3 +1,4 @@
+import { CancellationToken } from 'vscode';
 import Parser, { Language, Tree } from 'web-tree-sitter';
 
 import { isLargerThan500kb } from 'base/common/files/files';

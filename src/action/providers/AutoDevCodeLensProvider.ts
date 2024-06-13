@@ -1,61 +1,254 @@
-import * as vscode from 'vscode';
+/* eslint-disable curly */
+import { setTimeout } from 'node:timers/promises';
 
-import { CMD_SHOW_QUICK_ACTION } from 'base/common/configuration/configuration';
-import { SUPPORTED_LANGUAGES } from 'base/common/languages/languages';
+import { convertToErrorMessage, TreeSitterFile } from 'src/code-context/ast/TreeSitterFile';
+import { NamedElement } from 'src/editor/ast/NamedElement';
+import { NamedElementBuilder } from 'src/editor/ast/NamedElementBuilder';
+import { TreeSitterFileManager } from 'src/editor/cache/TreeSitterFileManager';
+import { ChatViewService } from 'src/editor/views/chat/chatViewService';
+import {
+	CancellationToken,
+	CodeLens,
+	CodeLensProvider,
+	Command,
+	commands,
+	Disposable,
+	l10n,
+	Range,
+	Selection,
+	TextDocument,
+	window,
+	WorkspaceEdit,
+} from 'vscode';
+
+import {
+	CMD_CODELENS_CREATE_UNIT_TEST,
+	CMD_CODELENS_EXPLAIN_CODE,
+	CMD_CODELENS_GEN_DOCSTRING,
+	CMD_CODELENS_OPTIMIZE_CODE,
+	CMD_CODELENS_QUICK_CHAT,
+	CMD_CODELENS_SHOW_CUSTOM_ACTION,
+	CMD_SHOW_CODELENS_DETAIL_QUICKPICK,
+} from 'base/common/configuration/configuration';
+import { ConfigurationService } from 'base/common/configuration/configurationService';
+import { isFileTooLarge } from 'base/common/files/files';
+import { isSupportedLanguage } from 'base/common/languages/languages';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
 import { logger } from 'base/common/log/log';
 
-import { AutoDevExtension } from '../../AutoDevExtension';
-import { convertToErrorMessage, TreeSitterFile, TreeSitterFileError } from '../../code-context/ast/TreeSitterFile';
-import { NamedElement } from '../../editor/ast/NamedElement';
-import { NamedElementBuilder } from '../../editor/ast/NamedElementBuilder';
-import { TreeSitterFileManager } from '../../editor/cache/TreeSitterFileManager';
+import { type AutoDevExtension } from '../../AutoDevExtension';
 
-export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
-	private _eventEmitter: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
-	onDidChangeCodeLenses: vscode.Event<void> = this._eventEmitter.event;
+export class AutoDevCodeLensProvider implements CodeLensProvider {
+	private config: ConfigurationService;
+	private lsp: ILanguageServiceProvider;
+	private fileManager: TreeSitterFileManager;
 
-	private onDidChangeTextDocument: vscode.Disposable;
+	private disposables: Disposable[];
 
-	private treeSitterFileManager: TreeSitterFileManager;
+	constructor(private autodev: AutoDevExtension) {
+		this.config = autodev.config;
+		this.lsp = autodev.lsp;
+		this.fileManager = autodev.treeSitterFileManager;
 
-	constructor(private readonly autodev: AutoDevExtension) {
-		this.treeSitterFileManager = autodev.treeSitterFileManager;
+		const chat = autodev.chat;
 
-		this.onDidChangeTextDocument = vscode.workspace.onDidChangeTextDocument(async event => {
-			if (SUPPORTED_LANGUAGES.includes(event.document.languageId)) {
-				this.refresh();
-			}
-		});
+		this.disposables = [
+			commands.registerCommand(CMD_SHOW_CODELENS_DETAIL_QUICKPICK, (items: Command[]) => {
+				const quickPick = window.createQuickPick<{
+					label: string;
+					description: string | undefined;
+					command: string;
+					arguments: unknown[] | undefined;
+				}>();
+
+				quickPick.items = items.map(cmd => {
+					return {
+						label: cmd.title,
+						command: cmd.command,
+						description: cmd.tooltip,
+						arguments: cmd.arguments,
+					};
+				});
+
+				quickPick.onDidChangeSelection(async selection => {
+					const [item] = selection;
+					quickPick.hide();
+
+					const args = item.arguments || [];
+					commands.executeCommand(item.command, ...args);
+				});
+
+				quickPick.onDidHide(() => quickPick.dispose());
+				quickPick.show();
+			}),
+			commands.registerCommand(CMD_CODELENS_QUICK_CHAT, async (document: TextDocument, nameElement: NamedElement) => {
+				await chat.show();
+
+				// TODO hack message render empty
+				await setTimeout(600);
+				await sendHighlightedCodeToChat(chat, document, nameElement);
+			}),
+			commands.registerCommand(CMD_CODELENS_EXPLAIN_CODE, async (document: TextDocument, nameElement: NamedElement) => {
+				await chat.show();
+
+				// TODO hack message render empty
+				await setTimeout(600);
+				await sendHighlightedCodeToChat(chat, document, nameElement);
+
+				await setTimeout(800);
+				await chat.input(l10n.t('Explain this code'));
+			}),
+			commands.registerCommand(
+				CMD_CODELENS_OPTIMIZE_CODE,
+				async (document: TextDocument, nameElement: NamedElement) => {
+					await chat.show();
+
+					// TODO hack message render empty
+					await setTimeout(600);
+					await sendHighlightedCodeToChat(chat, document, nameElement);
+
+					await setTimeout(800);
+					await chat.input(l10n.t('Optimize the code'));
+				},
+			),
+			commands.registerCommand(CMD_CODELENS_GEN_DOCSTRING, (document: TextDocument, nameElement: NamedElement) => {
+				autodev.executeAutoDocAction(document, nameElement);
+			}),
+			commands.registerCommand(
+				CMD_CODELENS_CREATE_UNIT_TEST,
+				(document: TextDocument, nameElement: NamedElement, edit: WorkspaceEdit) => {
+					autodev.executeAutoTestAction(document, nameElement, edit);
+				},
+			),
+			commands.registerCommand(CMD_CODELENS_SHOW_CUSTOM_ACTION, (document: TextDocument, nameElement: NamedElement) => {
+				autodev.executeCustomAction(document, nameElement);
+			}),
+		];
 	}
 
 	dispose() {
-		this._eventEmitter.dispose();
-		this.onDidChangeTextDocument.dispose();
+		return Disposable.from(...this.disposables);
 	}
 
-	public refresh(): void {
-		this._eventEmitter.fire();
+	isMinimizedIcon() {
+		return this.config.get<string>('codelensDisplayMode') === 'collapse';
 	}
 
-	async provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.CodeLens[]> {
-		const languageId = document.languageId;
-		if (!SUPPORTED_LANGUAGES.includes(languageId)) {
+	hasCustomPromps() {
+		return this.autodev.teamPromptsBuilder.teamPrompts().length;
+	}
+
+	async provideCodeLenses(document: TextDocument, token: CancellationToken) {
+		if (isFileTooLarge(document) || !isSupportedLanguage(document.languageId)) {
 			return [];
 		}
 
-		try {
-			let tsfile: TreeSitterFile;
-			/// todo: for a simple file, we can just don't use cache, since we update algorithm is not correct
-			if (document.lineCount > 256) {
-				const src = document.getText();
-				const langId = document.languageId;
-				tsfile = await TreeSitterFile.create(src, langId, this.autodev.lsp, document.uri.fsPath);
-			} else {
-				tsfile = await this.treeSitterFileManager.create(document);
+		const elements = await this.parseToNamedElements(document);
+
+		if (token.isCancellationRequested || elements.length === 0) {
+			return [];
+		}
+
+		const groups = this.buildCodeLensGroups(elements, document, token);
+		if (groups.length === 0) {
+			return [];
+		}
+
+		if (this.isMinimizedIcon()) {
+			return groups.map(codelenses => this.buildQuickPickCodeLens(codelenses));
+		}
+
+		return groups.flat();
+	}
+
+	private buildQuickPickCodeLens(codelenses: CodeLens[]): CodeLens {
+		const [head] = codelenses;
+
+		const items = codelenses.map(codelens => codelens.command!);
+
+		return new CodeLens(head.range, {
+			title: '$(autodev-icon)$(chevron-down)',
+			command: CMD_SHOW_CODELENS_DETAIL_QUICKPICK,
+			arguments: [items],
+		});
+	}
+
+	private buildCodeLensGroups(elements: NamedElement[], document: TextDocument, token: CancellationToken) {
+		const result: CodeLens[][] = [];
+
+		for (const element of elements) {
+			const codelenses: CodeLens[] = [];
+
+			codelenses.push(
+				new CodeLens(element.identifierRange, {
+					title: l10n.t('Quick Chat'),
+					command: CMD_CODELENS_QUICK_CHAT,
+					arguments: [document, element],
+				}),
+				new CodeLens(element.identifierRange, {
+					title: l10n.t('Explain Code'),
+					command: CMD_CODELENS_EXPLAIN_CODE,
+					arguments: [document, element],
+				}),
+				new CodeLens(element.identifierRange, {
+					title: l10n.t('Optimize Code'),
+					command: CMD_CODELENS_OPTIMIZE_CODE,
+					arguments: [document, element],
+				}),
+			);
+
+			if (!element.isTestFile()) {
+				codelenses.push(
+					new CodeLens(element.identifierRange, {
+						title: l10n.t('AutoComment'),
+						command: CMD_CODELENS_GEN_DOCSTRING,
+						arguments: [document, element],
+					}),
+					new CodeLens(element.identifierRange, {
+						title: l10n.t('AutoTest'),
+						command: CMD_CODELENS_CREATE_UNIT_TEST,
+						arguments: [document, element, new WorkspaceEdit()],
+					}),
+				);
 			}
 
-			let tsFileElementBuilder = new NamedElementBuilder(tsfile);
-			return this.buildForLens(tsFileElementBuilder, document);
+			if (this.hasCustomPromps()) {
+				codelenses.push(
+					new CodeLens(element.identifierRange, {
+						title: l10n.t('Custom Action'),
+						command: CMD_CODELENS_SHOW_CUSTOM_ACTION,
+						arguments: [document, element],
+					}),
+				);
+			}
+
+			result.push(codelenses);
+		}
+
+		return result;
+	}
+
+	private async parseToNamedElements(document: TextDocument) {
+		const builder = await this.createFileElementBuilder(document);
+		if (builder) {
+			return [...builder.buildClass(), ...builder.buildMethod()];
+		}
+
+		return [];
+	}
+
+	private async createFileElementBuilder(document: TextDocument) {
+		try {
+			// todo: for a simple file, we can just don't use cache, since we update algorithm is not correct
+			if (document.lineCount > 256) {
+				const content = document.getText();
+
+				return new NamedElementBuilder(
+					await TreeSitterFile.create(content, document.languageId, this.lsp, document.uri.fsPath),
+				);
+			}
+
+			return new NamedElementBuilder(await this.fileManager.create(document));
 		} catch (e) {
 			if (typeof e === 'number') {
 				logger.debug('(codelens): parse error:', convertToErrorMessage(e));
@@ -65,49 +258,28 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 				logger.debug('(codelens): Unkown error', e);
 			}
 		}
-
-		return [];
 	}
+}
 
-	private buildForLens(builder: NamedElementBuilder, document: vscode.TextDocument) {
-		const classRanges: NamedElement[] | TreeSitterFileError = builder.buildClass();
-		const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
+async function sendHighlightedCodeToChat(chat: ChatViewService, document: TextDocument, nameElement: NamedElement) {
+	const { blockRange } = nameElement;
 
-		const elements = classRanges.concat(methodRanges);
-		const chatLens = this.setupQuickChat(elements, document);
+	const rangeInFileWithContents = {
+		filepath: document.uri.fsPath,
+		contents: nameElement.blockContent,
+		range: {
+			start: {
+				line: blockRange.start.line,
+				character: blockRange.start.character,
+			},
+			end: {
+				line: blockRange.end.line,
+				character: blockRange.end.character,
+			},
+		},
+	};
 
-		// move to AutoDevExtenstion#showQuickAction?
-		// const testLens = this.setupTestCodeLen(elements, document);
-		// return ([] as vscode.CodeLens[]).concat(testLens, chatLens);
-
-		return chatLens;
-	}
-
-	// private setupTestCodeLen(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
-	// 	return methodRanges
-	// 		.map(namedElement => {
-	// 			if (namedElement.isTestFile()) {
-	// 				return;
-	// 			}
-
-	// 			const title = l10n.t('AutoTest');
-	// 			return new vscode.CodeLens(namedElement.identifierRange, {
-	// 				title,
-	// 				command: 'autodev.autoTest',
-	// 				arguments: [document, namedElement, new vscode.WorkspaceEdit()],
-	// 			});
-	// 		})
-	// 		.filter((lens): lens is vscode.CodeLens => !!lens);
-	// }
-
-	private setupQuickChat(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
-		return methodRanges.map(range => {
-			const title = `$(autodev-icon)$(chevron-down)`;
-			return new vscode.CodeLens(range.identifierRange, {
-				title,
-				command: CMD_SHOW_QUICK_ACTION,
-				arguments: [document, range],
-			});
-		});
-	}
+	await chat.send('highlightedCode', {
+		rangeInFileWithContents,
+	});
 }

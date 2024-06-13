@@ -58,6 +58,19 @@
 						"description": "%configuration.suggestion.enableRename.description%",
 						"order": 1
 					},
+					"autodev.codelensDisplayMode": {
+            "type": "string",
+            "enum": [
+              "expand",
+              "collapse"
+            ],
+            "enumItemLabels": [
+              "%configuration.codelensDisplayMode.item.expand%",
+              "%configuration.codelensDisplayMode.item.collapse%"
+            ],
+            "description": "%configuration.codelensDisplayMode.description%",
+            "default": "expand"
+          },
 					"autodev.customPromptsDir": {
 						"type": "string",
 						"default": "prompts",
@@ -529,10 +542,34 @@
 		],
 		"commands": [
 			{
-				"command": "autodev.explainCode",
+				"command": "autodev.codelens.quickChat",
 				"category": "AutoDev",
-				"title": "%command.explainCode.title%",
-				"group": "AutoDevMenuItem"
+				"title": "%command.quickChat.title%",
+				"group": "AutoDevCodelens"
+			},
+			{
+				"command": "autodev.codelens.explainCode",
+				"title": "%command.explainCode.title%"
+			},
+			{
+				"command": "autodev.codelens..optimizeCode",
+				"title": "%command.optimizeCode.title%"
+			},
+			{
+				"command": "autodev.codelens.autoComment",
+				"title": "%command.autoComment.title%"
+			},
+			{
+				"command": "autodev.codelens.autoTest",
+				"title": "%command.autoTest.title%"
+			},
+			{
+				"command": "autodev.codelens.customAction",
+				"title": "%command.customAction.title%"
+			},
+			{
+				"command": "autodev.explainCode",
+				"title": "%command.explainCode.title%"
 			},
 			{
 				"command": "autodev.optimizeCode",
@@ -613,8 +650,8 @@
 				"group": "AutoDev"
 			},
 			{
-				"command": "autodev.action.quickAction",
-				"title": "%command.showQuickAction.title%",
+				"command": "autodev.showCodelensDetailQuickPick",
+				"title": "%command.showCodelensDetailQuickPick.title%",
 				"category": "AutoDev",
 				"group": "AutoDev"
 			},
@@ -763,10 +800,6 @@
 			],
 			"commandPalette": [
 				{
-					"command": "autodev.action.quickAction",
-					"when": "false"
-				},
-				{
 					"command": "autodev.explainCode",
 					"when": "false"
 				},
@@ -787,7 +820,7 @@
 					"when": "false"
 				},
 				{
-					"command": "autodev.action.quickAction",
+					"command": "autodev.showCodelensDetailQuickPick",
 					"when": "false"
 				},
 				{

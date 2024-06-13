@@ -94,8 +94,12 @@
 	"command.newChatSession.title": "New Session",
 	"command.showChatHistory.title": "History",
 	"command.showSystemAction.title": "Show Autodev Actions",
-	"command.showQuickAction.title": "Show Quick Actions",
+	"command.showCodelensDetailQuickPick.title": "Show Quick Actions",
 
 	"command.codebase.createIndexes.title": "Codebase Index Generation",
-	"command.codebase.retrievalCode.title": "Codebase Code Retrieval"
+	"command.codebase.retrievalCode.title": "Codebase Code Retrieval",
+
+	"configuration.codelensDisplayMode.item.expand": "Expand",
+	"configuration.codelensDisplayMode.item.collapse": "Collapse",
+	"configuration.codelensDisplayMode.description": "Controls the display of CodeLens"
 }

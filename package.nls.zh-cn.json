@@ -79,5 +79,8 @@
 	"command.genApiData.title": "生成 API 数据",
 
 	"command.codebase.createIndexes.title": "代码库索引生成",
-	"command.codebase.retrievalCode.title": "代码库代码检索"
+	"command.codebase.retrievalCode.title": "代码库代码检索",
+
+	"configuration.codelensDisplayMode.item.expand": "操作平铺",
+	"configuration.codelensDisplayMode.item.collapse": "操作收起"
 }

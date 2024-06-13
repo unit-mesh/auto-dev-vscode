@@ -35,7 +35,7 @@ import {
 	CMD_OPTIMIZE_CODE,
 	CMD_SHOW_CHAT_HISTORY,
 	CMD_SHOW_CHAT_PANEL,
-	CMD_SHOW_QUICK_ACTION,
+	CMD_SHOW_CODELENS_DETAIL_QUICKPICK,
 	CMD_SHOW_SYSTEM_ACTION,
 	CMD_SHOW_TUTORIAL,
 } from 'base/common/configuration/configuration';
@@ -73,69 +73,6 @@ export class CommandsService {
 
 	showSystemAction() {
 		this.autodev.systemAction.show();
-	}
-
-	showQuickAction(document: TextDocument, nameElement: NamedElement) {
-		const autodev = this.autodev;
-		const customPrompts = autodev.teamPromptsBuilder.teamPrompts();
-
-		const items = [
-			// {
-			// 	label: l10n.t('Explain Code'),
-			// 	execute: () => {
-			// 		// pass
-			// 	},
-			// },
-			// {
-			// 	label: l10n.t('Optimize Code'),
-			// 	execute: () => {
-			// 		// pass
-			// 	},
-			// },
-			// {
-			// 	label: l10n.t('Fix Code'),
-			// 	execute: () => {
-			// 		// pass
-			// 	},
-			// },
-			{
-				label: l10n.t('AutoComment'),
-				execute: () => {
-					this.autodev.executeAutoDocAction(document, nameElement);
-				},
-			},
-			{
-				label: l10n.t('AutoTest'),
-				execute: () => {
-					this.autodev.executeAutoTestAction(document, nameElement);
-				},
-			},
-		];
-
-		if (customPrompts.length > 0) {
-			items.push({
-				label: l10n.t('Custom Action'),
-				execute: () => {
-					this.autodev.executeCustomAction(document, nameElement);
-				},
-			});
-		}
-
-		const quickPick = window.createQuickPick<{
-			label: string;
-			execute: () => void;
-		}>();
-
-		quickPick.items = items;
-
-		quickPick.onDidChangeSelection(async selection => {
-			const [item] = selection;
-
-			quickPick.hide();
-			item?.execute();
-		});
-		quickPick.onDidHide(() => quickPick.dispose());
-		quickPick.show();
 	}
 
 	showChatPanel() {
@@ -260,7 +197,7 @@ export class CommandsService {
 				return;
 			}
 
-			await this.autodev.executeAutoTestAction(document, ranges[0]);
+			await this.autodev.executeAutoTestAction(document, ranges[0], new WorkspaceEdit());
 		} catch (error) {
 			logger.error(`Commands error`, error);
 			showErrorMessage('Command Call Error');
@@ -370,9 +307,7 @@ export class CommandsService {
 			commands.registerCommand(CMD_OPEN_SETTINGS, this.openSettins, this),
 			commands.registerCommand(CMD_SHOW_TUTORIAL, this.showTutorial, this),
 			commands.registerCommand(CMD_FEEDBACK, this.feedback, this),
-			// AutoDev Commands
 			commands.registerCommand(CMD_SHOW_SYSTEM_ACTION, this.showSystemAction, this),
-			commands.registerCommand(CMD_SHOW_QUICK_ACTION, this.showQuickAction, this),
 			// Chat Commands
 			commands.registerCommand(CMD_SHOW_CHAT_PANEL, this.showChatPanel, this),
 			commands.registerCommand(CMD_NEW_CHAT_SESSION, this.newChatSession, this),

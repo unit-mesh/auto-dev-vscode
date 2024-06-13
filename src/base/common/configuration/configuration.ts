@@ -8,7 +8,7 @@ export const CMD_FEEDBACK = 'autodev.feedback';
 
 // AutoDev Commands
 export const CMD_SHOW_SYSTEM_ACTION = 'autodev.showSystemAction'; // statusbar icon click
-export const CMD_SHOW_QUICK_ACTION = 'autodev.action.quickAction'; // codelens icon click
+export const CMD_SHOW_CODELENS_DETAIL_QUICKPICK = 'autodev.showCodelensDetailQuickPick'; // codelens icon click
 
 // ContextMenu Commands
 export const CMD_FIX_CODE = 'autodev.fixCode';
@@ -16,6 +16,14 @@ export const CMD_EXPLAIN_CODE = 'autodev.explainCode';
 export const CMD_OPTIMIZE_CODE = 'autodev.optimizeCode';
 export const CMD_GEN_DOCSTRING = 'autodev.autoComment';
 export const CMD_CREATE_UNIT_TEST = 'autodev.autoTest';
+
+// Codelens Commands
+export const CMD_CODELENS_QUICK_CHAT = 'autodev.codelens.quickChat';
+export const CMD_CODELENS_EXPLAIN_CODE = 'autodev.codelens.explainCode';
+export const CMD_CODELENS_OPTIMIZE_CODE = 'autodev.codelens.optimizeCode';
+export const CMD_CODELENS_GEN_DOCSTRING = 'autodev.codelens.autoComment';
+export const CMD_CODELENS_CREATE_UNIT_TEST = 'autodev.codelens.autoTest';
+export const CMD_CODELENS_SHOW_CUSTOM_ACTION = 'autodev.codelens.customAction';
 
 // Chat Commands
 export const CMD_SHOW_CHAT_PANEL = 'autodev.showChatPanel';
