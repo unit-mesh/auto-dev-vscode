@@ -1,7 +1,8 @@
-import { TextRange } from "../model/TextRange";
-import { NodeKind } from "./NodeKind";
-import Graph from "graphology";
-import { ScopeToScope } from "../edge/EdgeKind";
+import Graph from 'graphology';
+
+import { ScopeToScope } from '../edge/EdgeKind';
+import { TextRange } from '../model/TextRange';
+import { NodeKind } from './NodeKind';
 
 export class LocalScope extends NodeKind {
 	range: TextRange;
@@ -27,7 +28,8 @@ export class ScopeStack implements Iterable<string> {
 		return {
 			next: () => {
 				if (current) {
-					const parentId = this.scopeGraph.outEdges(current)
+					const parentId = this.scopeGraph
+						.outEdges(current)
 						.filter(edge => this.scopeGraph.getEdgeAttributes(edge) instanceof ScopeToScope)
 						.map(edge => this.scopeGraph.target(edge))[0];
 
@@ -37,7 +39,7 @@ export class ScopeStack implements Iterable<string> {
 				} else {
 					return { value: undefined, done: true };
 				}
-			}
+			},
 		};
 	}
 }

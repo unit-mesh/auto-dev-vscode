@@ -1,4 +1,4 @@
-import { Repository } from "../../types/git";
+import { Repository } from '../../types/git';
 
 export class DiffManager {
 	static simplifyDiff(gitRoot: Repository, diffString: string) {

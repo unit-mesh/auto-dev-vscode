@@ -21,7 +21,7 @@ To run extension, follow these steps.
 
     ```sh
     # vsce currently only supports npm
-    $ yarn install
+    $ npm install
     ```
 
 4. Now you can start it with [Run and Debug](https://code.visualstudio.com/docs/editor/debugging).

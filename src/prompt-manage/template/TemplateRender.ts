@@ -1,19 +1,14 @@
-import Velocity from "velocityjs";
-import { TemplateContext } from "./TemplateContext";
-import fs from "fs";
-import { TemplateLoader } from "../loader/TemplateLoader";
-import { VSCodeTemplateLoader } from "../loader/VSCodeTemplateLoader";
+import fs from 'node:fs';
+
+import Velocity from 'velocityjs';
+
+import { TemplateLoader } from '../loader/TemplateLoader';
+import { TemplateContext } from './TemplateContext';
 
 export class TemplateRender {
 	private templateCache: { [filename: string]: string } = {};
-	private templateLoader: TemplateLoader;
 
-	constructor(templateLoader?: TemplateLoader) {
-		if (templateLoader === undefined) {
-			templateLoader = new VSCodeTemplateLoader();
-		}
-		this.templateLoader = templateLoader;
-	}
+	constructor(private templateLoader: TemplateLoader) {}
 
 	/**
 	 * Retrieves the template for a given filename.
@@ -38,7 +33,7 @@ export class TemplateRender {
 			return this.templateCache[filename];
 		}
 
-		const string = fs.readFileSync(filename, "utf8");
+		const string = fs.readFileSync(filename, 'utf8');
 
 		this.templateCache[filename] = string;
 		return string;
@@ -58,7 +53,7 @@ export class TemplateRender {
 	 */
 	public render(template: string, context: TemplateContext): string {
 		let newContext = {
-			context
+			context,
 		};
 
 		/// old version context will be TemplateContext only, context, { context: context}

@@ -1,12 +1,13 @@
-import vscode, { Uri } from "vscode";
-import { FileCacheManger } from "./FileCacheManger";
-import { CodeFile, CodeStructure } from "../codemodel/CodeElement";
-import { SupportedLanguage } from "../language/SupportedLanguage";
-import { EXT_LANGUAGE_MAP } from "../language/ExtensionLanguageMap";
-import { StructurerProviderManager } from "../../code-context/StructurerProviderManager";
-import { StructurerProvider } from "../../code-context/_base/StructurerProvider";
+import vscode, { Uri } from 'vscode';
 
-export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
+import { inferLanguage, LanguageIdentifier } from 'base/common/languages/languages';
+
+import { StructurerProvider } from '../../code-context/_base/StructurerProvider';
+import { StructurerProviderManager } from '../../code-context/StructurerProviderManager';
+import { CodeFile, CodeStructure } from '../codemodel/CodeElement';
+import { FileCacheManger } from './FileCacheManger';
+
+export class CodeFileCacheManager implements FileCacheManger<CodeFile> {
 	private documentMap: Map<Uri, Map<number, CodeFile>>;
 	private canonicalNameMap: Map<string, CodeStructure>;
 	private structureProvider: StructurerProviderManager = StructurerProviderManager.getInstance();
@@ -24,7 +25,7 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 			this.documentMap.get(uri)!.set(version, file);
 		}
 
-		file.classes.forEach((value) => {
+		file.classes.forEach(value => {
 			this.canonicalNameMap.set(value.canonicalName, value);
 		});
 	}
@@ -39,7 +40,7 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 		return undefined;
 	}
 
-	public async getRecentlyStructure(canonicalName: string, lang: SupportedLanguage): Promise<CodeStructure> {
+	public async getRecentlyStructure(canonicalName: string, lang: LanguageIdentifier): Promise<CodeStructure> {
 		let structure = this.canonicalNameMap.get(canonicalName);
 		if (structure !== undefined) {
 			return structure;
@@ -54,19 +55,19 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 		return files[0];
 	}
 
-	private lookupFromRecently(lang: string, canonicalName: string, structurer: StructurerProvider): Promise<CodeStructure>[] {
-		let textDocuments = vscode.workspace.textDocuments.filter((doc) => {
-			const ext = doc.uri.path.split('.').pop();
-			if (ext === undefined) {
-				return false;
-			}
-			return EXT_LANGUAGE_MAP[ext] !== lang;
+	private lookupFromRecently(
+		lang: string,
+		canonicalName: string,
+		structurer: StructurerProvider,
+	): Promise<CodeStructure>[] {
+		const textDocuments = vscode.workspace.textDocuments.filter(doc => {
+			return inferLanguage(doc.uri.path) !== lang;
 		});
 
-		let codeStructures = textDocuments.map(async (doc) => {
+		let codeStructures = textDocuments.map(async doc => {
 			const cache = this.documentMap.get(doc.uri)?.get(doc.version);
 			if (cache !== undefined) {
-				return cache.classes.filter((value) => value.canonicalName === canonicalName)[0];
+				return cache.classes.filter(value => value.canonicalName === canonicalName)[0];
 			}
 
 			let codeFile = await structurer?.parseFile(doc.getText(), doc.uri.path);
@@ -75,7 +76,7 @@ export class CodeFileCacheManager implements FileCacheManger <CodeFile> {
 			}
 
 			this.setDocument(doc.uri, doc.version, codeFile);
-			return codeFile.classes.filter((value) => value.canonicalName === canonicalName)[0];
+			return codeFile.classes.filter(value => value.canonicalName === canonicalName)[0];
 		});
 
 		return codeStructures;

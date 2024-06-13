@@ -1,8 +1,9 @@
-import { ChunkItem } from "../embedding/_base/Embedding";
-import { TfIdf } from "./tfidf/Tfidf";
-import { SemanticSearch } from "./_base/SemanticSearch";
-import { CancellationToken } from "vscode";
-import { SearchOptions } from "./_base/SearchOptions";
+import { CancellationToken } from 'vscode';
+
+import { ChunkItem } from '../embedding/_base/Embedding';
+import { SearchOptions } from './_base/SearchOptions';
+import { SemanticSearch } from './_base/SemanticSearch';
+import { TfIdf } from './tfidf/Tfidf';
 
 /**
  *
@@ -35,7 +36,12 @@ export class TfIdfChunkSearch implements SemanticSearch {
 		return this.tfidf.tfidfs(query);
 	}
 
-	searchChunks(items: string[], maxResults: number, options: SearchOptions, cancellationToken: CancellationToken): Promise<any[]> {
+	searchChunks(
+		items: string[],
+		maxResults: number,
+		options: SearchOptions,
+		cancellationToken: CancellationToken,
+	): Promise<any[]> {
 		let values = items.map(async item => {
 			return this.search(item);
 		});

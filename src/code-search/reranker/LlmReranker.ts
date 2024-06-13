@@ -1,10 +1,11 @@
-import { Chunk } from "../chunk/_base/Chunk";
-import { Reranker } from "./Reranker";
-import { getBasename } from "../utils/IndexPathHelper";
-import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
-import { PromptManager } from "../../prompt-manage/PromptManager";
-import { ActionType } from "../../prompt-manage/ActionType";
-import { OpenAICompletion } from "../../llm-provider/OpenAICompletion";
+import { AutoDevExtension } from 'src/AutoDevExtension';
+
+import { ActionType } from '../../prompt-manage/ActionType';
+import { PromptManager } from '../../prompt-manage/PromptManager';
+import { TemplateContext } from '../../prompt-manage/template/TemplateContext';
+import { Chunk } from '../chunk/_base/Chunk';
+import { getBasename } from '../utils/IndexPathHelper';
+import { Reranker } from './Reranker';
 
 export interface RerankContext extends TemplateContext {
 	query: string;
@@ -12,19 +13,15 @@ export interface RerankContext extends TemplateContext {
 	document: string;
 }
 
-const RERANK_PROMPT = async (
-	query: string,
-	documentId: string,
-	document: string,
-) => {
+const RERANK_PROMPT = async (query: string, documentId: string, document: string, promptManager: PromptManager) => {
 	const context: RerankContext = {
 		query,
 		documentId,
 		document,
-		language: ""
+		language: '',
 	};
 
-	let instruction = await PromptManager.getInstance().generateInstruction(ActionType.LlmReranker, context);
+	let instruction = await promptManager.generateInstruction(ActionType.LlmReranker, context);
 	return instruction;
 };
 
@@ -32,41 +29,34 @@ const RERANK_PROMPT = async (
  * The LLMReranker class implements the Reranker interface and provides functionality to rerank chunks of text using a language model.
  */
 export class LLMReranker implements Reranker {
-	name = "llmReranker";
+	name = 'llmReranker';
 
-	constructor(private readonly llm: OpenAICompletion) {
-	}
+	constructor(private extension: AutoDevExtension) {}
 
 	async scoreChunk(chunk: Chunk, query: string): Promise<number> {
-		let prompt = await RERANK_PROMPT(query, getBasename(chunk.filepath), chunk.content);
+		let prompt = await RERANK_PROMPT(query, getBasename(chunk.filepath), chunk.content, this.extension.promptManager);
 
-		const completion = await this.llm.complete(prompt);
+		const completion = await this.extension.lm.completion(prompt);
 
 		if (!completion) {
 			// TODO: Why is this happening?
 			return 0.0;
 		}
 
-		let answer = completion
-			.trim()
-			.toLowerCase()
-			.replace(/"/g, "")
-			.replace(/'/g, "");
+		let answer = completion.trim().toLowerCase().replace(/"/g, '').replace(/'/g, '');
 
-		if (answer === "yes") {
+		if (answer === 'yes') {
 			return 1.0;
-		} else if (answer === "no") {
+		} else if (answer === 'no') {
 			return 0.0;
 		} else {
-			console.warn(
-				`Unexpected response from single token reranker: "${answer}". Expected "yes" or "no".`,
-			);
+			console.warn(`Unexpected response from single token reranker: "${answer}". Expected "yes" or "no".`);
 			return 0.0;
 		}
 	}
 
 	async rerank(query: string, chunks: Chunk[]): Promise<number[]> {
-		const scores = await Promise.all(chunks.map((chunk) => this.scoreChunk(chunk, query)),);
+		const scores = await Promise.all(chunks.map(chunk => this.scoreChunk(chunk, query)));
 		return scores;
 	}
 }

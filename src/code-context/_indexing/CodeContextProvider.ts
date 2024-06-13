@@ -1,4 +1,2 @@
 // todo
-export class CodeContextProvider {
-
-}
+export class CodeContextProvider {}

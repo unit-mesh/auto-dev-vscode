@@ -1,5 +1,5 @@
-import { TextRange } from "../model/TextRange";
-import { NodeKind } from "./NodeKind";
+import { TextRange } from '../model/TextRange';
+import { NodeKind } from './NodeKind';
 
 export class LocalImport extends NodeKind {
 	range: TextRange;

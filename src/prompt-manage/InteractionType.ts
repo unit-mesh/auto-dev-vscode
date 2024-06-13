@@ -3,5 +3,5 @@ export enum InteractionType {
 	AppendCursor = 'AppendCursor',
 	AppendCursorStream = 'AppendCursorStream',
 	OutputFile = 'OutputFile',
-	ReplaceSelection = 'ReplaceSelection'
+	ReplaceSelection = 'ReplaceSelection',
 }

@@ -1,11 +1,11 @@
+import { LanguageProfileUtil } from '../../code-context/_base/LanguageProfile';
+import { ChunkWithoutID } from '../../code-search/chunk/_base/Chunk';
+import { CollapsedCodeChunker } from '../../code-search/chunk/_base/CollapsedCodeChunker';
+import { TestLanguageServiceProvider } from '../../test/TestLanguageService';
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 
-const Parser = require("web-tree-sitter");
-
-import { ChunkWithoutID } from "../../code-search/chunk/_base/Chunk";
-import { TestLanguageService } from "../TestLanguageService";
-import { CollapsedCodeChunker } from "../../code-search/chunk/_base/CollapsedCodeChunker";
-import { LanguageProfileUtil } from "../../code-context/_base/LanguageProfile";
+const Parser = require('web-tree-sitter');
 
 describe('CodeChunk for Java', () => {
 	let parser: any;
@@ -14,8 +14,8 @@ describe('CodeChunk for Java', () => {
 		await Parser.init();
 		parser = new Parser();
 
-		const languageService = new TestLanguageService(parser);
-		const language = await LanguageProfileUtil.from("java")!!.grammar(languageService, "java")!!;
+		const languageService = new TestLanguageServiceProvider(parser);
+		const language = await LanguageProfileUtil.from('java')!!.grammar(languageService, 'java')!!;
 		parser.setLanguage(language);
 	});
 
@@ -63,7 +63,7 @@ ${nodeCode}
 ${graphCode}
 `;
 		let chunker = new CollapsedCodeChunker();
-		let codeChunker: AsyncGenerator<ChunkWithoutID> = chunker.parsedCodeChunker(parser, sampleCode, 100, "java");
+		let codeChunker: AsyncGenerator<ChunkWithoutID> = chunker.parsedCodeChunker(parser, sampleCode, 100, 'java');
 		const results = [];
 
 		for await (let chunk of codeChunker) {

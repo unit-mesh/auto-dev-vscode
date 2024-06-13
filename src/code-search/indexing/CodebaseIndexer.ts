@@ -13,41 +13,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { CodebaseIndex, IndexingProgressUpdate, IndexTag, } from "./_base/CodebaseIndex";
-import { LanceDbIndex } from "./LanceDbIndex";
-import { IdeAction } from "../../editor/editor-api/IdeAction";
-import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
-import { getComputeDeleteAddRemove } from "../refreshIndex";
-import { FullTextSearchCodebaseIndex } from "./FullTextSearchCodebaseIndex";
-import { ChunkCodebaseIndex } from "./ChunkCodebaseIndex";
-import { CodeSnippetsCodebaseIndex } from "./CodeSnippetsCodebaseIndex";
+import { CancellationToken } from 'vscode';
+
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { VSCodeAction } from '../../editor/editor-api/VSCodeAction';
+import { ChunkerManager } from '../chunk/ChunkerManager';
+import { SqliteDb } from '../database/SqliteDb';
+import { getComputeDeleteAddRemove } from '../refreshIndex';
+import { CodebaseIndex, IndexingProgressUpdate, IndexTag } from './_base/CodebaseIndex';
+import { ChunkCodebaseIndex } from './ChunkCodebaseIndex';
+import { CodeSnippetsCodebaseIndex } from './CodeSnippetsCodebaseIndex';
+import { FullTextSearchCodebaseIndex } from './FullTextSearchCodebaseIndex';
+import { GlobalCacheCodeBaseIndex } from './GlobalCacheCodeBaseIndex';
+import { LanceDbIndex } from './LanceDbIndex';
 
 export class CodebaseIndexer {
-	ide: IdeAction;
-	embeddingsProvider: EmbeddingsProvider;
+	constructor(
+		private ide: VSCodeAction,
+		private db: LanceDbIndex,
+		private lsp: ILanguageServiceProvider,
+		private chunkerManager: ChunkerManager,
+	) {}
 
-	constructor(embeddingsProvider: EmbeddingsProvider, ideAction: IdeAction) {
-		this.ide = ideAction;
-		this.embeddingsProvider = embeddingsProvider;
-	}
-
-	private async getIndexesToBuild(): Promise<CodebaseIndex[]> {
+	private getIndexesToBuild(): CodebaseIndex[] {
 		return [
-			new CodeSnippetsCodebaseIndex(this.ide),
-			new ChunkCodebaseIndex(this.ide.readFile.bind(this.ide)),
+			new CodeSnippetsCodebaseIndex(this.ide, this.lsp),
+			new ChunkCodebaseIndex(this.lsp, this.ide.readFile.bind(this.ide), this.chunkerManager),
 			new FullTextSearchCodebaseIndex(),
-			new LanceDbIndex(
-				this.embeddingsProvider,
-				this.ide.readFile.bind(this.ide),
-			)
+			this.db,
 		];
 	}
 
-	async* refresh(
-		workspaceDirs: string[],
-		abortSignal: AbortSignal,
-	): AsyncGenerator<IndexingProgressUpdate> {
-		const indexesToBuild = await this.getIndexesToBuild();
+	async *refresh(workspaceDirs: string[], token: CancellationToken): AsyncGenerator<IndexingProgressUpdate> {
+		const db = await SqliteDb.get();
+
+		const globalCacheIndex = new GlobalCacheCodeBaseIndex(db);
+		const indexesToBuild = this.getIndexesToBuild();
 
 		let completedDirs = 0;
 
@@ -56,13 +58,13 @@ export class CodebaseIndexer {
 		if (workspaceDirs.length > 0) {
 			let repoName = await this.ide.getRepoName(workspaceDirs[0]);
 			if (!repoName) {
-				console.error("Repo name not found");
+				console.error('Repo name not found');
 			}
 		}
 
 		yield {
 			progress: 0,
-			desc: "Starting indexing...",
+			desc: 'Starting indexing...',
 		};
 
 		for (let directory of workspaceDirs) {
@@ -79,54 +81,47 @@ export class CodebaseIndexer {
 						artifactId: codebaseIndex.artifactId,
 					};
 					const [results, markComplete] = await getComputeDeleteAddRemove(
+						globalCacheIndex,
 						tag,
 						{ ...stats },
-						(filepath) => this.ide.readFile(filepath),
+						filepath => this.ide.readFile(filepath),
 						repoName,
 					);
 
-					for await (let { progress, desc } of codebaseIndex.update(
-						tag,
-						results,
-						markComplete,
-						repoName,
-					)) {
+					for await (let { progress, desc } of codebaseIndex.update(tag, results, markComplete, repoName)) {
 						// Handle pausing in this loop because it's the only one really taking time
-						if (abortSignal.aborted) {
+						if (token.isCancellationRequested) {
 							yield {
 								progress: 1,
-								desc: "Indexing cancelled",
+								desc: 'Indexing cancelled',
 							};
 							return;
 						}
+
 						// while (this.pauseToken.paused) {
 						// 	await new Promise((resolve) => setTimeout(resolve, 100));
 						// }
 
 						yield {
-							progress:
-								(completedDirs +
-									(completedIndexes + progress) / indexesToBuild.length) /
-								workspaceDirs.length,
+							progress: (completedDirs + (completedIndexes + progress) / indexesToBuild.length) / workspaceDirs.length,
 							desc,
 						};
 					}
 					completedIndexes++;
 					yield {
-						progress:
-							(completedDirs + completedIndexes / indexesToBuild.length) /
-							workspaceDirs.length,
-						desc: "Completed indexing " + codebaseIndex.artifactId,
+						progress: (completedDirs + completedIndexes / indexesToBuild.length) / workspaceDirs.length,
+						desc: 'Completed indexing ' + codebaseIndex.artifactId,
 					};
 				}
 			} catch (e) {
-				console.warn("Error refreshing index: ", e);
+				console.warn('Error refreshing index: ', e);
 			}
 
 			completedDirs++;
+
 			yield {
 				progress: completedDirs / workspaceDirs.length,
-				desc: "Indexing Complete",
+				desc: 'Indexing Complete',
 			};
 		}
 	}

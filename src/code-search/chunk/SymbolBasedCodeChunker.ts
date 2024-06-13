@@ -1,5 +1,5 @@
-import { Chunker, ChunkWithoutID } from "./_base/Chunk";
-import { ConstructCodeChunker } from "./ConstructCodeChunker";
+import { Chunker, ChunkWithoutID } from './_base/Chunk';
+import { ConstructCodeChunker } from './ConstructCodeChunker';
 
 /**
  * SymbolChunker will build with symbol information, the symbol information will be used to build the [ScopeGraph]

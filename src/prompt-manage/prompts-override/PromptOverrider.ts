@@ -1,3 +1,1 @@
-export class PromptOverrider {
-
-}
+export class PromptOverrider {}

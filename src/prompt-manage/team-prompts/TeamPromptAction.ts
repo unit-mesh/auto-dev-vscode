@@ -1,4 +1,4 @@
-import { CustomActionPrompt } from "../custom-action/CustomActionPrompt";
+import { CustomActionPrompt } from '../custom-action/CustomActionPrompt';
 
 export interface TeamPromptAction {
 	actionName: string;

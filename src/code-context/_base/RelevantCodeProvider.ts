@@ -1,8 +1,9 @@
-import { CodeFile } from "../../editor/codemodel/CodeElement";
-import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { TreeSitterFile } from "../ast/TreeSitterFile";
-import { NamedElement } from "../../editor/ast/NamedElement";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
+import { LanguageIdentifier } from 'base/common/languages/languages';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { NamedElement } from '../../editor/ast/NamedElement';
+import { CodeFile } from '../../editor/codemodel/CodeElement';
+import { TreeSitterFile } from '../ast/TreeSitterFile';
 
 /**
  * The `RelatedProvider` class provides methods for retrieving input and output structures related to a given symbol.
@@ -13,9 +14,9 @@ import { TSLanguageService } from "../../editor/language/service/TSLanguageServi
  * @interface RelevantCodeProvider
  */
 export interface RelevantCodeProvider {
-	language: SupportedLanguage;
+	language: LanguageIdentifier;
 
-	setupLanguage(defaultLanguageService: TSLanguageService): void;
+	setupLanguage(defaultLanguageServiceProvider: ILanguageServiceProvider): void;
 
 	/**
 	 * Returns the fan-in and fan-out of the given method.

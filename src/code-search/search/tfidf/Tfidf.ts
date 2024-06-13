@@ -20,23 +20,177 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 let ourStopwords = [
-	'about', 'above', 'after', 'again', 'all', 'also', 'am', 'an', 'and', 'another',
-	'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below',
-	'between', 'both', 'but', 'by', 'came', 'can', 'cannot', 'come', 'could', 'did',
-	'do', 'does', 'doing', 'during', 'each', 'few', 'for', 'from', 'further', 'get',
-	'got', 'has', 'had', 'he', 'have', 'her', 'here', 'him', 'himself', 'his', 'how',
-	'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'like', 'make', 'many', 'me',
-	'might', 'more', 'most', 'much', 'must', 'my', 'myself', 'never', 'now', 'of', 'on',
-	'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own',
-	'said', 'same', 'see', 'she', 'should', 'since', 'so', 'some', 'still', 'such', 'take', 'than',
-	'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they',
-	'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was',
-	'way', 'we', 'well', 'were', 'what', 'where', 'when', 'which', 'while', 'who',
-	'whom', 'with', 'would', 'why', 'you', 'your', 'yours', 'yourself',
-	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-	'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '$', '1',
-	'2', '3', '4', '5', '6', '7', '8', '9', '0', '_']
-
+	'about',
+	'above',
+	'after',
+	'again',
+	'all',
+	'also',
+	'am',
+	'an',
+	'and',
+	'another',
+	'any',
+	'are',
+	'as',
+	'at',
+	'be',
+	'because',
+	'been',
+	'before',
+	'being',
+	'below',
+	'between',
+	'both',
+	'but',
+	'by',
+	'came',
+	'can',
+	'cannot',
+	'come',
+	'could',
+	'did',
+	'do',
+	'does',
+	'doing',
+	'during',
+	'each',
+	'few',
+	'for',
+	'from',
+	'further',
+	'get',
+	'got',
+	'has',
+	'had',
+	'he',
+	'have',
+	'her',
+	'here',
+	'him',
+	'himself',
+	'his',
+	'how',
+	'if',
+	'in',
+	'into',
+	'is',
+	'it',
+	'its',
+	'itself',
+	'like',
+	'make',
+	'many',
+	'me',
+	'might',
+	'more',
+	'most',
+	'much',
+	'must',
+	'my',
+	'myself',
+	'never',
+	'now',
+	'of',
+	'on',
+	'only',
+	'or',
+	'other',
+	'our',
+	'ours',
+	'ourselves',
+	'out',
+	'over',
+	'own',
+	'said',
+	'same',
+	'see',
+	'she',
+	'should',
+	'since',
+	'so',
+	'some',
+	'still',
+	'such',
+	'take',
+	'than',
+	'that',
+	'the',
+	'their',
+	'theirs',
+	'them',
+	'themselves',
+	'then',
+	'there',
+	'these',
+	'they',
+	'this',
+	'those',
+	'through',
+	'to',
+	'too',
+	'under',
+	'until',
+	'up',
+	'very',
+	'was',
+	'way',
+	'we',
+	'well',
+	'were',
+	'what',
+	'where',
+	'when',
+	'which',
+	'while',
+	'who',
+	'whom',
+	'with',
+	'would',
+	'why',
+	'you',
+	'your',
+	'yours',
+	'yourself',
+	'a',
+	'b',
+	'c',
+	'd',
+	'e',
+	'f',
+	'g',
+	'h',
+	'i',
+	'j',
+	'k',
+	'l',
+	'm',
+	'n',
+	'o',
+	'p',
+	'q',
+	'r',
+	's',
+	't',
+	'u',
+	'v',
+	'w',
+	'x',
+	'y',
+	'z',
+	'$',
+	'1',
+	'2',
+	'3',
+	'4',
+	'5',
+	'6',
+	'7',
+	'8',
+	'9',
+	'0',
+	'_',
+];
 
 declare type DocumentType = string | string[] | Record<string, string>;
 declare type TfIdfCallback = (i: number, measure: number, key?: string | Record<string, any>) => void;
@@ -55,20 +209,18 @@ export class Tokenizer {
 	}
 }
 
-
 export declare interface RegexTokenizerOptions {
-	pattern?: RegExp
-	discardEmpty?: boolean
-	gaps?: boolean
+	pattern?: RegExp;
+	discardEmpty?: boolean;
+	gaps?: boolean;
 }
-
 
 export class RegexpTokenizer extends Tokenizer {
 	_pattern: RegExp = /\s+/;
 	discardEmpty: boolean = true;
 	_gaps: boolean | undefined;
 
-	constructor (opts?: RegexTokenizerOptions) {
+	constructor(opts?: RegexTokenizerOptions) {
 		super();
 		const options = opts || {};
 		this._pattern = options.pattern || this._pattern;
@@ -82,12 +234,12 @@ export class RegexpTokenizer extends Tokenizer {
 		}
 	}
 
-	tokenize (s: string): string[] {
+	tokenize(s: string): string[] {
 		let results;
 
 		if (this._gaps) {
 			results = s.split(this._pattern);
-			return (this.discardEmpty) ? this.without(results, '', ' ') : results;
+			return this.discardEmpty ? this.without(results, '', ' ') : results;
 		} else {
 			results = s.match(this._pattern);
 			if (results) {
@@ -104,7 +256,7 @@ export class RegexpTokenizer extends Tokenizer {
 }
 
 export class WordTokenizer extends RegexpTokenizer {
-	constructor (options?: RegexTokenizerOptions) {
+	constructor(options?: RegexTokenizerOptions) {
 		super(options);
 		this._pattern = /[^A-Za-zА-Яа-я0-9_]+/;
 	}
@@ -138,12 +290,13 @@ export class TfIdf<K, V> {
 		}
 
 		// Count the number of documents that contain the term
-		const docsWithTerm = this.documents.reduce((count: number, document: DocumentType) =>
-			count + (this_.documentHasTerm(term, document) ? 1 : 0), 0
+		const docsWithTerm = this.documents.reduce(
+			(count: number, document: DocumentType) => count + (this_.documentHasTerm(term, document) ? 1 : 0),
+			0,
 		);
 
 		// Compute the inverse document frequency
-		const idf = 1 + Math.log((this.documents.length) / (1 + docsWithTerm));
+		const idf = 1 + Math.log(this.documents.length / (1 + docsWithTerm));
 
 		// Add the idf to the term cache and return it
 		this._idfCache[term] = idf;
@@ -168,17 +321,20 @@ export class TfIdf<K, V> {
 			return text;
 		}
 
-		return text.reduce(function (document: any, term: string) {
-			// next line solves https://github.com/NaturalNode/natural/issues/119
-			if (typeof document[term] === 'function') {
-				document[term] = 0;
-			}
-			if (!stopOut || ourStopwords.indexOf(term) < 0) {
-				document[term] = (document[term] ? document[term] + 1 : 1);
-			}
+		return text.reduce(
+			function (document: any, term: string) {
+				// next line solves https://github.com/NaturalNode/natural/issues/119
+				if (typeof document[term] === 'function') {
+					document[term] = 0;
+				}
+				if (!stopOut || ourStopwords.indexOf(term) < 0) {
+					document[term] = document[term] ? document[term] + 1 : 1;
+				}
 
-			return document;
-		}, { __key: key });
+				return document;
+			},
+			{ __key: key },
+		);
 	}
 
 	// If restoreCache is set to true, all terms idf scores currently cached will be recomputed.
@@ -225,7 +381,7 @@ export class TfIdf<K, V> {
 		return terms.reduce(function (value, term) {
 			let idf = _this.idf(term);
 			idf = idf === Infinity ? 0 : idf;
-			return value + (TfIdf.tf(term, _this.documents[d]) * idf);
+			return value + TfIdf.tf(term, _this.documents[d]) * idf;
 		}, 0.0);
 	}
 
@@ -240,7 +396,7 @@ export class TfIdf<K, V> {
 						term,
 						tf: TfIdf.tf(term, _this.documents[d]),
 						idf: _this.idf(term),
-						tfidf: _this.tfidf(term, d)
+						tfidf: _this.tfidf(term, d),
 					});
 				}
 			}
@@ -282,7 +438,7 @@ export class TfIdf<K, V> {
 
 		let wrongElement = false;
 		customStopwords.forEach(stopword => {
-			if ((typeof stopword) !== 'string') {
+			if (typeof stopword !== 'string') {
 				wrongElement = true;
 			}
 		});

@@ -1,22 +1,27 @@
-import * as vscode from "vscode";
-import { l10n } from "vscode";
+import * as vscode from 'vscode';
 
-import { SUPPORTED_LANGUAGES, SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { AutoDevExtension } from "../../AutoDevExtension";
-import { TreeSitterFile, TreeSitterFileError } from "../../code-context/ast/TreeSitterFile";
-import { NamedElement } from "../../editor/ast/NamedElement";
-import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
-import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
-import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
+import { CMD_SHOW_QUICK_ACTION } from 'base/common/configuration/configuration';
+import { SUPPORTED_LANGUAGES } from 'base/common/languages/languages';
+import { logger } from 'base/common/log/log';
 
-export class AutoDevCodeLensProvider implements vscode.CodeLensProvider, vscode.Disposable {
+import { AutoDevExtension } from '../../AutoDevExtension';
+import { convertToErrorMessage, TreeSitterFile, TreeSitterFileError } from '../../code-context/ast/TreeSitterFile';
+import { NamedElement } from '../../editor/ast/NamedElement';
+import { NamedElementBuilder } from '../../editor/ast/NamedElementBuilder';
+import { TreeSitterFileManager } from '../../editor/cache/TreeSitterFileManager';
+
+export class AutoDevCodeLensProvider implements vscode.CodeLensProvider {
 	private _eventEmitter: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
 	onDidChangeCodeLenses: vscode.Event<void> = this._eventEmitter.event;
 
 	private onDidChangeTextDocument: vscode.Disposable;
 
-	constructor(private readonly context: AutoDevExtension) {
-		this.onDidChangeTextDocument = vscode.workspace.onDidChangeTextDocument(async (event) => {
+	private treeSitterFileManager: TreeSitterFileManager;
+
+	constructor(private readonly autodev: AutoDevExtension) {
+		this.treeSitterFileManager = autodev.treeSitterFileManager;
+
+		this.onDidChangeTextDocument = vscode.workspace.onDidChangeTextDocument(async event => {
 			if (SUPPORTED_LANGUAGES.includes(event.document.languageId)) {
 				this.refresh();
 			}
@@ -32,64 +37,77 @@ export class AutoDevCodeLensProvider implements vscode.CodeLensProvider, vscode.
 		this._eventEmitter.fire();
 	}
 
-	provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.CodeLens[]> {
-		return (async () => {
-			const languageId = document.languageId as SupportedLanguage;
-			if (!SUPPORTED_LANGUAGES.includes(languageId)) {
-				return [];
-			}
+	async provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.CodeLens[]> {
+		const languageId = document.languageId;
+		if (!SUPPORTED_LANGUAGES.includes(languageId)) {
+			return [];
+		}
 
+		try {
 			let tsfile: TreeSitterFile;
 			/// todo: for a simple file, we can just don't use cache, since we update algorithm is not correct
 			if (document.lineCount > 256) {
 				const src = document.getText();
 				const langId = document.languageId;
-				tsfile = await TreeSitterFile.create(src, langId, new DefaultLanguageService(), document.uri.fsPath);
+				tsfile = await TreeSitterFile.create(src, langId, this.autodev.lsp, document.uri.fsPath);
 			} else {
-				tsfile = await TreeSitterFileManager.create(document);
+				tsfile = await this.treeSitterFileManager.create(document);
 			}
 
 			let tsFileElementBuilder = new NamedElementBuilder(tsfile);
 			return this.buildForLens(tsFileElementBuilder, document);
-		})();
+		} catch (e) {
+			if (typeof e === 'number') {
+				logger.debug('(codelens): parse error:', convertToErrorMessage(e));
+			} else if (e instanceof Error) {
+				logger.debug('(codelens): error', e);
+			} else {
+				logger.debug('(codelens): Unkown error', e);
+			}
+		}
+
+		return [];
 	}
 
 	private buildForLens(builder: NamedElementBuilder, document: vscode.TextDocument) {
 		const classRanges: NamedElement[] | TreeSitterFileError = builder.buildClass();
 		const methodRanges: NamedElement[] | TreeSitterFileError = builder.buildMethod();
 
-		let elements = classRanges.concat(methodRanges);
-		const testLens = this.setupTestCodeLen(elements, document);
+		const elements = classRanges.concat(methodRanges);
 		const chatLens = this.setupQuickChat(elements, document);
 
-		return ([] as vscode.CodeLens[]).concat(testLens, chatLens);
+		// move to AutoDevExtenstion#showQuickAction?
+		// const testLens = this.setupTestCodeLen(elements, document);
+		// return ([] as vscode.CodeLens[]).concat(testLens, chatLens);
+
+		return chatLens;
 	}
 
-	private setupTestCodeLen(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
-		return methodRanges.map((namedElement) => {
-			if (namedElement.isTestFile()) {
-				return;
-			}
+	// private setupTestCodeLen(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
+	// 	return methodRanges
+	// 		.map(namedElement => {
+	// 			if (namedElement.isTestFile()) {
+	// 				return;
+	// 			}
 
-			const title = l10n.t("AutoTest");
-			return new vscode.CodeLens(namedElement.identifierRange, {
-				title,
-				command: "autodev.autoTest",
-				arguments: [document, namedElement, new vscode.WorkspaceEdit()],
-			});
-		})
-			.filter((lens): lens is vscode.CodeLens => !!lens);
-	}
+	// 			const title = l10n.t('AutoTest');
+	// 			return new vscode.CodeLens(namedElement.identifierRange, {
+	// 				title,
+	// 				command: 'autodev.autoTest',
+	// 				arguments: [document, namedElement, new vscode.WorkspaceEdit()],
+	// 			});
+	// 		})
+	// 		.filter((lens): lens is vscode.CodeLens => !!lens);
+	// }
 
 	private setupQuickChat(methodRanges: NamedElement[], document: vscode.TextDocument): vscode.CodeLens[] {
-		return methodRanges.map((range) => {
+		return methodRanges.map(range => {
 			const title = `$(autodev-icon)$(chevron-down)`;
 			return new vscode.CodeLens(range.identifierRange, {
 				title,
-				command: "autodev.action.quickAction",
+				command: CMD_SHOW_QUICK_ACTION,
 				arguments: [document, range],
 			});
 		});
 	}
 }
-

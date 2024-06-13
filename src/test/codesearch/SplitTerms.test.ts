@@ -1,11 +1,18 @@
-import { TermSplitter } from "../../code-search/search/tfidf/TermSplitter";
+import { TermSplitter } from '../../code-search/search/tfidf/TermSplitter';
 
 describe('TermSplitter', () => {
 	describe('splitTerms', () => {
 		it('should split terms correctly', () => {
 			const input = 'HelloWorld_helloWorld123';
-			const expectedOutput: string[] = ['helloworld_helloworld123', 'hello', 'world_hello', 'world123', 'helloworld',
-				'helloworld123', 'helloworld_helloworld'];
+			const expectedOutput: string[] = [
+				'helloworld_helloworld123',
+				'hello',
+				'world_hello',
+				'world123',
+				'helloworld',
+				'helloworld123',
+				'helloworld_helloworld',
+			];
 
 			const generator = TermSplitter.splitTerms(input);
 			const output = Array.from(generator);

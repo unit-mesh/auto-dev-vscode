@@ -48,7 +48,9 @@ If your self-built service is deployed in a mode that does not support chat, you
 
 ## Enable Legacy Mode
 
-The default is the traditional `/v1/completion` instead of `/v1/chat/completion`, but you can fall back to the old mode.
+The default is the traditional `/v1/completions` instead of `/v1/chat/completions`, but you can fall back to the old mode.
+
+> Only working on openai provider
 
 ```jsonc
 {

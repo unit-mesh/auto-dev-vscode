@@ -1,6 +1,7 @@
-import { TextRange } from "../scope-graph/model/TextRange";
-import { ChunkWithoutID, Chunker } from "./_base/Chunk";
-import { languageFromPath } from "../../editor/language/ExtensionLanguageMap";
+import { inferLanguage } from 'base/common/languages/languages';
+
+import { TextRange } from '../scope-graph/model/TextRange';
+import { Chunker, ChunkWithoutID } from './_base/Chunk';
 
 /**
  * The `LinePartitionChunker` class is an implementation of the `Chunker` interface.
@@ -35,23 +36,25 @@ import { languageFromPath } from "../../editor/language/ExtensionLanguageMap";
  * }
  */
 export class LinePartitionChunker implements Chunker {
-	async* chunk(filepath: string, contents: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
+	async *chunk(filepath: string, contents: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
 		const chunks = this.byLines(contents, maxChunkSize);
-		let language = languageFromPath(filepath);
+		let language = inferLanguage(filepath);
 
 		for (const chunk of chunks) {
 			yield {
 				content: chunk.getText(),
 				startLine: chunk.start.line,
 				endLine: chunk.end.line,
-				language
+				language,
 			};
 		}
 	}
 
 	byLines(source: string, size: number): TextRange[] {
-		const ends = [0, ...Array.from(source.matchAll(/\n/g), match => match.index)]
-			.map((index, lineNumber) => [lineNumber, index]);
+		const ends = [0, ...Array.from(source.matchAll(/\n/g), match => match.index)].map((index, lineNumber) => [
+			lineNumber,
+			index,
+		]);
 
 		const last = source.length - 1;
 		const lastLine = ends.length > 0 ? ends[ends.length - 1][0] : 0;
@@ -67,7 +70,7 @@ export class LinePartitionChunker implements Chunker {
 				return new TextRange(
 					{ byte: startByte, line: startLine, column: 0 },
 					{ byte: endByte, line: endLine, column: 0 },
-					source.substring(startByte, endByte)
+					source.substring(startByte, endByte),
 				);
 			})
 			.filter(chunk => chunk instanceof TextRange);

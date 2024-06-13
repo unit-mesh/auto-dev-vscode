@@ -1,5 +1,5 @@
-import { StreamingMarkdownCodeBlock } from "../../../markdown/StreamingMarkdownCodeBlock";
-import { MarkdownCodeBlock } from "../../../markdown/MarkdownCodeBlock";
+import { MarkdownCodeBlock } from 'base/common/markdown/MarkdownCodeBlock';
+import { StreamingMarkdownCodeBlock } from 'base/common/markdown/StreamingMarkdownCodeBlock';
 
 describe('StreamingMarkdownCodeBlock', () => {
 	describe('parse method', () => {
@@ -42,7 +42,7 @@ describe('StreamingMarkdownCodeBlock', () => {
 
 		it('should correctly parse filter last fenced code blocks', () => {
 			const content = '```javascript\nconsole.log("Hello, JS!");\n```\n```typescript\nconsole.log("Hello, TS!");\n';
-			const parsedBlock = StreamingMarkdownCodeBlock.multiLineCodeBlock(content, "javascript");
+			const parsedBlock = StreamingMarkdownCodeBlock.multiLineCodeBlock(content, 'javascript');
 
 			expect(parsedBlock.language).toBe('javascript');
 			expect(parsedBlock.text).toBe('console.log("Hello, JS!");');

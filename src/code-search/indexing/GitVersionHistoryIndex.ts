@@ -1,14 +1,14 @@
+import { DatabaseConnection } from '../database/SqliteDb';
 import {
 	CodebaseIndex,
-	IndexTag,
 	IndexingProgressUpdate,
+	IndexTag,
 	MarkCompleteCallback,
-	RefreshIndexResults
-} from "./_base/CodebaseIndex";
-import { DatabaseConnection } from "../database/SqliteDb";
+	RefreshIndexResults,
+} from './_base/CodebaseIndex';
 
 export class GitVersionHistoryIndex implements CodebaseIndex {
-	artifactId: string = "gitVersionHistory";
+	artifactId: string = 'gitVersionHistory';
 
 	private static async _createTables(db: DatabaseConnection) {
 		await db.exec(`
@@ -65,7 +65,12 @@ export class GitVersionHistoryIndex implements CodebaseIndex {
 		`);
 	}
 
-	update(tag: IndexTag, results: RefreshIndexResults, markComplete: MarkCompleteCallback, repoName: string | undefined): AsyncGenerator<IndexingProgressUpdate, any, unknown> {
-		throw new Error("Method not implemented.");
+	update(
+		tag: IndexTag,
+		results: RefreshIndexResults,
+		markComplete: MarkCompleteCallback,
+		repoName: string | undefined,
+	): AsyncGenerator<IndexingProgressUpdate, any, unknown> {
+		throw new Error('Method not implemented.');
 	}
 }

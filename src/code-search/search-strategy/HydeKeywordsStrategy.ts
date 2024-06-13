@@ -1,17 +1,17 @@
-import { executeIns, HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
-import { ChunkItem } from "../embedding/_base/Embedding";
-import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
-import { PromptManager } from "../../prompt-manage/PromptManager";
-import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
-import { HydeStep } from "./_base/HydeStep";
-import { ChatMessage } from "../../llm-provider/ChatMessage";
-import { HydeKeywords } from "./_base/HydeKeywords";
-import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
-import { AutoDevExtension } from "../../AutoDevExtension";
-import { channel } from "../../channel";
-import { RetrieveOption } from "../retrieval/Retrieval";
-import { StrategyFinalPrompt } from "./_base/StrategyFinalPrompt";
-import { ContextItem } from "../../context-provider/_base/BaseContextProvider";
+import { IChatMessage } from 'base/common/language-models/languageModels';
+
+import { logger } from 'base/common/log/log';
+
+import { AutoDevExtension } from '../../AutoDevExtension';
+import { ContextItem } from '../../context-provider/_base/BaseContextProvider';
+import { TemplateContext } from '../../prompt-manage/template/TemplateContext';
+import { ChunkItem } from '../embedding/_base/Embedding';
+import { RetrieveOption } from '../retrieval/Retrieval';
+import { HydeDocument, HydeDocumentType } from './_base/HydeDocument';
+import { HydeKeywords } from './_base/HydeKeywords';
+import { HydeStep } from './_base/HydeStep';
+import { executeIns, HydeQuery, HydeStrategy } from './_base/HydeStrategy';
+import { StrategyFinalPrompt } from './_base/StrategyFinalPrompt';
 
 /**
  * The `HydeKeywordsStrategy` class is a part of the Hyde Strategy pattern and is used to generate keywords from a query.
@@ -24,7 +24,7 @@ import { ContextItem } from "../../context-provider/_base/BaseContextProvider";
  */
 export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 	documentType = HydeDocumentType.Keywords;
-	message: ChatMessage[] = [];
+	message: IChatMessage[] = [];
 	query: string;
 	extension: AutoDevExtension;
 	step: HydeStep;
@@ -36,20 +36,20 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 	}
 
 	async instruction(): Promise<string> {
-		let chatContext = await PromptManager.getInstance().collectByCurrentDocument();
+		let chatContext = await this.extension.promptManager.collectByCurrentDocument();
 		let proposeContext: KeywordsProposeContext = {
 			step: this.step,
 			question: this.query,
-			language: "",
-			chatContext: chatContext.map(item => item.text).join("\n - ")
+			language: '',
+			chatContext: chatContext.map(item => item.text).join('\n - '),
 		};
 
-		return await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, proposeContext);
+		return await this.extension.promptManager.renderHydeTemplate(this.step, this.documentType, proposeContext);
 	}
 
 	async generateDocument(): Promise<HydeDocument<HydeKeywords>> {
 		let proposeIns = await this.instruction();
-		channel.appendLine(" --- Generated keyword --- ");
+		logger.appendLine(' --- Generated keyword --- ');
 		let proposeOut = await executeIns(proposeIns);
 		let keywords = HydeKeywords.from(proposeOut);
 		return new HydeDocument<HydeKeywords>(this.documentType, keywords);
@@ -58,7 +58,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
 		let language = undefined;
 		let embeddingsProvider = this.extension.embeddingsProvider!!;
-		let retrieval = DefaultRetrieval.getInstance();
+		let retrieval = this.extension.retrieval;
 		let options: RetrieveOption = {
 			filterDirectory: undefined,
 			filterLanguage: language,
@@ -68,7 +68,10 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		};
 
 		let result: ContextItem[] = await retrieval.retrieve(
-			queryTerm as string, this.extension.ideAction, embeddingsProvider, options
+			queryTerm as string,
+			this.extension.ideAction,
+			embeddingsProvider,
+			options,
 		);
 
 		let chunks: ChunkItem[] = [];
@@ -78,7 +81,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 				text: item.content,
 				path: item.path,
 				range: item.range,
-				embedding: []
+				embedding: [],
 			});
 		});
 
@@ -89,10 +92,10 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		return docs;
 	}
 
-	async execute() : Promise<StrategyFinalPrompt> {
-		channel.appendLine("=".repeat(80));
-		channel.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
-		channel.appendLine("=".repeat(80));
+	async execute(): Promise<StrategyFinalPrompt> {
+		logger.appendLine('='.repeat(80));
+		logger.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
+		logger.appendLine('='.repeat(80));
 
 		this.step = HydeStep.Propose;
 		let documents = await this.generateDocument();
@@ -106,34 +109,38 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		let evaluateContext: KeywordEvaluateContext = {
 			step: this.step,
 			question: keywords.question,
-			code: chunkItems.map(item => item.text).join("\n"),
-			language: ""
+			code: chunkItems.map(item => item.text).join('\n'),
+			language: '',
 		};
 
 		if (chunkItems.length === 0) {
-			channel.appendLine("No code snippets found.");
-			return new StrategyFinalPrompt("", []);
+			logger.appendLine('No code snippets found.');
+			return new StrategyFinalPrompt('', []);
 		}
 
-		channel.appendLine("\n");
-		channel.appendLine(" --- Summary --- ");
-		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);
+		logger.appendLine('\n');
+		logger.appendLine(' --- Summary --- ');
+		let evaluateIns = await this.extension.promptManager.renderHydeTemplate(
+			this.step,
+			this.documentType,
+			evaluateContext,
+		);
 		return new StrategyFinalPrompt(evaluateIns, chunkItems);
 	}
 
 	private createQueryTerm(keywords: HydeKeywords) {
-		return keywords.basic?.[0] + " " + keywords.single?.[0] + " " + keywords.localization?.[0];
+		return keywords.basic?.[0] + ' ' + keywords.single?.[0] + ' ' + keywords.localization?.[0];
 	}
 }
 
 export interface KeywordsProposeContext extends TemplateContext {
-	step: HydeStep,
-	question: string,
-	chatContext: string
+	step: HydeStep;
+	question: string;
+	chatContext: string;
 }
 
 export interface KeywordEvaluateContext extends TemplateContext {
-	step: HydeStep,
-	question: string,
-	code: string,
+	step: HydeStep;
+	question: string;
+	code: string;
 }

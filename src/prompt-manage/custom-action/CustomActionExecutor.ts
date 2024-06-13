@@ -1,18 +1,26 @@
-import { CustomActionTemplateContext } from "./CustomActionTemplateContext";
-import { LlmProvider } from "../../llm-provider/LlmProvider";
-import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
-import { CustomActionPrompt } from "./CustomActionPrompt";
-import { InteractionType } from "../InteractionType";
-import vscode, { TextEditor } from "vscode";
-import { FileGenerateTask } from "../executor/FileGenerateTask";
-import { TemplateRender } from "../template/TemplateRender";
-import { AutoDevExtension } from "../../AutoDevExtension";
+import { newChatSession } from 'src/commands/commands';
+import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
+import vscode, { CancellationTokenSource, TextEditor } from 'vscode';
+
+import { AutoDevExtension } from '../../AutoDevExtension';
+import { AutoDevStatus, AutoDevStatusManager } from '../../editor/editor-api/AutoDevStatusManager';
+import { FileGenerateTask } from '../executor/FileGenerateTask';
+import { InteractionType } from '../InteractionType';
+import { TemplateRender } from '../template/TemplateRender';
+import { CustomActionPrompt } from './CustomActionPrompt';
+import { CustomActionTemplateContext } from './CustomActionTemplateContext';
 
 export class CustomActionExecutor {
-	public static async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt, extension: AutoDevExtension) {
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
-		const compiler = new TemplateRender();
-		const messages = prompt.messages.map((msg) => {
+	constructor(
+		private lm: LanguageModelsService,
+		private compiler: TemplateRender,
+		private statusBarManager: AutoDevStatusManager,
+	) {}
+
+	async execute(context: CustomActionTemplateContext, prompt: CustomActionPrompt, extension: AutoDevExtension) {
+		this.statusBarManager.setStatus(AutoDevStatus.InProgress);
+		const compiler = this.compiler;
+		const messages = prompt.messages.map(msg => {
 			return {
 				role: msg.role,
 				content: compiler.render(msg.content, context),
@@ -21,21 +29,29 @@ export class CustomActionExecutor {
 
 		console.info(`request: ${JSON.stringify(messages)}`);
 
-		let llm = LlmProvider.codeCompletion();
-		let output: string = "";
+		let output: string = '';
+
+		const cancellation = new CancellationTokenSource();
 
 		try {
-			for await (const chunk of llm._streamChat(messages)) {
-				output += chunk.content;
-			}
+			await this.lm.chat(
+				messages,
+				{},
+				{
+					report(fragment) {
+						output += fragment.part;
+					},
+				},
+				cancellation.token,
+			);
 		} catch (e) {
 			console.error(e);
-			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
+			this.statusBarManager.setStatus(AutoDevStatus.Error);
 			return Promise.reject(e);
 		}
 		console.info(`result: ${output}`);
 
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
+		this.statusBarManager.setStatus(AutoDevStatus.Done);
 
 		await CustomActionExecutor.handleOutput(prompt, output, extension);
 	}
@@ -48,7 +64,7 @@ export class CustomActionExecutor {
 
 		switch (prompt.interaction) {
 			case InteractionType.ChatPanel:
-				await extension.sidebar.webviewProtocol.request("newSessionWithPrompt", { input: outputText });
+				await newChatSession(outputText);
 				break;
 			case InteractionType.AppendCursor:
 				CustomActionExecutor.insertText(editor, outputText);
@@ -57,10 +73,7 @@ export class CustomActionExecutor {
 				CustomActionExecutor.insertText(editor, outputText);
 				break;
 			case InteractionType.OutputFile:
-				let generateTask = new FileGenerateTask(
-					vscode.workspace.getWorkspaceFolder(editor.document.uri)!!,
-					outputText,
-				);
+				let generateTask = new FileGenerateTask(vscode.workspace.getWorkspaceFolder(editor.document.uri)!!, outputText);
 
 				await generateTask.run();
 				break;
@@ -73,13 +86,13 @@ export class CustomActionExecutor {
 	}
 
 	private static insertText(editor: TextEditor, inputText: string) {
-		vscode.window.activeTextEditor?.edit((editBuilder) => {
+		vscode.window.activeTextEditor?.edit(editBuilder => {
 			editBuilder.insert(editor.selection.active, inputText);
 		});
 	}
 
 	private static updateText(editor: TextEditor, inputText: string) {
-		vscode.window.activeTextEditor?.edit((editBuilder) => {
+		vscode.window.activeTextEditor?.edit(editBuilder => {
 			editBuilder.replace(editor.selection, inputText);
 		});
 	}

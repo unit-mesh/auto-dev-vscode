@@ -1,34 +1,31 @@
-import { TemplateLoader } from "./TemplateLoader";
-import { getExtensionUri } from "../../context";
-import { Uri } from "vscode";
+import { Uri } from 'vscode';
+
+import { TemplateLoader } from './TemplateLoader';
 
 export class VSCodeTemplateLoader extends TemplateLoader {
-	private extensionUri: Uri | undefined;
-
-	constructor() {
+	constructor(private extensionUri: Uri) {
 		super();
-		this.extensionUri = getExtensionUri();
 	}
 
 	async load(filepath: string): Promise<string> {
 		if (!this.extensionUri) {
-			throw new Error("Extension URI is not defined");
+			throw new Error('Extension URI is not defined');
 		}
 
-		const templateUri = Uri.joinPath(this.extensionUri,  filepath);
+		const templateUri = Uri.joinPath(this.extensionUri, filepath);
 		return await this.readFile(templateUri.fsPath);
 	}
 
 	private async readFile(filepath: string): Promise<string> {
-		const fs = require("fs");
+		const fs = require('fs');
 		return new Promise((resolve, reject) =>
-			fs.readFile(filepath, "utf8", (err: any, data: any) => {
+			fs.readFile(filepath, 'utf8', (err: any, data: any) => {
 				if (err) {
 					reject(err);
 				} else {
 					resolve(data);
 				}
-			})
+			}),
 		);
 	}
 }

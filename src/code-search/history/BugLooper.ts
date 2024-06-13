@@ -1,4 +1,4 @@
-import { HistoryAgent } from "./_base/HistoryAgent";
+import { HistoryAgent } from './_base/HistoryAgent';
 
 /**
  * The BugLooperTool class is an exquisite TypeScript class that offers a sophisticated suite of functionalities related to time travel.
@@ -11,8 +11,8 @@ import { HistoryAgent } from "./_base/HistoryAgent";
  * This class is a powerful tool for developers to track and understand the evolution of their codebase.
  */
 export class BugLooper extends HistoryAgent {
-	name: string = "BugLooper";
-	description: string = "BugLooper is a tool that helps you to track and understand the evolution of your codebase.";
+	name: string = 'BugLooper';
+	description: string = 'BugLooper is a tool that helps you to track and understand the evolution of your codebase.';
 
 	/**
 	 * The summaryCommit method is used to summarize the changes made in a commit.
@@ -24,9 +24,7 @@ export class BugLooper extends HistoryAgent {
 	/**
 	 * The whoIsKiller method is used to identify the author of a commit.
 	 */
-	whoIsKiller() {
-
-	}
+	whoIsKiller() {}
 
 	/**
 	 * The history method is used to provide a comprehensive view of the history of commits.

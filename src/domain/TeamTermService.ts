@@ -1,29 +1,22 @@
-import vscode from "vscode";
-import path from "path";
-import fs from "fs";
 import { parse } from 'csv-parse';
-import { injectable } from "inversify";
+import fs from 'fs';
+import { inject, injectable } from 'inversify';
+import path from 'path';
+import vscode from 'vscode';
 
-import { Service } from "../service/Service";
-import { TeamTerm } from "./TeamTerm";
-import { SettingService } from "../settings/SettingService";
+import { ConfigurationService } from 'base/common/configuration/configurationService';
+
+import { Service } from '../service/Service';
+import { TeamTerm } from './TeamTerm';
 
 @injectable()
 export class TeamTermService implements Service {
 	terms: TeamTerm[] = [];
 
-	private static instance_: TeamTermService;
-
-	static instance() {
-		if (!this.instance_) {
-			this.instance_ = new TeamTermService();
-		}
-
-		return this.instance_;
-	}
-
-	constructor() {
-	}
+	constructor(
+		@inject(ConfigurationService)
+		private configService: ConfigurationService,
+	) {}
 
 	fetch(): TeamTerm[] {
 		if (this.terms.length) {
@@ -41,7 +34,7 @@ export class TeamTermService implements Service {
 			throw new Error('No workspace found');
 		}
 
-		let promptsDir = SettingService.instance().customPromptsDir();
+		let promptsDir = this.configService.get<string>('customPromptsDir', 'prompts');
 		const csvPath = path.join(workspace.uri.fsPath, promptsDir, paths);
 
 		if (!fs.existsSync(csvPath)) {
@@ -54,7 +47,7 @@ export class TeamTermService implements Service {
 		const parser = parse({
 			delimiter: ',',
 			columns: true,
-			skip_empty_lines: true
+			skip_empty_lines: true,
 		});
 
 		file.pipe(parser);
@@ -63,11 +56,11 @@ export class TeamTermService implements Service {
 
 		parser.on('readable', function () {
 			let record;
-			while (record = parser.read()) {
+			while ((record = parser.read())) {
 				terms.push({
 					id: record.id,
 					term: record.term,
-					localized: record.localized
+					localized: record.localized,
 				});
 			}
 		});

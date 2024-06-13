@@ -1,14 +1,15 @@
-import { injectable } from "inversify";
+import { injectable } from 'inversify';
 
-import { MemoizedQuery, LanguageProfile } from "../_base/LanguageProfile";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
 import goscm from '../../code-search/schemas/indexes/go.scm?raw';
+import { LanguageProfile, MemoizedQuery } from '../_base/LanguageProfile';
 
 @injectable()
 export class GolangProfile implements LanguageProfile {
-	languageIds = ["Go"];
-	fileExtensions = ["go"];
-	grammar = (langService: TSLanguageService) => langService.getLanguage('go');
+	languageIds = ['Go'];
+	fileExtensions = ['go'];
+	grammar = (langService: ILanguageServiceProvider) => langService.getLanguage('go');
 	isTestFile = (filePath: string) => filePath.endsWith('_test.go');
 	scopeQuery = new MemoizedQuery(goscm);
 	hoverableQuery = new MemoizedQuery(`
@@ -19,11 +20,11 @@ export class GolangProfile implements LanguageProfile {
     `);
 	classQuery = new MemoizedQuery(`
 	    (type_declaration
-			  (type_spec 
+			  (type_spec
 			    name: (_) @type-name
-			    type: (struct_type 
-			      (field_declaration_list 
-			        (field_declaration 
+			    type: (struct_type
+			      (field_declaration_list
+			        (field_declaration
 			           name: (_)? @field-name
 			           type: (_)? @field-type
 			        )
@@ -38,7 +39,7 @@ export class GolangProfile implements LanguageProfile {
 			    name: (identifier) @function-name)
 		    @function-body
 	    )
-			
+
 		  (
 		    (method_declaration
           receiver: (_)? @receiver-struct-name
@@ -64,7 +65,7 @@ export class GolangProfile implements LanguageProfile {
 			(import_declaration
 			  (import_spec
 			    path: (_) @import-name))
-			                  
+
       (import_declaration
         (import_spec_list
 	  		  (import_spec
@@ -75,20 +76,20 @@ export class GolangProfile implements LanguageProfile {
 			    name: (identifier) @function-name)
 		    @function-body
 	    )
-			
+
 		  (
 		    (method_declaration
           receiver: (_)? @receiver-struct-name
           name: (_)? @method-name)
         @method-body
       )
-            
+
 			(type_declaration
-			  (type_spec 
+			  (type_spec
 			    name: (_) @type-name
-			    type: (struct_type 
-			      (field_declaration_list 
-			        (field_declaration 
+			    type: (struct_type
+			      (field_declaration_list
+			        (field_declaration
 			           name: (_)? @field-name
 			           type: (_)? @field-type
 			        )
@@ -99,15 +100,34 @@ export class GolangProfile implements LanguageProfile {
 			`);
 	namespaces = [
 		// variables
-		["const", "var", "func", "module"],
+		['const', 'var', 'func', 'module'],
 		// types
-		["struct", "interface", "type"],
+		['struct', 'interface', 'type'],
 		// devops.
-		["member"], ["label"],
+		['member'],
+		['label'],
 	];
 	autoSelectInsideParent = [];
 	builtInTypes = [
-		"bool", "byte", "complex64", "complex128", "error", "float32", "float64", "int", "int8", "int16", "int32", "int64",
-		"rune", "string", "uint", "uint8", "uint16", "uint32", "uint64", "uintptr"
+		'bool',
+		'byte',
+		'complex64',
+		'complex128',
+		'error',
+		'float32',
+		'float64',
+		'int',
+		'int8',
+		'int16',
+		'int32',
+		'int64',
+		'rune',
+		'string',
+		'uint',
+		'uint8',
+		'uint16',
+		'uint32',
+		'uint64',
+		'uintptr',
 	];
 }

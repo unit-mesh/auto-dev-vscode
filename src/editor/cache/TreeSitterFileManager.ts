@@ -1,35 +1,20 @@
-import { Edit, Point } from "web-tree-sitter";
-import vscode, { Position, TextDocument, TextDocumentChangeEvent, TextDocumentContentChangeEvent, Uri } from "vscode";
+import { LRUCache } from 'lru-cache';
+import vscode, { TextDocumentChangeEvent, Uri } from 'vscode';
+import { type Edit } from 'web-tree-sitter';
 
-import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
-import { isSupportedLanguage } from "../language/SupportedLanguage";
-import { DefaultLanguageService } from "../language/service/DefaultLanguageService";
-import { LRUCache } from "lru-cache";
-import { PositionUtil } from "../ast/PositionUtil";
+import { isSupportedLanguage } from 'base/common/languages/languages';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
 
+import { TreeSitterFile } from '../../code-context/ast/TreeSitterFile';
+
+// TODO Merge to LanguageServiceProvider?
 export class TreeSitterFileManager implements vscode.Disposable {
 	private documentUpdateListener: vscode.Disposable;
 	private didOpenTextDocument: vscode.Disposable;
 	private cache: LRUCache<Uri, TreeSitterFile> = new LRUCache({ max: 20 });
 
-	// private cache: Map<Uri, TreeSitterFile>;
-	private static instance: TreeSitterFileManager;
-
-	public static getInstance(): TreeSitterFileManager {
-		if (!TreeSitterFileManager.instance) {
-			TreeSitterFileManager.instance = new TreeSitterFileManager();
-		}
-
-		return TreeSitterFileManager.instance;
-	}
-
-	// just to make sense for init
-	init() {
-
-	}
-
-	constructor() {
-		this.documentUpdateListener = vscode.workspace.onDidChangeTextDocument(async (event) => {
+	constructor(private lsp: ILanguageServiceProvider) {
+		this.documentUpdateListener = vscode.workspace.onDidChangeTextDocument(async event => {
 			if (!isSupportedLanguage(event.document.languageId)) {
 				return;
 			}
@@ -41,14 +26,17 @@ export class TreeSitterFileManager implements vscode.Disposable {
 			await this.updateCacheOnChange(event);
 		});
 
-		this.didOpenTextDocument = vscode.workspace.onDidOpenTextDocument(async (document) => {
+		this.didOpenTextDocument = vscode.workspace.onDidOpenTextDocument(async document => {
 			if (!isSupportedLanguage(document.languageId)) {
 				return;
 			}
 
-			await TreeSitterFileManager.recreate(document);
+			await this.recreate(document);
 		});
 	}
+
+	// TODO: register all languages
+	async init() {}
 
 	private async updateCacheOnChange(event: TextDocumentChangeEvent) {
 		const uri = event.document.uri;
@@ -56,7 +44,7 @@ export class TreeSitterFileManager implements vscode.Disposable {
 		const tree = tsfile?.tree;
 		if (!tree) {
 			if (!this.cache.has(uri)) {
-				const file = await TreeSitterFileManager.create(event.document);
+				const file = await this.create(event.document);
 				this.setDocument(uri, file);
 			}
 
@@ -72,22 +60,22 @@ export class TreeSitterFileManager implements vscode.Disposable {
 		this.setDocument(uri, tsfile!!);
 	}
 
-	static async create(document: vscode.TextDocument): Promise<TreeSitterFile> {
-		const cached = TreeSitterFileManager.getInstance().getDocument(document.uri);
+	async create(document: vscode.TextDocument): Promise<TreeSitterFile> {
+		const cached = this.getDocument(document.uri);
 		if (cached) {
 			return cached;
 		}
 
-		const file = await TreeSitterFileManager.recreate(document);
+		const file = await this.recreate(document);
 		return file;
 	}
 
-	private static async recreate(document: vscode.TextDocument) {
+	async recreate(document: vscode.TextDocument) {
 		const src = document.getText();
 		const langId = document.languageId;
 
-		const file = await TreeSitterFile.create(src, langId, new DefaultLanguageService(), document.uri.fsPath);
-		TreeSitterFileManager.getInstance().setDocument(document.uri, file);
+		const file = await TreeSitterFile.create(src, langId, this.lsp, document.uri.fsPath);
+		this.setDocument(document.uri, file);
 		return file;
 	}
 

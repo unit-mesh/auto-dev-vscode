@@ -1,7 +1,8 @@
-import { ActionType } from "../../prompt-manage/ActionType";
+import { TextDocument } from 'vscode';
+import { ActionType } from '../../prompt-manage/ActionType';
 
 export interface ActionExecutor {
 	type: ActionType;
 
-	execute(): Promise<void>;
+	execute(document: TextDocument): Promise<void>;
 }

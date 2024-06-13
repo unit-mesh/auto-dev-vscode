@@ -1,26 +1,26 @@
-import vscode, { l10n } from "vscode";
-import { injectable } from "inversify";
-import path from "path";
+import { inject, injectable } from 'inversify';
+import path from 'path';
+import vscode, { l10n } from 'vscode';
 
-import { TestGenProvider } from "../_base/test/TestGenProvider";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
-import { GradleBuildToolProvider } from "../../toolchain-context/buildtool/GradleBuildToolProvider";
-import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
-import { TestTemplateManager } from "../_lookup/TestTemplateManager";
-import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { NamedElement } from "../../editor/ast/NamedElement";
-import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
-import { TreeSitterFile } from "../ast/TreeSitterFile";
-import { JavaCodeCorrector } from "./JavaCodeCorrector";
-import { JavaStructurerProvider } from "./JavaStructurerProvider";
-import { CommentedUmlPresenter } from "../../editor/codemodel/presenter/CommentedUmlPresenter";
-import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
-import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
+import { LanguageIdentifier } from 'base/common/languages/languages';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { ScopeGraph } from '../../code-search/scope-graph/ScopeGraph';
+import { NamedElement } from '../../editor/ast/NamedElement';
+import { TreeSitterFileManager } from '../../editor/cache/TreeSitterFileManager';
+import { CommentedUmlPresenter } from '../../editor/codemodel/presenter/CommentedUmlPresenter';
+import { GradleBuildToolProvider } from '../../toolchain-context/buildtool/GradleBuildToolProvider';
+import { ToolchainContextItem } from '../../toolchain-context/ToolchainContextProvider';
+import { AutoTestTemplateContext } from '../_base/test/AutoTestTemplateContext';
+import { TestGenProvider } from '../_base/test/TestGenProvider';
+import { TestTemplateManager } from '../_lookup/TestTemplateManager';
+import { TreeSitterFile } from '../ast/TreeSitterFile';
+import { JavaCodeCorrector } from './JavaCodeCorrector';
+import { JavaStructurerProvider } from './JavaStructurerProvider';
 
 @injectable()
 export class JavaTestGenProvider implements TestGenProvider {
-	baseTestPrompt: string = `${l10n.t("lang.java.prompt.basicTestTemplate")}`.trim();
+	baseTestPrompt: string = `${l10n.t('lang.java.prompt.basicTestTemplate')}`.trim();
 	importRegex = /import\s+([\w.]+);/g;
 
 	private clazzName = this.constructor.name;
@@ -28,18 +28,22 @@ export class JavaTestGenProvider implements TestGenProvider {
 	private graph: ScopeGraph | undefined;
 	private tsfile: TreeSitterFile | undefined;
 	private context: AutoTestTemplateContext | undefined;
-	private languageService: TSLanguageService | undefined;
-	private packageName = "";
+	private packageName = '';
 
-	constructor() {
+	private lsp!: ILanguageServiceProvider;
+	private treeSitterFileManager!: TreeSitterFileManager;
+
+	constructor() {}
+
+	isApplicable(lang: LanguageIdentifier): boolean {
+		return lang === 'java';
 	}
 
-	isApplicable(lang: SupportedLanguage): boolean {
-		return lang === "java";
-	}
+	async setupLanguage(lsp: ILanguageServiceProvider, context?: AutoTestTemplateContext) {
+		this.lsp = lsp;
 
-	async setupLanguage(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext) {
-		this.languageService = defaultLanguageService;
+		// TODO hack, after move
+		this.treeSitterFileManager = new TreeSitterFileManager(lsp);
 		this.context = context;
 	}
 
@@ -67,7 +71,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 	 * Finally, the method returns a promise that resolves to the created AutoTestTemplateContext object.
 	 */
 	async setupTestFile(document: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
-		this.tsfile = await TreeSitterFileManager.create(document);
+		this.tsfile = await this.treeSitterFileManager.create(document);
 		this.graph = await this.tsfile.scopeGraph();
 
 		let query = this.tsfile.languageProfile.packageQuery!!.query(this.tsfile.tsLanguage);
@@ -76,29 +80,27 @@ export class JavaTestGenProvider implements TestGenProvider {
 			this.packageName = matches[0].node.text;
 		}
 
-		const targetPath = document.fileName
-			.replace(".java", "Test.java")
-			.replace("src/main/java", "src/test/java");
+		const targetPath = document.fileName.replace('.java', 'Test.java').replace('src/main/java', 'src/test/java');
 
 		let filename = path.basename(document.uri.fsPath);
-		let classname = filename.replace(".java", "");
+		let classname = filename.replace('.java', '');
 
 		let structurerProvider = new JavaStructurerProvider();
-		await structurerProvider.init(new DefaultLanguageService());
+		await structurerProvider.init(this.lsp);
 
 		let codeFile = await structurerProvider.parseFile(document.getText(), document.fileName);
-		let currentClass = codeFile?.classes.find((clazz) => clazz.name === classname);
+		let currentClass = codeFile?.classes.find(clazz => clazz.name === classname);
 
 		const testContext: AutoTestTemplateContext = {
 			filename: filename,
 			language: document.languageId,
 			targetPath: targetPath,
 			underTestClassName: classname,
-			targetTestClassName: classname + "Test",
+			targetTestClassName: classname + 'Test',
 			sourceCode: element.blockRange.text,
-			relatedClasses: "",
-			currentClass: new CommentedUmlPresenter().presentClass(currentClass!!, "java"),
-			chatContext: "",
+			relatedClasses: '',
+			currentClass: new CommentedUmlPresenter().presentClass(currentClass!!, 'java'),
+			chatContext: '',
 			imports: [],
 		};
 
@@ -112,12 +114,15 @@ export class JavaTestGenProvider implements TestGenProvider {
 	 * after test file is created, try to fix the code, like packageName and className, etc.
 	 */
 	async postProcessCodeFix(document: vscode.TextDocument, output: string): Promise<void> {
-		let codeFixer = new JavaCodeCorrector({
-			document: document,
-			sourcecode: output,
-			packageName: this.packageName,
-			targetClassName: this.context!!.targetTestClassName!!,
-		});
+		let codeFixer = new JavaCodeCorrector(
+			{
+				document: document,
+				sourcecode: output,
+				packageName: this.packageName,
+				targetClassName: this.context!!.targetTestClassName!!,
+			},
+			this.lsp,
+		);
 
 		await codeFixer.correct();
 	}
@@ -136,8 +141,8 @@ export class JavaTestGenProvider implements TestGenProvider {
 		let isSpringRelated = true;
 		if (context) {
 			const imports = this.importRegex.exec(context.sourceCode!!);
-			const importStrings = imports?.map((imp) => imp[1]) ?? [];
-			context!!.imports = imports?.map((imp) => imp[1]) ?? [];
+			const importStrings = imports?.map(imp => imp[1]) ?? [];
+			context!!.imports = imports?.map(imp => imp[1]) ?? [];
 			if (this.context) {
 				this.context.imports = context.imports;
 			}
@@ -145,31 +150,31 @@ export class JavaTestGenProvider implements TestGenProvider {
 			isSpringRelated = this.checkIsSpringRelated(importStrings) ?? false;
 		}
 
-		let prompt = this.baseTestPrompt + await this.determineJUnitVersion();
+		let prompt = this.baseTestPrompt + (await this.determineJUnitVersion());
 
 		const testPrompt = new TestTemplateManager();
 		let finalPrompt: ToolchainContextItem;
 
 		if (this.isController(fileName) && isSpringRelated) {
-			let testControllerPrompt = prompt + `\n${l10n.t("lang.java.prompt.testForController")}\n`.trim();
+			let testControllerPrompt = prompt + `\n${l10n.t('lang.java.prompt.testForController')}\n`.trim();
 
-			const lookup = testPrompt.lookup("ControllerTest.java");
+			const lookup = testPrompt.lookup('ControllerTest.java');
 			if (lookup !== null) {
 				testControllerPrompt += `\nTest code template:\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 
 			finalPrompt = { clazz: this.clazzName, text: testControllerPrompt };
 		} else if (this.isService(fileName) && isSpringRelated) {
-			let testServicePrompt = prompt + `\n${l10n.t("lang.java.prompt.testForService")}\n`.trim();
+			let testServicePrompt = prompt + `\n${l10n.t('lang.java.prompt.testForService')}\n`.trim();
 
-			const lookup = testPrompt.lookup("ServiceTest.java");
+			const lookup = testPrompt.lookup('ServiceTest.java');
 			if (lookup !== null) {
 				testServicePrompt += `\nTest code template:\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
 
 			finalPrompt = { clazz: this.clazzName, text: testServicePrompt };
 		} else {
-			const lookup = testPrompt.lookup("Test.java");
+			const lookup = testPrompt.lookup('Test.java');
 			if (lookup !== null) {
 				prompt += `\nTest code template:\n\`\`\`java\n${lookup}\n\`\`\`\n`;
 			}
@@ -180,28 +185,28 @@ export class JavaTestGenProvider implements TestGenProvider {
 	}
 
 	protected isService(fileName: string | null): boolean {
-		return fileName !== null && MvcUtil.isService(fileName, "java");
+		return fileName !== null && MvcUtil.isService(fileName, 'java');
 	}
 
 	protected isController(fileName: string | null): boolean {
-		return fileName !== null && MvcUtil.isController(fileName, "java");
+		return fileName !== null && MvcUtil.isController(fileName, 'java');
 	}
 
 	async determineJUnitVersion(): Promise<string> {
 		let dependencies = await GradleBuildToolProvider.instance().getDependencies();
-		let rule = "";
+		let rule = '';
 		let hasJunit5 = false;
 		let hasJunit4 = false;
 
 		const libraryData = dependencies.dependencies;
 		if (libraryData) {
 			for (const lib of libraryData) {
-				if (lib.group === "org.junit.jupiter") {
+				if (lib.group === 'org.junit.jupiter') {
 					hasJunit5 = true;
 					break;
 				}
 
-				if (lib.group === "junit") {
+				if (lib.group === 'junit') {
 					hasJunit4 = true;
 					break;
 				}
@@ -209,9 +214,9 @@ export class JavaTestGenProvider implements TestGenProvider {
 		}
 
 		if (hasJunit5) {
-			rule = l10n.t("lang.java.prompt.useJunit5");
+			rule = l10n.t('lang.java.prompt.useJunit5');
 		} else if (hasJunit4) {
-			rule = l10n.t("lang.java.prompt.useJunit4");
+			rule = l10n.t('lang.java.prompt.useJunit4');
 		}
 
 		return rule;
@@ -219,7 +224,7 @@ export class JavaTestGenProvider implements TestGenProvider {
 
 	private checkIsSpringRelated(imports: string[]) {
 		for (const imp of imports) {
-			if (imp.startsWith("org.springframework")) {
+			if (imp.startsWith('org.springframework')) {
 				return true;
 			}
 		}

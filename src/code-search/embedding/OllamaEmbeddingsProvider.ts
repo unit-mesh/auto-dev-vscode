@@ -1,15 +1,14 @@
-import AuthedEmbeddingsProvider, { AuthedEmbedOptions, FetchFunction } from "./_base/AuthedEmbeddingsProvider";
-import { withExponentialBackoff } from "./utils/withExponentialBackoff";
+import AuthedEmbeddingsProvider, { AuthedEmbedOptions, FetchFunction } from './_base/AuthedEmbeddingsProvider';
+import { withExponentialBackoff } from './utils/withExponentialBackoff';
 
-async function embedOne(
-	chunk: string,
-	options: AuthedEmbedOptions,
-	customFetch: FetchFunction,
-) {
+/**
+ * @deprecated Please use LanguageModelsService instead.
+ */
+async function embedOne(chunk: string, options: AuthedEmbedOptions, customFetch: FetchFunction) {
 	const fetchWithBackoff = () =>
 		withExponentialBackoff<Response>(() =>
-			customFetch(new URL("api/embeddings", options.apiBase), {
-				method: "POST",
+			customFetch(new URL('api/embeddings', options.apiBase), {
+				method: 'POST',
 				body: JSON.stringify({
 					model: options.model,
 					prompt: chunk,
@@ -18,19 +17,22 @@ async function embedOne(
 		);
 	const resp = await fetchWithBackoff();
 	if (!resp.ok) {
-		throw new Error("Failed to embed chunk: " + (await resp.text()));
+		throw new Error('Failed to embed chunk: ' + (await resp.text()));
 	}
 
 	return (await resp.json()).embedding;
 }
 
+/**
+ * @deprecated Please use LanguageModelsService instead.
+ */
 export class OllamaEmbeddingsProvider extends AuthedEmbeddingsProvider {
 	static defaultOptions: Partial<AuthedEmbedOptions> | undefined = {
-		apiBase: "http://localhost:11434/",
+		apiBase: 'http://localhost:11434/',
 	};
 
 	get id(): string {
-		return this.options.model ?? "ollama";
+		return this.options.model ?? 'ollama';
 	}
 
 	async embed(chunks: string[]) {

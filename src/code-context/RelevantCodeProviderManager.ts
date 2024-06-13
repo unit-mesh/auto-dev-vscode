@@ -1,34 +1,28 @@
-import { SupportedLanguage } from "../editor/language/SupportedLanguage";
-import { RelevantCodeProvider } from "./_base/RelevantCodeProvider";
-import { providerContainer } from "../ProviderContainer.config";
-import { PROVIDER_TYPES } from "../ProviderTypes";
-import { TSLanguageService } from "../editor/language/service/TSLanguageService";
-import { TreeSitterFile } from "./ast/TreeSitterFile";
-import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
-import { CodeFile } from "../editor/codemodel/CodeElement";
-import { CommentedUmlPresenter } from "../editor/codemodel/presenter/CommentedUmlPresenter";
-import { NamedElement } from "../editor/ast/NamedElement";
+import { LanguageIdentifier } from 'base/common/languages/languages';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { NamedElement } from '../editor/ast/NamedElement';
+import { CodeFile } from '../editor/codemodel/CodeElement';
+import { CommentedUmlPresenter } from '../editor/codemodel/presenter/CommentedUmlPresenter';
+import { providerContainer } from '../ProviderContainer.config';
+import { IRelevantCodeProvider } from '../ProviderTypes';
+import { RelevantCodeProvider } from './_base/RelevantCodeProvider';
+import { TreeSitterFile } from './ast/TreeSitterFile';
 
 export class RelevantCodeProviderManager {
-	private static instance: RelevantCodeProviderManager;
+	private relatedMap: Map<LanguageIdentifier, RelevantCodeProvider> = new Map();
 
-	static getInstance(): RelevantCodeProviderManager {
-		if (!RelevantCodeProviderManager.instance) {
-			RelevantCodeProviderManager.instance = new RelevantCodeProviderManager();
-		}
-		return RelevantCodeProviderManager.instance;
-	}
-
-	private relatedMap: Map<SupportedLanguage, RelevantCodeProvider> = new Map();
-
-	constructor() {
+	/**
+	 * @param lsp - An instance of `LanguageServiceProvider` which is used to provide language-specific services. If not provided, a new instance of `DefaultLanguageServiceProvider` is used.
+	 */
+	constructor(private lsp: ILanguageServiceProvider) {
 		this.relatedMap = new Map();
-		providerContainer.getAll<RelevantCodeProvider>(PROVIDER_TYPES.RelevantCodeProvider).forEach((provider) => {
+		providerContainer.getAll(IRelevantCodeProvider).forEach(provider => {
 			this.relatedMap.set(provider.language, provider);
 		});
 	}
 
-	provider(lang: SupportedLanguage, langService: TSLanguageService): RelevantCodeProvider | undefined {
+	provider(lang: LanguageIdentifier, langService: ILanguageServiceProvider): RelevantCodeProvider | undefined {
 		let relatedProvider = this.relatedMap.get(lang);
 		if (relatedProvider) {
 			relatedProvider.setupLanguage(langService);
@@ -43,7 +37,6 @@ export class RelevantCodeProviderManager {
 	 * @param languageId - The ID of the supported language. This is used to get the relevant code provider.
 	 * @param file - An instance of `TreeSitterFile` which represents the file where the named element is located.
 	 * @param namedElement - An instance of `NamedElement` which represents the element for which related classes are to be found.
-	 * @param languageService - An instance of `TSLanguageService` which is used to provide language-specific services. If not provided, a new instance of `DefaultLanguageService` is used.
 	 *
 	 * The method first gets the relevant code provider for the given language ID and language service. If a relevant provider is found, it retrieves the related files using the `getMethodFanInAndFanOut` method of the provider.
 	 *
@@ -53,8 +46,8 @@ export class RelevantCodeProviderManager {
 	 *
 	 * @throws Will throw an error if the relevant code provider is not found.
 	 */
-	async relatedClassesContext(languageId: SupportedLanguage, file: TreeSitterFile, namedElement: NamedElement, languageService: TSLanguageService = new DefaultLanguageService()) {
-		let relatedProvider = RelevantCodeProviderManager.getInstance().provider(languageId, languageService);
+	async relatedClassesContext(languageId: LanguageIdentifier, file: TreeSitterFile, namedElement: NamedElement) {
+		let relatedProvider = this.provider(languageId, this.lsp);
 		if (!relatedProvider) {
 			return Promise.resolve('');
 		}
@@ -67,8 +60,10 @@ export class RelevantCodeProviderManager {
 
 	renderFiles(relatedFiles: CodeFile[]) {
 		let umlPresenter = new CommentedUmlPresenter();
-		return relatedFiles.map((codeStructure) => {
-			return umlPresenter.present(codeStructure);
-		}).join("\n");
+		return relatedFiles
+			.map(codeStructure => {
+				return umlPresenter.present(codeStructure);
+			})
+			.join('\n');
 	}
 }

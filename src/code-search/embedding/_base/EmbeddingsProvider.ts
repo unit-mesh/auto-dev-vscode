@@ -1,4 +1,4 @@
-import { Embedding } from "./Embedding";
+import { Embedding } from './Embedding';
 
 export interface EmbeddingsProvider {
 	/**
@@ -13,7 +13,7 @@ export interface EmbeddingsProvider {
 }
 
 export enum EmbeddingsProviderType {
-	Local = "local",
-	OpenAI = "openai",
-	Ollama = "ollama",
+	Local = 'local',
+	OpenAI = 'openai',
+	Ollama = 'ollama',
 }

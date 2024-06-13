@@ -1,18 +1,18 @@
-import Graph from "graphology";
+import Graph from 'graphology';
 
-import { TextRange } from "../code-search/scope-graph/model/TextRange";
-import { LanguageProfile } from "../code-context/_base/LanguageProfile";
-import { NodeKind } from "../code-search/scope-graph/node/NodeKind";
-import { LocalDef } from "../code-search/scope-graph/node/LocalDef";
+import { LanguageProfile } from '../code-context/_base/LanguageProfile';
 import {
 	DefToScope,
 	EdgeKind,
 	ImportToScope,
 	RefToDef,
 	RefToImport,
-	ScopeToScope
-} from "../code-search/scope-graph/edge/EdgeKind";
-import { nameOfSymbol } from "../code-search/scope-graph/model/SymbolId";
+	ScopeToScope,
+} from '../code-search/scope-graph/edge/EdgeKind';
+import { nameOfSymbol } from '../code-search/scope-graph/model/SymbolId';
+import { TextRange } from '../code-search/scope-graph/model/TextRange';
+import { LocalDef } from '../code-search/scope-graph/node/LocalDef';
+import { NodeKind } from '../code-search/scope-graph/node/NodeKind';
 
 export class RefDebug {
 	context: string;
@@ -46,7 +46,7 @@ export class DefDebug {
 			name: this.name,
 			kind: this.symbol,
 			context: this.context,
-			references: this.refs
+			references: this.refs,
 		});
 	}
 }
@@ -68,7 +68,7 @@ export class ImportDebug {
 		return JSON.stringify({
 			name: this.name,
 			context: this.context,
-			references: this.refs
+			references: this.refs,
 		});
 	}
 }
@@ -119,7 +119,7 @@ export class ScopeDebug {
 				if (localDef.symbolId) {
 					symbol = nameOfSymbol(this.language.namespaces, localDef.symbolId);
 				} else {
-					symbol = "none";
+					symbol = 'none';
 				}
 
 				return new DefDebug(range, text, refs, symbol, src);
@@ -150,11 +150,11 @@ export class ScopeDebug {
 	}
 
 	toString(): string {
-		const scopes = '[' + this.scopes.map(s => s.toString()).join(", ")  + ']';
+		const scopes = '[' + this.scopes.map(s => s.toString()).join(', ') + ']';
 		return JSON.stringify({
 			definitions: this.defs,
 			imports: this.imports,
-			scopes: JSON.parse(scopes)
+			scopes: JSON.parse(scopes),
 		});
 	}
 }
@@ -173,11 +173,10 @@ function fetchNodeElements(graph: Graph<NodeKind>, edge: string, src: string) {
 	return { range, text, refs };
 }
 
-
 function contextFromRange(range: TextRange, src: string): string {
 	const contextStart = (() => {
 		for (let i = range.start.byte - 1; i >= 0; i--) {
-			if (src[i] === "\n") {
+			if (src[i] === '\n') {
 				return i + 1;
 			}
 		}
@@ -187,17 +186,16 @@ function contextFromRange(range: TextRange, src: string): string {
 	// first new line after end
 	const contextEnd = (() => {
 		for (let i = range.end.byte; i < src.length; i++) {
-			if (src[i] === "\n") {
+			if (src[i] === '\n') {
 				return i;
 			}
 		}
 		return src.length;
 	})();
 
-
 	return [
 		src.slice(contextStart, range.start.byte).trimStart(),
 		src.slice(range.start.byte, range.end.byte),
 		src.slice(range.end.byte, contextEnd).trimEnd(),
-	].join("§");
+	].join('§');
 }

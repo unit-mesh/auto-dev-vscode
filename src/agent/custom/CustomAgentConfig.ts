@@ -1,9 +1,9 @@
-import { InteractionType } from "../../prompt-manage/InteractionType";
-import { CustomAgentResponseAction } from "./CustomAgentResponseAction";
-import { CustomFlowTransition } from "./CustomFlowTransition";
-import { ConnectorConfig } from "./ConnectorConfig";
-import { CustomAgentAuth } from "./CustomAgentAuth";
-import { CustomAgentState } from "./CustomAgentState";
+import { InteractionType } from '../../prompt-manage/InteractionType';
+import { ConnectorConfig } from './ConnectorConfig';
+import { CustomAgentAuth } from './CustomAgentAuth';
+import { CustomAgentResponseAction } from './CustomAgentResponseAction';
+import { CustomAgentState } from './CustomAgentState';
+import { CustomFlowTransition } from './CustomFlowTransition';
 
 export class CustomAgentConfig {
 	name: string;
@@ -26,7 +26,7 @@ export class CustomAgentConfig {
 		responseAction: CustomAgentResponseAction = CustomAgentResponseAction.Direct,
 		transition: CustomFlowTransition[] = [],
 		interactive: InteractionType = InteractionType.ChatPanel,
-		auth: CustomAgentAuth | null = null
+		auth: CustomAgentAuth | null = null,
 	) {
 		this.name = name;
 		this.description = description;

@@ -1,6 +1,6 @@
-import { AutoPage } from "./AutoPage";
-import { UserProjectComponent } from "./UserProjectComponent";
-import { AutoDevExtension } from "../../../AutoDevExtension";
+import { AutoDevExtension } from '../../../AutoDevExtension';
+import { AutoPage } from './AutoPage';
+import { UserProjectComponent } from './UserProjectComponent';
 
 export class ReactAutoPage implements AutoPage {
 	userTask: string;
@@ -12,7 +12,7 @@ export class ReactAutoPage implements AutoPage {
 	}
 
 	clarify(): string {
-		return "";
+		return '';
 	}
 
 	design(context: any): string[] {
@@ -20,11 +20,11 @@ export class ReactAutoPage implements AutoPage {
 	}
 
 	execute(context: any): string {
-		return "";
+		return '';
 	}
 
 	fix(errors: string): string {
-		return "";
+		return '';
 	}
 
 	getComponents(): UserProjectComponent[] {
@@ -44,7 +44,7 @@ export class ReactAutoPage implements AutoPage {
 	}
 
 	sampleRemoteCall(): string {
-		return "";
+		return '';
 	}
 
 	sampleStateManagement(): string | null {

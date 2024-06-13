@@ -1,10 +1,11 @@
-import path from "path";
-import fs from "fs";
-import os from "node:os";
+import os from 'node:os';
+
+import fs from 'fs';
+import path from 'path';
 
 export function getAutoDevGlobalPath(): string {
 	// This is ~/.autodev on mac/linux
-	const autodevPath = path.join(os.homedir(), ".autodev");
+	const autodevPath = path.join(os.homedir(), '.autodev');
 	if (!fs.existsSync(autodevPath)) {
 		fs.mkdirSync(autodevPath);
 	}
@@ -13,11 +14,11 @@ export function getAutoDevGlobalPath(): string {
 }
 
 export function getDocsSqlitePath(): string {
-	return path.join(getIndexFolderPath(), "docs.sqlite");
+	return path.join(getIndexFolderPath(), 'docs.sqlite');
 }
 
 export function getIndexFolderPath(): string {
-	const indexPath = path.join(getAutoDevGlobalPath(), "index");
+	const indexPath = path.join(getAutoDevGlobalPath(), 'index');
 	if (!fs.existsSync(indexPath)) {
 		fs.mkdirSync(indexPath);
 	}
@@ -25,9 +26,9 @@ export function getIndexFolderPath(): string {
 }
 
 export function getLanceDbPath(): string {
-	return path.join(getIndexFolderPath(), "lancedb");
+	return path.join(getIndexFolderPath(), 'lancedb');
 }
 
 export function getBasename(filepath: string, n: number = 1): string {
-	return filepath.split(/[\\/]/).pop() ?? "";
+	return filepath.split(/[\\/]/).pop() ?? '';
 }

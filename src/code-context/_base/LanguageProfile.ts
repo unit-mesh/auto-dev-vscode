@@ -1,10 +1,11 @@
-import { Language, Query } from "web-tree-sitter";
+import { Language, Query } from 'web-tree-sitter';
 
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { NameSpaces } from "../../code-search/scope-graph/model/Namespace";
-import { languageContainer } from "../../ProviderLanguageProfile.config";
-import { PROVIDER_TYPES } from "../../ProviderTypes";
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { NameSpaces } from '../../code-search/scope-graph/model/Namespace';
+import { languageContainer } from '../../ProviderLanguageProfile.config';
+import { ILanguageProfile } from '../../ProviderTypes';
+import { LanguageIdentifier } from 'base/common/languages/languages';
 
 /**
  * `LanguageProfile` is an interface that defines the structure of a language profile object.
@@ -19,7 +20,7 @@ export interface LanguageProfile {
 	fileExtensions: string[];
 
 	// tree-sitter grammar for this language
-	grammar: (langService: TSLanguageService, langId?: SupportedLanguage) => Promise<Language | undefined>;
+	grammar: (langService: ILanguageServiceProvider, langId?: LanguageIdentifier) => Promise<Language | undefined>;
 
 	// Compiled tree-sitter node query for this language.
 	scopeQuery: MemoizedQuery;
@@ -98,12 +99,10 @@ export class MemoizedQuery {
  */
 export class LanguageProfileUtil {
 	static from(langId: string): LanguageProfile | undefined {
-		let languageProfiles = languageContainer.getAll<LanguageProfile>(PROVIDER_TYPES.LanguageProfile);
+		let languageProfiles = languageContainer.getAll(ILanguageProfile);
 
-		return languageProfiles.find((target) => {
-			return target.languageIds.some(
-				(id) => id.toLowerCase() === langId.toLowerCase()
-			);
+		return languageProfiles.find(target => {
+			return target.languageIds.some(id => id.toLowerCase() === langId.toLowerCase());
 		});
 	}
 }

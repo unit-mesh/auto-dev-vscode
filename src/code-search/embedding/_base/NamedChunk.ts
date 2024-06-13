@@ -1,9 +1,10 @@
-import vscode from "vscode";
+import { TreeSitterFileManager } from 'src/editor/cache/TreeSitterFileManager';
+import vscode from 'vscode';
 
-import { TextRange } from "../../scope-graph/model/TextRange";
-import { NamedElement } from "../../../editor/ast/NamedElement";
-import { ChunkItem, Embedding } from "./Embedding";
-import { createNamedElement } from "../../../code-context/ast/TreeSitterWrapper";
+import { createNamedElement } from '../../../code-context/ast/TreeSitterWrapper';
+import { NamedElement } from '../../../editor/ast/NamedElement';
+import { TextRange } from '../../scope-graph/model/TextRange';
+import { ChunkItem, Embedding } from './Embedding';
 
 export interface NamedChunkItem {
 	name: string;
@@ -16,7 +17,7 @@ export interface NamedChunkItem {
 }
 
 export class NamedChunk {
-	static async create(chunk: ChunkItem): Promise<NamedChunkItem> {
+	static async create(treeSitterFileManager: TreeSitterFileManager, chunk: ChunkItem): Promise<NamedChunkItem> {
 		let document;
 		try {
 			const fileUri = vscode.Uri.file(chunk.path);
@@ -25,9 +26,9 @@ export class NamedChunk {
 			return Promise.reject(error);
 		}
 
-		let elementBuilder = await createNamedElement(document);
+		let elementBuilder = await createNamedElement(treeSitterFileManager, document);
 
-		let namedElements = elementBuilder.getElementForSelection(chunk.range.start.line, chunk.range.end.line,);
+		let namedElements = elementBuilder.getElementForSelection(chunk.range.start.line, chunk.range.end.line);
 
 		return {
 			name: chunk.name,
@@ -35,7 +36,7 @@ export class NamedChunk {
 			text: chunk.text,
 			range: chunk.range,
 			namedElements: namedElements,
-			embedding: chunk.embedding
+			embedding: chunk.embedding,
 		};
 	}
 }

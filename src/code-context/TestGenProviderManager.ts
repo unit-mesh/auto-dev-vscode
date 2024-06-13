@@ -1,25 +1,15 @@
-import { TestGenProvider } from "./_base/test/TestGenProvider";
-import { SupportedLanguage } from "../editor/language/SupportedLanguage";
-import { providerContainer } from "../ProviderContainer.config";
-import { PROVIDER_TYPES } from "../ProviderTypes";
-import { DefaultLanguageService } from "../editor/language/service/DefaultLanguageService";
+import { LanguageIdentifier } from 'base/common/languages/languages';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { providerContainer } from '../ProviderContainer.config';
+import { ITestGenProvider } from '../ProviderTypes';
 
 export class TestGenProviderManager {
-	private static instance: TestGenProviderManager;
+	constructor(private langService: ILanguageServiceProvider) {}
 
-	private constructor() {
-	}
-
-	static getInstance(): TestGenProviderManager {
-		if (!TestGenProviderManager.instance) {
-			TestGenProviderManager.instance = new TestGenProviderManager();
-		}
-		return TestGenProviderManager.instance;
-	}
-
-	async provide(lang: SupportedLanguage): Promise<TestGenProvider | undefined> {
-		let testProviders = providerContainer.getAll<TestGenProvider>(PROVIDER_TYPES.TestGenProvider);
-		let provider = testProviders.find((provider) => {
+	async provide(lang: LanguageIdentifier) {
+		let testProviders = providerContainer.getAll(ITestGenProvider);
+		let provider = testProviders.find(provider => {
 			return provider.isApplicable(lang);
 		});
 
@@ -27,8 +17,7 @@ export class TestGenProviderManager {
 			return undefined;
 		}
 
-		let langService = new DefaultLanguageService();
-		await provider.setupLanguage(langService);
+		await provider.setupLanguage(this.langService);
 
 		return provider;
 	}

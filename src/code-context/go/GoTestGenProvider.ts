@@ -1,27 +1,31 @@
-import { injectable } from "inversify";
-import vscode, { TextDocument } from "vscode";
-import path from "path";
-import fs from "fs";
+import fs from 'fs';
+import { injectable } from 'inversify';
+import path from 'path';
+import vscode, { TextDocument } from 'vscode';
 
-import { NamedElement } from "../../editor/ast/NamedElement";
-import { CodeFile } from "../../editor/codemodel/CodeElement";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
-import { TestGenProvider } from "../_base/test/TestGenProvider";
-import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { NamedElement } from '../../editor/ast/NamedElement';
+import { CodeFile } from '../../editor/codemodel/CodeElement';
+import { ToolchainContextItem } from '../../toolchain-context/ToolchainContextProvider';
+import { AutoTestTemplateContext } from '../_base/test/AutoTestTemplateContext';
+import { TestGenProvider } from '../_base/test/TestGenProvider';
 
 @injectable()
 export class GoTestGenProvider implements TestGenProvider {
-	private languageService: TSLanguageService | undefined;
+	private languageService: ILanguageServiceProvider | undefined;
 	private clazzName = this.constructor.name;
 	context: AutoTestTemplateContext | undefined;
 
 	isApplicable(lang: string): boolean {
-		return lang === "go";
+		return lang === 'go';
 	}
 
-	setupLanguage(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext | undefined): Promise<void> {
-		this.languageService = defaultLanguageService;
+	setupLanguage(
+		defaultLanguageServiceProvider: ILanguageServiceProvider,
+		context?: AutoTestTemplateContext | undefined,
+	): Promise<void> {
+		this.languageService = defaultLanguageServiceProvider;
 		return Promise.resolve();
 	}
 
@@ -38,11 +42,11 @@ export class GoTestGenProvider implements TestGenProvider {
 			const context: AutoTestTemplateContext = {
 				filename: sourceFile.fileName,
 				currentClass: undefined,
-				language: "",
-				relatedClasses: "",
-				underTestClassName: "",
+				language: '',
+				relatedClasses: '',
+				underTestClassName: '',
 				imports: [],
-				targetPath: testFilePath.fsPath
+				targetPath: testFilePath.fsPath,
 			};
 
 			this.context = context;
@@ -53,11 +57,11 @@ export class GoTestGenProvider implements TestGenProvider {
 		const context: AutoTestTemplateContext = {
 			filename: sourceFile.fileName,
 			currentClass: undefined,
-			language: "",
-			relatedClasses: "",
+			language: '',
+			relatedClasses: '',
 			underTestClassName: elementName,
 			imports: [],
-			targetPath: testFilePath.fsPath
+			targetPath: testFilePath.fsPath,
 		};
 
 		this.context = context;

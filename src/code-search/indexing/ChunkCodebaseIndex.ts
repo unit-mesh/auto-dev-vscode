@@ -1,37 +1,40 @@
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { TreeSitterFile } from '../../code-context/ast/TreeSitterFile';
+import { Chunk } from '../chunk/_base/Chunk';
+import { ChunkerManager } from '../chunk/ChunkerManager';
+import { DatabaseConnection, SqliteDb } from '../database/SqliteDb';
+import { tagToString } from '../refreshIndex';
+import { Symbol } from '../scope-graph/model/Symbol';
+import { MAX_CHUNK_SIZE } from '../utils/constants';
+import { getBasename } from '../utils/IndexPathHelper';
 import {
 	CodebaseIndex,
 	IndexingProgressUpdate,
 	IndexResultType,
 	IndexTag,
 	MarkCompleteCallback,
-	RefreshIndexResults
-} from "./_base/CodebaseIndex";
-import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
-import { tagToString } from "../refreshIndex";
-import { Chunk } from "../chunk/_base/Chunk";
-import { MAX_CHUNK_SIZE } from "../utils/constants";
-import { getBasename } from "../utils/IndexPathHelper";
-import { ChunkerManager } from "../chunk/ChunkerManager";
-import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
-import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
-import { Symbol } from "../scope-graph/model/Symbol";
+	RefreshIndexResults,
+} from './_base/CodebaseIndex';
 
-async function buildSymbols(chunk: Chunk): Promise<string> {
+async function buildSymbols(languageService: ILanguageServiceProvider, chunk: Chunk): Promise<string> {
 	try {
-		let tsfile = await TreeSitterFile.create(chunk.content, chunk.language, new DefaultLanguageService(), chunk.filepath);
+		let tsfile = await TreeSitterFile.create(chunk.content, chunk.language, languageService, chunk.filepath);
 		let scopeGraph = await tsfile.scopeGraph();
 		return Symbol.symbolLocations(scopeGraph, chunk.content);
 	} catch (e) {
-		return "";
+		return '';
 	}
 }
 
 export class ChunkCodebaseIndex implements CodebaseIndex {
-	static artifactId: string = "chunks";
+	static artifactId: string = 'chunks';
 	artifactId: string = ChunkCodebaseIndex.artifactId;
 
 	constructor(
-		private readonly readFile: (filepath: string) => Promise<string>,
+		private languageService: ILanguageServiceProvider,
+		private readFile: (filepath: string) => Promise<string>,
+		private chunkerManager: ChunkerManager,
 	) {
 		this.readFile = readFile;
 	}
@@ -68,8 +71,10 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 		await this._createTables(db);
 		const tagString = tagToString(tag);
 
+		const languageService = this.languageService;
+
 		async function handleChunk(chunk: Chunk) {
-			let symbols = await buildSymbols(chunk);
+			let symbols = await buildSymbols(languageService, chunk);
 			const { lastID } = await db.run(
 				`INSERT INTO chunks (cacheKey, path, idx, startLine, endLine, content, language, symbols) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
 				[
@@ -80,25 +85,20 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 					chunk.endLine,
 					chunk.content,
 					chunk.language,
-					symbols
+					symbols,
 				],
 			);
 
-			await db.run(`INSERT INTO chunk_tags (chunkId, tag) VALUES (?, ?)`, [
-				lastID,
-				tagString,
-			]);
+			await db.run(`INSERT INTO chunk_tags (chunkId, tag) VALUES (?, ?)`, [lastID, tagString]);
 		}
 
 		// Compute chunks for new files
-		const contents = await Promise.all(
-			results.compute.map(({ path }) => this.readFile(path)),
-		);
+		const contents = await Promise.all(results.compute.map(({ path }) => this.readFile(path)));
 		for (let i = 0; i < results.compute.length; i++) {
 			const item = results.compute[i];
 
 			// Insert chunks
-			for await (let chunk of ChunkerManager.getInstance().chunkDocument(
+			for await (let chunk of this.chunkerManager.chunkDocument(
 				item.path,
 				contents[i],
 				MAX_CHUNK_SIZE,
@@ -116,16 +116,10 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 
 		// Add tag
 		for (const item of results.addTag) {
-			const chunksWithPath = await db.all(
-				`SELECT * FROM chunks WHERE cacheKey = ?`,
-				[item.cacheKey],
-			);
+			const chunksWithPath = await db.all(`SELECT * FROM chunks WHERE cacheKey = ?`, [item.cacheKey]);
 
 			for (const chunk of chunksWithPath) {
-				await db.run(`INSERT INTO chunk_tags (chunkId, tag) VALUES (?, ?)`, [
-					chunk.id,
-					tagString,
-				]);
+				await db.run(`INSERT INTO chunk_tags (chunkId, tag) VALUES (?, ?)`, [chunk.id, tagString]);
 			}
 
 			markComplete([item], IndexResultType.AddTag);
@@ -149,14 +143,10 @@ export class ChunkCodebaseIndex implements CodebaseIndex {
 
 		// Delete
 		for (const item of results.del) {
-			const deleted = await db.run(`DELETE FROM chunks WHERE cacheKey = ?`, [
-				item.cacheKey,
-			]);
+			const deleted = await db.run(`DELETE FROM chunks WHERE cacheKey = ?`, [item.cacheKey]);
 
 			// Delete from chunk_tags
-			await db.run(`DELETE FROM chunk_tags WHERE chunkId = ?`, [
-				deleted.lastID,
-			]);
+			await db.run(`DELETE FROM chunk_tags WHERE chunkId = ?`, [deleted.lastID]);
 
 			markComplete([item], IndexResultType.Delete);
 		}

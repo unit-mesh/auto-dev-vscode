@@ -1,10 +1,11 @@
-import { ScopeGraph } from "../ScopeGraph";
-import { TextRange } from "./TextRange";
+import { ScopeGraph } from '../ScopeGraph';
+import { TextRange } from './TextRange';
 
 export class Symbol {
-	constructor(public kind: string, public range: TextRange) {
-
-	}
+	constructor(
+		public kind: string,
+		public range: TextRange,
+	) {}
 
 	/**
 	 * The `symbolLocations` static method is used to extract and return all the symbols from a given scope graph as a string, each symbol separated by a newline.
@@ -21,10 +22,11 @@ export class Symbol {
 	 * Note: This method does not modify the original scope graph or buffer.
 	 */
 	public static symbolLocations(scopeGraph: ScopeGraph, buffer: string): string {
-		let symbols = scopeGraph.symbols()
+		let symbols = scopeGraph
+			.symbols()
 			.map(sym => buffer.slice(sym.range.start.byte, sym.range.end.byte))
 			.reduce((set, sym) => set.add(sym), new Set());
 
-		return Array.from(symbols).join("\n");
+		return Array.from(symbols).join('\n');
 	}
 }

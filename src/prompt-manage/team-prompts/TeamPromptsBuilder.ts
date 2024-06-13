@@ -1,30 +1,21 @@
-import * as vscode from 'vscode';
-import * as fs from 'fs';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import { workspace, type WorkspaceFolder } from 'vscode';
+
+import { ConfigurationService } from 'base/common/configuration/configurationService';
+import { logger } from 'base/common/log/log';
 
 import { CustomActionPrompt } from '../custom-action/CustomActionPrompt';
-import { TeamPromptAction } from "./TeamPromptAction";
-import { SettingService } from "../../settings/SettingService";
-import { WorkspaceFolder } from "vscode";
-import path from "path";
-import { channel } from "../../channel";
+import { TeamPromptAction } from './TeamPromptAction';
 
 export class TeamPromptsBuilder {
 	private baseDir: string;
 	private rootDir: WorkspaceFolder | null;
 
-	// single instance
-	private static _instance: TeamPromptsBuilder;
-
-	public static instance(): TeamPromptsBuilder {
-		if (!TeamPromptsBuilder._instance) {
-			TeamPromptsBuilder._instance = new TeamPromptsBuilder();
-		}
-		return TeamPromptsBuilder._instance;
-	}
-
-	constructor() {
-		this.baseDir = SettingService.instance().customPromptsDir();
-		this.rootDir = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0] : null;
+	constructor(configService: ConfigurationService) {
+		this.baseDir = configService.get<string>('customPromptsDir')!;
+		this.rootDir = workspace.workspaceFolders ? workspace.workspaceFolders[0] : null;
 	}
 
 	/**
@@ -33,7 +24,7 @@ export class TeamPromptsBuilder {
 	 * @returns An array of team prompt actions.
 	 */
 	teamPrompts(): TeamPromptAction[] {
-		const rootDir = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : null;
+		const rootDir = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.fsPath : null;
 		if (!rootDir) {
 			return [];
 		}
@@ -101,9 +92,7 @@ export class TeamPromptsBuilder {
 			vmFiles.forEach(file => {
 				const filePath = path.join(promptsDir, file);
 				// the action name will be the file name without the extension， and remove slice
-				let actionName =
-					file.split('.').slice(0, -1).join('.')
-						.replaceAll('-', ' ');
+				let actionName = file.split('.').slice(0, -1).join('.').replaceAll('-', ' ');
 
 				const fileContent = fs.readFileSync(filePath, 'utf-8');
 				let actionPrompt = CustomActionPrompt.fromContent(fileContent);
@@ -118,17 +107,16 @@ export class TeamPromptsBuilder {
 
 				const teamPromptAction: TeamPromptAction = {
 					actionName: actionName,
-					actionPrompt: actionPrompt
+					actionPrompt: actionPrompt,
 				};
 
 				prompts.push(teamPromptAction);
 			});
 		} catch (error) {
 			// ignore error
-			channel.append("Error reading prompts: " + error + "\n");
+			logger.append('Error reading prompts: ' + error + '\n');
 		}
 
 		return prompts;
 	}
 }
-

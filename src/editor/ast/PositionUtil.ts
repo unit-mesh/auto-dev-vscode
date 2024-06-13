@@ -1,5 +1,5 @@
-import vscode, { Position, Selection } from "vscode";
-import { Point, SyntaxNode } from "web-tree-sitter";
+import vscode, { Position, Selection } from 'vscode';
+import type { Point, SyntaxNode } from 'web-tree-sitter';
 
 export namespace PositionUtil {
 	export function fromNode(point: Point): Position {
@@ -33,7 +33,7 @@ export function selectCodeInRange(start: vscode.Position, end: vscode.Position) 
 export function insertCodeByRange(textRange: Position, doc: string) {
 	const editor = vscode.window.activeTextEditor;
 	if (editor) {
-		editor.edit((editBuilder) => {
+		editor.edit(editBuilder => {
 			editBuilder.insert(textRange, doc);
 		});
 	}

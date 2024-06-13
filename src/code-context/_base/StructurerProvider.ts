@@ -1,54 +1,55 @@
-import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from "../../editor/codemodel/CodeElement";
-import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { injectable } from "inversify";
-import { LanguageProfile, LanguageProfileUtil } from "./LanguageProfile";
-import Parser, { Query, SyntaxNode } from "web-tree-sitter";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { PositionElement } from "../../editor/codemodel/PositionElement";
-import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
-import { ImportWithRefs } from "../../code-search/scope-graph/model/ImportWithRefs";
-import { TextRange } from "../../code-search/scope-graph/model/TextRange";
+import { injectable } from 'inversify';
+import Parser, { Query, SyntaxNode } from 'web-tree-sitter';
+
+import { LanguageIdentifier } from 'base/common/languages/languages';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { ImportWithRefs } from '../../code-search/scope-graph/model/ImportWithRefs';
+import { TextRange } from '../../code-search/scope-graph/model/TextRange';
+import { ScopeGraph } from '../../code-search/scope-graph/ScopeGraph';
+import { CodeFile, CodeFunction, CodeStructure, CodeVariable } from '../../editor/codemodel/CodeElement';
+import { PositionElement } from '../../editor/codemodel/PositionElement';
+import { LanguageProfile, LanguageProfileUtil } from './LanguageProfile';
 
 export interface StructurerProvider {
 	/**
 	 * For wrapper int test and source code.
 	 */
-	init(langService: TSLanguageService): Promise<Query | undefined>;
+	init(langService: ILanguageServiceProvider): Promise<Query | undefined>;
 	/**
 	 * The `langId` property is a string representing the language identifier of the structurer provider.
 	 */
-	isApplicable(lang: SupportedLanguage): any;
+	isApplicable(lang: LanguageIdentifier): any;
 
 	/**
 	 * Parses the given code and returns a `CodeFile` object.
 	 */
-	parseFile(code: string, path: string): Promise<CodeFile | undefined>
+	parseFile(code: string, path: string): Promise<CodeFile | undefined>;
 }
 
 @injectable()
 export abstract class BaseStructurerProvider implements StructurerProvider {
-	protected abstract langId: SupportedLanguage;
+	protected abstract langId: LanguageIdentifier;
 	protected abstract config: LanguageProfile;
 	protected abstract parser: Parser | undefined;
 	protected abstract language: Parser.Language | undefined;
 
-	abstract isApplicable(lang: SupportedLanguage): boolean;
+	abstract isApplicable(lang: LanguageIdentifier): boolean;
 
 	abstract parseFile(code: string, path: string): Promise<CodeFile | undefined>;
 
 	/**
 	 * The `init` method is an asynchronous function that initializes the structurer provider with the given language service.
 	 */
-	async init(langService: TSLanguageService): Promise<Query | undefined> {
+	async init(langService: ILanguageServiceProvider): Promise<Query | undefined> {
 		const tsConfig = LanguageProfileUtil.from(this.langId)!!;
-		const _parser = langService.getParser() ?? new Parser();
+		const parser = await langService.getParser(this.langId);
 		const language = await tsConfig.grammar(langService, this.langId);
-		_parser.setLanguage(language);
-		this.parser = _parser;
+		parser!.setLanguage(language);
+		this.parser = parser;
 		this.language = language;
 		return tsConfig.structureQuery.query(language!!);
 	}
-
 
 	public insertLocation(node: SyntaxNode, model: PositionElement) {
 		model.start = { row: node.startPosition.row, column: node.startPosition.column };
@@ -60,7 +61,7 @@ export abstract class BaseStructurerProvider implements StructurerProvider {
 			vars: [],
 			name: text,
 			start: { row: 0, column: 0 },
-			end: { row: 0, column: 0 }
+			end: { row: 0, column: 0 },
 		};
 
 		const node = syntaxNode.parent ?? syntaxNode;
@@ -74,7 +75,7 @@ export abstract class BaseStructurerProvider implements StructurerProvider {
 			name: text,
 			start: { row: 0, column: 0 },
 			end: { row: 0, column: 0 },
-			type: ""
+			type: '',
 		};
 
 		variable.start = { row: node.startPosition.row, column: node.startPosition.column };
@@ -83,13 +84,12 @@ export abstract class BaseStructurerProvider implements StructurerProvider {
 	}
 
 	public initVariable(): CodeVariable {
-		return { name: "", start: { row: 0, column: 0 }, end: { row: 0, column: 0 }, type: "" };
+		return { name: '', start: { row: 0, column: 0 }, end: { row: 0, column: 0 }, type: '' };
 	}
-
 
 	async fetchImportsWithinScope(scope: ScopeGraph, node: SyntaxNode, src: string): Promise<string[]> {
 		let importWithRefs = this.retrieveImportReferences(scope, src, node);
-		return importWithRefs.map((imp) => imp.text);
+		return importWithRefs.map(imp => imp.text);
 	}
 
 	/**
@@ -107,8 +107,8 @@ export abstract class BaseStructurerProvider implements StructurerProvider {
 		let imports: ImportWithRefs[] = scope.allImports(src);
 		let range: TextRange = TextRange.from(node);
 
-		return imports.filter((impRange) => {
-			let containedRanges = impRange.refs.filter((ref) => {
+		return imports.filter(impRange => {
+			let containedRanges = impRange.refs.filter(ref => {
 				return ref.contains(range);
 			});
 
@@ -129,7 +129,7 @@ export abstract class BaseStructurerProvider implements StructurerProvider {
 	 */
 	public combineSimilarClasses(codeFile: CodeFile) {
 		let classMap = new Map<string, CodeStructure>();
-		codeFile.classes.forEach((classItem) => {
+		codeFile.classes.forEach(classItem => {
 			if (classMap.has(classItem.name)) {
 				const oldClass = classMap.get(classItem.name)!!;
 				oldClass.methods.push(...classItem.methods);

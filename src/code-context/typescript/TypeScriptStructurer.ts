@@ -1,20 +1,20 @@
-import { injectable } from "inversify";
-import Parser, { Language } from "web-tree-sitter";
+import { injectable } from 'inversify';
+import Parser, { Language } from 'web-tree-sitter';
 
-import { CodeFile, CodeStructure, CodeVariable, StructureType } from "../../editor/codemodel/CodeElement";
-import { BaseStructurerProvider } from "../_base/StructurerProvider";
-import { LanguageProfileUtil } from "../_base/LanguageProfile";
-import { TypeScriptProfile } from "./TypeScriptProfile";
+import { CodeFile, CodeStructure, CodeVariable, StructureType } from '../../editor/codemodel/CodeElement';
+import { LanguageProfileUtil } from '../_base/LanguageProfile';
+import { BaseStructurerProvider } from '../_base/StructurerProvider';
+import { TypeScriptProfile } from './TypeScriptProfile';
 
 @injectable()
 export class TypeScriptStructurer extends BaseStructurerProvider {
-	protected langId: string = "typescript";
+	protected langId: string = 'typescript';
 	protected config: TypeScriptProfile = LanguageProfileUtil.from(this.langId)!!;
 	protected parser: Parser | undefined;
 	protected language: Language | undefined;
 
 	isApplicable(lang: string) {
-		return lang === "typescript" || lang === "javascript" || lang === "typescriptreact" || lang === "javascriptreact";
+		return lang === 'typescript' || lang === 'javascript' || lang === 'typescriptreact' || lang === 'javascriptreact';
 	}
 
 	parseFile(code: string, filepath: string): Promise<CodeFile | undefined> {
@@ -28,10 +28,10 @@ export class TypeScriptStructurer extends BaseStructurerProvider {
 			filepath: filepath,
 			language: this.langId,
 			functions: [],
-			path: "",
+			path: '',
 			package: '',
 			imports: [],
-			classes: []
+			classes: [],
 		};
 		let classObj: CodeStructure = {
 			type: StructureType.Class,
@@ -43,7 +43,7 @@ export class TypeScriptStructurer extends BaseStructurerProvider {
 			package: '',
 			implements: [],
 			start: { row: 0, column: 0 },
-			end: { row: 0, column: 0 }
+			end: { row: 0, column: 0 },
 		};
 
 		for (const element of captures) {
@@ -51,10 +51,10 @@ export class TypeScriptStructurer extends BaseStructurerProvider {
 			const text = capture.node.text;
 
 			switch (capture.name) {
-				case "import-source":
+				case 'import-source':
 					codeFile.imports.push(text);
 					break;
-				case "class-name":
+				case 'class-name':
 					classObj.name = text;
 					classObj.type = StructureType.Class;
 					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
@@ -65,10 +65,10 @@ export class TypeScriptStructurer extends BaseStructurerProvider {
 						codeFile.classes.push(classObj);
 					}
 					break;
-				case "class-method-name":
+				case 'class-method-name':
 					classObj.methods.push(this.createFunction(capture.node, text));
 					break;
-				case "interface-name":
+				case 'interface-name':
 					classObj.name = text;
 					classObj.type = StructureType.Interface;
 					const interfaceNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
@@ -79,12 +79,12 @@ export class TypeScriptStructurer extends BaseStructurerProvider {
 						codeFile.classes.push(classObj);
 					}
 					break;
-				case "interface-prop-name":
+				case 'interface-prop-name':
 					let lastClass = codeFile.classes[codeFile.classes.length - 1];
 					lastClass.fields = lastClass.fields ?? [];
-					lastClass.fields.push(this.createVariable(capture.node, text, ""));
+					lastClass.fields.push(this.createVariable(capture.node, text, ''));
 					break;
-				case "interface-prop-type":
+				case 'interface-prop-type':
 					let lastClass_ = codeFile.classes[codeFile.classes.length - 1];
 					const lastField = lastClass_.fields!![lastClass_.fields!!.length - 1];
 					lastField.type = text;

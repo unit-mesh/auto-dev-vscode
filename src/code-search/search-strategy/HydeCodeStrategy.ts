@@ -1,17 +1,18 @@
-import { ChunkItem } from "../embedding/_base/Embedding";
-import { executeIns, HydeQuery, HydeStrategy } from "./_base/HydeStrategy";
-import { HydeDocument, HydeDocumentType } from "./_base/HydeDocument";
-import { AutoDevExtension } from "../../AutoDevExtension";
-import { ChatMessage } from "../../llm-provider/ChatMessage";
-import { HydeStep } from "./_base/HydeStep";
-import { PromptManager } from "../../prompt-manage/PromptManager";
-import { channel } from "../../channel";
-import { DefaultRetrieval } from "../retrieval/DefaultRetrieval";
-import { RetrieveOption } from "../retrieval/Retrieval";
-import { KeywordEvaluateContext, KeywordsProposeContext } from "./HydeKeywordsStrategy";
-import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
-import { StrategyFinalPrompt } from "./_base/StrategyFinalPrompt";
-import { ContextItem } from "../../context-provider/_base/BaseContextProvider";
+import { logger } from 'base/common/log/log';
+import { StreamingMarkdownCodeBlock } from 'base/common/markdown/StreamingMarkdownCodeBlock';
+
+import { AutoDevExtension } from '../../AutoDevExtension';
+import { ContextItem } from '../../context-provider/_base/BaseContextProvider';
+import { IChatMessage } from 'base/common/language-models/languageModels';
+import { PromptManager } from '../../prompt-manage/PromptManager';
+import { ChunkItem } from '../embedding/_base/Embedding';
+import { DefaultRetrieval } from '../retrieval/DefaultRetrieval';
+import { RetrieveOption } from '../retrieval/Retrieval';
+import { HydeDocument, HydeDocumentType } from './_base/HydeDocument';
+import { HydeStep } from './_base/HydeStep';
+import { executeIns, HydeQuery, HydeStrategy } from './_base/HydeStrategy';
+import { StrategyFinalPrompt } from './_base/StrategyFinalPrompt';
+import { KeywordEvaluateContext, KeywordsProposeContext } from './HydeKeywordsStrategy';
 
 /**
  * Generate hypothetical document base on user input, and then used to retrieve similar code by symbols.
@@ -41,32 +42,35 @@ import { ContextItem } from "../../context-provider/_base/BaseContextProvider";
  */
 export class HydeCodeStrategy implements HydeStrategy<string> {
 	documentType = HydeDocumentType.Code;
-	message: ChatMessage[] = [];
-	query: string;
-	extension: AutoDevExtension;
+	message: IChatMessage[] = [];
 	step: HydeStep;
+	promptManager: PromptManager;
+	retrieval: DefaultRetrieval;
 
-	constructor(query: string, extension: AutoDevExtension) {
-		this.query = query;
-		this.extension = extension;
+	constructor(
+		public query: string,
+		private extension: AutoDevExtension,
+	) {
 		this.step = HydeStep.Propose;
+		this.retrieval = extension.retrieval;
+		this.promptManager = extension.promptManager;
 	}
 
 	async instruction(): Promise<string> {
-		let chatContext = await PromptManager.getInstance().collectByCurrentDocument();
+		let chatContext = await this.promptManager.collectByCurrentDocument();
 		let proposeContext: KeywordsProposeContext = {
 			step: this.step,
 			question: this.query,
-			language: "",
-			chatContext: chatContext.map(item => item.text).join("\n - ")
+			language: '',
+			chatContext: chatContext.map(item => item.text).join('\n - '),
 		};
 
-		return await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, proposeContext);
+		return await this.promptManager.renderHydeTemplate(this.step, this.documentType, proposeContext);
 	}
 
 	async generateDocument(): Promise<HydeDocument<string>> {
 		let proposeIns = await this.instruction();
-		channel.appendLine(" --- Generated Code --- ");
+		logger.appendLine(' --- Generated Code --- ');
 		const proposeOut = await executeIns(proposeIns);
 		const code = StreamingMarkdownCodeBlock.parse(proposeOut);
 		return new HydeDocument<string>(this.documentType, code.text);
@@ -74,18 +78,20 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 
 	async retrieveChunks(queryTerm: HydeQuery): Promise<ChunkItem[]> {
 		let language = undefined;
-		let embeddingsProvider = this.extension.embeddingsProvider!!;
-		let retrieval = DefaultRetrieval.getInstance();
+		let embeddingsProvider = this.extension.embeddingsProvider;
 		let options: RetrieveOption = {
 			filterDirectory: undefined,
 			filterLanguage: language,
 			withFullTextSearch: true,
 			withSemanticSearch: true,
-			withCommitMessageSearch: false
+			withCommitMessageSearch: false,
 		};
 
-		let result: ContextItem[] = await retrieval.retrieve(
-			queryTerm as string, this.extension.ideAction, embeddingsProvider, options
+		let result: ContextItem[] = await this.retrieval.retrieve(
+			queryTerm as string,
+			this.extension.ideAction,
+			embeddingsProvider,
+			options,
 		);
 
 		let chunks: ChunkItem[] = [];
@@ -95,7 +101,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 				name: item.name,
 				path: item.path,
 				range: item.range,
-				embedding: []
+				embedding: [],
 			});
 		});
 
@@ -107,9 +113,9 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 	}
 
 	async execute(): Promise<StrategyFinalPrompt> {
-		channel.appendLine("=".repeat(80));
-		channel.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
-		channel.appendLine("=".repeat(80));
+		logger.appendLine('='.repeat(80));
+		logger.appendLine(`= Hyde Keywords Strategy: ${this.constructor.name} =`);
+		logger.appendLine('='.repeat(80));
 
 		this.step = HydeStep.Propose;
 		let documents = await this.generateDocument();
@@ -122,18 +128,18 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 		let evaluateContext: KeywordEvaluateContext = {
 			step: this.step,
 			question: this.query,
-			code: chunks.map(item => item.text).join("\n"),
-			language: ""
+			code: chunks.map(item => item.text).join('\n'),
+			language: '',
 		};
 
 		if (chunks.length === 0) {
-			channel.appendLine("No code snippets found.");
-			return new StrategyFinalPrompt("", []);
+			logger.appendLine('No code snippets found.');
+			return new StrategyFinalPrompt('', []);
 		}
 
-		channel.appendLine("\n");
-		channel.appendLine(" --- Summary --- ");
-		let evaluateIns = await PromptManager.getInstance().renderHydeTemplate(this.step, this.documentType, evaluateContext);
+		logger.appendLine('\n');
+		logger.appendLine(' --- Summary --- ');
+		let evaluateIns = await this.promptManager.renderHydeTemplate(this.step, this.documentType, evaluateContext);
 		return new StrategyFinalPrompt(evaluateIns, chunks);
 	}
 }

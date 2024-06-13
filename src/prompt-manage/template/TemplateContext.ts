@@ -4,7 +4,6 @@ export interface TemplateContext {
 }
 
 class EmptyContext implements TemplateContext {
-    language: string = '';
-    chatContext?: string | undefined;
+	language: string = '';
+	chatContext?: string | undefined;
 }
-

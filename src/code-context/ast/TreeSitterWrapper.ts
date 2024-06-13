@@ -1,21 +1,33 @@
-import vscode from "vscode";
-import { TreeSitterFile } from "./TreeSitterFile";
-import { DefaultLanguageService } from "../../editor/language/service/DefaultLanguageService";
-import { NamedElementBuilder } from "../../editor/ast/NamedElementBuilder";
-import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
+import vscode from 'vscode';
+
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { NamedElementBuilder } from '../../editor/ast/NamedElementBuilder';
+import { TreeSitterFileManager } from '../../editor/cache/TreeSitterFileManager';
+import { TreeSitterFile } from './TreeSitterFile';
 
 /**
  * For fix generate code
  */
-export async function textToTreeSitterFile(src: string, langId: string) {
-	return TreeSitterFile.create(src, langId, new DefaultLanguageService());
+export async function textToTreeSitterFile(src: string, langId: string, languageService: ILanguageServiceProvider
+
+) {
+	return TreeSitterFile.create(src, langId, languageService);
 }
 
-export async function createNamedElement(document: vscode.TextDocument): Promise<NamedElementBuilder> {
-	let file = await TreeSitterFileManager.create(document);
+// TODO move to AutoDevExtension?
+export async function createNamedElement(
+	treeSitterFileManager: TreeSitterFileManager,
+	document: vscode.TextDocument,
+): Promise<NamedElementBuilder> {
+	const file = await treeSitterFileManager.create(document);
 	return new NamedElementBuilder(file);
 }
 
-export async function createTreeSitterFile(document: vscode.TextDocument): Promise<TreeSitterFile> {
-	return TreeSitterFileManager.create(document);
+// TODO move to AutoDevExtension?
+export async function createTreeSitterFile(
+	treeSitterFileManager: TreeSitterFileManager,
+	document: vscode.TextDocument,
+): Promise<TreeSitterFile> {
+	return treeSitterFileManager.create(document);
 }

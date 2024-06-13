@@ -1,276 +1,180 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable curly */
-import * as vscode from "vscode";
+import * as vscode from 'vscode';
 
-import { channel } from "../../channel";
-import { CrossFileContextAnalyzer } from "../../editor/files/CrossFileContextAnalyzer";
-import { SettingService } from "../../settings/SettingService";
-import { LlmProvider } from "../../llm-provider/LlmProvider";
+import { ConfigurationService } from 'base/common/configuration/configurationService';
+import { logger } from 'base/common/log/log';
 
-const MIN_CONTEXT_LENGTH = 6;
+import { AutoDevExtension } from '../../AutoDevExtension';
+import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
 
-const CODE_PROMPT_TEMPLATE = `<fim_prefix>{prefix}<fim_suffix>{suffix}<fim_middle>`;
+// Skipping contexts that are too short
+// '// 写一个合计函数' => 10
+// 'export const' => 12
+// 'export const sum =' => 18
+// 'export function' => 15
+const MIN_CONTEXT_LENGTH = 12;
+
+const BEFORE_CURSOR = '<|fim_prefix|>';
+const AFTER_CURSOR = '<|fim_suffix|>';
+const AT_CURSOR = '<|fim_middle|>';
+const FILE_SEPARATOR = '<|file_separator|>';
 
 const CODE_STOR_WORDS = [
-  "<｜end▁of▁sentence｜>",
-  "<｜EOT｜>",
-  "\\n",
-  "<|eot_id|>",
+	BEFORE_CURSOR,
+	AFTER_CURSOR,
+	AT_CURSOR,
+	FILE_SEPARATOR,
+	'<|end▁of▁sentence|>',
+	'<|EOT|>',
+	'\\n',
+	'<|eot_id|>',
 ];
 
-export class AutoDevCodeSuggestionProvider
-  implements vscode.InlineCompletionItemProvider
-{
-  crossFileContextAnalyzer = new CrossFileContextAnalyzer();
+const CODE_PROMPT_TEMPLATE = `${BEFORE_CURSOR}{prefix}${AFTER_CURSOR}{suffix}${AT_CURSOR}`;
 
-  config = SettingService.instance();
+export class AutoDevCodeSuggestionProvider implements vscode.InlineCompletionItemProvider {
+	private configService: ConfigurationService;
+	private lm: LanguageModelsService;
 
-  // TODO: Whether the smart processing is triggered after the complement or for the first time
-  async provideInlineCompletionItems(
-    document: vscode.TextDocument,
-    position: vscode.Position,
-    context: vscode.InlineCompletionContext,
-    token: vscode.CancellationToken
-  ): Promise<vscode.InlineCompletionItem[]> {
-    const config = this.config;
+	constructor(extension: AutoDevExtension) {
+		this.configService = extension.config;
+		this.lm = extension.lm;
+	}
 
-    if (!config.get("suggestion.enableCodeCompletion")) return [];
+	// TODO: Whether the smart processing is triggered after the complement or for the first time
+	async provideInlineCompletionItems(
+		document: vscode.TextDocument,
+		position: vscode.Position,
+		context: vscode.InlineCompletionContext,
+		token: vscode.CancellationToken,
+	): Promise<vscode.InlineCompletionItem[]> {
+		if (context.triggerKind !== vscode.InlineCompletionTriggerKind.Automatic) {
+			return [];
+		}
 
-    if (document.lineCount >= 8000) {
-      channel.debug("(AutoDevCodeSuggestionProvider): skip long file");
-      return [];
-    }
+		const config = this.configService;
 
-    if (document.getText().length < MIN_CONTEXT_LENGTH) {
-      channel.debug("(AutoDevCodeSuggestionProvider): not enough context");
-      return [];
-    }
+		if (!config.get('completions.enable')) {
+			return [];
+		}
 
-    const requestDelay = config.get<number>("completion.requestDelay", 500);
+		if (document.lineCount >= 8000) {
+			logger.debug('(inline completions): skip long file');
+			return [];
+		}
 
-    await new Promise<void>((resolve) => {
-      const timerId = setTimeout(resolve, requestDelay);
+		if (document.getText().trim().length < MIN_CONTEXT_LENGTH) {
+			logger.debug('(inline completions): not enough context');
+			return [];
+		}
 
-      token.onCancellationRequested(() => {
-        clearTimeout(timerId);
-        resolve();
-      });
-    });
+		const requestDelay = config.get<number>('completions.requestDelay', 500);
 
-    if (token.isCancellationRequested) {
-      channel.debug("(AutoDevCodeSuggestionProvider): during debounce");
-      return [];
-    }
+		await new Promise<void>(resolve => {
+			const timerId = setTimeout(resolve, requestDelay);
 
-    const result = await this.codeCompletion(
-      document,
-      position,
-      context,
-      token
-    );
+			token.onCancellationRequested(() => {
+				clearTimeout(timerId);
+				resolve();
+			});
+		});
 
-    if (result) {
-      return [new vscode.InlineCompletionItem(result.trimStart())];
-    }
+		if (token.isCancellationRequested) {
+			logger.debug('(inline completions): during debounce');
+			return [];
+		}
 
-    return [];
-  }
+		const result = await this.sendRequest(document, position, context, token);
 
-  async codeCompletion(
-    document: vscode.TextDocument,
-    position: vscode.Position,
-    context: vscode.InlineCompletionContext,
-    token: vscode.CancellationToken
-  ): Promise<string | undefined> {
-    const version = document.version;
-    const offset = document.offsetAt(position);
+		if (result) {
+			return [new vscode.InlineCompletionItem(result.trimStart())];
+		}
 
-    const snippets = await this.resolveNeighborSnippets(
-      document,
-      token,
-      offset
-    );
+		return [];
+	}
 
-    if (token.isCancellationRequested) {
-      channel.debug("(AutoDevCodeSuggestionProvider): vscode cancelled");
-      return;
-    }
+	async sendRequest(
+		document: vscode.TextDocument,
+		position: vscode.Position,
+		context: vscode.InlineCompletionContext,
+		token: vscode.CancellationToken,
+	): Promise<string | undefined> {
+		const version = document.version;
+		const offset = document.offsetAt(position);
 
-    if (version !== undefined && document.version !== version) {
-      channel.debug(
-        "(AutoDevCodeSuggestionProvider): document was changed when preparing the completion request"
-      );
-      return;
-    }
+		if (token.isCancellationRequested) {
+			logger.debug('(inline completions): vscode cancelled');
+			return;
+		}
 
-    const content = document.getText().trim();
-    const { prefix, suffix } = extractDocPrompt(content, offset);
+		if (version !== undefined && document.version !== version) {
+			logger.debug('(inline completions): document was changed when preparing the completion request');
+			return;
+		}
 
-    const template =
-      this.config.get<string>("completion.template") || CODE_PROMPT_TEMPLATE;
+		const content = document.getText().trim();
+		const { prefix, suffix } = extractDocPrompt(content, offset);
 
-    const prompt = template
-      .replace(
-        "{additionalContext}",
-        snippets ? JSON.stringify(snippets) : "[]"
-      )
-      .replace("{language}", document.languageId)
-      .replace("{prefix}", prefix)
-      .replace("{suffix}", suffix);
+		const template = this.configService.get<string>('completions.template', CODE_PROMPT_TEMPLATE);
 
-    return this.createCodeCompletion(prompt, token);
-  }
+		const prompt = template
+			.replace('{language}', document.languageId)
+			.replace('{file_name}', document.fileName)
+			.replace('{prefix}', prefix)
+			.replace('{suffix}', suffix);
 
-  async createCodeCompletion(prompt: string, token: vscode.CancellationToken) {
-    if (this.config.get<boolean>("completion.enableLegacyMode") === true) {
-      return this.sendLegacyCodeCompletionRequest(prompt, token);
-    }
+		const t0 = performance.now();
+		const llm = this.lm;
 
-    return this.sendCodeCompletionRequest(prompt, token);
-  }
+		const completion = await llm.completion(
+			prompt,
+			{
+				temperature: 0.4,
+				topP: 0.2,
+				frequencyPenalty: 1.1,
+				stop: this.configService.get<string[]>('completions.stops', CODE_STOR_WORDS),
+			},
+			{
+				report(fragment) {
+					// pass
+				},
+			},
+			token,
+		);
 
-  async sendCodeCompletionRequest(
-    prompt: string,
-    token: vscode.CancellationToken
-  ): Promise<string | undefined> {
-    const t0 = performance.now();
-    const llm = LlmProvider.codeCompletion();
+		logger.debug(
+			`(inline completions): Code stream finished in ${(performance.now() - t0).toFixed(
+				2,
+			)} ms with contents: ${completion}`,
+		);
 
-    const ac = new AbortController();
+		return completion;
+	}
 
-    token.onCancellationRequested(() => {
-      ac.abort();
-    });
-
-    const completion = await llm.complete(
-      prompt,
-      {
-        temperature: 0.4,
-        topP: 0.2,
-        frequencyPenalty: 1.1,
-        stop: this.config.get<string[]>("completion.stops") || CODE_STOR_WORDS,
-      },
-      ac.signal
-    );
-
-    if (token.isCancellationRequested || ac.signal.aborted) {
-      channel.debug("(AutoDevCodeSuggestionProvider): vscode cancelled");
-      return;
-    }
-
-    channel.debug(
-      `(AutoDevCodeSuggestionProvider): Code stream finished in ${(
-        performance.now() - t0
-      ).toFixed(2)} ms with contents: ${completion}`
-    );
-
-    return completion;
-  }
-
-  async sendLegacyCodeCompletionRequest(
-    prompt: string,
-    token: vscode.CancellationToken
-  ): Promise<string | undefined> {
-    const t0 = performance.now();
-    const llm = LlmProvider.codeCompletion();
-
-    const ac = new AbortController();
-
-    token.onCancellationRequested(() => {
-      ac.abort();
-    });
-
-    const completion = await llm.createCompletion(
-      {
-        stream: false,
-        prompt,
-        temperature: 0.4,
-        top_p: 0.2,
-        frequency_penalty: 1.1,
-        stop: this.config.get<string[]>("completion.stops") || CODE_STOR_WORDS,
-      },
-      ac.signal
-    );
-
-    if (token.isCancellationRequested || ac.signal.aborted) {
-      channel.debug("(AutoDevCodeSuggestionProvider): vscode cancelled");
-      return;
-    }
-
-    const content = completion?.choices[0]?.text;
-
-    channel.debug(
-      `(AutoDevCodeSuggestionProvider): Code stream finished in ${(
-        performance.now() - t0
-      ).toFixed(2)} ms with contents: ${content}`
-    );
-
-    return content;
-  }
-
-  async resolveNeighborSnippets(
-    document: vscode.TextDocument,
-    token: vscode.CancellationToken,
-    offset: number
-  ) {
-    try {
-      const references =
-        await this.crossFileContextAnalyzer.getReferencedSymbolsContextFromCache(
-          document.uri.toString(),
-          offset
-        );
-
-      if (token.isCancellationRequested) return;
-
-      channel.debug(
-        "(AutoDevCodeSuggestionProvider):",
-        (references ? references.length : 0) + " references symbols"
-      );
-
-      let count = 0;
-      let lastIndex = 0;
-
-      for (const reference of references) {
-        count += reference.snippet.length;
-        if (count > 4000) break;
-        lastIndex++;
-      }
-
-      return references.slice(0, lastIndex);
-    } catch (error) {
-      channel.error(
-        `(AutoDevCodeSuggestionProvider): NeighborSnippets failed to retrieve context: ${
-          (error as Error).message
-        }`
-      );
-      channel.show();
-    }
-  }
-
-  dispose() {
-    this.crossFileContextAnalyzer.dispose();
-  }
+	dispose() {
+		// pass
+	}
 }
 
 function extractDocPrompt(content: string, offset: number) {
-  const head = content.slice(0, offset);
-  const suffix = content.slice(offset);
-  const [prefix, trailingWs] = trimLastLine(head);
+	const head = content.slice(0, offset);
+	const suffix = content.slice(offset);
+	const [prefix, trailingWs] = trimLastLine(head);
 
-  return {
-    prefix: prefix,
-    suffix: suffix,
-    trailingWs: trailingWs,
-  };
+	return {
+		prefix: prefix,
+		suffix: suffix,
+		trailingWs: trailingWs,
+	};
 }
 
 function trimLastLine(content: string): [string, string] {
-  const contentArr = content.split("\n");
-  const lastLine = contentArr[contentArr.length - 1];
-  const length = lastLine.length - lastLine.trimEnd().length;
+	const contentArr = content.split('\n');
+	const lastLine = contentArr[contentArr.length - 1];
+	const length = lastLine.length - lastLine.trimEnd().length;
 
-  const prefix = content.slice(0, content.length - length);
-  const trailingWs = content.slice(prefix.length);
+	const prefix = content.slice(0, content.length - length);
+	const trailingWs = content.slice(prefix.length);
 
-  return lastLine.length === length ? [prefix, trailingWs] : [content, ""];
+	return lastLine.length === length ? [prefix, trailingWs] : [content, ''];
 }

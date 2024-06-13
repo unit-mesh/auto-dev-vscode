@@ -1,5 +1,5 @@
-import { StopwordsBasedTokenizer } from "../../code-search/tokenizer/StopwordsBasedTokenizer";
-import { WhitespaceBasedTokenizer } from "../../code-search/tokenizer/WhitespaceBasedTokenizer";
+import { StopwordsBasedTokenizer } from '../../code-search/tokenizer/StopwordsBasedTokenizer';
+import { WhitespaceBasedTokenizer } from '../../code-search/tokenizer/WhitespaceBasedTokenizer';
 
 describe('SimilarChunkTokenizer', () => {
 	let tokenizer: StopwordsBasedTokenizer;
@@ -34,15 +34,15 @@ describe('SimilarChunkTokenizer', () => {
       }
   }`;
 			const expectedOutput: Set<string> = new Set([
-				"helloworld",
-				"void",
-				"main",
-				"string",
-				"args",
-				"system",
-				"println",
-				"hello",
-				"world"
+				'helloworld',
+				'void',
+				'main',
+				'string',
+				'args',
+				'system',
+				'println',
+				'hello',
+				'world',
 			]);
 			expect(tokenizer.tokenize(input)).to.deep.equal(expectedOutput);
 		});

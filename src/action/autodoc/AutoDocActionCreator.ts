@@ -1,15 +1,13 @@
-import { injectable } from "inversify";
-import vscode from "vscode";
+import { injectable } from 'inversify';
+import vscode from 'vscode';
 
-import { NamedElement } from "../../editor/ast/NamedElement";
-import { ActionCreatorContext } from "../_base/ActionCreatorContext";
-import { CodeActionCreator } from "../_base/CodeActionCreator";
+import { NamedElement } from '../../editor/ast/NamedElement';
+import { ActionCreatorContext } from '../_base/ActionCreatorContext';
+import { CodeActionCreator } from '../_base/CodeActionCreator';
 
 @injectable()
 export class AutoDocActionCreator extends CodeActionCreator {
-	static readonly providedCodeActionKinds = [
-		vscode.CodeActionKind.RefactorRewrite,
-	];
+	static readonly providedCodeActionKinds = [vscode.CodeActionKind.RefactorRewrite];
 
 	isApplicable(creatorContext: ActionCreatorContext): boolean {
 		return true;
@@ -31,9 +29,9 @@ export class AutoDocActionCreator extends CodeActionCreator {
 		codeAction.isPreferred = false;
 		codeAction.edit = new vscode.WorkspaceEdit();
 		codeAction.command = {
-			command: "autodev.autoComment",
+			command: 'autodev.autoComment',
 			title: title,
-			arguments: [document, block, codeAction.edit]
+			arguments: [document, block, codeAction.edit],
 		};
 
 		return codeAction;

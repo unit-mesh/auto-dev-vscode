@@ -1,99 +1,258 @@
-import * as vscode from "vscode";
+import { inject, injectable } from 'inversify';
+import {
+	CancellationToken,
+	Disposable,
+	l10n,
+	ProgressLocation,
+	TextDocument,
+	Uri,
+	window,
+	WorkspaceEdit,
+} from 'vscode';
 
-import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
-import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
-import { DiffManager } from "./editor/diff/DiffManager";
-import { StructurerProviderManager } from "./code-context/StructurerProviderManager";
-import { CodebaseIndexer } from "./code-search/indexing/CodebaseIndexer";
-import { AutoDevWebviewProtocol } from "./editor/webview/AutoDevWebviewProtocol";
-import { SqliteDb } from "./code-search/database/SqliteDb";
-import { channel } from "./channel";
-import { EmbeddingsProvider } from "./code-search/embedding/_base/EmbeddingsProvider";
-import { EmbeddingsProviderManager } from "./code-search/embedding/EmbeddingsProviderManager";
+import { ConfigurationService } from 'base/common/configuration/configurationService';
+import { IExtensionContext } from 'base/common/configuration/context';
+import { ContextStateService } from 'base/common/configuration/contextState';
+import { WorkspaceFileSystem } from 'base/common/fs';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+import { logger } from 'base/common/log/log';
 
+import { AutoDocActionExecutor } from './action/autodoc/AutoDocActionExecutor';
+import { AutoTestActionExecutor } from './action/autotest/AutoTestActionExecutor';
+import {
+	registerAutoDevProviders,
+	registerCodeLensProvider,
+	registerCodeSuggestionProvider,
+	registerQuickFixProvider,
+	registerRenameAction,
+} from './action/ProviderRegister';
+import { SystemActionService } from './action/setting/SystemActionService';
+import { Catalyser } from './agent/catalyser/Catalyser';
+import { LanguageModelsService } from './base/common/language-models/languageModelsService';
+import { ChunkerManager } from './code-search/chunk/ChunkerManager';
+import { CodebaseIndexer } from './code-search/indexing/CodebaseIndexer';
+import { LanceDbIndex } from './code-search/indexing/LanceDbIndex';
+import { DefaultRetrieval } from './code-search/retrieval/DefaultRetrieval';
+import { RetrieveOption } from './code-search/retrieval/Retrieval';
+import { TeamTermService } from './domain/TeamTermService';
+import { NamedElement } from './editor/ast/NamedElement';
+import { TreeSitterFileManager } from './editor/cache/TreeSitterFileManager';
+import { AutoDevStatusManager } from './editor/editor-api/AutoDevStatusManager';
+import { QuickActionService } from './editor/editor-api/QuickAction';
+import { VSCodeAction } from './editor/editor-api/VSCodeAction';
+import { ChatViewService } from './editor/views/chat/chatViewService';
+import { ActionType } from './prompt-manage/ActionType';
+import { CustomActionExecutor } from './prompt-manage/custom-action/CustomActionExecutor';
+import { VSCodeTemplateLoader } from './prompt-manage/loader/VSCodeTemplateLoader';
+import { PromptManager } from './prompt-manage/PromptManager';
+import { TeamPromptsBuilder } from './prompt-manage/team-prompts/TeamPromptsBuilder';
+import { TemplateContext } from './prompt-manage/template/TemplateContext';
+import { TemplateRender } from './prompt-manage/template/TemplateRender';
+import { IProjectService } from './ProviderTypes';
+import { ToolchainContextManager } from './toolchain-context/ToolchainContextManager';
+
+@injectable()
 export class AutoDevExtension {
-	// the WebView for interacting with the editor
-	sidebar: AutoDevWebviewViewProvider;
+	// Vscode
 	ideAction: VSCodeAction;
-	diffManager: DiffManager;
-	extensionContext: vscode.ExtensionContext;
-	structureProvider: StructurerProviderManager | undefined;
-	private webviewProtocol: AutoDevWebviewProtocol;
-	embeddingsProvider: EmbeddingsProvider | undefined;
+	statusBarManager: AutoDevStatusManager;
+	quickAction: QuickActionService;
+	systemAction: SystemActionService;
+
+	// Ast
+	treeSitterFileManager: TreeSitterFileManager;
+
+	// Agents
+	catalyser: Catalyser;
+
+	// Toolchain
+	promptManager: PromptManager;
+	teamPromptsBuilder: TeamPromptsBuilder;
+	toolchainContextManager: ToolchainContextManager;
+
+	// Storages
+	private vectorStore: LanceDbIndex;
+	retrieval: DefaultRetrieval;
+	codebaseIndexer: CodebaseIndexer;
 
 	constructor(
-		sidebar: AutoDevWebviewViewProvider,
-		action: VSCodeAction,
-		diffManager: DiffManager,
-		context: vscode.ExtensionContext) {
-		this.sidebar = sidebar;
-		this.ideAction = action;
-		this.diffManager = diffManager;
-		this.extensionContext = context;
+		@inject(ConfigurationService)
+		public config: ConfigurationService,
 
-		this.webviewProtocol = this.sidebar.webviewProtocol;
+		@inject(IExtensionContext)
+		public extensionContext: IExtensionContext,
+
+		@inject(ContextStateService)
+		public contextState: ContextStateService,
+
+		@inject(LanguageModelsService)
+		public lm: LanguageModelsService,
+
+		@inject(ILanguageServiceProvider)
+		public lsp: ILanguageServiceProvider,
+
+		@inject(WorkspaceFileSystem)
+		public fs: WorkspaceFileSystem,
+
+		@inject(ChatViewService)
+		public chat: ChatViewService,
+
+		@inject(IProjectService)
+		public teamTerm: TeamTermService,
+	) {
+		this.ideAction = new VSCodeAction();
+		this.statusBarManager = new AutoDevStatusManager();
+
+		const templateLoader = new VSCodeTemplateLoader(this.extensionContext.extensionUri);
+		const templateRender = new TemplateRender(templateLoader);
+
+		this.catalyser = new Catalyser(this, this.teamTerm);
+
+		this.teamPromptsBuilder = new TeamPromptsBuilder(this.config);
+		this.quickAction = new QuickActionService(
+			this.teamPromptsBuilder,
+			new CustomActionExecutor(this.lm, templateRender, this.statusBarManager),
+			this,
+		);
+
+		this.systemAction = new SystemActionService(this);
+
+		this.toolchainContextManager = new ToolchainContextManager();
+		this.promptManager = new PromptManager(this.extensionContext, this.toolchainContextManager);
+
+		this.treeSitterFileManager = new TreeSitterFileManager(this.lsp);
+
+		const chunkerManager = new ChunkerManager(this.lsp);
+
+		this.vectorStore = new LanceDbIndex(this.lm, path => this.ideAction.readFile(path), chunkerManager);
+		this.codebaseIndexer = new CodebaseIndexer(this.ideAction, this.vectorStore, this.lsp, chunkerManager);
+		this.retrieval = new DefaultRetrieval(this.vectorStore);
 	}
 
 	/**
-	 * The `indexing` method is an asynchronous function that initializes the indexing process of directories in the workspace.
-	 *
-	 * This method first attempts to get an instance of the SQLite database using the `SqliteDb.get()` method. If an error occurs during this process, it is caught and logged to the console.
-	 *
-	 * The method then retrieves the directories in the workspace using `vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath)`. If directories are found, it logs the start of the indexing process and the directories to be indexed.
-	 *
-	 * A new instance of `LocalEmbeddingProvider` is created and initialized with the file system path of the extension URI. This instance is then set as the `embeddingsProvider`.
-	 *
-	 * Once the `LocalEmbeddingProvider` is initialized, a new `CodebaseIndexer` instance is created with the `LocalEmbeddingProvider` and `ideAction` as parameters. The `refreshCodebaseIndex` method is then called with the `CodebaseIndexer` and directories as parameters.
-	 *
-	 * This method does not return any value.
-	 *
-	 * @throws {Error} If an error occurs while getting the SQLite database instance.
-	 * @async
+	 * @deprecated This is compatible with the object, please do not use
 	 */
-	public async indexing() {
-		try {
-			let sqliteDb = await SqliteDb.get();
-		} catch (e) {
-			console.log(e);
-		}
+	get embeddingsProvider() {
+		const model = this.lm.resolveEmbeddingModel({});
 
-		const that = this;
-		// waiting for index command
-		let dirs = vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath);
-		channel.show();
-
-		if (dirs) {
-			channel.appendLine("start indexing dirs:" + dirs);
-
-			that.embeddingsProvider = EmbeddingsProviderManager.create();
-
-			const indexer = new CodebaseIndexer(that.embeddingsProvider, this.ideAction);
-			this.refreshCodebaseIndex(indexer, dirs).then(r => {
-				channel.appendLine("indexing finished");
-			});
-		}
+		return {
+			id: model.identifier,
+			embed(input: string[]) {
+				return model.provideEmbedDocuments(input, {});
+			},
+		};
 	}
 
-	private indexingCancellationController: AbortController | undefined;
-
-	private async refreshCodebaseIndex(indexer: CodebaseIndexer, dirs: string[]) {
-		if (this.indexingCancellationController) {
-			this.indexingCancellationController.abort();
-		}
-
-		const that = this;
-
-		this.indexingCancellationController = new AbortController();
-		for await (const update of indexer.refresh(dirs, this.indexingCancellationController.signal)) {
-			channel.appendLine("indexing progress: " + update.progress + " - " + update.desc);
-			that.webviewProtocol?.request("indexProgress", update);
-		}
-	}
-
-	openSettings() {
-		const context = this.extensionContext;
-		vscode.commands.executeCommand("workbench.action.openSettings", {
-			query: "@ext:" + context.extension.id,
+	async createCodebaseIndex() {
+		const granted = await this.contextState.requestAccessUserCodebasePermission({
+			modal: true,
 		});
+
+		if (!granted) {
+			return;
+		}
+
+		this.statusBarManager.setIsLoading('Codebase indexing...');
+		this.contextState.setCodebaseIndexingStatus(true);
+
+		try {
+			await window.withProgress(
+				{
+					location: ProgressLocation.Notification,
+					title: 'Codebase',
+					cancellable: true,
+				},
+				async (progress, token) => {
+					const workspaceDirs = this.ideAction.getWorkspaceDirectories();
+
+					for await (const update of this.codebaseIndexer.refresh(workspaceDirs, token)) {
+						progress.report({
+							increment: update.progress * 10,
+							message: update.desc,
+						});
+						logger.debug(update.desc);
+					}
+				},
+			);
+		} catch (error) {
+			logger.error((error as Error).message);
+			logger.show(false);
+		} finally {
+			this.contextState.setCodebaseIndexingStatus(false);
+			this.statusBarManager.reset();
+		}
+	}
+
+	async retrievalCode(query: string, options: RetrieveOption, token?: CancellationToken) {
+		const granted = await this.contextState.requestAccessUserCodebasePermission({
+			modal: true,
+		});
+
+		if (!granted) {
+			return [];
+		}
+
+		// TODO check if the codebase is indexed?
+
+		const model = this.lm.resolveEmbeddingModel({});
+
+		const results = await this.retrieval.retrieve(
+			query,
+			this.ideAction,
+			{
+				id: model.identifier,
+				embed(input: string[]) {
+					return model.provideEmbedDocuments(input, {}, token);
+				},
+			},
+			options,
+		);
+
+		return results;
+	}
+
+	generateInstruction(type: ActionType, context: TemplateContext) {
+		return this.promptManager.generateInstruction(type, context);
+	}
+
+	showChatPanel() {
+		this.chat.show();
+	}
+
+	newChatSession(prompt?: string) {
+		this.chat.newSession(prompt);
+		this.chat.show();
+	}
+
+	addValueToChatInput(value: string) {
+		this.chat.input(value);
+		this.chat.show();
+	}
+
+	executeAutoDocAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		return new AutoDocActionExecutor(this, document, nameElement, edit).execute();
+	}
+
+	executeAutoTestAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		return new AutoTestActionExecutor(this, document, nameElement, edit).execute();
+	}
+
+	executeCustomAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		this.quickAction.show();
+	}
+
+	register() {
+		return Disposable.from(
+			registerCodeSuggestionProvider(this),
+			registerCodeLensProvider(this),
+			registerQuickFixProvider(this),
+			registerAutoDevProviders(this),
+			registerRenameAction(this),
+		);
+	}
+
+	run() {
+		// Show notifications
+		this.contextState.requestAccessUserCodebasePermission({});
 	}
 }

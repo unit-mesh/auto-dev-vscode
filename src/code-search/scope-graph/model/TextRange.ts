@@ -1,4 +1,4 @@
-import { SyntaxNode } from "web-tree-sitter";
+import { SyntaxNode } from 'web-tree-sitter';
 
 export class Point {
 	byte: number;
@@ -28,7 +28,7 @@ export class TextRange {
 	}
 
 	static empty(): TextRange {
-		return new TextRange(new Point(0, 0, 0), new Point(0, 0, 0), "");
+		return new TextRange(new Point(0, 0, 0), new Point(0, 0, 0), '');
 	}
 
 	static from(node: SyntaxNode): TextRange {
@@ -38,19 +38,19 @@ export class TextRange {
 			{
 				byte: node.startIndex,
 				line: node.startPosition.row,
-				column: node.startPosition.column
+				column: node.startPosition.column,
 			},
 			{
 				byte: node.endIndex,
 				line: node.endPosition.row,
-				column: node.endPosition.column
+				column: node.endPosition.column,
 			},
-			text
+			text,
 		);
 	}
 
 	private static extracted(node: SyntaxNode) {
-		if (node.type === "interpreted_string_literal") {
+		if (node.type === 'interpreted_string_literal') {
 			return JSON.parse(node.text);
 		}
 
@@ -85,7 +85,7 @@ export class TextRange {
 	contentFromRange(src: string): string {
 		const contextStart = (() => {
 			for (let i = this.start.byte - 1; i >= 0; i--) {
-				if (src[i] === "\n") {
+				if (src[i] === '\n') {
 					return i + 1;
 				}
 			}
@@ -95,7 +95,7 @@ export class TextRange {
 		// first new line after end
 		const contextEnd = (() => {
 			for (let i = this.end.byte; i < src.length; i++) {
-				if (src[i] === "\n") {
+				if (src[i] === '\n') {
 					return i;
 				}
 			}
@@ -106,6 +106,6 @@ export class TextRange {
 			src.slice(contextStart, this.start.byte).trimStart(),
 			src.slice(this.start.byte, this.end.byte),
 			src.slice(this.end.byte, contextEnd).trimEnd(),
-		].join("");
+		].join('');
 	}
 }

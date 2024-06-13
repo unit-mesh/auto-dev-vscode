@@ -1,6 +1,6 @@
-import path from "path";
-import fs from "fs";
-import vscode, { WorkspaceFolder } from "vscode";
+import fs from 'fs';
+import path from 'path';
+import vscode, { WorkspaceFolder } from 'vscode';
 
 export class TestTemplateManager {
 	private workspace: WorkspaceFolder | undefined = vscode.workspace.workspaceFolders?.[0];
@@ -16,11 +16,15 @@ export class TestTemplateManager {
 	}
 
 	lookupByRegex(fileName: string): string | null {
-		let promptsDir = path.join(this.workspace?.uri.fsPath || "", "prompts");
-		if (!fs.existsSync(promptsDir)) {return null;}
+		let promptsDir = path.join(this.workspace?.uri.fsPath || '', 'prompts');
+		if (!fs.existsSync(promptsDir)) {
+			return null;
+		}
 
-		let templateFile = path.join(promptsDir, "templates");
-		if (!fs.existsSync(templateFile)) {return null;}
+		let templateFile = path.join(promptsDir, 'templates');
+		if (!fs.existsSync(templateFile)) {
+			return null;
+		}
 
 		const files = fs.readdirSync(templateFile);
 		const matchedFile = files.find(file => new RegExp(file).test(fileName));
@@ -41,11 +45,15 @@ export class TestTemplateManager {
 	 * 1. Find the prompts directory
 	 */
 	lookup(templateFileName: string): string | null {
-		let promptsDir = path.join(this.workspace?.uri.fsPath || "", "prompts");
-		if (!fs.existsSync(promptsDir)) {return null;}
+		let promptsDir = path.join(this.workspace?.uri.fsPath || '', 'prompts');
+		if (!fs.existsSync(promptsDir)) {
+			return null;
+		}
 
-		let templateFile = path.join(promptsDir, "templates");
-		if (!fs.existsSync(templateFile)) {return null;}
+		let templateFile = path.join(promptsDir, 'templates');
+		if (!fs.existsSync(templateFile)) {
+			return null;
+		}
 
 		const templateFilePath = path.join(templateFile, templateFileName);
 		if (fs.existsSync(templateFilePath)) {

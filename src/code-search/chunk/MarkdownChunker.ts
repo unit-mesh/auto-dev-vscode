@@ -1,8 +1,8 @@
-import { Chunker, ChunkWithoutID } from "./_base/Chunk";
-import { cleanFragment, cleanHeader } from "../../markdown/MarkdownClean";
-import { countTokens } from "../token/TokenCounter";
+import { cleanFragment, cleanHeader } from 'base/common/markdown/MarkdownClean';
 
-import { basicChunker } from "./BasicChunker";
+import { countTokens } from '../token/TokenCounter';
+import { Chunker, ChunkWithoutID } from './_base/Chunk';
+import { basicChunker } from './BasicChunker';
 
 /**
  * The `MarkdownChunker` class is an implementation of the `Chunker` interface. It is used to break down a markdown
@@ -13,22 +13,18 @@ import { basicChunker } from "./BasicChunker";
  * @implements {Chunker}
  */
 export class MarkdownChunker implements Chunker {
-	async* chunk(filepath: string, content: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
+	async *chunk(filepath: string, content: string, maxChunkSize: number): AsyncGenerator<ChunkWithoutID> {
 		return this.markdownChunker(content, maxChunkSize, 1);
 	}
 
-	async* markdownChunker(
-		content: string,
-		maxChunkSize: number,
-		hLevel: number,
-	): AsyncGenerator<ChunkWithoutID> {
+	async *markdownChunker(content: string, maxChunkSize: number, hLevel: number): AsyncGenerator<ChunkWithoutID> {
 		if (countTokens(content) <= maxChunkSize) {
-			const header = this.findHeader(content.split("\n"));
+			const header = this.findHeader(content.split('\n'));
 			yield {
-				language: "markdown",
+				language: 'markdown',
 				content,
 				startLine: 0,
-				endLine: content.split("\n").length,
+				endLine: content.split('\n').length,
 				otherMetadata: {
 					fragment: cleanFragment(header),
 					title: cleanHeader(header),
@@ -36,7 +32,7 @@ export class MarkdownChunker implements Chunker {
 			};
 			return;
 		} else if (hLevel > 4) {
-			const header = this.findHeader(content.split("\n"));
+			const header = this.findHeader(content.split('\n'));
 
 			for (const chunk of basicChunker(content, maxChunkSize, 'markdown')) {
 				yield {
@@ -50,8 +46,8 @@ export class MarkdownChunker implements Chunker {
 			return;
 		}
 
-		const h = "#".repeat(hLevel + 1) + " ";
-		const lines = content.split("\n");
+		const h = '#'.repeat(hLevel + 1) + ' ';
+		const lines = content.split('\n');
 		const sections = [];
 
 		let currentSectionStartLine = 0;
@@ -63,7 +59,7 @@ export class MarkdownChunker implements Chunker {
 					const isHeader = currentSection[0].startsWith(h);
 					sections.push({
 						header: isHeader ? currentSection[0] : this.findHeader(currentSection),
-						content: currentSection.slice(isHeader ? 1 : 0).join("\n"),
+						content: currentSection.slice(isHeader ? 1 : 0).join('\n'),
 						startLine: currentSectionStartLine,
 						endLine: currentSectionStartLine + currentSection.length,
 					});
@@ -79,7 +75,7 @@ export class MarkdownChunker implements Chunker {
 			const isHeader = currentSection[0].startsWith(h);
 			sections.push({
 				header: isHeader ? currentSection[0] : this.findHeader(currentSection),
-				content: currentSection.slice(isHeader ? 1 : 0).join("\n"),
+				content: currentSection.slice(isHeader ? 1 : 0).join('\n'),
 				startLine: currentSectionStartLine,
 				endLine: currentSectionStartLine + currentSection.length,
 			});
@@ -92,13 +88,12 @@ export class MarkdownChunker implements Chunker {
 				hLevel + 1,
 			)) {
 				yield {
-					language: "markdown",
-					content: section.header + "\n" + chunk.content,
+					language: 'markdown',
+					content: section.header + '\n' + chunk.content,
 					startLine: section.startLine + chunk.startLine,
 					endLine: section.startLine + chunk.endLine,
 					otherMetadata: {
-						fragment:
-							chunk.otherMetadata?.fragment || cleanFragment(section.header),
+						fragment: chunk.otherMetadata?.fragment || cleanFragment(section.header),
 						title: chunk.otherMetadata?.title || cleanHeader(section.header),
 					},
 				};
@@ -107,11 +102,11 @@ export class MarkdownChunker implements Chunker {
 	}
 
 	findHeader(lines: string[]): string | undefined {
-		return lines.find((line) => line.startsWith("#"))?.split("# ")[1];
+		return lines.find(line => line.startsWith('#'))?.split('# ')[1];
 	}
 }
 
 export function extractMarkdownCodeBlockContent(content: string) {
-  const iter = content.matchAll(/^```.*\n([\s\S]*?)?```/gm);
-  return Array.from(iter).map((result) => result[1].trim());
+	const iter = content.matchAll(/^```.*\n([\s\S]*?)?```/gm);
+	return Array.from(iter).map(result => result[1].trim());
 }

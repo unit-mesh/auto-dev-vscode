@@ -1,25 +1,26 @@
-import { IdeAction } from "../../editor/editor-api/IdeAction";
-import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
-import { Chunk } from "../chunk/_base/Chunk";
-import { FullTextSearchCodebaseIndex } from "../indexing/FullTextSearchCodebaseIndex";
-import { RETRIEVAL_PARAMS } from "../utils/constants";
-import { RetrievalQueryTerm } from "./RetrievalQueryTerm";
-import { GitAction } from "../../git/GitAction";
-import { Commit } from "../../types/git";
-import { TfIdfChunkSearch } from "../search/TfIdfChunkSearch";
-import { languageFromPath } from "../../editor/language/ExtensionLanguageMap";
-import { JaccardSimilarity } from "../similar/algorithm/JaccardSimilarity";
-import { ContextItem } from "../../context-provider/_base/BaseContextProvider";
+import { inferLanguage } from 'base/common/languages/languages';
+
+import { ContextItem } from '../../context-provider/_base/BaseContextProvider';
+import { IdeAction } from '../../editor/editor-api/IdeAction';
+import { GitAction } from '../../git/GitAction';
+import { Commit } from '../../types/git';
+import { Chunk } from '../chunk/_base/Chunk';
+import { EmbeddingsProvider } from '../embedding/_base/EmbeddingsProvider';
+import { FullTextSearchCodebaseIndex } from '../indexing/FullTextSearchCodebaseIndex';
+import { TfIdfChunkSearch } from '../search/TfIdfChunkSearch';
+import { JaccardSimilarity } from '../similar/algorithm/JaccardSimilarity';
+import { RETRIEVAL_PARAMS } from '../utils/constants';
+import { RetrievalQueryTerm } from './RetrievalQueryTerm';
 
 export interface RetrieveOption {
 	/**
 	 * filter the codebase by directory
 	 */
-	filterDirectory: string | undefined;
+	filterDirectory?: string | undefined;
 	/**
 	 * filter the codebase by language
 	 */
-	filterLanguage: string | undefined;
+	filterLanguage?: string | undefined;
 	/**
 	 * search the codebase by full text search, with {@link FullTextSearchCodebaseIndex}
 	 */
@@ -30,8 +31,8 @@ export interface RetrieveOption {
 	withSemanticSearch: boolean;
 	/**
 	 * provider commit message for keywords, which is used for {@link TfIdfChunkSearch} and {@link HydeKeywordsStrategy}
- 	 */
-	withCommitMessageSearch: boolean | undefined;
+	 */
+	withCommitMessageSearch?: boolean | undefined;
 }
 
 export abstract class Retrieval {
@@ -51,14 +52,11 @@ export abstract class Retrieval {
 		options: RetrieveOption | undefined,
 	): Promise<ContextItem[]>;
 
-	deduplicateArray<T>(
-		array: T[],
-		equal: (a: T, b: T) => boolean,
-	): T[] {
+	deduplicateArray<T>(array: T[], equal: (a: T, b: T) => boolean): T[] {
 		const result: T[] = [];
 
 		for (const item of array) {
-			if (!result.some((existingItem) => equal(existingItem, item))) {
+			if (!result.some(existingItem => equal(existingItem, item))) {
 				result.push(item);
 			}
 		}
@@ -68,11 +66,7 @@ export abstract class Retrieval {
 
 	deduplicateChunks(chunks: Chunk[]): Chunk[] {
 		return this.deduplicateArray(chunks, (a, b) => {
-			return (
-				a.filepath === b.filepath &&
-				a.startLine === b.startLine &&
-				a.endLine === b.endLine
-			);
+			return a.filepath === b.filepath && a.startLine === b.startLine && a.endLine === b.endLine;
 		});
 	}
 
@@ -90,16 +84,16 @@ export abstract class Retrieval {
 		let commits: Commit[] = await git.getHistoryCommits();
 
 		// tfidf search by commit message get index
-		let commitMessages = commits.map((commit) => commit.message);
+		let commitMessages = commits.map(commit => commit.message);
 		tfIdfTextSearch.addDocuments(commitMessages);
 
-		let querySet = new Set(term.query.split(" "));
+		let querySet = new Set(term.query.split(' '));
 
 		// search by commit message
 		let results: number[] = tfIdfTextSearch.search(term.query);
 		let indexes = results
-			.map((score, index) => score > threshold ? index : -1)
-			.filter((index) => index !== -1)
+			.map((score, index) => (score > threshold ? index : -1))
+			.filter(index => index !== -1)
 			.sort((a, b) => results[b] - results[a]);
 
 		if (indexes.length === 0) {
@@ -123,26 +117,28 @@ export abstract class Retrieval {
 				continue;
 			}
 
-			const changeChunks: Chunk[] = changes.map((change, index) => {
-				let language = languageFromPath(change.filename);
+			const changeChunks: Chunk[] = changes
+				.map((change, index) => {
+					let language = inferLanguage(change.filename);
 
-				let similarityScore = this.similarity.pathSimilarity(change.filename, querySet);
+					let similarityScore = this.similarity.pathSimilarity(change.filename, querySet);
 
-				// similarityScore > 0.5
-				if (similarityScore < 0.5) {
-					return undefined;
-				}
+					// similarityScore > 0.5
+					if (similarityScore < 0.5) {
+						return undefined;
+					}
 
-				return {
-					language: language,
-					digest: commit.hash,
-					filepath: commit.hash,
-					content: change.content,
-					startLine: 0,
-					endLine: 0,
-					index: index
-				};
-			}).filter((chunk) => chunk !== undefined) as Chunk[];
+					return {
+						language: language,
+						digest: commit.hash,
+						filepath: commit.hash,
+						content: change.content,
+						startLine: 0,
+						endLine: 0,
+						index: index,
+					};
+				})
+				.filter(chunk => chunk !== undefined) as Chunk[];
 
 			chunks.push(...changeChunks);
 		}
@@ -155,10 +151,14 @@ export abstract class Retrieval {
 
 		let ftsResults: Chunk[] = [];
 		try {
-			if (term.query.trim() !== "") {
+			if (term.query.trim() !== '') {
 				ftsResults = await ftsIndex.retrieve(
 					term.tags,
-					term.query.trim().split(" ").map((element) => `"${element}"`).join(" OR "),
+					term.query
+						.trim()
+						.split(' ')
+						.map(element => `"${element}"`)
+						.join(' OR '),
 					term.n,
 					term.filterDirectory,
 					undefined,
@@ -168,7 +168,7 @@ export abstract class Retrieval {
 			}
 			return ftsResults;
 		} catch (e) {
-			console.warn("Error retrieving from FTS:", e);
+			console.warn('Error retrieving from FTS:', e);
 			return [];
 		}
 	}

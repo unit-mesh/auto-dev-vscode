@@ -1,11 +1,11 @@
-import Parser from "web-tree-sitter";
+import Parser from 'web-tree-sitter';
 
-import { NamedElement } from "./NamedElement";
-import { TextInRange } from "./TextInRange";
-import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
-import { LanguageProfile, MemoizedQuery } from "../../code-context/_base/LanguageProfile";
-import { CodeElementType } from "../codemodel/CodeElementType";
-import { TreeSitterUtil } from "../../code-context/ast/TreeSitterUtil";
+import { LanguageProfile, MemoizedQuery } from '../../code-context/_base/LanguageProfile'; // TODO
+import { TreeSitterFile } from '../../code-context/ast/TreeSitterFile'; // TODO
+import { TreeSitterUtil } from '../../code-context/ast/TreeSitterUtil';
+import { CodeElementType } from '../codemodel/CodeElementType';
+import { NamedElement } from './NamedElement';
+import { TextInRange } from './TextInRange';
 
 /**
  * The `NamedElementBuilder` class is used to build named elements (such as variables, methods, and classes) from a
@@ -41,7 +41,7 @@ export class NamedElementBuilder {
 	}
 
 	buildVariable(): NamedElement[] {
-		throw new Error("Method not implemented.");
+		throw new Error('Method not implemented.');
 	}
 
 	buildMethod(): NamedElement[] {
@@ -128,13 +128,14 @@ export class NamedElementBuilder {
 			const root = this.tree.rootNode;
 			const matches = query?.matches(root);
 
-			return (matches?.flatMap((match) => {
+			return (
+				matches?.flatMap(match => {
 					let blockNode = match.captures[0].node;
 					const idNode = match.captures[1].node;
 
 					let insideParent = this.langConfig.autoSelectInsideParent;
 					if (insideParent.length > 0) {
-						insideParent.forEach((nodeType) => {
+						insideParent.forEach(nodeType => {
 							if (blockNode.parent?.type === nodeType) {
 								blockNode = blockNode.parent;
 							}
@@ -146,7 +147,7 @@ export class NamedElementBuilder {
 						TextInRange.fromNode(idNode),
 						elementType,
 						blockNode.text,
-						this.file
+						this.file,
 					);
 
 					let commentNode = TreeSitterUtil.previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
@@ -155,11 +156,11 @@ export class NamedElementBuilder {
 					}
 
 					return blockRange;
-				}) ?? []);
+				}) ?? []
+			);
 		} catch (error) {
 			console.error(`NamedElementBuilder for ${this.langConfig}`, error);
 			return [];
 		}
 	}
 }
-

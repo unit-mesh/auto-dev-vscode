@@ -1,12 +1,13 @@
-import Parser, { Language, Tree } from "web-tree-sitter";
+import Parser, { Language, Tree } from 'web-tree-sitter';
 
-import { LanguageProfile, LanguageProfileUtil } from "../_base/LanguageProfile";
-import { ScopeBuilder } from "../../code-search/scope-graph/ScopeBuilder";
-import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { uuid } from "../../editor/webview/uuid";
+import { isLargerThan500kb } from 'base/common/files/files';
+import { LanguageIdentifier } from 'base/common/languages/languages';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+import { logger } from 'base/common/log/log';
 
+import { ScopeBuilder } from '../../code-search/scope-graph/ScopeBuilder';
+import { ScopeGraph } from '../../code-search/scope-graph/ScopeGraph';
+import { LanguageProfile, LanguageProfileUtil } from '../_base/LanguageProfile';
 
 const graphCache: Map<TreeSitterFile, ScopeGraph> = new Map();
 
@@ -18,7 +19,14 @@ export class TreeSitterFile {
 	readonly tsLanguage: Parser.Language;
 	readonly filePath: string;
 
-	constructor(src: string, tree: Tree, tsLanguage: LanguageProfile, parser: Parser, language: Language, fsPath: string = "") {
+	constructor(
+		src: string,
+		tree: Tree,
+		tsLanguage: LanguageProfile,
+		parser: Parser,
+		language: Language,
+		fsPath: string = '',
+	) {
 		this.sourcecode = src;
 		this.tree = tree;
 		this.languageProfile = tsLanguage;
@@ -34,7 +42,7 @@ export class TreeSitterFile {
 	 *
 	 * @param source - A string representing the source code to be parsed.
 	 * @param langId - A string representing the language identifier.
-	 * @param languageService - An instance of the `TSLanguageService` class.
+	 * @param languageService - An instance of the `ILanguageServiceProvider` class.
 	 * @param fsPath - An optional string representing the file system path. Default value is an empty string.
 	 *
 	 * @returns A promise that resolves with a new instance of the `TreeSitterFile` class.
@@ -56,10 +64,14 @@ export class TreeSitterFile {
 	 * class and resolves the promise with it.
 	 *
 	 */
-	static async create(source: string, langId: string, languageService: TSLanguageService, fsPath: string = ""): Promise<TreeSitterFile> {
+	static async create(
+		source: string,
+		langId: string,
+		lsp: ILanguageServiceProvider,
+		fsPath: string = '',
+	): Promise<TreeSitterFile> {
 		// no node-res for files larger than 500kb
-		let isLargerThan500kb = source.length > 500 * Math.pow(10, 3);
-		if (isLargerThan500kb) {
+		if (isLargerThan500kb(source)) {
 			return Promise.reject(TreeSitterFileError.fileTooLarge);
 		}
 
@@ -68,12 +80,15 @@ export class TreeSitterFile {
 			return Promise.reject(TreeSitterFileError.unsupportedLanguage);
 		}
 
+		await lsp.ready();
+
 		const parser = new Parser();
 		let language: Language | undefined = undefined;
 		try {
-			language = await tsConfig.grammar(languageService, langId);
+			language = await tsConfig.grammar(lsp, langId);
 			parser.setLanguage(language);
 		} catch (error) {
+			logger.debug((error as Error).message);
 			return Promise.reject(TreeSitterFileError.languageMismatch);
 		}
 
@@ -85,6 +100,7 @@ export class TreeSitterFile {
 		parser.setTimeoutMicros(this.oneSecond);
 
 		const tree = parser.parse(source);
+
 		if (!tree) {
 			return Promise.reject(TreeSitterFileError.parseTimeout);
 		}
@@ -97,13 +113,18 @@ export class TreeSitterFile {
 		this.sourcecode = sourcecode;
 	}
 
-	static async fromParser(parser: Parser, languageService: TSLanguageService, langId: SupportedLanguage, code: string): Promise<TreeSitterFile> {
+	static async fromParser(
+		parser: Parser,
+		languageService: ILanguageServiceProvider,
+		langId: LanguageIdentifier,
+		code: string,
+	): Promise<TreeSitterFile> {
 		let langConfig = LanguageProfileUtil.from(langId)!!;
 		const language = await langConfig.grammar(languageService, langId)!!;
 		parser.setLanguage(language);
 
 		let tree = parser.parse(code);
-		return new TreeSitterFile(code, tree, langConfig, parser, language!!, "");
+		return new TreeSitterFile(code, tree, langConfig, parser, language!!, '');
 	}
 
 	/**
@@ -154,4 +175,21 @@ export enum TreeSitterFileError {
 	languageMismatch,
 	queryError,
 	fileTooLarge,
+}
+
+export function convertToErrorMessage(error: TreeSitterFileError): string {
+	switch (error) {
+		case TreeSitterFileError.fileTooLarge:
+			return 'File too large, please open a small file.';
+		case TreeSitterFileError.languageMismatch:
+			return 'Language mismatch, please open a supported file.';
+		case TreeSitterFileError.parseTimeout:
+			return 'Parse timeout, please open a small file.';
+		case TreeSitterFileError.queryError:
+			return 'Query error, please open a small file.';
+		case TreeSitterFileError.unsupportedLanguage:
+			return 'Unsupported language, please open a supported file.';
+		default:
+			return `Unknown error ${error}`;
+	}
 }

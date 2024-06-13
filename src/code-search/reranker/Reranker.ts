@@ -1,5 +1,5 @@
-import { Embedding } from "../embedding/_base/Embedding";
-import { Chunk } from "../chunk/_base/Chunk";
+import { Chunk } from '../chunk/_base/Chunk';
+import { Embedding } from '../embedding/_base/Embedding';
 
 export interface Reranker {
 	name: string;

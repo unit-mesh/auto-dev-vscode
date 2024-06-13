@@ -1,10 +1,8 @@
-import { ChunkItem, Embedding } from "../../embedding/_base/Embedding";
-import { HydeDocument, HydeDocumentType } from "./HydeDocument";
-import { StrategyFinalPrompt } from "./StrategyFinalPrompt";
-import { CustomActionPrompt } from "../../../prompt-manage/custom-action/CustomActionPrompt";
-import { AutoDevStatus, AutoDevStatusManager } from "../../../editor/editor-api/AutoDevStatusManager";
-import { LlmProvider } from "../../../llm-provider/LlmProvider";
-import { channel } from "../../../channel";
+// import { AutoDevStatus, AutoDevStatusManager } from '../../../editor/editor-api/AutoDevStatusManager';
+// import { CustomActionPrompt } from '../../../prompt-manage/custom-action/CustomActionPrompt';
+import { ChunkItem, Embedding } from '../../embedding/_base/Embedding';
+import { HydeDocument, HydeDocumentType } from './HydeDocument';
+import { StrategyFinalPrompt } from './StrategyFinalPrompt';
 
 export type HydeQuery = string | RegExp | Embedding;
 
@@ -51,7 +49,7 @@ export interface HydeStrategy<T> {
 	 * @param condition - The condition to be used for retrieval
 	 * @returns The most relevant code snippets
 	 */
-	retrieveChunks: (condition: HydeQuery) => Promise<ChunkItem[]>
+	retrieveChunks: (condition: HydeQuery) => Promise<ChunkItem[]>;
 
 	/**
 	 * Retrieve the most relevant code snippets based on the given condition
@@ -69,22 +67,25 @@ export interface HydeStrategy<T> {
 }
 
 export async function executeIns(instruction: string) {
-	console.log("\ninstruction: \n" + instruction);
-	let result = "";
-	try {
-		let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
-		let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
-		for await (let chatMessage of response) {
-			result += chatMessage.content;
-		}
+	// TODO
+	// console.log('\ninstruction: \n' + instruction);
+	// let result = '';
+	// try {
+	// 	let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
+	// 	AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
+	// 	let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
+	// 	for await (let chatMessage of response) {
+	// 		result += chatMessage.content;
+	// 	}
 
-		channel.append(result);
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
-		return result;
-	} catch (e) {
-		console.log("error:" + e);
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
-		return "";
-	}
+	// 	logger.append(result);
+	// 	AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
+	// 	return result;
+	// } catch (e) {
+	// 	console.log('error:' + e);
+	// 	AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
+	// 	return '';
+	// }
+
+	return '';
 }

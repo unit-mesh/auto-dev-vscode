@@ -1,12 +1,12 @@
-import vscode, { TextDocument, TextEditor, Uri } from "vscode";
+import vscode, { TextDocument, TextEditor, Uri } from 'vscode';
 
 export interface SimilarSearchElement {
-	uri: Uri,
-	beforeCursor: string,
-	afterCursor: string,
-	languageId: string,
-	path: string,
-	document: TextDocument
+	uri: Uri;
+	beforeCursor: string;
+	afterCursor: string;
+	languageId: string;
+	path: string;
+	document: TextDocument;
 }
 
 /**
@@ -35,7 +35,7 @@ export class SimilarSearchElementBuilder {
 			afterCursor,
 			languageId,
 			path,
-			document
+			document,
 		};
 	}
 
@@ -53,7 +53,7 @@ export class SimilarSearchElementBuilder {
 
 	static from(activeTextEditor: TextEditor | undefined) {
 		if (!activeTextEditor) {
-			throw new Error("No active text editor found");
+			throw new Error('No active text editor found');
 		}
 
 		return new SimilarSearchElementBuilder(activeTextEditor);

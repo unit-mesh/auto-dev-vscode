@@ -1,15 +1,15 @@
-import Parser, { SyntaxNode } from "web-tree-sitter";
+import Parser, { SyntaxNode } from 'web-tree-sitter';
 
-import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { LanguageProfile, LanguageProfileUtil } from "../_base/LanguageProfile";
-import { CodeFile } from "../../editor/codemodel/CodeElement";
-import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
-import { TextRange } from "../../code-search/scope-graph/model/TextRange";
+import { LanguageIdentifier } from 'base/common/languages/languages';
 
-import { BaseStructurerProvider } from "../_base/StructurerProvider";
+import { TextRange } from '../../code-search/scope-graph/model/TextRange';
+import { ScopeGraph } from '../../code-search/scope-graph/ScopeGraph';
+import { CodeFile } from '../../editor/codemodel/CodeElement';
+import { LanguageProfile, LanguageProfileUtil } from '../_base/LanguageProfile';
+import { BaseStructurerProvider } from '../_base/StructurerProvider';
 
 export class GoStructurerProvider extends BaseStructurerProvider {
-	protected langId: SupportedLanguage = "go";
+	protected langId: LanguageIdentifier = 'go';
 	protected config: LanguageProfile = LanguageProfileUtil.from(this.langId)!!;
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
@@ -33,10 +33,10 @@ export class GoStructurerProvider extends BaseStructurerProvider {
 			filepath: filepath,
 			language: this.langId,
 			functions: [],
-			path: "",
+			path: '',
 			package: '',
 			imports: [],
-			classes: []
+			classes: [],
 		};
 
 		// method-name, method-body and function-name, function-body
@@ -79,10 +79,15 @@ export class GoStructurerProvider extends BaseStructurerProvider {
 	 *
 	 * Note: The method assumes that the `methodIOQuery` and `language` properties of the `config` object are defined.
 	 */
-	async retrieveMethodIOImports(graph: ScopeGraph, node: SyntaxNode, range: TextRange, src: string): Promise<string[] | undefined> {
+	async retrieveMethodIOImports(
+		graph: ScopeGraph,
+		node: SyntaxNode,
+		range: TextRange,
+		src: string,
+	): Promise<string[] | undefined> {
 		let syntaxNode = node.namedDescendantForPosition(
 			{ row: range.start.line, column: range.start.column },
-			{ row: range.end.line, column: range.end.column }
+			{ row: range.end.line, column: range.end.column },
 		);
 
 		const query = this.config.methodIOQuery!!.query(this.language!!);

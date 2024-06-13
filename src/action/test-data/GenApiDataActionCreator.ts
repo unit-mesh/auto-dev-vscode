@@ -1,11 +1,11 @@
-import vscode from "vscode";
-import { injectable } from "inversify";
+import { injectable } from 'inversify';
+import vscode from 'vscode';
 
-import { ActionCreator } from "../_base/ActionCreator";
-import { ActionCreatorContext } from "../_base/ActionCreatorContext";
-import { NamedElement } from "../../editor/ast/NamedElement";
-import { CodeElementType } from "../../editor/codemodel/CodeElementType";
-import { StructurerProviderManager } from "../../code-context/StructurerProviderManager";
+import { StructurerProviderManager } from '../../code-context/StructurerProviderManager';
+import { NamedElement } from '../../editor/ast/NamedElement';
+import { CodeElementType } from '../../editor/codemodel/CodeElementType';
+import { ActionCreator } from '../_base/ActionCreator';
+import { ActionCreatorContext } from '../_base/ActionCreatorContext';
 
 @injectable()
 export class GenApiDataActionCreator implements ActionCreator {
@@ -13,9 +13,7 @@ export class GenApiDataActionCreator implements ActionCreator {
 		return StructurerProviderManager.getInstance()?.getStructurer(creatorContext.lang) !== undefined;
 	}
 
-	static readonly providedCodeActionKinds = [
-		vscode.CodeActionKind.RefactorRewrite,
-	];
+	static readonly providedCodeActionKinds = [vscode.CodeActionKind.RefactorRewrite];
 
 	buildActions(context: ActionCreatorContext): Promise<vscode.CodeAction[]> {
 		let apisDocActions: vscode.CodeAction[] = [];
@@ -36,17 +34,18 @@ export class GenApiDataActionCreator implements ActionCreator {
 		return Promise.resolve(apisDocActions);
 	}
 
-	private createGenApiDataAction(title: string, result: NamedElement, document: vscode.TextDocument): vscode.CodeAction {
-		const codeAction = new vscode.CodeAction(
-			title,
-			GenApiDataActionCreator.providedCodeActionKinds[0]
-		);
+	private createGenApiDataAction(
+		title: string,
+		result: NamedElement,
+		document: vscode.TextDocument,
+	): vscode.CodeAction {
+		const codeAction = new vscode.CodeAction(title, GenApiDataActionCreator.providedCodeActionKinds[0]);
 		codeAction.isPreferred = false;
 		codeAction.edit = new vscode.WorkspaceEdit();
 		codeAction.command = {
-			command: "autodev.genApiData",
+			command: 'autodev.genApiData',
 			title: title,
-			arguments: [document, result, codeAction.edit]
+			arguments: [document, result, codeAction.edit],
 		};
 
 		return codeAction;

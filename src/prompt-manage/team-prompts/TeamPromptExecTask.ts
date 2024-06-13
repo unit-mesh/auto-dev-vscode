@@ -1,21 +1,22 @@
-import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
-import { TeamPromptAction } from "./TeamPromptAction";
-import vscode from "vscode";
-import { InteractionType } from "../InteractionType";
+import { ChatMessageRole, IChatMessage } from 'base/common/language-models/languageModels';
+import vscode from 'vscode';
+
+import { InteractionType } from '../InteractionType';
+import { TeamPromptAction } from './TeamPromptAction';
 
 class TeamPromptExecTask implements vscode.Disposable {
 	project: vscode.WorkspaceFolder;
-	msgs: ChatMessage[];
+	msgs: IChatMessage[];
 	editor: vscode.TextEditor;
 	intentionConfig: TeamPromptAction;
 	element: vscode.Position | null;
 
 	constructor(
 		project: vscode.WorkspaceFolder,
-		msgs: ChatMessage[],
+		msgs: IChatMessage[],
 		editor: vscode.TextEditor,
 		intentionConfig: TeamPromptAction,
-		element: vscode.Position | null
+		element: vscode.Position | null,
 	) {
 		this.project = project;
 		this.msgs = msgs;
@@ -28,12 +29,12 @@ class TeamPromptExecTask implements vscode.Disposable {
 		const offset = this.editor.selection.active.character;
 
 		const userPrompt = this.msgs
-			.filter(msg => msg.role === ChatRole.User)
+			.filter(msg => msg.role === ChatMessageRole.User)
 			.map(msg => msg.content)
 			.join('\n');
 
 		const systemPrompt = this.msgs
-			.filter(msg => msg.role === ChatRole.System)
+			.filter(msg => msg.role === ChatMessageRole.System)
 			.map(msg => msg.content)
 			.join('\n');
 

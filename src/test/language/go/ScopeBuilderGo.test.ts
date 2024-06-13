@@ -1,28 +1,26 @@
-import { expect } from "vitest";
+import { expect } from 'vitest';
 
-const Parser = require("web-tree-sitter");
+import { LanguageProfileUtil } from '../../../code-context/_base/LanguageProfile';
+import { TreeSitterFile } from '../../../code-context/ast/TreeSitterFile';
+import { ScopeBuilder } from '../../../code-search/scope-graph/ScopeBuilder';
+import { testScopes } from '../../ScopeTestUtil';
+import { TestLanguageServiceProvider } from '../../../test/TestLanguageService';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
 
-import { ScopeBuilder } from "../../../code-search/scope-graph/ScopeBuilder";
-import { TestLanguageService } from "../../TestLanguageService";
-import { testScopes } from "../../ScopeTestUtil";
-import { TSLanguageService } from "../../../editor/language/service/TSLanguageService";
-import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
-
-
-import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
+const Parser = require('web-tree-sitter');
 
 describe('ScopeBuilderGo', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = LanguageProfileUtil.from("go")!!;
-	let languageService: TSLanguageService;
+	let langConfig = LanguageProfileUtil.from('go')!!;
+	let languageService: ILanguageServiceProvider;
 
 	beforeEach(async () => {
 		await Parser.init();
 		parser = new Parser();
-		languageService = new TestLanguageService(parser);
+		languageService = new TestLanguageServiceProvider(parser);
 
-		language = await langConfig.grammar(languageService, "go")!!;
+		language = await langConfig.grammar(languageService, 'go')!!;
 		parser.setLanguage(language);
 		parser.setLogger(null);
 	});
@@ -47,7 +45,7 @@ func six() {
 
 type eight struct {
     nine string
-    ten uint64 
+    ten uint64
 }
 
 type eleven interface {}
@@ -63,8 +61,8 @@ type eleven interface {}
 		const hoverRanges = output.hoverableRanges();
 		expect(hoverRanges.length).toBe(11);
 
-		const allText = hoverRanges.map((range) => range.getText()).join(", ");
-		expect(allText).toBe("one, two, three, five, four, six, eight, eleven, nine, ten, seven");
+		const allText = hoverRanges.map(range => range.getText()).join(', ');
+		expect(allText).toBe('one, two, three, five, four, six, eight, eleven, nine, ten, seven');
 	});
 
 	it('test for main scopes', async () => {
@@ -76,7 +74,7 @@ func main() {
 }
 `;
 		let tree = parser.parse(sourceCode);
-		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language, "");
-		await testScopes("go", sourceCode, "", tsf);
+		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language, '');
+		await testScopes('go', sourceCode, '', tsf);
 	});
 });

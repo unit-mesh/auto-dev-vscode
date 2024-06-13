@@ -1,19 +1,20 @@
-import { BranchAndDir } from "../indexing/_base/CodebaseIndex";
+import { BranchAndDir } from '../indexing/_base/CodebaseIndex';
 
 export class RetrievalQueryTerm {
-	query = "";
+	query = '';
 	n = 0;
 	tags: BranchAndDir[];
 	filterDirectory?: string;
 	language?: string;
 	minimumScore: number;
 
-	constructor(query: string,
-	            n: number,
-	            tags: BranchAndDir[],
-	            filterDirectory?: string,
-	            language?: string,
-	            minimumScore: number = 0.618
+	constructor(
+		query: string,
+		n: number,
+		tags: BranchAndDir[],
+		filterDirectory?: string,
+		language?: string,
+		minimumScore: number = 0.618,
 	) {
 		this.query = query;
 		this.n = n;

@@ -1,11 +1,13 @@
-import { IdeAction } from "./IdeAction";
-import * as vscode from "vscode";
-import path from "path";
-import { TextDecoder } from "node:util";
+import path from 'node:path';
+import { TextDecoder } from 'node:util';
 
-import { asyncExec, GitAction } from "../../git/GitAction";
-import { traverseDirectory } from "../util/traverseDirectory";
-import { defaultIgnoreFile } from "../util/ignore";
+import * as vscode from 'vscode';
+
+import { traverseDirectory } from 'base/common/files/directory';
+import { defaultIgnoreFile } from 'base/node/ignore';
+
+import { asyncExec, GitAction } from '../../git/GitAction';
+import { IdeAction } from './IdeAction';
 
 export class VSCodeAction implements IdeAction {
 	git: GitAction = new GitAction();
@@ -24,26 +26,32 @@ export class VSCodeAction implements IdeAction {
 	async getTerminalContents(commands: number = -1): Promise<string> {
 		const tempCopyBuffer = await vscode.env.clipboard.readText();
 		if (commands < 0) {
-			await vscode.commands.executeCommand("workbench.editor-api.terminal.selectAll");
+			await vscode.commands.executeCommand('workbench.editor-api.terminal.selectAll');
 		} else {
 			for (let i = 0; i < commands; i++) {
-				await vscode.commands.executeCommand("workbench.editor-api.terminal.selectToPreviousCommand");
+				await vscode.commands.executeCommand('workbench.editor-api.terminal.selectToPreviousCommand');
 			}
 		}
-		await vscode.commands.executeCommand("workbench.editor-api.terminal.copySelection");
-		await vscode.commands.executeCommand("workbench.editor-api.terminal.clearSelection");
+		await vscode.commands.executeCommand('workbench.editor-api.terminal.copySelection');
+		await vscode.commands.executeCommand('workbench.editor-api.terminal.clearSelection');
 		const terminalContents = await vscode.env.clipboard.readText();
 		await vscode.env.clipboard.writeText(tempCopyBuffer);
 
 		if (tempCopyBuffer === terminalContents) {
 			// This means there is no terminal open to select text from
-			return "";
+			return '';
 		}
 		return terminalContents;
 	}
 
 	getWorkspaceDirectories(): string[] {
-		return (vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath) || []);
+		const workspaceFolders = vscode.workspace.workspaceFolders;
+
+		if (workspaceFolders) {
+			return workspaceFolders.map(folder => folder.uri.fsPath);
+		}
+
+		return [];
 	}
 
 	private static MAX_BYTES = 100000;
@@ -59,22 +67,19 @@ export class VSCodeAction implements IdeAction {
 
 	async readFile(filepath: string): Promise<string> {
 		try {
-			filepath = this.getAbsolutePath(filepath);
-			const uri = this.uriFromFilePath(filepath);
+			const uri = this.uriFromFilePath(
+				this.getAbsolutePath(filepath)
+			);
 
 			// Check first whether it's an open document
-			const openTextDocument = vscode.workspace.textDocuments.find(
-				(doc) => doc.uri.fsPath === uri.fsPath,
-			);
+			const openTextDocument = vscode.workspace.textDocuments.find(doc => doc.uri.fsPath === uri.fsPath);
 			if (openTextDocument !== undefined) {
 				return openTextDocument.getText();
 			}
 
-			const fileStats = await vscode.workspace.fs.stat(
-				this.uriFromFilePath(filepath),
-			);
+			const fileStats = await vscode.workspace.fs.stat(this.uriFromFilePath(filepath));
 			if (fileStats.size > 10 * VSCodeAction.MAX_BYTES) {
-				return "";
+				return '';
 			}
 
 			const bytes = await vscode.workspace.fs.readFile(uri);
@@ -83,7 +88,7 @@ export class VSCodeAction implements IdeAction {
 			const truncatedBytes = bytes.slice(0, VSCodeAction.MAX_BYTES);
 			return new TextDecoder().decode(truncatedBytes);
 		} catch {
-			return "";
+			return '';
 		}
 	}
 
@@ -101,18 +106,18 @@ export class VSCodeAction implements IdeAction {
 	isWindowsLocalButNotRemote(): boolean {
 		return (
 			vscode.env.remoteName !== undefined &&
-			["wsl", "ssh-remote", "dev-container", "attached-container"].includes(vscode.env.remoteName,) &&
-			process.platform === "win32"
+			['wsl', 'ssh-remote', 'dev-container', 'attached-container'].includes(vscode.env.remoteName) &&
+			process.platform === 'win32'
 		);
 	}
 
 	getPathSep(): string {
-		return this.isWindowsLocalButNotRemote() ? "/" : path.sep;
+		return this.isWindowsLocalButNotRemote() ? '/' : path.sep;
 	}
 
 	windowsToPosix(windowsPath: string): string {
-		let posixPath = windowsPath.split("\\").join("/");
-		if (posixPath[1] === ":") {
+		let posixPath = windowsPath.split('\\').join('/');
+		if (posixPath[1] === ':') {
 			posixPath = posixPath.slice(2);
 		}
 
@@ -127,16 +132,16 @@ export class VSCodeAction implements IdeAction {
 		let repo = await this.git.getRepo(forDirectory);
 		if (repo?.state?.HEAD?.name === undefined) {
 			try {
-				const { stdout } = await asyncExec("git rev-parse --abbrev-ref HEAD", {
+				const { stdout } = await asyncExec('git rev-parse --abbrev-ref HEAD', {
 					cwd: forDirectory.fsPath,
 				});
-				return stdout?.trim() || "NONE";
+				return stdout?.trim() || 'NONE';
 			} catch (e) {
-				return "NONE";
+				return 'NONE';
 			}
 		}
 
-		return repo?.state?.HEAD?.name || "NONE";
+		return repo?.state?.HEAD?.name || 'NONE';
 	}
 
 	/**
@@ -158,7 +163,7 @@ export class VSCodeAction implements IdeAction {
 		const files = await this.listWorkspaceContents(directory);
 		const pathToLastModified: { [path: string]: number } = {};
 		await Promise.all(
-			files.map(async (file) => {
+			files.map(async file => {
 				let stat = await vscode.workspace.fs.stat(this.uriFromFilePath(file));
 				pathToLastModified[file] = stat.mtime;
 			}),
@@ -172,21 +177,15 @@ export class VSCodeAction implements IdeAction {
 			return await this.getDirectoryContents(directory, true);
 		} else {
 			const contents = await Promise.all(
-				this.getWorkspaceDirectories()
-					.map((dir) => this.getDirectoryContents(dir, true)),
+				this.getWorkspaceDirectories().map(dir => this.getDirectoryContents(dir, true)),
 			);
 			return contents.flat();
 		}
 	}
 
-	async getDirectoryContents(
-		directory: string,
-		recursive: boolean,
-	): Promise<string[]> {
+	async getDirectoryContents(directory: string, recursive: boolean): Promise<string[]> {
 		if (!recursive) {
-			return (
-				await vscode.workspace.fs.readDirectory(this.uriFromFilePath(directory))
-			)
+			return (await vscode.workspace.fs.readDirectory(this.uriFromFilePath(directory)))
 				.filter(([name, type]) => {
 					type === vscode.FileType.File && !defaultIgnoreFile.ignores(name);
 				})
@@ -198,7 +197,7 @@ export class VSCodeAction implements IdeAction {
 		let onlyThisDirectory = undefined;
 		if (gitRoot) {
 			onlyThisDirectory = directory.slice(gitRoot.length).split(path.sep);
-			if (onlyThisDirectory[0] === "") {
+			if (onlyThisDirectory[0] === '') {
 				onlyThisDirectory.shift();
 			}
 		}

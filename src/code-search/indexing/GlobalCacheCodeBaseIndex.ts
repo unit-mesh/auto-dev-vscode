@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import { DatabaseConnection } from '../database/SqliteDb';
 import {
 	CodebaseIndex,
 	IndexingProgressUpdate,
 	IndexTag,
 	MarkCompleteCallback,
-	RefreshIndexResults
-} from "./_base/CodebaseIndex";
-import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
+	RefreshIndexResults,
+} from './_base/CodebaseIndex';
 
 export class GlobalCacheCodeBaseIndex implements CodebaseIndex {
 	private db: DatabaseConnection;
@@ -29,13 +29,9 @@ export class GlobalCacheCodeBaseIndex implements CodebaseIndex {
 		this.db = db;
 	}
 
-	artifactId: string = "globalCache";
+	artifactId: string = 'globalCache';
 
-	static async create(): Promise<GlobalCacheCodeBaseIndex> {
-		return new GlobalCacheCodeBaseIndex(await SqliteDb.get());
-	}
-
-	async* update(
+	async *update(
 		tag: IndexTag,
 		results: RefreshIndexResults,
 		_: MarkCompleteCallback,
@@ -51,15 +47,12 @@ export class GlobalCacheCodeBaseIndex implements CodebaseIndex {
 				return this.deleteOrRemoveTag(cacheKey, tag);
 			}),
 		]);
-		yield { progress: 1, desc: "Done updating global cache" };
+		yield { progress: 1, desc: 'Done updating global cache' };
 	}
 
-	private async computeOrAddTag(
-		cacheKey: string,
-		tag: IndexTag,
-	): Promise<void> {
+	private async computeOrAddTag(cacheKey: string, tag: IndexTag): Promise<void> {
 		await this.db.run(
-			"INSERT INTO global_cache (cacheKey, dir, branch, artifactId) VALUES (?, ?, ?, ?)",
+			'INSERT INTO global_cache (cacheKey, dir, branch, artifactId) VALUES (?, ?, ?, ?)',
 			cacheKey,
 			tag.directory,
 			tag.branch,
@@ -67,12 +60,9 @@ export class GlobalCacheCodeBaseIndex implements CodebaseIndex {
 		);
 	}
 
-	private async deleteOrRemoveTag(
-		cacheKey: string,
-		tag: IndexTag,
-	): Promise<void> {
+	private async deleteOrRemoveTag(cacheKey: string, tag: IndexTag): Promise<void> {
 		await this.db.run(
-			"DELETE FROM global_cache WHERE cacheKey = ? AND dir = ? AND branch = ? AND artifactId = ?",
+			'DELETE FROM global_cache WHERE cacheKey = ? AND dir = ? AND branch = ? AND artifactId = ?',
 			cacheKey,
 			tag.directory,
 			tag.branch,

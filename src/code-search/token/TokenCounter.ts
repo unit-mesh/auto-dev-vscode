@@ -14,19 +14,23 @@
  *  limitations under the License.
  */
 // @ts-ignore
-import { Tiktoken, encodingForModel as _encodingForModel } from "js-tiktoken";
-import { ChatMessage, ChatRole, MessageContent, MessagePart } from "../../llm-provider/ChatMessage";
-import { autodetectTemplateType } from "./LlmModelUtil";
-
-
+import { encodingForModel as _encodingForModel, Tiktoken } from 'js-tiktoken';
 // @ts-ignore
-import llamaTokenizer from "llama-tokenizer-js";
+import llamaTokenizer from 'llama-tokenizer-js';
+
+import {
+	ChatMessageRole,
+	IChatMessage,
+	IChatMessageContent,
+	IChatMessagePart,
+} from 'base/common/language-models/languageModels';
+import { autodetectTemplateType } from './LlmModelUtil';
 
 export const TOKEN_BUFFER_FOR_SAFETY = 350;
 
 interface Encoding {
-	encode: Tiktoken["encode"];
-	decode: Tiktoken["decode"];
+	encode: Tiktoken['encode'];
+	decode: Tiktoken['decode'];
 }
 
 let gptEncoding: Encoding | null = null;
@@ -34,9 +38,9 @@ let gptEncoding: Encoding | null = null;
 function encodingForModel(modelName: string): Encoding {
 	const modelType = autodetectTemplateType(modelName);
 
-	if (!modelType || modelType === "none") {
+	if (!modelType || modelType === 'none') {
 		if (!gptEncoding) {
-			gptEncoding = _encodingForModel("gpt-4");
+			gptEncoding = _encodingForModel('gpt-4');
 		}
 
 		return gptEncoding;
@@ -45,40 +49,37 @@ function encodingForModel(modelName: string): Encoding {
 	return llamaTokenizer as unknown as Encoding;
 }
 
-function countImageTokens(content: MessagePart): number {
-	if (content.type === "imageUrl") {
+function countImageTokens(content: IChatMessagePart): number {
+	if (content.type === 'imageUrl') {
 		return 85;
 	} else {
-		throw new Error("Non-image content type");
+		throw new Error('Non-image content type');
 	}
 }
 
 function countTokens(
-	content: MessageContent,
+	content: IChatMessageContent,
 	// defaults to llama2 because the tokenizer tends to produce more tokens
-	modelName: string = "llama2",
+	modelName: string = 'llama2',
 ): number {
 	const encoding = encodingForModel(modelName);
 	if (Array.isArray(content)) {
 		return content.reduce((acc, part) => {
-			return acc + part.type === "imageUrl"
+			return acc + part.type === 'imageUrl'
 				? countImageTokens(part)
-				: encoding.encode(part.text ?? "", "all", []).length;
+				: encoding.encode(part.text ?? '', 'all', []).length;
 		}, 0);
 	} else {
-		return encoding.encode(content, "all", []).length;
+		return encoding.encode(content, 'all', []).length;
 	}
 }
 
-function flattenMessages(msgs: ChatMessage[]): ChatMessage[] {
-	const flattened: ChatMessage[] = [];
+function flattenMessages(msgs: IChatMessage[]): IChatMessage[] {
+	const flattened: IChatMessage[] = [];
 	for (let i = 0; i < msgs.length; i++) {
 		const msg = msgs[i];
-		if (
-			flattened.length > 0 &&
-			flattened[flattened.length - 1].role === msg.role
-		) {
-			flattened[flattened.length - 1].content += "\n\n" + (msg.content || "");
+		if (flattened.length > 0 && flattened[flattened.length - 1].role === msg.role) {
+			flattened[flattened.length - 1].content += '\n\n' + (msg.content || '');
 		} else {
 			flattened.push(msg);
 		}
@@ -86,21 +87,18 @@ function flattenMessages(msgs: ChatMessage[]): ChatMessage[] {
 	return flattened;
 }
 
-export function stripImages(content: MessageContent): string {
+export function stripImages(content: IChatMessageContent): string {
 	if (Array.isArray(content)) {
 		return content
-			.filter((part) => part.type === "text")
-			.map((part) => part.text)
-			.join("\n");
+			.filter(part => part.type === 'text')
+			.map(part => part.text)
+			.join('\n');
 	} else {
 		return content;
 	}
 }
 
-function countChatMessageTokens(
-	modelName: string,
-	chatMessage: ChatMessage,
-): number {
+function countChatMessageTokens(modelName: string, chatMessage: IChatMessage): number {
 	// Doing simpler, safer version of what is here:
 	// https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
 	// every message follows <|im_start|>{role/name}\n{content}<|end|>\n
@@ -108,42 +106,30 @@ function countChatMessageTokens(
 	return countTokens(chatMessage.content, modelName) + TOKENS_PER_MESSAGE;
 }
 
-function pruneLinesFromTop(
-	prompt: string,
-	maxTokens: number,
-	modelName: string,
-): string {
+function pruneLinesFromTop(prompt: string, maxTokens: number, modelName: string): string {
 	let totalTokens = countTokens(prompt, modelName);
-	const lines = prompt.split("\n");
+	const lines = prompt.split('\n');
 	while (totalTokens > maxTokens && lines.length > 0) {
 		totalTokens -= countTokens(lines.shift()!, modelName);
 	}
 
-	return lines.join("\n");
+	return lines.join('\n');
 }
 
-function pruneLinesFromBottom(
-	prompt: string,
-	maxTokens: number,
-	modelName: string,
-): string {
+function pruneLinesFromBottom(prompt: string, maxTokens: number, modelName: string): string {
 	let totalTokens = countTokens(prompt, modelName);
-	const lines = prompt.split("\n");
+	const lines = prompt.split('\n');
 	while (totalTokens > maxTokens && lines.length > 0) {
 		totalTokens -= countTokens(lines.pop()!, modelName);
 	}
 
-	return lines.join("\n");
+	return lines.join('\n');
 }
 
-function pruneStringFromBottom(
-	modelName: string,
-	maxTokens: number,
-	prompt: string,
-): string {
+function pruneStringFromBottom(modelName: string, maxTokens: number, prompt: string): string {
 	const encoding = encodingForModel(modelName);
 
-	const tokens = encoding.encode(prompt, "all", []);
+	const tokens = encoding.encode(prompt, 'all', []);
 	if (tokens.length <= maxTokens) {
 		return prompt;
 	}
@@ -151,14 +137,10 @@ function pruneStringFromBottom(
 	return encoding.decode(tokens.slice(0, maxTokens));
 }
 
-function pruneStringFromTop(
-	modelName: string,
-	maxTokens: number,
-	prompt: string,
-): string {
+function pruneStringFromTop(modelName: string, maxTokens: number, prompt: string): string {
 	const encoding = encodingForModel(modelName);
 
-	const tokens = encoding.encode(prompt, "all", []);
+	const tokens = encoding.encode(prompt, 'all', []);
 	if (tokens.length <= maxTokens) {
 		return prompt;
 	}
@@ -172,8 +154,7 @@ function pruneRawPromptFromTop(
 	prompt: string,
 	tokensForCompletion: number,
 ): string {
-	const maxTokens =
-		contextLength - tokensForCompletion - TOKEN_BUFFER_FOR_SAFETY;
+	const maxTokens = contextLength - tokensForCompletion - TOKEN_BUFFER_FOR_SAFETY;
 	return pruneStringFromTop(modelName, maxTokens, prompt);
 }
 
@@ -183,25 +164,24 @@ function pruneRawPromptFromBottom(
 	prompt: string,
 	tokensForCompletion: number,
 ): string {
-	const maxTokens =
-		contextLength - tokensForCompletion - TOKEN_BUFFER_FOR_SAFETY;
+	const maxTokens = contextLength - tokensForCompletion - TOKEN_BUFFER_FOR_SAFETY;
 	return pruneStringFromBottom(modelName, maxTokens, prompt);
 }
 
-function summarize(message: MessageContent): string {
+function summarize(message: IChatMessageContent): string {
 	if (Array.isArray(message)) {
-		return stripImages(message).substring(0, 100) + "...";
+		return stripImages(message).substring(0, 100) + '...';
 	} else {
-		return message.substring(0, 100) + "...";
+		return message.substring(0, 100) + '...';
 	}
 }
 
 function pruneChatHistory(
 	modelName: string,
-	chatHistory: ChatMessage[],
+	chatHistory: IChatMessage[],
 	contextLength: number,
 	tokensForCompletion: number,
-): ChatMessage[] {
+): IChatMessage[] {
 	let totalTokens =
 		tokensForCompletion +
 		chatHistory.reduce((acc, message) => {
@@ -213,12 +193,10 @@ function pruneChatHistory(
 	longestMessages.sort((a, b) => b.content.length - a.content.length);
 
 	const longerThanOneThird = longestMessages.filter(
-		(message: ChatMessage) =>
-			countTokens(message.content, modelName) > contextLength / 3,
+		(message: IChatMessage) => countTokens(message.content, modelName) > contextLength / 3,
 	);
 	const distanceFromThird = longerThanOneThird.map(
-		(message: ChatMessage) =>
-			countTokens(message.content, modelName) - contextLength / 3,
+		(message: IChatMessage) => countTokens(message.content, modelName) - contextLength / 3,
 	);
 
 	for (let i = 0; i < longerThanOneThird.length; i++) {
@@ -227,11 +205,7 @@ function pruneChatHistory(
 		let content = stripImages(message.content);
 		const deltaNeeded = totalTokens - contextLength;
 		const delta = Math.min(deltaNeeded, distanceFromThird[i]);
-		message.content = pruneStringFromTop(
-			modelName,
-			countTokens(message.content, modelName) - delta,
-			content,
-		);
+		message.content = pruneStringFromTop(modelName, countTokens(message.content, modelName) - delta, content);
 		totalTokens -= delta;
 	}
 
@@ -246,22 +220,14 @@ function pruneChatHistory(
 	}
 
 	// 2. Remove entire messages until the last 5
-	while (
-		chatHistory.length > 5 &&
-		totalTokens > contextLength &&
-		chatHistory.length > 0
-		) {
+	while (chatHistory.length > 5 && totalTokens > contextLength && chatHistory.length > 0) {
 		const message = chatHistory.shift()!;
 		totalTokens -= countTokens(message.content, modelName);
 	}
 
 	// 3. Truncate message in the last 5, except last 1
 	i = 0;
-	while (
-		totalTokens > contextLength &&
-		chatHistory.length > 0 &&
-		i < chatHistory.length - 1
-		) {
+	while (totalTokens > contextLength && chatHistory.length > 0 && i < chatHistory.length - 1) {
 		const message = chatHistory[i];
 		totalTokens -= countTokens(message.content, modelName);
 		totalTokens += countTokens(summarize(message.content), modelName);
@@ -292,29 +258,27 @@ function pruneChatHistory(
 
 function compileChatMessages(
 	modelName: string,
-	msgs: ChatMessage[] | undefined = undefined,
+	msgs: IChatMessage[] | undefined = undefined,
 	contextLength: number,
 	maxTokens: number,
 	supportsImages: boolean,
 	prompt: string | undefined = undefined,
 	functions: any[] | undefined = undefined,
 	systemMessage: string | undefined = undefined,
-): ChatMessage[] {
-	const msgsCopy = msgs
-		? msgs.map((msg) => ({ ...msg })).filter((msg) => msg.content !== "")
-		: [];
+): IChatMessage[] {
+	const msgsCopy = msgs ? msgs.map(msg => ({ ...msg })).filter(msg => msg.content !== '') : [];
 
 	if (prompt) {
-		const promptMsg: ChatMessage = {
-			role: ChatRole.User,
+		const promptMsg: IChatMessage = {
+			role: ChatMessageRole.User,
 			content: prompt,
 		};
 		msgsCopy.push(promptMsg);
 	}
 
-	if (systemMessage && systemMessage.trim() !== "") {
-		const systemChatMsg: ChatMessage = {
-			role: ChatRole.System,
+	if (systemMessage && systemMessage.trim() !== '') {
+		const systemChatMsg: IChatMessage = {
+			role: ChatMessageRole.System,
 			content: systemMessage,
 		};
 		// Insert as second to last
@@ -338,7 +302,7 @@ function compileChatMessages(
 	// If images not supported, convert MessagePart[] to string
 	if (!supportsImages) {
 		for (const msg of msgsCopy) {
-			if ("content" in msg && Array.isArray(msg.content)) {
+			if ('content' in msg && Array.isArray(msg.content)) {
 				const content = stripImages(msg.content);
 				msg.content = content;
 			}
@@ -352,11 +316,7 @@ function compileChatMessages(
 		functionTokens + maxTokens + TOKEN_BUFFER_FOR_SAFETY,
 	);
 
-	if (
-		systemMessage &&
-		history.length >= 2 &&
-		history[history.length - 2].role === "system"
-	) {
+	if (systemMessage && history.length >= 2 && history[history.length - 2].role === 'system') {
 		const movedSystemMessage = history.splice(-2, 1)[0];
 		history.unshift(movedSystemMessage);
 	}

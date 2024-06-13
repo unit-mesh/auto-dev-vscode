@@ -1,4 +1,4 @@
-import { TextRange } from "../../scope-graph/model/TextRange";
+import { TextRange } from '../../scope-graph/model/TextRange';
 
 export type Embedding = number[];
 

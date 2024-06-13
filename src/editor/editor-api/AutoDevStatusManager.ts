@@ -1,26 +1,35 @@
-import vscode from "vscode";
+import { StatusBarAlignment, type StatusBarItem, window } from 'vscode';
 
 export enum AutoDevStatus {
 	WAITING,
 	Ready,
 	InProgress,
 	Error,
-	Done
+	Done,
 }
 
 export class AutoDevStatusManager {
-	private static _instance: AutoDevStatusManager;
-	private statusBar: vscode.StatusBarItem | undefined;
+	private statusBarItem: StatusBarItem;
 
-	private constructor() {
+	constructor() {
+		const statusBarItem = window.createStatusBarItem(StatusBarAlignment.Right, 100);
+
+		statusBarItem.command = 'autodev.showSystemAction';
+		statusBarItem.text = '$(autodev-pair)';
+		statusBarItem.tooltip = 'AutoDev';
+		statusBarItem.show();
+
+		this.statusBarItem = statusBarItem;
 	}
 
-	public static get instance() {
-		if (!AutoDevStatusManager._instance) {
-			AutoDevStatusManager._instance = new AutoDevStatusManager();
-		}
+	setIsLoading(tooltip?: string) {
+		this.statusBarItem.text = '$(loading~spin)';
+		this.statusBarItem.tooltip = tooltip || 'Loading...';
+	}
 
-		return AutoDevStatusManager._instance;
+	reset() {
+		this.statusBarItem.text = '$(autodev-pair)';
+		this.statusBarItem.tooltip = 'AutoDev';
 	}
 
 	/**
@@ -42,32 +51,24 @@ export class AutoDevStatusManager {
 	 * @public
 	 */
 	public setStatus(status: AutoDevStatus) {
-		if (this.statusBar) {
+		if (this.statusBarItem) {
 			switch (status) {
 				case AutoDevStatus.WAITING:
-					this.statusBar!!.text = "$(autodev-icon)";
+					this.statusBarItem.text = '$(autodev-icon)';
 					break;
 				case AutoDevStatus.Ready:
-					this.statusBar!!.text = "$(autodev-icon)";
+					this.statusBarItem.text = '$(autodev-icon)';
 					break;
 				case AutoDevStatus.InProgress:
-					this.statusBar!!.text = "$(loading~spin)";
+					this.statusBarItem.text = '$(loading~spin)';
 					break;
 				case AutoDevStatus.Error:
-					this.statusBar!!.text = "$(autodev-error)";
+					this.statusBarItem.text = '$(autodev-error)';
 					break;
 				case AutoDevStatus.Done:
-					this.statusBar!!.text = "$(autodev-icon)";
+					this.statusBarItem.text = '$(autodev-icon)';
 					break;
 			}
 		}
-	}
-
-	initStatusBar() {
-		const autoDevStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-		autoDevStatusBar.command = "autodev.systemAction";
-		autoDevStatusBar.text = "$(autodev-pair)";
-		autoDevStatusBar.show();
-		this.statusBar = autoDevStatusBar;
 	}
 }

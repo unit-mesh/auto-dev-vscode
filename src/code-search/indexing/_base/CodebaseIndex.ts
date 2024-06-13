@@ -43,16 +43,13 @@ export interface IndexTag extends BranchAndDir {
 }
 
 export enum IndexResultType {
-	Compute = "compute",
-	Delete = "del",
-	AddTag = "addTag",
-	RemoveTag = "removeTag",
+	Compute = 'compute',
+	Delete = 'del',
+	AddTag = 'addTag',
+	RemoveTag = 'removeTag',
 }
 
-export type MarkCompleteCallback = (
-	items: PathAndCacheKey[],
-	resultType: IndexResultType,
-) => void;
+export type MarkCompleteCallback = (items: PathAndCacheKey[], resultType: IndexResultType) => void;
 
 export interface CodebaseIndex {
 	artifactId: string;
