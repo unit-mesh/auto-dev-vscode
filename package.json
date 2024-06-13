@@ -881,35 +881,7 @@
 					"fontCharacter": "\\E906"
 				}
 			}
-		},
-		"walkthroughs": [
-			{
-				"id": "autodev-walkthroughs",
-				"title": "Welcome to AutoDev ",
-				"description": "AutoDev - 🧙 the AI-powered coding wizard",
-				"steps": [
-					{
-						"id": "changesetting",
-						"title": "Write to your OpenAI apikey",
-						"description": "Open the extension configuration, write to your OpenAI APIKey.\n[Open Setting](command:autodev.openSettings)",
-						"media": {
-							"markdown": "walkthroughs/configuration.md"
-						},
-						"completionEvents": [
-							"onCommand:command:autodev.openSettings"
-						]
-					},
-					{
-						"id": "complete",
-						"title": "Complete 🎊",
-						"description": "Now, start using AutoDev.",
-						"media": {
-							"markdown": "walkthroughs/finished.md"
-						}
-					}
-				]
-			}
-		]
+		}
 	},
 	"scripts": {
 		"preinstall": "npx only-allow npm",
