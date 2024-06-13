@@ -787,7 +787,7 @@
 					"when": "false"
 				},
 				{
-					"command": "autodev.showQuickAction",
+					"command": "autodev.action.quickAction",
 					"when": "false"
 				},
 				{

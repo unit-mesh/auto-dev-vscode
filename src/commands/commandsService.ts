@@ -193,7 +193,7 @@ export class CommandsService {
 		await addHighlightedCodeToContext(editor, selection, chat);
 
 		await setTimeout(800);
-		await chat.input(l10n.t('Please optimize the following function:'));
+		await chat.input(l10n.t('Optimize the code'));
 	}
 
 	async fixCode() {

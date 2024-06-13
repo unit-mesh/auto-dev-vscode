@@ -46,6 +46,10 @@ export class ChatViewService {
 	}
 
 	register() {
-		return window.registerWebviewViewProvider(CHAT_VIEW_ID, this.continueViewProvider);
+		return window.registerWebviewViewProvider(CHAT_VIEW_ID, this.continueViewProvider, {
+			webviewOptions: {
+				retainContextWhenHidden: true,
+			},
+		});
 	}
 }
