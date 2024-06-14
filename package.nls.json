@@ -16,7 +16,6 @@
 	"configuration.chat.provider.description": "Model Service Provider",
 	"configuration.chat.model.description": "Model for overwrite provider in the provider chat model.",
 	"configuration.chat.models.description": "List of models available for the chat view",
-	"configuration.chat.maxCount.description": "Maximum number of history messages",
 
 	"configuration.completions.title": "Code Completions",
 	"configuration.completions.enable.description": "Enable or disable inline completions",
@@ -88,7 +87,8 @@
 
 	"command.explainCode.title": "Explain Code",
 	"command.optimizeCode.title": "Optimize Code",
-	"command.fixCode.title": "Fix Code",
+	"command.quickFix.title": "Quick Fix",
+	"command.fixThis.title": "Fix This Code",
 	"command.autoComment.title": "Generate Documentation",
 
 	"command.showChatPanel.title": "Start Chat",

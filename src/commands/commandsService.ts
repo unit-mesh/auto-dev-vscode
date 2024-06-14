@@ -1,6 +1,5 @@
-import { error } from 'console';
+/* eslint-disable @typescript-eslint/naming-convention */
 import { inject, injectable } from 'inversify';
-// eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { createNamedElement } from 'src/code-context/ast/TreeSitterWrapper';
 import { setTimeout } from 'timers/promises';
@@ -14,7 +13,6 @@ import {
 	Position,
 	QuickPickItem,
 	Range,
-	TextDocument,
 	Uri,
 	window,
 	WorkspaceEdit,
@@ -28,17 +26,18 @@ import {
 	CMD_CREATE_UNIT_TEST,
 	CMD_EXPLAIN_CODE,
 	CMD_FEEDBACK,
-	CMD_FIX_CODE,
+	CMD_FIX_THIS,
 	CMD_GEN_DOCSTRING,
 	CMD_GIT_MESSAGE_COMMIT_GENERATE,
 	CMD_NEW_CHAT_SESSION,
 	CMD_OPEN_SETTINGS,
 	CMD_OPTIMIZE_CODE,
+	CMD_QUICK_FIX,
 	CMD_SHOW_CHAT_HISTORY,
 	CMD_SHOW_CHAT_PANEL,
-	CMD_SHOW_CODELENS_DETAIL_QUICKPICK,
 	CMD_SHOW_SYSTEM_ACTION,
 	CMD_SHOW_TUTORIAL,
+	CMD_TERMINAL_DEBUG,
 	CMD_TERMINAL_EXPLAIN_SELECTION_CONTEXT_MENU,
 	CMD_TERMINAL_SEND_TO,
 } from 'base/common/configuration/configuration';
@@ -51,8 +50,7 @@ import { CommitMessageGenAction } from '../action/devops/CommitMessageGenAction'
 import { SystemActionType } from '../action/setting/SystemActionType';
 import { AutoDevExtension } from '../AutoDevExtension';
 import { TextRange } from '../code-search/scope-graph/model/TextRange';
-import { NamedElement } from '../editor/ast/NamedElement';
-import { addHighlightedCodeToContext, getUserSelectedCode, showTutorial } from './commandsUtils';
+import { addHighlightedCodeToContext, getInput, showTutorial } from './commandsUtils';
 
 @injectable()
 export class CommandsService {
@@ -129,33 +127,43 @@ export class CommandsService {
 		await chat.show();
 
 		// TODO hack message render empty
-		await setTimeout(800);
+		await setTimeout(600);
 		await addHighlightedCodeToContext(editor, selection, chat);
 
 		await setTimeout(800);
 		await chat.input(l10n.t('Optimize the code'));
 	}
 
-	async fixCode() {
+	async quickFix(message: string, code: string, edit: boolean) {
 		const chat = this.autodev.chat;
 
 		const editor = window.activeTextEditor;
-		if (!editor) {
+		const language = editor?.document?.languageId;
+
+		await chat.show();
+
+		await setTimeout(600);
+		await chat.input(
+			`${edit ? '/edit ' : ''}${code}\n\n${l10n.t('How do I fix this problem in the above code?')}:
+		\`\`\`${language}
+		${message}
+		\`\`\`
+		`,
+		);
+	}
+
+	async fixThis() {
+		const input = getInput();
+		if (!input) {
 			return;
 		}
 
-		const selection = editor.selection;
-		if (selection.isEmpty) {
-			return;
-		}
+		const chat = this.autodev.chat;
 
 		await chat.show();
 
 		await setTimeout(800);
-		await addHighlightedCodeToContext(editor, selection, chat);
-
-		await setTimeout(800);
-		await chat.input(l10n.t('How do I fix this problem in the above code?'));
+		chat.input(`${l10n.t('I got the following error, can you please help explain how to fix it?')}: ${input}`);
 	}
 
 	async generateDocstring() {
@@ -310,7 +318,8 @@ export class CommandsService {
 
 			await this.autodev.chat.show();
 
-			await this.autodev.chat.newSession(
+			await setTimeout(600);
+			await this.autodev.chat.input(
 				`${l10n.t('I got the following error, can you please help explain how to fix it?')}\n\n${terminalContents.trim()}`,
 			);
 		} catch (e) {
@@ -324,7 +333,17 @@ export class CommandsService {
 		});
 	}
 
+	async terminalDebug() {
+		const terminalContents = await this.autodev.ideAction.getTerminalContents(1);
+
+		await setTimeout(600);
+		await this.autodev.chat.input(
+			`${l10n.t('I got the following error, can you please help explain how to fix it?')}\n\n${terminalContents.trim()}`,
+		);
+	}
+
 	register() {
+		// TODO Migration GenApiData
 		return Disposable.from(
 			// General Commands
 			commands.registerCommand(CMD_OPEN_SETTINGS, this.openSettins, this),
@@ -338,7 +357,8 @@ export class CommandsService {
 			// ContextMenu Commands
 			commands.registerCommand(CMD_EXPLAIN_CODE, this.explainCode, this),
 			commands.registerCommand(CMD_OPTIMIZE_CODE, this.optimizeCode, this),
-			commands.registerCommand(CMD_FIX_CODE, this.fixCode, this),
+			commands.registerCommand(CMD_FIX_THIS, this.fixThis, this),
+			commands.registerCommand(CMD_QUICK_FIX, this.quickFix, this),
 			commands.registerCommand(CMD_GEN_DOCSTRING, this.generateDocstring, this),
 			commands.registerCommand(CMD_CREATE_UNIT_TEST, this.generateUnitTest, this),
 			// Codebase Commands
@@ -354,6 +374,7 @@ export class CommandsService {
 				this,
 			),
 			commands.registerCommand(CMD_TERMINAL_SEND_TO, this.terminalSendTo, this),
+			commands.registerCommand(CMD_TERMINAL_DEBUG, this.terminalDebug, this),
 			// Other Commands
 			commands.registerCommand(CMD_GIT_MESSAGE_COMMIT_GENERATE, this.generateCommitMessage, this),
 		);

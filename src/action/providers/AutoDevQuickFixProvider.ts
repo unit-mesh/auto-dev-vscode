@@ -1,7 +1,7 @@
 import { AutoDevExtension } from 'src/AutoDevExtension';
 import * as vscode from 'vscode';
 
-import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+import { CMD_QUICK_FIX } from 'base/common/configuration/configuration';
 
 import { TreeSitterFile } from '../../code-context/ast/TreeSitterFile';
 import { NamedElementBuilder } from '../../editor/ast/NamedElementBuilder';
@@ -44,7 +44,7 @@ export class AutoDevQuickFixProvider implements vscode.CodeActionProvider {
 				0,
 			);
 			quickFix.command = {
-				command: 'autodev.quickFix',
+				command: CMD_QUICK_FIX,
 				title: 'AutoDev Quick Fix',
 				arguments: [diagnostic.message, document.getText(surroundingRange), edit],
 			};

@@ -39,7 +39,7 @@ export async function showTutorial(extensionUri: Uri) {
  * - {@link https://code.visualstudio.com/api/references/vscode-api#TextEditor.selection | VSCode API: TextEditor.selection}
  * - {@link https://code.visualstudio.com/api/references/vscode-api#TextDocument.getText | VSCode API: TextDocument.getText}
  */
-export function getUserSelectedCode(): [undefined, undefined] | [string, string] {
+export function getInput(): [undefined, undefined] | [string, string] {
 	const editor = window.activeTextEditor;
 	if (!editor) {
 		return [undefined, undefined];

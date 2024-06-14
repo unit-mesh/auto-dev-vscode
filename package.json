@@ -134,14 +134,6 @@
 						],
 						"description": "%configuration.chat.models.description%",
 						"order": 4
-					},
-					"autodev.chat.maxCount": {
-						"type": "integer",
-						"minimum": 1,
-						"maximum": 20,
-						"default": 8,
-						"description": "%configuration.chat.maxCount.description%",
-						"order": 5
 					}
 				},
 				"order": 2
@@ -556,9 +548,15 @@
 				"group": "AutoDev"
 			},
 			{
-				"command": "autodev.fixCode",
+				"command": "autodev.quickFix",
 				"category": "AutoDev",
-				"title": "%command.fixCode.title%",
+				"title": "%command.quickFix.title%",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.fixThis",
+				"category": "AutoDev",
+				"title": "%command.fixThis.title%",
 				"group": "AutoDev"
 			},
 			{
@@ -756,7 +754,7 @@
 					"group": "0_autodev@2"
 				},
 				{
-					"command": "autodev.fixCode",
+					"command": "autodev.fixThis",
 					"when": "editorHasSelection",
 					"group": "0_autodev@3"
 				},
@@ -833,7 +831,11 @@
 					"when": "false"
 				},
 				{
-					"command": "autodev.fixCode",
+					"command": "autodev.fixThis",
+					"when": "false"
+				},
+				{
+					"command": "autodev.quickFix",
 					"when": "false"
 				},
 				{

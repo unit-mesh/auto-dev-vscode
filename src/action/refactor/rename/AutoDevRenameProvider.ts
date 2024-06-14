@@ -1,6 +1,5 @@
 import { AutoDevExtension } from 'src/AutoDevExtension';
 import { AutoDevStatusManager } from 'src/editor/editor-api/AutoDevStatusManager';
-import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
 import { PromptManager } from 'src/prompt-manage/PromptManager';
 import {
 	CancellationToken,
@@ -13,6 +12,7 @@ import {
 } from 'vscode';
 
 import { ConfigurationService } from 'base/common/configuration/configurationService';
+import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
 
 import { RenameLookupExecutor } from './RenameLookupExecutor';
 
@@ -24,7 +24,7 @@ export class AutoDevRenameProvider implements RenameProvider {
 	private promptManager: PromptManager;
 	private statusBarManager: AutoDevStatusManager;
 
-	constructor(extension: AutoDevExtension) {
+	constructor(private extension: AutoDevExtension) {
 		this.lm = extension.lm;
 		this.config = extension.config;
 		this.promptManager = extension.promptManager;
@@ -32,18 +32,18 @@ export class AutoDevRenameProvider implements RenameProvider {
 		this.renameLookupExecutor = new RenameLookupExecutor(extension);
 	}
 
-	prepareRename(
-		document: TextDocument,
-		position: Position,
-		token: CancellationToken,
-	): ProviderResult<Range | { range: Range; placeholder: string }> {
-		let range = document.getWordRangeAtPosition(position);
-		if (!range) {
-			return undefined;
+	isRenameEnabled() {
+		return this.config.get<boolean>('enableRenameSuggestion') === true;
+	}
+
+	prepareRename(document: TextDocument, position: Position, token: CancellationToken) {
+		if (!this.isRenameEnabled()) {
+			return;
 		}
 
-		if (!this.config.get<boolean>('enableRenameSuggestion')) {
-			return range;
+		const range = document.getWordRangeAtPosition(position);
+		if (!range) {
+			return;
 		}
 
 		return this.renameLookupExecutor.suggest(document, position, token);

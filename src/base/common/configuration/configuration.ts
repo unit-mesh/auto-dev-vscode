@@ -10,8 +10,11 @@ export const CMD_FEEDBACK = 'autodev.feedback';
 export const CMD_SHOW_SYSTEM_ACTION = 'autodev.showSystemAction'; // statusbar icon click
 export const CMD_SHOW_CODELENS_DETAIL_QUICKPICK = 'autodev.showCodelensDetailQuickPick'; // codelens icon click
 
+// Errors Fix Commands
+export const CMD_QUICK_FIX = 'autodev.quickFix';
+
 // ContextMenu Commands
-export const CMD_FIX_CODE = 'autodev.fixCode';
+export const CMD_FIX_THIS = 'autodev.fixThis';
 export const CMD_EXPLAIN_CODE = 'autodev.explainCode';
 export const CMD_OPTIMIZE_CODE = 'autodev.optimizeCode';
 export const CMD_GEN_DOCSTRING = 'autodev.autoComment';

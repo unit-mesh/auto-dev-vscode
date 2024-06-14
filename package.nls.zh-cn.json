@@ -8,7 +8,6 @@
 	"configuration.chat.title": "对话",
 	"configuration.chat.enable.description": "启用或禁用聊天功能",
 	"configuration.chat.models.description": "可供聊天界面选择的模型列表",
-	"configuration.chat.maxCount.description": "最大可携带的聊天消息数量",
 
 	"configuration.completions.title": "代码补全",
 	"configuration.completions.enable.description": "启用或禁用代码补全",
@@ -66,7 +65,7 @@
 	"command.showChatPanel.title": "开始对话",
 	"command.explainCode.title": "解释代码",
 	"command.optimizeCode.title": "优化代码",
-	"command.fixCode.title": "修复代码",
+	"command.quickFix.title": "快速修复",
 	"command.autoComment.title": "生成注释",
 	"command.autoTest.title": "生成测试",
 

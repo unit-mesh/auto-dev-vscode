@@ -9,8 +9,8 @@ import { AutoDevCodeInlineCompletionProvider } from './providers/AutoDevCodeInli
 import { AutoDevQuickFixProvider } from './providers/AutoDevQuickFixProvider';
 import { AutoDevRenameProvider } from './refactor/rename/AutoDevRenameProvider';
 
-export function registerCodeLensProvider(autodev: AutoDevExtension) {
-	const codelensProvider = new AutoDevCodeLensProvider(autodev);
+export function registerCodeLensProvider(context: AutoDevExtension) {
+	const codelensProvider = new AutoDevCodeLensProvider(context);
 
 	return Disposable.from(codelensProvider, languages.registerCodeLensProvider(SUPPORTED_LANGUAGES, codelensProvider));
 }
@@ -36,18 +36,4 @@ export function registerCodeSuggestionProvider(extension: AutoDevExtension) {
 
 export function registerRenameAction(extension: AutoDevExtension) {
 	return languages.registerRenameProvider(SUPPORTED_LANGUAGES, new AutoDevRenameProvider(extension));
-}
-
-export function registerRefactoringRename(extension: AutoDevExtension) {
-	// if (SettingService.instance().isEnableRename()) {
-	// 	registerRenameAction(extension);
-	// }
-	// workspace.onDidChangeConfiguration(() => {
-	// 	if (SettingService.instance().isEnableRename()) {
-	// 		// 如果启用了重命名功能，则注册重命名动作（待优化）
-	// 		registerRenameAction(extension);
-	// 	} else {
-	// 		// 否则不做任何操作
-	// 	}
-	// });
 }
