@@ -1,5 +1,6 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 import { Database, open } from 'sqlite';
 import * as sqlite3 from 'sqlite3';
@@ -58,5 +59,13 @@ export class SqliteDb {
 
 		await SqliteDb.createTables(SqliteDb.db);
 		return SqliteDb.db;
+	}
+
+	static setUrl(url?: string) {
+		if (url) {
+			this.indexSqlitePath = url.replace('~', os.homedir());
+		} else {
+			this.indexSqlitePath = getIndexSqlitePath();
+		}
 	}
 }

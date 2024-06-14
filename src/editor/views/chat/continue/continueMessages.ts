@@ -11,6 +11,25 @@ type WebviewMessageBuilder<Type, From = void, To = void> = {
 	to: BaseToWebviewMessage<Type, To>;
 };
 
+export interface ContextItemId {
+	providerTitle: string;
+	itemId: string;
+}
+
+export interface ContextItemWithId {
+	content: string;
+	name: string;
+	description: string;
+	id: ContextItemId;
+	editing?: boolean;
+	editable?: boolean;
+}
+
+export interface RangeInFile {
+	filepath: string;
+	range: Range;
+}
+
 export type IChatModelResource = {
 	title: string;
 	provider: string;
@@ -42,6 +61,18 @@ export type IHistoryItem = {
 	contextItems: [];
 };
 
+export interface SessionInfo {
+	sessionId: string;
+	title: string;
+	dateCreated: string;
+	workspaceDirectory: string;
+}
+
+export interface PersistedSessionInfo extends SessionInfo {
+	history: IHistoryItem[];
+}
+
+// TODO use contine protocol
 export type ContinueMessageMap = {
 	// Initialization
 	onLoad: WebviewMessageBuilder<
@@ -55,6 +86,7 @@ export type ContinueMessageMap = {
 			vscMediaUrl: string;
 		}
 	>;
+	configUpdate: WebviewMessageBuilder<'configUpdate'>;
 	errorPopup: WebviewMessageBuilder<
 		'errorPopup',
 		{
@@ -90,13 +122,36 @@ export type ContinueMessageMap = {
 			done?: boolean;
 		}
 	>;
-	'history/save': WebviewMessageBuilder<
-		'history/save',
+	'history/list': WebviewMessageBuilder<'history/list', void, SessionInfo[]>;
+	'history/load': WebviewMessageBuilder<
+		'history/load',
 		{
-			sessionId: string;
-			title: string;
+			id: string;
+		},
+		PersistedSessionInfo | void
+	>;
+	'history/delete': WebviewMessageBuilder<
+		'history/delete',
+		{
+			id: string;
+		}
+	>;
+	'history/save': WebviewMessageBuilder<'history/save', PersistedSessionInfo>;
+	'command/run': WebviewMessageBuilder<
+		'command/run',
+		{
+			input: string;
 			history: IHistoryItem[];
-			workspaceDirectory: string;
+			modelTitle: string;
+			slashCommandName: string;
+			contextItems: IChatMessageParam[];
+			params: any;
+			historyIndex: number;
+			selectedCode: RangeInFile[];
+		},
+		{
+			done?: boolean;
+			content: string;
 		}
 	>;
 
@@ -144,6 +199,13 @@ export class ContinueEvent<
 			messageId: this.id,
 			messageType: this.type,
 			data: data,
+		});
+	}
+
+	empty() {
+		this.channel.postMessage({
+			messageId: this.id,
+			messageType: this.type,
 		});
 	}
 }

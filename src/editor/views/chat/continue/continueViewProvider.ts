@@ -1,9 +1,25 @@
+/* eslint-disable curly */
 import { randomUUID } from 'node:crypto';
+import { existsSync, mkdirSync, statSync } from 'node:fs';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 
-import { CancellationTokenSource, ExtensionContext, Uri, WebviewView, WebviewViewProvider, window } from 'vscode';
+import { load } from 'js-yaml';
+import _ from 'lodash';
+import {
+	CancellationTokenSource,
+	commands,
+	ExtensionContext,
+	Uri,
+	WebviewView,
+	WebviewViewProvider,
+	window,
+} from 'vscode';
 
+import { CMD_CODEASPACE_ANALYSIS, CMD_CODEASPACE_KEYWORDS_ANALYSIS } from 'base/common/configuration/configuration';
 import { ConfigurationService } from 'base/common/configuration/configurationService';
-import type { IChatMessage } from 'base/common/language-models/languageModels';
+import { ChatMessageRole, type IChatMessage } from 'base/common/language-models/languageModels';
 import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
 import { logger } from 'base/common/log/log';
 import { showErrorMessage } from 'base/common/messages/messages';
@@ -17,10 +33,14 @@ import {
 	type FromWebviewMessage,
 	type IChatMessageParam,
 	IChatModelResource,
+	PersistedSessionInfo,
+	SessionInfo,
 	type ShowErrorMessage,
 } from './continueMessages';
 
 export class ContinueViewProvider extends AbstractWebviewViewProvider implements WebviewViewProvider {
+	private historySaveDir = path.join(os.homedir(), '.autodev/sessions');
+
 	constructor(
 		private context: ExtensionContext,
 		private configService: ConfigurationService,
@@ -137,6 +157,30 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 					this.handleApplyToCurrentFile(payload);
 					break;
 
+				case 'history/list':
+					this.handleShowChatList(new ContinueEvent(webview, payload));
+					break;
+
+				case 'history/load':
+					this.handleLoadChat(new ContinueEvent(webview, payload));
+					break;
+
+				case 'history/delete':
+					this.handleDeleteChat(new ContinueEvent(webview, payload));
+					break;
+
+				case 'history/save':
+					this.handleSaveChatHistory(new ContinueEvent(webview, payload));
+					break;
+
+				case 'command/run':
+					this.handleSlashCommand(new ContinueEvent(webview, payload));
+					break;
+
+				case 'configUpdate':
+					// ignore
+					break;
+
 				default:
 					logger.debug('(continue): Unknown webview protocol msg: ', payload);
 			}
@@ -171,6 +215,24 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 		event.reply([]);
 	}
 
+	private async handleSaveChatHistory(event: ContinueEvent<'history/save'>) {
+		await saveAndUpdateChat(this.historySaveDir, event.data);
+		event.empty();
+	}
+
+	private async handleShowChatList(event: ContinueEvent<'history/list'>) {
+		event.reply(await getChats(this.historySaveDir));
+	}
+
+	private async handleLoadChat(event: ContinueEvent<'history/load'>) {
+		event.reply(await loadChat(this.historySaveDir, event.data.id));
+	}
+
+	private async handleDeleteChat(event: ContinueEvent<'history/delete'>) {
+		await deleteChat(this.historySaveDir, event.data.id);
+		event.empty();
+	}
+
 	private async listModels(): Promise<IChatModelResource[]> {
 		const resources = this.configService.getConfig<IChatModelResource[]>('chat.models');
 		if (!resources) {
@@ -184,6 +246,68 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 				model: res.model,
 			};
 		});
+	}
+
+	readonly slashCommandsMap: Record<string, string> = {
+		'codespace-code': CMD_CODEASPACE_ANALYSIS,
+		'codespace-keywords': CMD_CODEASPACE_KEYWORDS_ANALYSIS,
+	};
+
+	private async handleSlashCommand(event: ContinueEvent<'command/run'>) {
+		try {
+			const slashCommandName = event.data.slashCommandName;
+			const cmd = this.slashCommandsMap[slashCommandName];
+			if (!cmd) {
+				logger.warn('(webview): unknown slash command', slashCommandName);
+				event.reply({
+					done: true,
+					content: '',
+				});
+				return;
+			}
+
+			const arg = event.data.input.replace(`/${slashCommandName}`, '').trim();
+
+			const result = await commands.executeCommand<string>(cmd, arg);
+
+			logger.debug('(webview): command/run', cmd, result);
+
+			if (!result) {
+				return;
+			}
+
+			const title = event.data.modelTitle;
+
+			const models = await this.listModels();
+			const metadata = models.find(m => m.title === title);
+
+			// TODO with history messages
+			await this.lm.chat(
+				[
+					{
+						role: ChatMessageRole.User,
+						content: result,
+					},
+				],
+				{
+					provider: metadata?.provider,
+					model: metadata?.model,
+				},
+				{
+					report(fragment) {
+						event.reply({ content: fragment.part });
+					},
+				},
+			);
+		} catch (error) {
+			logger.error('(webview): command run fail', error);
+			showErrorMessage('Slash Command fail');
+		} finally {
+			event.reply({
+				done: true,
+				content: '',
+			});
+		}
 	}
 
 	private async handleBrowserSerialized(event: ContinueEvent<'config/getBrowserSerialized'>) {
@@ -200,7 +324,6 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 			const models = await this.listModels();
 
 			const title = event.data.title;
-			const provider = this.configService.get('chat.provider');
 			const metadata = models.find(m => m.title === title);
 
 			const completionOptions = event.data.completionOptions;
@@ -209,7 +332,7 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 				mapToChatMessages(event.data.messages),
 				{
 					...completionOptions,
-					provider: metadata?.provider || provider,
+					provider: metadata?.provider,
 					model: metadata?.model,
 				},
 				{
@@ -248,4 +371,86 @@ function mapToChatMessages(messages: IChatMessageParam[]): IChatMessage[] {
 
 		return param;
 	});
+}
+
+async function loadChat(base: string, id: string): Promise<PersistedSessionInfo | void> {
+	if (!existsSync(base)) return;
+
+	try {
+		const filePath = path.join(base, `${id}.json`);
+		if (statSync(filePath).isFile()) {
+			try {
+				return JSON.parse(await fs.readFile(filePath, 'utf-8'));
+			} catch {
+				// ignore
+				logger.debug(`(webview): session ${id} read error`);
+			}
+		}
+	} catch (error) {
+		logger.error('(webview): load chats error', error);
+	}
+}
+
+async function deleteChat(base: string, id: string) {
+	if (!existsSync(base)) return;
+
+	try {
+		const filePath = path.join(base, `${id}.json`);
+		if (statSync(filePath).isFile()) {
+			await fs.unlink(filePath);
+		}
+	} catch (error) {
+		logger.error('(webview): load chats error', error);
+	}
+}
+
+async function getChats(base: string): Promise<SessionInfo[]> {
+	const sessions: SessionInfo[] = [];
+
+	if (!existsSync(base)) return sessions;
+
+	try {
+		for (const file of await fs.readdir(base)) {
+			const filePath = path.join(base, file);
+			if (statSync(filePath).isFile()) {
+				try {
+					const item = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+					sessions.push(_.omit(item, 'history') as SessionInfo);
+				} catch {
+					// ignore
+					logger.debug(`(webview): session ${file} read error`);
+				}
+			}
+		}
+	} catch (error) {
+		logger.error('(webview): query chats error', error);
+		showErrorMessage('Query Chats Error');
+	}
+
+	return sessions;
+}
+
+async function saveAndUpdateChat(base: string, data: ContinueEvent<'history/save'>['data']) {
+	if (!existsSync(base)) {
+		mkdirSync(base);
+	}
+
+	try {
+		// TODO support workspaceDirectory
+		const saveFilePath = path.join(base, `${data.sessionId}.json`);
+
+		const item = Object.assign(
+			{
+				dateCreated: new Date().toISOString(),
+			},
+			data,
+		);
+
+		await fs.writeFile(saveFilePath, JSON.stringify(item), 'utf-8');
+
+		logger.debug('(webview): history save success');
+	} catch (error) {
+		logger.error('(webview): history save error', error);
+		showErrorMessage('Chat History Save Error');
+	}
 }

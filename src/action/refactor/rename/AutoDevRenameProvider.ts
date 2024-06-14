@@ -42,7 +42,7 @@ export class AutoDevRenameProvider implements RenameProvider {
 			return undefined;
 		}
 
-		if (!this.config.get<boolean>('suggestion.enableRename')) {
+		if (!this.config.get<boolean>('enableRenameSuggestion')) {
 			return range;
 		}
 

@@ -1,5 +1,4 @@
 import { IChatMessage } from 'base/common/language-models/languageModels';
-
 import { logger } from 'base/common/log/log';
 
 import { AutoDevExtension } from '../../AutoDevExtension';
@@ -108,7 +107,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		this.step = HydeStep.Evaluate;
 		let evaluateContext: KeywordEvaluateContext = {
 			step: this.step,
-			question: keywords.question,
+			question: this.query, // TODO fix keywords.question
 			code: chunkItems.map(item => item.text).join('\n'),
 			language: '',
 		};

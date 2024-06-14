@@ -17,7 +17,7 @@ export class Catalyser {
 		this.queryExpansion = new QueryExpansion(this.teamTermService);
 	}
 
-	async query(query: string, type: SystemActionType): Promise<void> {
+	async query(query: string, type: SystemActionType): Promise<string | undefined> {
 		logger.append('Semantic search for code: ' + query + '\n');
 		let expandedQuery = this.queryExpansion.expand(query);
 		logger.append('Expanded query: ' + expandedQuery + '\n');
@@ -42,10 +42,6 @@ export class Catalyser {
 			return;
 		}
 
-		this.extension.chat.send('userInput', {
-			input: finalPrompt.prompt,
-		});
-
 		if (finalPrompt.chunks.length > 0) {
 			logger.appendLine('Found ' + finalPrompt.chunks.length + ' code snippets\n');
 			for (let chunk of finalPrompt.chunks) {
@@ -58,5 +54,7 @@ export class Catalyser {
 				logger.appendLine('File: ' + chunk.path + ' (' + start + ' - ' + end + ')');
 			}
 		}
+
+		return finalPrompt.prompt;
 	}
 }

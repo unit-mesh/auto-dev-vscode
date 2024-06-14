@@ -19,7 +19,6 @@ import { type Table } from 'vectordb';
 import { CancellationTokenSource } from 'vscode';
 
 import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
-import { LanguageServiceProvider } from 'base/common/languages/languageService';
 import { logger } from 'base/common/log/log';
 
 import { Chunk } from '../chunk/_base/Chunk';

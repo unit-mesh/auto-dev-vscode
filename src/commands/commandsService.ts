@@ -1,3 +1,4 @@
+import { error } from 'console';
 import { inject, injectable } from 'inversify';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
@@ -38,6 +39,8 @@ import {
 	CMD_SHOW_CODELENS_DETAIL_QUICKPICK,
 	CMD_SHOW_SYSTEM_ACTION,
 	CMD_SHOW_TUTORIAL,
+	CMD_TERMINAL_EXPLAIN_SELECTION_CONTEXT_MENU,
+	CMD_TERMINAL_SEND_TO,
 } from 'base/common/configuration/configuration';
 import { IExtensionContext } from 'base/common/configuration/context';
 import { getGitExtensionAPI } from 'base/common/git';
@@ -294,11 +297,31 @@ export class CommandsService {
 	}
 
 	codespaceCodeAnalysis(input: string) {
-		this.autodev.catalyser.query(input, SystemActionType.SemanticSearchKeyword);
+		return this.autodev.catalyser.query(input, SystemActionType.SemanticSearchKeyword);
 	}
 
 	codespaceKeywordsAnalysis(input: string) {
-		this.autodev.catalyser.query(input, SystemActionType.SemanticSearchCode);
+		return this.autodev.catalyser.query(input, SystemActionType.SemanticSearchCode);
+	}
+
+	async explainTerminalSelectionContextMenu() {
+		try {
+			const terminalContents = await this.autodev.ideAction.getTerminalContents(1);
+
+			await this.autodev.chat.show();
+
+			await this.autodev.chat.newSession(
+				`${l10n.t('I got the following error, can you please help explain how to fix it?')}\n\n${terminalContents.trim()}`,
+			);
+		} catch (e) {
+			logger.error((e as Error).message);
+		}
+	}
+
+	terminalSendTo(text: string) {
+		this.autodev.ideAction.runCommand(text).catch(error => {
+			window.showErrorMessage((error as Error).message);
+		});
 	}
 
 	register() {
@@ -321,8 +344,16 @@ export class CommandsService {
 			// Codebase Commands
 			commands.registerCommand(CMD_CODEBASE_INDEXING, this.startCodebaseIndexing, this),
 			commands.registerCommand(CMD_CODEBASE_RETRIEVAL, this.showCodebasePanel, this),
+			// Chat Slash Commands
 			commands.registerCommand(CMD_CODEASPACE_ANALYSIS, this.codespaceCodeAnalysis, this),
 			commands.registerCommand(CMD_CODEASPACE_KEYWORDS_ANALYSIS, this.codespaceKeywordsAnalysis, this),
+			//Terminal Commands
+			commands.registerCommand(
+				CMD_TERMINAL_EXPLAIN_SELECTION_CONTEXT_MENU,
+				this.explainTerminalSelectionContextMenu,
+				this,
+			),
+			commands.registerCommand(CMD_TERMINAL_SEND_TO, this.terminalSendTo, this),
 			// Other Commands
 			commands.registerCommand(CMD_GIT_MESSAGE_COMMIT_GENERATE, this.generateCommitMessage, this),
 		);

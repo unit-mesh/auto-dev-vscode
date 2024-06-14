@@ -8,9 +8,8 @@
 	"contributes.icons.autodev-pair.description": "AutoDev Pair",
 
 	"configuration.general.title": "General",
-	"configuration.suggestion.enableRename.description": "Enable rename suggestion",
-	"configuration.general.databaseAuthToken.description": "Database auth token",
-	"configuration.general.customPromptsDir.description": "Custom prompt directory",
+	"configuration.enableRenameSuggestion.description": "Enable rename suggestion",
+	"configuration.customPromptDir.description": "Custom prompt directory",
 
 	"configuration.chat.title": "Chat",
 	"configuration.chat.enable.description": "Enable or disable ai chats",
@@ -28,18 +27,24 @@
 	"configuration.completions.requestDelay.markdownDescription": "Code auto-completion delay request time. Avoid excessive consumption of API tokens. `requestDelay` only works if `#autodev.completions.enable#` is enabled.",
 	"configuration.completions.enableLegacyMode.markdownDescription": "Use legacy `/v1/completions` instead of `/v1/chat/completions`, only openai provider.",
 
+	"configuration.storages.title": "Storages",
+	"configuration.storages.databaseType.description": "Databsae Type.",
+	"configuration.storages.databaseUrl.description": "Databsae Database URL. Defaults to `~/.autodev/index/autodev-index.sqlite`.",
+	"configuration.storages.vectorstoreType.description": "Vector Store Type.",
+	"configuration.storages.vectorstorePath.description": "Vector Store Database URL. Defaults to `~/.autodev/index/lancedb`.",
+
 	"configuration.embeddings.title": "Embeddings",
 	"configuration.embeddings.provider.description": "Model Service Provider",
 	"configuration.embeddings.provider.markdownDescription": "Override the model in the provider",
 	"configuration.embeddings.model.description": "Model for overwrite provider in the provider embeddings model.",
 	"configuration.embeddings.batchSize.description": "The maximum number of documents to embed in a single request.",
 
-	"configuration.anthropic.title": "Anthropic",
+	"configuration.providers.title": "Model Proviers",
+
 	"configuration.anthropic.baseURL.markdownDescription": "Anthropic API URL, See [API Reference](https://docs.anthropic.com/en/api/getting-started)",
 	"configuration.anthropic.apiKey.description": "Anthropic API key",
 	"configuration.anthropic.model.description": "Model name to use",
 
-	"configuration.openai.title": "OpenAI",
 	"configuration.openai.apiType.description": "The openai's service providers",
 	"configuration.openai.apiKey.markdownDescription": "Our legacy keys. Provides access to all organizations and all projects that user has been added to; access [API Keys](https://platform.openai.com/account/api-keys) to view your available keys. We highly advise transitioning to project keys for best security practices, although access via this method is currently still supported.",
 	"configuration.openai.baseURL.markdownDescription": "Override the default base URL for the API. See [API Reference](https://platform.openai.com/docs/api-reference/introduction)",
@@ -49,25 +54,21 @@
 	"configuration.openai.completionModel.description": "Model name to use. If not specified, the default model will be used.",
 	"configuration.openai.embeddingModel.description": "Model name to use",
 
-	"configuration.qianfan.title": "Baidu QianFan",
 	"configuration.qianfan.apiKey.description": "Baidu Cloud API Key",
 	"configuration.qianfan.apiKey.markdownDescription": "Baidu Cloud API Key. See [Create an application](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application).",
 	"configuration.qianfan.secretKey.description": "Baidu Cloud Secret Key.",
 	"configuration.qianfan.model.description": "Model name to use",
 
-	"configuration.tongyi.title": "Ali TongYi",
 	"configuration.tongyi.apiKey.description": "Ali Cloud API Key",
 	"configuration.tongyi.apiKey.markdownDescription": "Ali Cloud API Key. See [开通 DashScope 并创建 API-KEY](https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-create-an-api-key).",
 	"configuration.tongyi.model.description": "Model name to use",
 	"configuration.tongyi.enableSearch.description": "Enable Search Enhancement",
 
-	"configuration.ollama.title": "Ollama",
 	"configuration.ollama.baseURL.markdownDescription": "Ollama API URL, See [API Reference](https://github.com/ollama/ollama/blob/main/docs/api.md)",
 	"configuration.ollama.model.description": "Model name to use",
 	"configuration.ollama.completionModel.description": "Model name to use",
 	"configuration.ollama.embeddingModel.description": "Model name to use",
 
-	"configuration.transformers.title": "Transformers",
 	"configuration.transformers.remoteHost.description": "Host URL to load models from. Defaults to the Hugging Face Hub",
 	"configuration.transformers.remoteHost.markdownDescription": "Host URL to load models from. Defaults to the [Hugging Face Hub](https://huggingface.co)",
 	"configuration.transformers.remotePathTemplate.description": "Path template to fill in and append to remoteHost when loading models.",
@@ -81,8 +82,8 @@
 
 	"command.autoTest.title": "Generate Test",
 	"command.genApiData.title": "Generate API Data",
-
 	"command.openSettings.title": "Open Settings",
+	"command.showTutorial.title": "Show Tutorial",
 	"command.feedback.title": "Feedback",
 
 	"command.explainCode.title": "Explain Code",
@@ -96,8 +97,8 @@
 	"command.showSystemAction.title": "Show Autodev Actions",
 	"command.showCodelensDetailQuickPick.title": "Show Quick Actions",
 
-	"command.codebase.createIndexes.title": "Codebase Index Generation",
-	"command.codebase.retrievalCode.title": "Codebase Code Retrieval",
+	"command.codebase.createIndexes.title": "Codebase Indexing",
+	"command.codebase.retrievalCode.title": "Codebase Retrieval",
 
 	"configuration.codelensDisplayMode.item.expand": "Expand",
 	"configuration.codelensDisplayMode.item.collapse": "Collapse",

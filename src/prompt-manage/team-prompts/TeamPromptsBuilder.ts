@@ -14,7 +14,7 @@ export class TeamPromptsBuilder {
 	private rootDir: WorkspaceFolder | null;
 
 	constructor(configService: ConfigurationService) {
-		this.baseDir = configService.get<string>('customPromptsDir')!;
+		this.baseDir = configService.get<string>('customPromptDir')!;
 		this.rootDir = workspace.workspaceFolders ? workspace.workspaceFolders[0] : null;
 	}
 

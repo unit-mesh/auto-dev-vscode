@@ -1,14 +1,5 @@
 import { inject, injectable } from 'inversify';
-import {
-	CancellationToken,
-	Disposable,
-	l10n,
-	ProgressLocation,
-	TextDocument,
-	Uri,
-	window,
-	WorkspaceEdit,
-} from 'vscode';
+import { CancellationToken, Disposable, ProgressLocation, TextDocument, window, WorkspaceEdit } from 'vscode';
 
 import { ConfigurationService } from 'base/common/configuration/configurationService';
 import { IExtensionContext } from 'base/common/configuration/context';

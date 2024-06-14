@@ -37,13 +37,13 @@ export const CMD_CODEBASE_RETRIEVAL = 'autodev.codebase.retrievalCode';
 // Terminal Commands
 export const CMD_TERMINAL_SEND_TO = 'autodev.sendToTerminal';
 export const CMD_TERMINAL_DEBUG = 'autodev.debugTerminal';
-export const CMD_TERMINAL_EXPLAIN_SELECTION_CONTEXT_MENU = 'autodev.explainTerminalSelectionContextMenu';
+export const CMD_TERMINAL_EXPLAIN_SELECTION_CONTEXT_MENU = 'autodev.terminal.explainTerminalSelectionContextMenu';
 
 // Other Commands
 export const CMD_GIT_MESSAGE_COMMIT_GENERATE = 'autodev.git.generateCommitMessage';
 export const CMD_API_GENETATE_DATA = 'autodev.git.genApiData';
 
-// Codespace Commands
+// Chat Slash Commands
 export const CMD_CODEASPACE_ANALYSIS = 'autodev.codespaceCodeAnalysis';
 export const CMD_CODEASPACE_KEYWORDS_ANALYSIS = 'autodev.codespaceKeywordsAnalysis';
 

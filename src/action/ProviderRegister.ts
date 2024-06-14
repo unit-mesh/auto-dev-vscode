@@ -5,7 +5,7 @@ import { SUPPORTED_LANGUAGES } from 'base/common/languages/languages';
 import { type AutoDevExtension } from '../AutoDevExtension';
 import { AutoDevCodeActionProvider } from './providers/AutoDevCodeActionProvider';
 import { AutoDevCodeLensProvider } from './providers/AutoDevCodeLensProvider';
-import { AutoDevCodeSuggestionProvider } from './providers/AutoDevCodeSuggestionProvider';
+import { AutoDevCodeInlineCompletionProvider } from './providers/AutoDevCodeInlineCompletionProvider';
 import { AutoDevQuickFixProvider } from './providers/AutoDevQuickFixProvider';
 import { AutoDevRenameProvider } from './refactor/rename/AutoDevRenameProvider';
 
@@ -30,7 +30,7 @@ export function registerQuickFixProvider(context: AutoDevExtension) {
 export function registerCodeSuggestionProvider(extension: AutoDevExtension) {
 	return languages.registerInlineCompletionItemProvider(
 		SUPPORTED_LANGUAGES,
-		new AutoDevCodeSuggestionProvider(extension),
+		new AutoDevCodeInlineCompletionProvider(extension),
 	);
 }
 

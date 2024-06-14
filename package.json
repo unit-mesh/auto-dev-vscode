@@ -52,10 +52,10 @@
 			{
 				"title": "%configuration.general.title%",
 				"properties": {
-					"autodev.suggestion.enableRename": {
+					"autodev.enableRenameSuggestion": {
 						"type": "boolean",
 						"default": false,
-						"description": "%configuration.suggestion.enableRename.description%",
+						"description": "%configuration.enableRenameSuggestion.description%",
 						"order": 1
 					},
 					"autodev.codelensDisplayMode": {
@@ -71,10 +71,10 @@
             "description": "%configuration.codelensDisplayMode.description%",
             "default": "expand"
           },
-					"autodev.customPromptsDir": {
+					"autodev.customPromptDir": {
 						"type": "string",
 						"default": "prompts",
-						"description": "%configuration.general.customPromptsDir.description%",
+						"description": "%configuration.customPromptDir.description%",
 						"order": 4
 					}
 				},
@@ -105,17 +105,11 @@
 					"autodev.chat.model": {
 						"type": "string",
 						"description": "%configuration.chat.model.description%",
-						"default": null,
 						"order": 3
 					},
 					"autodev.chat.models": {
 						"type": "array",
 						"default": [
-							{
-								"title": "GPT-4",
-								"provider": "openai",
-								"model": "gpt-4"
-							},
 							{
 								"title": "GPT-3.5 turbo",
 								"provider": "openai",
@@ -131,6 +125,11 @@
 								"title": "ERNIE-Bot turbo",
 								"provider": "qianfan",
 								"model": "ERNIE-Bot-turbo"
+							},
+							{
+								"title": "Llama3",
+								"provider": "ollama",
+								"model": "llama3"
 							}
 						],
 						"description": "%configuration.chat.models.description%",
@@ -171,13 +170,11 @@
 					},
 					"autodev.completions.model": {
 						"type": "string",
-						"default": null,
 						"description": "%configuration.completions.model.description%",
 						"order": 2
 					},
 					"autodev.completions.template": {
 						"type": "string",
-						"default": null,
 						"description": "%configuration.completions.template.description%",
 						"order": 3
 					},
@@ -186,7 +183,6 @@
 						"items": {
 							"type": "string"
 						},
-						"default": null,
 						"description": "%configuration.completions.stops.description%",
 						"order": 4
 					},
@@ -222,7 +218,6 @@
 					},
 					"autodev.embeddings.model": {
 						"type": "string",
-						"default": null,
 						"description": "%configuration.embeddings.model.description%",
 						"order": 2
 					},
@@ -236,7 +231,31 @@
 				"order": 5
 			},
 			{
-				"title": "%configuration.anthropic.title%",
+				"title": "%configuration.storages.title%",
+				"properties": {
+					"autodev.storages.databaseType": {
+						"type": "string",
+						"enum": [
+							"sqlite"
+						],
+						"default": "sqlite",
+						"description": "%configuration.storages.databaseType.description%",
+						"order": 1
+					},
+					"autodev.storages.vectorstoreType": {
+						"type": "string",
+						"enum": [
+							"lancedb"
+						],
+						"default": "lancedb",
+						"description": "%configuration.storages.vectorstoreType.description%",
+						"order": 3
+					}
+				},
+				"order": 6
+			},
+			{
+				"title": "%configuration.providers.title%",
 				"properties": {
 					"autodev.anthropic.baseURL": {
 						"type": "string",
@@ -262,13 +281,7 @@
 						"default": "claude-2.0",
 						"description": "%configuration.anthropic.model.description%",
 						"order": 3
-					}
-				},
-				"order": 11
-			},
-			{
-				"title": "%configuration.openai.title%",
-				"properties": {
+					},
 					"autodev.openai.apiType": {
 						"type": "string",
 						"default": "openai",
@@ -285,31 +298,30 @@
 							"Microsoft azure servers only"
 						],
 						"description": "%configuration.openai.apiType.description%",
-						"order": 1
+						"order": 3
 					},
 					"autodev.openai.baseURL": {
 						"type": "string",
 						"default": "https://api.openai.com/v1/",
 						"markdownDescription": "%configuration.openai.baseURL.markdownDescription%",
-						"order": 2
+						"order": 4
 					},
 					"autodev.openai.project": {
 						"type": "string",
 						"default": "",
 						"markdownDescription": "%configuration.openai.project.markdownDescription%",
-						"order": 3
+						"order": 5
 					},
 					"autodev.openai.apiKey": {
 						"type": "string",
 						"description": "OpenAI API key.",
 						"markdownDescription": "%configuration.openai.apiKey.markdownDescription%",
-						"order": 4
+						"order": 6
 					},
 					"autodev.openai.organization": {
 						"type": "string",
-						"default": "",
 						"description": "%configuration.openai.organization.description%",
-						"order": 5
+						"order": 7
 					},
 					"autodev.openai.model": {
 						"type": "string",
@@ -338,21 +350,12 @@
 						],
 						"default": "gpt-3.5-turbo",
 						"description": "%configuration.openai.model.description%",
-						"order": 6
+						"order": 8
 					},
 					"autodev.openai.completionModel": {
-						"type": [
-							"string",
-							"null"
-						],
-						"enum": [
-							"gpt-3.5-turbo-instruct",
-							"babbage-002",
-							"davinci-002"
-						],
-						"default": null,
+						"type": "string",
 						"description": "%configuration.openai.completionModel.description%",
-						"order": 7
+						"order": 9
 					},
 					"autodev.openai.embeddingModel": {
 						"type": "string",
@@ -363,24 +366,18 @@
 						],
 						"default": "text-embedding-ada-002",
 						"description": "%configuration.openai.embeddingModel.description%",
-						"order": 8
-					}
-				},
-				"order": 12
-			},
-			{
-				"title": "%configuration.qianfan.title%",
-				"properties": {
+						"order": 10
+					},
 					"autodev.qianfan.apiKey": {
 						"type": "string",
 						"description": "%configuration.qianfan.apiKey.description%",
 						"markdownDescription": "%configuration.qianfan.apiKey.markdownDescription%",
-						"order": 1
+						"order": 11
 					},
 					"autodev.qianfan.secretKey": {
 						"type": "string",
 						"description": "%configuration.qianfan.secretKey.description%",
-						"order": 2
+						"order": 12
 					},
 					"autodev.qianfan.model": {
 						"type": "string",
@@ -401,19 +398,13 @@
 						],
 						"default": "ERNIE-Bot-turbo",
 						"description": "%configuration.qianfan.model.description%",
-						"order": 3
-					}
-				},
-				"order": 13
-			},
-			{
-				"title": "%configuration.tongyi.title%",
-				"properties": {
+						"order": 13
+					},
 					"autodev.tongyi.apiKey": {
 						"type": "string",
 						"description": "%configuration.tongyi.apiKey.description%",
 						"markdownDescription": "%configuration.tongyi.apiKey.markdownDescription%",
-						"order": 1
+						"order": 14
 					},
 					"autodev.tongyi.model": {
 						"type": "string",
@@ -436,82 +427,69 @@
 						],
 						"default": "qwen-turbo",
 						"description": "%configuration.tongyi.model.description%",
-						"order": 2
+						"order": 15
 					},
 					"autodev.tongyi.enableSearch": {
 						"type": "boolean",
 						"default": true,
 						"description": "%configuration.tongyi.enableSearch.description%",
-						"order": 2
-					}
-				},
-				"order": 14
-			},
-			{
-				"title": "%configuration.ollama.title%",
-				"properties": {
+						"order": 16
+					},
 					"autodev.ollama.baseURL": {
 						"type": "string",
 						"default": "http://localhost:11434",
 						"markdownDescription": "%configuration.ollama.baseURL.markdownDescription%",
-						"order": 1
+						"order": 17
 					},
 					"autodev.ollama.model": {
 						"type": "string",
 						"default": "llama3",
 						"description": "%configuration.ollama.model.description%",
-						"order": 2
+						"order": 18
 					},
 					"autodev.ollama.completionModel": {
 						"type": "string",
 						"default": "codeqwen:7b-code-v1.5-q5_1",
 						"description": "%configuration.ollama.completionModel.description%",
-						"order": 3
+						"order": 19
 					},
 					"autodev.ollama.embeddingModel": {
 						"type": "string",
 						"default": "all-minilm",
 						"description": "%configuration.ollama.embeddingModel.description%",
-						"order": 3
-					}
-				},
-				"order": 15
-			},
-			{
-				"title": "%configuration.transformers.title%",
-				"properties": {
+						"order": 20
+					},
 					"autodev.transformers.remoteHost": {
 						"type": "string",
 						"default": "https://huggingface.co",
 						"description": "%configuration.transformers.remoteHost.description%",
 						"markdownDescription": "%configuration.transformers.remoteHost.markdownDescription%",
-						"order": 0
+						"order": 21
 					},
 					"autodev.transformers.remotePathTemplate": {
 						"type": "string",
 						"default": "{model}/resolve/{revision}/",
 						"description": "%configuration.transformers.remotePathTemplate.description%",
 						"markdownDescription": "%configuration.transformers.remotePathTemplate.markdownDescription%",
-						"order": 1
+						"order": 22
 					},
 					"autodev.transformers.allowLocalModels": {
 						"type": "boolean",
 						"default": true,
 						"markdownDescription": "%configuration.transformers.allowLocalModels.markdownDescription%",
-						"order": 2
+						"order": 23
 					},
 					"autodev.transformers.localModelPath": {
 						"type": "string",
 						"default": "",
 						"markdownDescription": "%configuration.transformers.localModelPath.markdownDescription%",
-						"order": 3
+						"order": 24
 					},
 					"autodev.transformers.model": {
 						"type": "string",
-						"default": null,
 						"description": "%configuration.transformers.model.description%",
 						"markdownDescription": "%configuration.transformers.model.markdownDescription%",
-						"order": 4
+						"order": 25
 					},
 					"autodev.transformers.onnxWasmNumThreads": {
 						"type": [
@@ -520,7 +498,7 @@
 						],
 						"default": "auto",
 						"description": "%configuration.transformers.onnxWasmNumThreads.description%",
-						"order": 5
+						"order": 26
 					},
 					"autodev.transformers.onnxLoglevel": {
 						"type": "string",
@@ -534,10 +512,10 @@
 						],
 						"default": "error",
 						"description": "%configuration.transformers.onnxLoglevel.description%",
-						"order": 6
+						"order": 27
 					}
 				},
-				"order": 16
+				"order": 9
 			}
 		],
 		"commands": [
@@ -644,6 +622,10 @@
 				"group": "AutoDev"
 			},
 			{
+				"command": "autodev.showTutorial",
+				"title": "%command.showTutorial.title%"
+			},
+			{
 				"command": "autodev.showSystemAction",
 				"title": "%command.showSystemAction.title%",
 				"category": "AutoDev",
@@ -680,7 +662,7 @@
 				"group": "AutoDev"
 			},
 			{
-				"command": "autodev.explainTerminalSelectionContextMenu",
+				"command": "autodev.terminal.explainTerminalSelectionContextMenu",
 				"category": "AutoDev",
 				"title": "AutoDev: Explain this",
 				"group": "AutoDev"
@@ -695,9 +677,24 @@
 		"keybindings": [
 			{
 				"command": "autodev.showChatPanel",
-				"mac": "cmd+y",
-				"key": "ctrl+y"
-			}
+				"mac": "cmd+l",
+				"key": "ctrl+l"
+			},
+      {
+        "command": "autodev.debugTerminal",
+        "mac": "cmd+shift+r",
+        "key": "ctrl+shift+r"
+      },
+      {
+        "command": "autodev.systemAction",
+        "mac": "cmd+i",
+        "key": "ctrl+i"
+      },
+      {
+        "command": "autodev.editor.suggestCommand",
+        "mac": "cmd+shift+j",
+        "key": "ctrl+shift+j"
+      }
 		],
 		"submenus": [
 			{
@@ -724,6 +721,10 @@
 				},
 				{
 					"command": "autodev.codebase.retrievalCode",
+					"when": "view == autodev.views.chat"
+				},
+				{
+					"command": "autodev.showTutorial",
 					"when": "view == autodev.views.chat"
 				},
 				{
@@ -787,7 +788,7 @@
 			],
 			"terminal/context": [
 				{
-					"command": "autodev.explainTerminalSelectionContextMenu",
+					"command": "autodev.terminal.explainTerminalSelectionContextMenu",
 					"group": "1_autodev@0"
 				}
 			],
@@ -799,6 +800,30 @@
 				}
 			],
 			"commandPalette": [
+				{
+					"command": "autodev.codelens.quickChat",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens.explainCode",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens..optimizeCode",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens.autoComment",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens.autoTest",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens.customAction",
+					"when": "false"
+				},
 				{
 					"command": "autodev.explainCode",
 					"when": "false"
@@ -812,8 +837,40 @@
 					"when": "false"
 				},
 				{
+					"command": "autodev.autoComment",
+					"when": "false"
+				},
+				{
+					"command": "autodev.autoTest",
+					"when": "false"
+				},
+				{
+					"command": "autodev.showChatPanel"
+				},
+				{
 					"command": "autodev.newChatSession",
 					"when": "false"
+				},
+				{
+					"command": "autodev.showChatHistory",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codebase.createIndexes",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codebase.retrievalCode",
+					"when": "false"
+				},
+				{
+					"command": "autodev.feedback"
+				},
+				{
+					"command": "autodev.openSettings"
+				},
+				{
+					"command": "autodev.showTutorial"
 				},
 				{
 					"command": "autodev.showSystemAction",
@@ -824,19 +881,28 @@
 					"when": "false"
 				},
 				{
-					"command": "autodev.debugTerminal"
+					"command": "autodev.debugTerminal",
+					"when": "false"
+				},
+				{
+					"command": "autodev.genApiData",
+					"when": "false"
+				},
+				{
+					"command": "autodev.debugRunR",
+					"when": "false"
+				},
+				{
+					"command": "autodev.editor.suggestCommand",
+					"when": "false"
+				},
+				{
+					"command": "autodev.terminal.explainTerminalSelectionContextMenu",
+					"when": "false"
 				},
 				{
 					"command": "autodev.git.generateCommitMessage",
 					"when": "false"
-				},
-				{
-					"command": "autodev.codebase.createIndexes",
-					"when": "!codebase.indexing"
-				},
-				{
-					"command": "autodev.codebase.retrievalCode",
-					"when": "!codebase.indexing"
 				}
 			]
 		},

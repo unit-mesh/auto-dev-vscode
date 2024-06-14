@@ -34,7 +34,7 @@ export class TeamTermService implements Service {
 			throw new Error('No workspace found');
 		}
 
-		let promptsDir = this.configService.get<string>('customPromptsDir', 'prompts');
+		let promptsDir = this.configService.get<string>('customPromptDir', 'prompts');
 		const csvPath = path.join(workspace.uri.fsPath, promptsDir, paths);
 
 		if (!fs.existsSync(csvPath)) {

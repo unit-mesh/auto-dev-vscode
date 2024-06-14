@@ -2,10 +2,11 @@
 import * as vscode from 'vscode';
 
 import { ConfigurationService } from 'base/common/configuration/configurationService';
+import { isFileTooLarge } from 'base/common/files/files';
+import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
 import { logger } from 'base/common/log/log';
 
 import { AutoDevExtension } from '../../AutoDevExtension';
-import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
 
 // Skipping contexts that are too short
 // '// 写一个合计函数' => 10
@@ -32,7 +33,7 @@ const CODE_STOR_WORDS = [
 
 const CODE_PROMPT_TEMPLATE = `${BEFORE_CURSOR}{prefix}${AFTER_CURSOR}{suffix}${AT_CURSOR}`;
 
-export class AutoDevCodeSuggestionProvider implements vscode.InlineCompletionItemProvider {
+export class AutoDevCodeInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
 	private configService: ConfigurationService;
 	private lm: LanguageModelsService;
 
@@ -58,7 +59,7 @@ export class AutoDevCodeSuggestionProvider implements vscode.InlineCompletionIte
 			return [];
 		}
 
-		if (document.lineCount >= 8000) {
+		if (isFileTooLarge(document)) {
 			logger.debug('(inline completions): skip long file');
 			return [];
 		}
@@ -126,6 +127,7 @@ export class AutoDevCodeSuggestionProvider implements vscode.InlineCompletionIte
 		const t0 = performance.now();
 		const llm = this.lm;
 
+		// TODO support stream
 		const completion = await llm.completion(
 			prompt,
 			{
@@ -134,11 +136,7 @@ export class AutoDevCodeSuggestionProvider implements vscode.InlineCompletionIte
 				frequencyPenalty: 1.1,
 				stop: this.configService.get<string[]>('completions.stops', CODE_STOR_WORDS),
 			},
-			{
-				report(fragment) {
-					// pass
-				},
-			},
+			undefined,
 			token,
 		);
 
@@ -149,10 +147,6 @@ export class AutoDevCodeSuggestionProvider implements vscode.InlineCompletionIte
 		);
 
 		return completion;
-	}
-
-	dispose() {
-		// pass
 	}
 }
 
