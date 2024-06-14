@@ -2,7 +2,7 @@ import AuthedEmbeddingsProvider, { AuthedEmbedOptions, FetchFunction } from './_
 import { withExponentialBackoff } from './utils/withExponentialBackoff';
 
 /**
- * @deprecated Please use LanguageModelsService instead.
+ * @deprecated Please use {@link LanguageModelsService} instead.
  */
 async function embedOne(chunk: string, options: AuthedEmbedOptions, customFetch: FetchFunction) {
 	const fetchWithBackoff = () =>

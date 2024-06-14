@@ -4,7 +4,7 @@ import { EmbeddingsProvider } from './_base/EmbeddingsProvider';
 import { LocalEmbeddingsProvider } from './LocalEmbeddingsProvider';
 
 /**
- * @deprecated Please use LanguageModelsService instead.
+ * @deprecated Please use {@link LanguageModelsService} instead.
  */
 export namespace EmbeddingsProviderManager {
 	export function init(context: vscode.ExtensionContext) {
