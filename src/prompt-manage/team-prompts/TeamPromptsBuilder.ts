@@ -114,7 +114,7 @@ export class TeamPromptsBuilder {
 			});
 		} catch (error) {
 			// ignore error
-			logger.append('Error reading prompts: ' + error + '\n');
+			// logger.append('Error reading prompts: ' + error + '\n');
 		}
 
 		return prompts;
