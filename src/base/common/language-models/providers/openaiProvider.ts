@@ -1,4 +1,3 @@
-// @ts-ignore
 import { AzureOpenAI, OpenAI } from 'openai';
 import { type CancellationToken, type Progress } from 'vscode';
 
