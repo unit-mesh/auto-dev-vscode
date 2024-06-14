@@ -1,3 +1,4 @@
+.github
 .vscode/**
 .vscode-test/**
 out/**
@@ -5,6 +6,8 @@ node_modules/**
 src/**
 .gitignore
 .yarnrc
+.cspell.json
+.node-version
 webpack.config.js
 vsc-extension-quickstart.md
 **/tsconfig.json
@@ -17,6 +20,9 @@ gui-sidebar/**
 semantic/**
 coverage/**
 extension-manual-tests/
+
+examples/**
+vendors/**
 
 # ignore arm64 build for temporary
 dist/bin/napi-v3/linux/arm64
