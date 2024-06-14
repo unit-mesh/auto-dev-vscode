@@ -5,6 +5,11 @@
 	"configuration.enableRenameSuggestion.description": "启用重命名建议",
 	"configuration.customPromptDir.description": "自定义提示目录",
 
+	"configuration.codelensDisplayMode.item.expand": "操作平铺",
+	"configuration.codelensDisplayMode.item.collapse": "操作收起",
+	"configuration.codelensDisplayMode.description": "控制行间按钮的显示方式",
+	"configuration.codelensDisplayItems.description": "配置生成注释、生成测试、代码解释、代码优化等行间按钮的展示",
+
 	"configuration.chat.title": "对话",
 	"configuration.chat.enable.description": "启用或禁用聊天功能",
 	"configuration.chat.models.description": "可供聊天界面选择的模型列表",
@@ -75,8 +80,5 @@
 	"command.genApiData.title": "生成 API 数据",
 
 	"command.codebase.createIndexes.title": "索引生成",
-	"command.codebase.retrievalCode.title": "代码检索",
-
-	"configuration.codelensDisplayMode.item.expand": "操作平铺",
-	"configuration.codelensDisplayMode.item.collapse": "操作收起"
+	"command.codebase.retrievalCode.title": "代码检索"
 }

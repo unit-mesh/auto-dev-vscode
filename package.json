@@ -58,6 +58,12 @@
 						"description": "%configuration.enableRenameSuggestion.description%",
 						"order": 1
 					},
+					"autodev.customPromptDir": {
+						"type": "string",
+						"default": "prompts",
+						"description": "%configuration.customPromptDir.description%",
+						"order": 2
+					},
 					"autodev.codelensDisplayMode": {
 						"type": "string",
 						"enum": [
@@ -69,12 +75,29 @@
 							"%configuration.codelensDisplayMode.item.collapse%"
 						],
 						"description": "%configuration.codelensDisplayMode.description%",
-						"default": "expand"
+						"default": "expand",
+						"order": 3
 					},
-					"autodev.customPromptDir": {
-						"type": "string",
-						"default": "prompts",
-						"description": "%configuration.customPromptDir.description%",
+					"autodev.codelensDislayItems": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"enum": [
+								"quickChat",
+								"explainCode",
+								"optimizeCode",
+								"autoComment",
+								"autoTest",
+								"customAction"
+							]
+						},
+						"uniqueItems": true,
+						"default": [
+							"quickChat",
+							"autoTest",
+							"autoComment"
+						],
+						"description": "%configuration.codelensDisplayItems.description%",
 						"order": 4
 					}
 				},
