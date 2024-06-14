@@ -49,7 +49,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 	async generateDocument(): Promise<HydeDocument<HydeKeywords>> {
 		let proposeIns = await this.instruction();
 		logger.appendLine(' --- Generated keyword --- ');
-		let proposeOut = await executeIns(proposeIns);
+		let proposeOut = await executeIns(this.extension, proposeIns);
 		let keywords = HydeKeywords.from(proposeOut);
 		return new HydeDocument<HydeKeywords>(this.documentType, keywords);
 	}
@@ -107,7 +107,7 @@ export class HydeKeywordsStrategy implements HydeStrategy<HydeKeywords> {
 		this.step = HydeStep.Evaluate;
 		let evaluateContext: KeywordEvaluateContext = {
 			step: this.step,
-			question: this.query, // TODO fix keywords.question
+			question: keywords.question,
 			code: chunkItems.map(item => item.text).join('\n'),
 			language: '',
 		};

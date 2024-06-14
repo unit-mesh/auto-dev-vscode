@@ -44,13 +44,13 @@ export class LanguageModelsService {
 
 	chat(
 		messages: IChatMessage[],
-		options: { [name: string]: any },
+		options?: { [name: string]: any },
 		progress?: Progress<IChatResponseFragment>,
 		token?: CancellationToken,
 	): Promise<string> {
 		const configService = this.configService;
 
-		const { provider, model = configService.get('chat.model'), ...rest } = options;
+		const { provider, model = configService.get('chat.model'), ...rest } = options || {};
 
 		const lm = this.resolveChatModel({ provider });
 		return lm.provideChatResponse(messages, { model, ...rest }, progress, token);

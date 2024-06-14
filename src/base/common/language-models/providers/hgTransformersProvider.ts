@@ -125,7 +125,7 @@ export class HuggingFaceTransformersLanguageModelProvider implements ILanguageMo
 			return model;
 		}
 
-		return this.configService.get<string>('transformers.model', 'Xenova/all-MiniLM-L6-v2');
+		return this.configService.get<string>('transformers.model', 'all-MiniLM-L6-v2');
 	}
 
 	private async _pipeline(model: string): Promise<FeatureExtractionPipeline> {
@@ -160,14 +160,12 @@ export class HuggingFaceTransformersLanguageModelProvider implements ILanguageMo
 
 		if (allowLocalModels) {
 			env.allowLocalModels = true;
-
-			env.localModelPath = this.configService.joinPath(valueGetter('localModelPath').replace('~', os.homedir()));
+			env.localModelPath = configService.joinPath('models');
 		} else {
 			env.allowLocalModels = false;
 		}
 
-		// keep model cache
-		env.cacheDir = env.localModelPath;
+		env.cacheDir = configService.joinPath(valueGetter('localModelPath').replace('~', os.homedir()));
 
 		const numThreads = valueGetter('onnxWasmNumThreads');
 

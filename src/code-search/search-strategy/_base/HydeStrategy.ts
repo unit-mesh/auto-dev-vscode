@@ -1,5 +1,9 @@
-// import { AutoDevStatus, AutoDevStatusManager } from '../../../editor/editor-api/AutoDevStatusManager';
-// import { CustomActionPrompt } from '../../../prompt-manage/custom-action/CustomActionPrompt';
+import { AutoDevExtension } from 'src/AutoDevExtension';
+import { AutoDevStatus } from 'src/editor/editor-api/AutoDevStatusManager';
+
+import { logger } from 'base/common/log/log';
+
+import { CustomActionPrompt } from '../../../prompt-manage/custom-action/CustomActionPrompt';
 import { ChunkItem, Embedding } from '../../embedding/_base/Embedding';
 import { HydeDocument, HydeDocumentType } from './HydeDocument';
 import { StrategyFinalPrompt } from './StrategyFinalPrompt';
@@ -66,26 +70,20 @@ export interface HydeStrategy<T> {
 	execute(): Promise<StrategyFinalPrompt>;
 }
 
-export async function executeIns(instruction: string) {
-	// TODO
-	// console.log('\ninstruction: \n' + instruction);
-	// let result = '';
-	// try {
-	// 	let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
-	// 	AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
-	// 	let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
-	// 	for await (let chatMessage of response) {
-	// 		result += chatMessage.content;
-	// 	}
+export async function executeIns(extension: AutoDevExtension, instruction: string) {
+	console.log('\ninstruction: \n' + instruction);
 
-	// 	logger.append(result);
-	// 	AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
-	// 	return result;
-	// } catch (e) {
-	// 	console.log('error:' + e);
-	// 	AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
-	// 	return '';
-	// }
+	try {
+		let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
+		extension.statusBarManager.setIsLoading();
+		const result = await extension.lm.chat(chatMessages);
 
-	return '';
+		logger.append(result);
+		extension.statusBarManager.setStatus(AutoDevStatus.Done);
+		return result;
+	} catch (e) {
+		console.log('error:' + e);
+		extension.statusBarManager.setStatus(AutoDevStatus.Error);
+		return '';
+	}
 }

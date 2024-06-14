@@ -71,7 +71,7 @@ export class HydeCodeStrategy implements HydeStrategy<string> {
 	async generateDocument(): Promise<HydeDocument<string>> {
 		let proposeIns = await this.instruction();
 		logger.appendLine(' --- Generated Code --- ');
-		const proposeOut = await executeIns(proposeIns);
+		const proposeOut = await executeIns(this.extension, proposeIns);
 		const code = StreamingMarkdownCodeBlock.parse(proposeOut);
 		return new HydeDocument<string>(this.documentType, code.text);
 	}

@@ -1,6 +1,7 @@
 import { env, window } from 'vscode';
 
 import { IExtensionContext } from 'base/common/configuration/context';
+import { log } from 'base/common/log/log';
 
 import { HydeDocumentType } from '../code-search/search-strategy/_base/HydeDocument';
 import { HydeStep } from '../code-search/search-strategy/_base/HydeStep';
@@ -30,7 +31,8 @@ export class PromptManager {
 	async collectByCurrentDocument(): Promise<ToolchainContextItem[]> {
 		const editor = window.activeTextEditor;
 		if (!editor) {
-			throw new Error('No active text editor found.');
+			log('No active text editor found.');
+			return [];
 		}
 
 		const document = editor.document;
