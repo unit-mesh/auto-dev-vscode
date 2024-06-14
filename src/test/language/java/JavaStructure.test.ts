@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-
 import { JavaStructurerProvider } from '../../../code-context/java/JavaStructurerProvider';
 import { CodeFile } from '../../../editor/codemodel/CodeElement';
 import { TestLanguageServiceProvider } from '../../../test/TestLanguageService';

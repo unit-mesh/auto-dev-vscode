@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { SyntaxNode } from 'web-tree-sitter';
 
 import { LanguageProfileUtil } from '../../../code-context/_base/LanguageProfile';

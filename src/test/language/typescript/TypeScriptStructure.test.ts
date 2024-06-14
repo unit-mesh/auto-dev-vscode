@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-
 import { TypeScriptStructurer } from '../../../code-context/typescript/TypeScriptStructurer';
 import { TestLanguageServiceProvider } from '../../../test/TestLanguageService';
 

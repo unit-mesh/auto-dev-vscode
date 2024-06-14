@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-
 import { LanguageProfileUtil } from '../../../code-context/_base/LanguageProfile';
 import { TreeSitterFile } from '../../../code-context/ast/TreeSitterFile';
 import { GoStructurerProvider } from '../../../code-context/go/GoStructurerProvider';

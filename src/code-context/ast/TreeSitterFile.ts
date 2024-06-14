@@ -1,10 +1,8 @@
-import { CancellationToken } from 'vscode';
 import Parser, { Language, Tree } from 'web-tree-sitter';
 
 import { isLargerThan500kb } from 'base/common/files/files';
 import { LanguageIdentifier } from 'base/common/languages/languages';
 import { ILanguageServiceProvider } from 'base/common/languages/languageService';
-import { logger } from 'base/common/log/log';
 
 import { ScopeBuilder } from '../../code-search/scope-graph/ScopeBuilder';
 import { ScopeGraph } from '../../code-search/scope-graph/ScopeGraph';
@@ -89,7 +87,7 @@ export class TreeSitterFile {
 			language = await tsConfig.grammar(lsp, langId);
 			parser.setLanguage(language);
 		} catch (error) {
-			logger.debug((error as Error).message);
+			console.error((error as Error).message);
 			return Promise.reject(TreeSitterFileError.languageMismatch);
 		}
 

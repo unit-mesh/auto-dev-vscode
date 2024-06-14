@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-
 import { LanguageProfileUtil } from '../../../code-context/_base/LanguageProfile';
 import { TreeSitterFile } from '../../../code-context/ast/TreeSitterFile';
 import { JavaStructurerProvider } from '../../../code-context/java/JavaStructurerProvider';

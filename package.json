@@ -1053,6 +1053,7 @@
 		"@vscode/test-cli": "^0.0.9",
 		"@vscode/test-electron": "^2.3.9",
 		"@vscode/vsce": "^2.25.0",
+		"chai": "^5.1.1",
 		"eslint": "^8.56.0",
 		"gui": "file:./gui-sidebar",
 		"prettier": "^3.3.2",
