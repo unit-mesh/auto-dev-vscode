@@ -35,7 +35,7 @@ export class SystemActionService implements Service {
 		pick.items = [
 			{
 				label: SystemActionType.Indexing,
-				action: () => this.intentionSemanticSearch(SystemActionType.Indexing),
+				action: () => this.indexingAction(),
 			},
 			{
 				label: SystemActionType.SemanticSearchKeyword,
