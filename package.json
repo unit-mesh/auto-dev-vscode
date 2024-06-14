@@ -733,7 +733,7 @@
 				},
 				{
 					"command": "autodev.debugRunR",
-					"when": "view == terminal",
+					"when": "false",
 					"group": "navigation"
 				}
 			],
