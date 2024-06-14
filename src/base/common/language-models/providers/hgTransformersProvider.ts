@@ -24,7 +24,7 @@ interface HuggingFaceTransformersParams {
 }
 
 const defaults: HuggingFaceTransformersParams = {
-	model: 'Xenova/all-MiniLM-L6-v2',
+	model: 'all-MiniLM-L6-v2',
 	remoteHost: 'https://huggingface.co',
 	remotePathTemplate: '{model}/resolve/{revision}/',
 	allowLocalModels: true,

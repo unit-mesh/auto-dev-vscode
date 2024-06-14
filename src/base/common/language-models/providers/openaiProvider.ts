@@ -23,7 +23,7 @@ export class OpenAILanguageModelProvider implements ILanguageModelProvider {
 	): Promise<string> {
 		const { model, ...rest } = options;
 
-		const llm = this._newLLM();
+		const llm = this._newLLM(options);
 
 		const ac = new AbortController();
 
@@ -83,7 +83,7 @@ export class OpenAILanguageModelProvider implements ILanguageModelProvider {
 			ac.abort();
 		});
 
-		const llm = this._newLLM();
+		const llm = this._newLLM(options);
 		const completion = await llm.completions.create(
 			{
 				...rest,
@@ -122,7 +122,7 @@ export class OpenAILanguageModelProvider implements ILanguageModelProvider {
 			ac.abort();
 		});
 
-		const llm = this._newLLM();
+		const llm = this._newLLM(options);
 		const response = await llm.embeddings.create(
 			{
 				model: this._resolveEmbeddingModel(model),
@@ -157,7 +157,7 @@ export class OpenAILanguageModelProvider implements ILanguageModelProvider {
 			ac.abort();
 		});
 
-		const llm = this._newLLM();
+		const llm = this._newLLM(options);
 		const response = await llm.embeddings.create(
 			{
 				model: this._resolveEmbeddingModel(model),
@@ -171,24 +171,25 @@ export class OpenAILanguageModelProvider implements ILanguageModelProvider {
 		return response.data[0]['embedding'];
 	}
 
-	private _newLLM() {
+	private _newLLM(options: { [name: string]: any }) {
+		const { baseURL, apiKey, project, organization } = options;
 		const configService = this.configService;
 
 		const apiType = configService.get<'openai' | 'azure'>('openai.apiType');
 
 		if (apiType === 'azure') {
 			return new AzureOpenAI({
-				baseURL: configService.get('openai.baseURL'),
-				apiKey: configService.get('openai.apiKey'),
-				deployment: configService.get('openai.organization'),
+				baseURL: baseURL || configService.get('openai.baseURL'),
+				apiKey: apiKey || configService.get('openai.apiKey'),
+				deployment: organization || configService.get('openai.organization'),
 			});
 		}
 
 		return new OpenAI({
 			baseURL: configService.get('openai.baseURL'),
-			project: configService.get('openai.project'),
-			apiKey: configService.get('openai.apiKey'),
-			organization: configService.get('openai.organization'),
+			project: project || configService.get('openai.project'),
+			apiKey: apiKey || configService.get('openai.apiKey'),
+			organization: organization || configService.get('openai.organization'),
 		});
 	}
 

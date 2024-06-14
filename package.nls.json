@@ -74,8 +74,8 @@
 	"configuration.transformers.remotePathTemplate.markdownDescription": "Path template to fill in and append to `#autodev.transformers.remoteHost#` when loading models.",
 	"configuration.transformers.allowLocalModels.markdownDescription": "Whether to allow loading of local files, defaults to `true`. If set to `false`, it will skip the local file check and try to load the model from the remote host.",
 	"configuration.transformers.localModelPath.markdownDescription": "Path to load local models from. Defaults to `~/.autodev/models/`.",
-	"configuration.transformers.model.description": "Model name to use for embedding generation. Defaults to Xenova/all-MiniLM-L6-v2",
-	"configuration.transformers.model.markdownDescription": "Model name to use for embedding generation. Defaults to Xenova/all-MiniLM-L6-v2",
+	"configuration.transformers.model.description": "Model name to use for embedding generation. Defaults to all-MiniLM-L6-v2",
+	"configuration.transformers.model.markdownDescription": "Model name to use for embedding generation. Defaults to all-MiniLM-L6-v2",
 	"configuration.transformers.onnxWasmNumThreads.description": "Number of threads to use for the WebAssembly backend. Defaults to cpus numbers.",
 	"configuration.transformers.onnxLoglevel.description": "Log level for the ONNX runtime. Defaults to error.",
 
@@ -85,11 +85,13 @@
 	"command.showTutorial.title": "Show Tutorial",
 	"command.feedback.title": "Feedback",
 
+	"command.quickChat.title": "Quick Chat",
 	"command.explainCode.title": "Explain Code",
 	"command.optimizeCode.title": "Optimize Code",
 	"command.quickFix.title": "Quick Fix",
 	"command.fixThis.title": "Fix This Code",
 	"command.autoComment.title": "Generate Documentation",
+	"command.customAction.title": "Custom Action",
 
 	"command.showChatPanel.title": "Start Chat",
 	"command.newChatSession.title": "New Session",

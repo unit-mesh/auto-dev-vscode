@@ -58,7 +58,7 @@
   "configuration.transformers.remotePathTemplate.markdownDescription": "加载模型时填写并合并到 `#autodev.transformers.remoteHost#` 的路径模板。",
   "configuration.transformers.allowLocalModels.markdownDescription": "是否允许加载本地文件，默认为 `true`。如果设置为 `false`，将跳过本地文件检查，尝试从远程主机加载模型。",
   "configuration.transformers.localModelPath.markdownDescription": "加载本地模型的路径，默认为 `~/.autodev/models/`。",
-  "configuration.transformers.model.markdownDescription": "设置嵌入模型名称。默认为 `Xenova/all-MiniLM-L6-v2`。",
+  "configuration.transformers.model.markdownDescription": "设置嵌入模型名称。默认为 `all-MiniLM-L6-v2`。",
   "configuration.transformers.onnxWasmNumThreads.description": "设置 ONNX WebAssembly 运行时的线程数。默认为你的 CPU 数量。",
   "configuration.transformers.onnxLoglevel.description": "设置 ONNX 运行时的日志级别。默认为错误。",
 
