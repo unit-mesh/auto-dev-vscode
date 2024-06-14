@@ -1,3 +1,67 @@
+# [0.5.0](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.3.3...v0.5.0) (2024-06-14)
+
+
+### Features
+
+* better interactive experience ([#55](https://github.com/unit-mesh/auto-dev-vscode/issues/55)) ([9620fdf](https://github.com/unit-mesh/auto-dev-vscode/commit/9620fdf76b3b4df09b6fd449112f327feb757822))
+
+
+
+## [0.3.3](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.3.1...v0.3.3) (2024-06-02)
+
+
+### Bug Fixes
+
+* fix chat panel without modifier key error ([110a461](https://github.com/unit-mesh/auto-dev-vscode/commit/110a4611b276fe3fa9c864cb5e7112ff6fdc8747))
+
+
+### Features
+
+* **AutoDevExtension:** show channel before indexing directories ([3d40fe7](https://github.com/unit-mesh/auto-dev-vscode/commit/3d40fe7237f7c5be03f7e5edac8a11917de6347b))
+* **code-search:** add GitCommit interface and HistoryBuilder class [#47](https://github.com/unit-mesh/auto-dev-vscode/issues/47) ([6015c76](https://github.com/unit-mesh/auto-dev-vscode/commit/6015c766fab339f2cc6f075a65d50de28b82ae04))
+* **code-search:** add TimeTravelTool and BugLooperTool classes [#47](https://github.com/unit-mesh/auto-dev-vscode/issues/47) ([5d2f54b](https://github.com/unit-mesh/auto-dev-vscode/commit/5d2f54bb4058a255a42850d368682d86ef878ba3))
+* **code-search:** implement TimeTravelDebugger and refactor history tools [#47](https://github.com/unit-mesh/auto-dev-vscode/issues/47) ([f1e5719](https://github.com/unit-mesh/auto-dev-vscode/commit/f1e5719e55756ab7d297e88d1608d3c1061077a7))
+* **commands:** add getInput function to retrieve selected or entire text ([0cc8291](https://github.com/unit-mesh/auto-dev-vscode/commit/0cc82918bbe9572b853b9ce386806acd3193ade2))
+* **commands:** localize prompt message in newSessionWithPrompt request [#44](https://github.com/unit-mesh/auto-dev-vscode/issues/44) ([1bee176](https://github.com/unit-mesh/auto-dev-vscode/commit/1bee1769c1ae7880c1c79f3719817891d36e387c))
+* **context-provider:** move ContextItem interface to new BaseContextProvider ([0b828af](https://github.com/unit-mesh/auto-dev-vscode/commit/0b828aff2f55241afd4d54fe8518d91071f01f53))
+* **editor:** add code selection and insertion functions to PositionUtil ([18d6e70](https://github.com/unit-mesh/auto-dev-vscode/commit/18d6e70b861c8022d68a01081a0a2abc4c3aa142))
+* **editor:** add more files to ignore list ([72ec08f](https://github.com/unit-mesh/auto-dev-vscode/commit/72ec08fa1948b2c34907429c7b248d288aeda66a))
+* **editor:** add more files to ignore list [#46](https://github.com/unit-mesh/auto-dev-vscode/issues/46) ([6736979](https://github.com/unit-mesh/auto-dev-vscode/commit/6736979960d50bdb734ff3a856c97bf1cf4e5702))
+* **editor:** replace old UUID generation with crypto.randomUUID ([cc8e211](https://github.com/unit-mesh/auto-dev-vscode/commit/cc8e211dadf8c448e2d033f95fe04b56c85df764))
+* **embedding:** add max chunk size limit and adjust error logging ([920a31d](https://github.com/unit-mesh/auto-dev-vscode/commit/920a31dcf03316164d58d8615c6cc2f5e7c6cee3))
+* **embedding:** add re-embedding strategy for failed chunks ([3e14da2](https://github.com/unit-mesh/auto-dev-vscode/commit/3e14da206b3a66dd533819eb3900bbadc267daf4))
+* **git:** add IssueIdParser class to parse issue id from commit message [#47](https://github.com/unit-mesh/auto-dev-vscode/issues/47) ([11e0eb8](https://github.com/unit-mesh/auto-dev-vscode/commit/11e0eb88f4a489d91a38944e4d53b7a684a857b8))
+* **gui-sidebar:** add new commands to stateSlice and update related files ([a317d11](https://github.com/unit-mesh/auto-dev-vscode/commit/a317d111763c13eadb7ca086007c8e2de86d5c59))
+* **gui-sidebar:** add optional codebase context retrieval in input resolution ([88d7757](https://github.com/unit-mesh/auto-dev-vscode/commit/88d77579025a26bce65b3e6bb6a259af62050dbe))
+* **gui-sidebar:** add type checking to model selector function ([f9278ed](https://github.com/unit-mesh/auto-dev-vscode/commit/f9278ed1fbda9cce21cd90ed2fb0c51635d86b6d))
+* **indexing:** add GitVersionHistoryIndex class with database tables [#47](https://github.com/unit-mesh/auto-dev-vscode/issues/47) ([7bb939d](https://github.com/unit-mesh/auto-dev-vscode/commit/7bb939d301fa33a2b9e13f94487b6664a7567113))
+* **l10n:** add localization support to prompts in commands.ts [#44](https://github.com/unit-mesh/auto-dev-vscode/issues/44) ([003106c](https://github.com/unit-mesh/auto-dev-vscode/commit/003106c1182f674ae1d5fb1d5111f2cf48c9e66a))
+* **log:** add LogParser module in git log [#47](https://github.com/unit-mesh/auto-dev-vscode/issues/47) ([f33e449](https://github.com/unit-mesh/auto-dev-vscode/commit/f33e4491a2f45444ac5bfbf9fa6a3f86446cbf51))
+* **refactor:** add README for refactor-this action ([09e090e](https://github.com/unit-mesh/auto-dev-vscode/commit/09e090e05a9bb662712b7803a1b2c583d176c1e0))
+* **sidebar:** add support for codespace keyword and code analysis commands ([2b891de](https://github.com/unit-mesh/auto-dev-vscode/commit/2b891de28126ae31a0ce37cccb6f614deacd05bd))
+* **TeamTermService:** add file existence check and error handling ([d0968b5](https://github.com/unit-mesh/auto-dev-vscode/commit/d0968b5aba631afe4822ea9f3bdb7188671e0e84))
+
+
+
+## [0.3.1](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.3.0...v0.3.1) (2024-05-24)
+
+
+### Bug Fixes
+
+* **gui-sidebar:** handle potential null values in defaultModel ([ddc4216](https://github.com/unit-mesh/auto-dev-vscode/commit/ddc42160df44e075be481a0092c8f39523ecd368))
+
+
+### Features
+
+* **autodev:** enhance quick fix provider and update test file detection ([d5ef1c6](https://github.com/unit-mesh/auto-dev-vscode/commit/d5ef1c638c6f4d56f09da717d422dce44860ed8f))
+* Automatically update the chat sidepanel model list when configuration changes are made ([40e2ba5](https://github.com/unit-mesh/auto-dev-vscode/commit/40e2ba5005404ef44454b7427ba1a632b093e1cf))
+* Compatible with older chat message formats ([4fd3578](https://github.com/unit-mesh/auto-dev-vscode/commit/4fd3578eb6cae24f987121bb19ffe36c9879299d))
+* Run llm in send to webview ([a9ce0f6](https://github.com/unit-mesh/auto-dev-vscode/commit/a9ce0f646ad5efe07b18e5d304fdc8bbcc388546))
+* update openai chat models ([7681081](https://github.com/unit-mesh/auto-dev-vscode/commit/7681081a7af0a38bca2f52773d2b2c975b7ac861))
+* **vite.config): remove onfeatnxruntime-web(vite.config from:** external remove dependencies onnxruntime-web ([900c727](https://github.com/unit-mesh/auto-dev-vscode/commit/900c727c1158723d4d6a6f9ac88063b39fe9dd3a))
+
+
+
 # [0.3.0](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.2.6...v0.3.0) (2024-05-24)
 
 
