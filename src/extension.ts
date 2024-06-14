@@ -1,67 +1,46 @@
-import * as vscode from "vscode";
 // for Dependency Injection with InversifyJS
-import "reflect-metadata";
-import Parser from "web-tree-sitter";
+import 'reflect-metadata';
+import { type ExtensionContext, l10n } from 'vscode';
 
-import { registerCommands } from "./commands/commands";
-import { VSCodeAction } from "./editor/editor-api/VSCodeAction";
-import { DiffManager } from "./editor/diff/DiffManager";
-import { AutoDevExtension } from "./AutoDevExtension";
-import { removeExtensionContext, setExtensionContext } from './context';
-import { channel } from "./channel";
-import {
-	registerRefactoringRename,
-	registerAutoDevProviders,
-	registerCodeLensProviders,
-	registerQuickFixProvider,
-	registerWebViewProvider,
-	registerCodeSuggestionProvider
-} from "./action/ProviderRegister";
-import { AutoDevStatusManager } from "./editor/editor-api/AutoDevStatusManager";
-import { TreeSitterFileManager } from "./editor/cache/TreeSitterFileManager";
-import { AutoDevWebviewViewProvider } from "./editor/webview/AutoDevWebviewViewProvider";
-import { EmbeddingsProviderManager } from "./code-search/embedding/EmbeddingsProviderManager";
+import { ConfigurationService } from 'base/common/configuration/configurationService';
+import { IExtensionContext, IExtensionUri } from 'base/common/configuration/context';
+import { ContextStateService } from 'base/common/configuration/contextState';
+import { WorkspaceFileSystem } from 'base/common/fs';
+import { InstantiationService } from 'base/common/instantiation/instantiationService';
+import { ILanguageServiceProvider, LanguageServiceProvider } from 'base/common/languages/languageService';
+import { log, logger } from 'base/common/log/log';
 
-(globalThis as any).self = globalThis;
+import { AutoDevExtension } from './AutoDevExtension';
+import { LanguageModelsService } from './base/common/language-models/languageModelsService';
+import { CommandsService } from './commands/commandsService';
+import { ChatViewService } from './editor/views/chat/chatViewService';
 
-export async function activate(context: vscode.ExtensionContext) {
-	setExtensionContext(context);
-	const extension = setupAutoDevExtension(context);
+export async function activate(context: ExtensionContext) {
+	const instantiationService = new InstantiationService();
 
-	Parser.init().then(async () => {
-		registerCodeLensProviders(extension);
-		registerAutoDevProviders(extension);
-		registerQuickFixProvider(extension);
-		registerCodeSuggestionProvider(extension);
+	// Injection the extension context into to global
+	instantiationService.registerInstance(IExtensionContext, context);
+	instantiationService.registerInstance(IExtensionUri, context.extensionUri);
 
-		// 注册命令集
-		registerCommands(extension);
-		registerRefactoringRename(extension);
+	instantiationService.registerSingleton(WorkspaceFileSystem);
 
-		// for embedding and file parser
-		TreeSitterFileManager.getInstance().init();
-		EmbeddingsProviderManager.init(context);
-	});
+	context.subscriptions.push(
+		instantiationService.registerSingleton(ConfigurationService),
+		instantiationService.registerSingleton(ContextStateService),
+		instantiationService.registerSingleton(LanguageModelsService),
+		instantiationService.registerSingleton(ILanguageServiceProvider, LanguageServiceProvider),
+		instantiationService.registerSingleton(ChatViewService).register(),
+		instantiationService.registerSingleton(AutoDevExtension).register(),
+		instantiationService.registerSingleton(CommandsService).register(),
+	);
 
-	registerWebViewProvider(extension);
+	instantiationService.get(AutoDevExtension).run();
 
-	AutoDevStatusManager.instance.initStatusBar();
+	logger.info(l10n.t('Welcome to AutoDev, 🧙 the AI-powered coding wizard.'));
 
-	if (process.env.NODE_ENV === "development") {
-		channel.show();
+	if (process.env.NODE_ENV === 'development') {
+		logger.show(false);
 	}
 }
 
-function setupAutoDevExtension(context: vscode.ExtensionContext) {
-	const sidebar = new AutoDevWebviewViewProvider(context);
-	const action = new VSCodeAction();
-	const diffManager = new DiffManager();
-
-	return new AutoDevExtension(
-		sidebar, action, diffManager, context,
-	);
-}
-
-export function deactivate() {
-	removeExtensionContext();
-}
+export function deactivate() {}

@@ -1,4 +1,4 @@
-import { NameSpaces } from "./Namespace";
+import { NameSpaces } from './Namespace';
 
 export interface SymbolId {
 	namespaceIndex: number;
@@ -10,9 +10,7 @@ export function nameOfSymbol(namespaces: NameSpaces, symbolId: SymbolId): string
 }
 
 export function allSymbols(namespaces: NameSpaces): string[] {
-	return namespaces
-		.flatMap(ns => ns.slice())
-		.filter((symbol, index, arr) => arr.indexOf(symbol) === index);
+	return namespaces.flatMap(ns => ns.slice()).filter((symbol, index, arr) => arr.indexOf(symbol) === index);
 }
 
 export function symbolIdOf(namespaces: NameSpaces, symbol: string): SymbolId | undefined {
@@ -21,7 +19,7 @@ export function symbolIdOf(namespaces: NameSpaces, symbol: string): SymbolId | u
 		if (symbolIdx !== -1) {
 			return {
 				namespaceIndex: namespaceIdx,
-				symbolIndex: symbolIdx
+				symbolIndex: symbolIdx,
 			};
 		}
 	}

@@ -1,33 +1,35 @@
-import fs from "fs";
-import path from "path";
-import vscode from "vscode";
-import { injectable } from "inversify";
+import fs from 'fs';
+import { inject, injectable } from 'inversify';
+import path from 'path';
+import vscode from 'vscode';
 
-import { TestGenProvider } from "../_base/test/TestGenProvider";
-import { CodeFile } from "../../editor/codemodel/CodeElement";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { AutoTestTemplateContext } from "../_base/test/AutoTestTemplateContext";
-import { NamedElement } from "../../editor/ast/NamedElement";
-import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
-import { TreeSitterFileManager } from "../../editor/cache/TreeSitterFileManager";
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
 
+import { NamedElement } from '../../editor/ast/NamedElement';
+import { TreeSitterFileManager } from '../../editor/cache/TreeSitterFileManager';
+import { CodeFile } from '../../editor/codemodel/CodeElement';
+import { ToolchainContextItem } from '../../toolchain-context/ToolchainContextProvider';
+import { AutoTestTemplateContext } from '../_base/test/AutoTestTemplateContext';
+import { TestGenProvider } from '../_base/test/TestGenProvider';
 
 @injectable()
 export class TypeScriptTestGenProvider implements TestGenProvider {
-	private languageService: TSLanguageService | undefined;
 	private context: AutoTestTemplateContext | undefined;
 
 	private clazzName = this.constructor.name;
 
+	private lsp!: ILanguageServiceProvider;
+	private treeSitterFileManager!: TreeSitterFileManager;
+
 	isApplicable(lang: string): boolean {
-		return lang === "typescript" || lang === "javascript" || lang === "javascriptreact" || lang === "typescriptreact";
+		return lang === 'typescript' || lang === 'javascript' || lang === 'javascriptreact' || lang === 'typescriptreact';
 	}
 
-	constructor() {
-	}
+	async setupLanguage(lsp: ILanguageServiceProvider) {
+		this.lsp = lsp;
 
-	async setupLanguage(defaultLanguageService: TSLanguageService) {
-		this.languageService = defaultLanguageService;
+		// TODO hack, after move
+		this.treeSitterFileManager = new TreeSitterFileManager(lsp);
 	}
 
 	additionalTestContext(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]> {
@@ -43,7 +45,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 
 		const elementName = block.identifierRange.text;
 
-		let tsFile = await TreeSitterFileManager.create(sourceFile);
+		let tsFile = await this.treeSitterFileManager.create(sourceFile);
 		if (!tsFile) {
 			return Promise.reject(`Failed to find tree-sitter file for: ${sourceFile.uri}`);
 		}
@@ -61,10 +63,10 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 				filename: sourceFile.fileName,
 				currentClass: undefined,
 				language: language,
-				relatedClasses: "",
-				underTestClassName: "",
+				relatedClasses: '',
+				underTestClassName: '',
 				imports: imports,
-				targetPath: testFilePath.fsPath
+				targetPath: testFilePath.fsPath,
 			};
 
 			this.context = context;
@@ -79,10 +81,10 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 			isNewFile: true,
 			language: language,
 			sourceCode: block.blockRange.text,
-			relatedClasses: "",
+			relatedClasses: '',
 			underTestClassName: elementName,
 			imports: imports,
-			targetPath: testFilePath.fsPath
+			targetPath: testFilePath.fsPath,
 		};
 
 		return context;
@@ -123,7 +125,7 @@ export class TypeScriptTestGenProvider implements TestGenProvider {
 		elementName: string,
 		containingFile: vscode.TextDocument,
 		testDirectory: vscode.Uri,
-		extension: string
+		extension: string,
 	): vscode.Uri {
 		const testPath = testDirectory.fsPath;
 		const prefix = elementName || path.basename(containingFile.uri.fsPath, extension);

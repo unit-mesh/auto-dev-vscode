@@ -1,4 +1,4 @@
-import { SyntaxNode } from "web-tree-sitter";
+import { SyntaxNode } from 'web-tree-sitter';
 
 export class TreeSitterUtil {
 	static isTopLevelNode(node: SyntaxNode): boolean {
@@ -25,7 +25,6 @@ export class TreeSitterUtil {
 			parent = parent.parent;
 		}
 		return null;
-
 	}
 
 	/**
@@ -60,4 +59,3 @@ export class TreeSitterUtil {
 		return results.reverse();
 	}
 }
-

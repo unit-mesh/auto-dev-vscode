@@ -1,711 +1,1068 @@
 {
-  "name": "autodev",
-  "displayName": "AutoDev - 🧙the AI-powered coding wizard.",
-  "description": " 🧙‍AutoDev: the AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀 ",
-  "version": "0.3.3",
-  "repository": "https://github.com/unit-mesh/auto-dev-vscode",
-  "publisher": "Phodal",
-  "l10n": "./l10n",
-  "extensionKind": [
-    "ui",
-    "workspace"
-  ],
-  "bugs": {
-    "url": "https://github.com/unit-mesh/auto-dev-vscode/issues"
-  },
-  "homepage": "https://vscode.unitmesh.cc",
-  "qna": "https://github.com/unit-mesh/auto-dev-vscode/issues/new/choose",
-  "license": "Apache-2.0",
-  "pricing": "Free",
-  "icon": "media/pluginIcon.png",
-  "engines": {
-    "vscode": "^1.77.0"
-  },
-  "vsce": {
-    "dependencies": true
-  },
-  "categories": [
-    "Programming Languages",
-    "Education",
-    "Machine Learning",
-    "Snippets"
-  ],
-  "activationEvents": [
-    "onLanguage:java",
-    "onLanguage:c",
-    "onLanguage:cpp",
-    "onLanguage:csharp",
-    "onLanguage:go",
-    "onLanguage:java",
-    "onLanguage:javascript",
-    "onLanguage:kotlin",
-    "onLanguage:typescript",
-    "onLanguage:typescriptreact",
-    "onLanguage:python",
-    "onLanguage:rust",
-    "onStartupFinished",
-    "onView:autodevGUIView"
-  ],
-  "main": "./dist/extension.js",
-  "enabledApiProposals": [],
-  "contributes": {
-    "configuration": [
-      {
-        "title": "%configuration.anthropic.title%",
-        "properties": {
-          "autodev.anthropic.baseURL": {
-            "type": "string",
-            "default": "https://api.anthropic.com/v1/",
-            "markdownDescription": "%autodev.anthropic.baseURL.markdownDescription%",
-            "order": 0
-          },
-          "autodev.anthropic.apiKey": {
-            "type": "string",
-            "description": "%autodev.anthropic.apiKey.description%",
-            "order": 1
-          },
-          "autodev.anthropic.model": {
-            "type": "string",
-            "enum": [
-              "claude-2.1",
-              "claude-3-opus-20240229",
-              "claude-3-sonnet-20240229",
-              "claude-3-haiku-20240307",
-              "claude-2.0",
-              "claude-instant-1.2"
-            ],
-            "default": "claude-2.0",
-            "description": "%autodev.anthropic.model.description%",
-            "order": 2
-          }
-        }
-      },
-      {
-        "title": "%configuration.openai.title%",
-        "properties": {
-          "autodev.openai.apiType": {
-            "type": "string",
-            "default": "openai",
-            "enum": [
-              "openai",
-              "azure"
-            ],
-            "enumItemLabels": [
-              "OpenAI Official",
-              "Microsoft Azure"
-            ],
-            "enumDescriptions": [
-              "Official or any compatible proxy server of OpenAI",
-              "Microsoft azure servers only"
-            ],
-            "description": "%autodev.openai.apiType.description%",
-            "order": 0
-          },
-          "autodev.openai.baseURL": {
-            "type": "string",
-            "default": "https://api.openai.com/v1/",
-            "markdownDescription": "%autodev.openai.baseURL.markdownDescription%",
-            "order": 1
-          },
-          "autodev.openai.project": {
-            "type": "string",
-            "default": "",
-            "markdownDescription": "%autodev.openai.project.markdownDescription%",
-            "order": 2
-          },
-          "autodev.openai.apiKey": {
-            "type": "string",
-            "description": "OpenAI API key.",
-            "markdownDescription": "%autodev.openai.apiKey.markdownDescription%",
-            "order": 3
-          },
-          "autodev.openai.model": {
-            "type": "string",
-            "enum": [
-              "gpt-4o",
-              "gpt-4o-2024-05-13",
-              "gpt-4-turbo",
-              "gpt-4-turbo-2024-04-09",
-              "gpt-4-0125-preview",
-              "gpt-4-turbo-preview",
-              "gpt-4-1106-preview",
-              "gpt-4-vision-preview",
-              "gpt-4",
-              "gpt-4-0314",
-              "gpt-4-0613",
-              "gpt-4-32k",
-              "gpt-4-32k-0314",
-              "gpt-4-32k-0613",
-              "gpt-3.5-turbo",
-              "gpt-3.5-turbo-16k",
-              "gpt-3.5-turbo-0301",
-              "gpt-3.5-turbo-0613",
-              "gpt-3.5-turbo-1106",
-              "gpt-3.5-turbo-0125",
-              "gpt-3.5-turbo-16k-0613"
-            ],
-            "default": "gpt-3.5-turbo",
-            "description": "%autodev.anthropic.model.description%",
-            "order": 4
-          },
-          "autodev.openai.organization": {
-            "type": "string",
-            "default": "",
-            "description": "%autodev.openai.organization.description%",
-            "order": 5
-          }
-        }
-      },
-      {
-        "title": "%configuration.qianfan.title%",
-        "properties": {
-          "autodev.qianfan.apiKey": {
-            "type": "string",
-            "description": "Baidu Cloud API Key",
-            "markdownDescription": "%autodev.qianfan.apiKey.markdownDescription%",
-            "order": 0
-          },
-          "autodev.qianfan.secretKey": {
-            "type": "string",
-            "description": "Baidu Cloud Secret Key",
-            "markdownDescription": "%autodev.qianfan.secretKey.markdownDescription%",
-            "order": 1
-          },
-          "autodev.qianfan.model": {
-            "type": "string",
-            "enum": [
-              "ERNIE-Bot",
-              "ERNIE-Bot-turbo",
-              "ERNIE-Bot-4",
-              "ERNIE-Speed-8K",
-              "ERNIE-Speed-128K",
-              "ERNIE-4.0-8K",
-              "ERNIE-4.0-8K-Preview",
-              "ERNIE-3.5-8K",
-              "ERNIE-3.5-8K-Preview",
-              "ERNIE-Lite-8K",
-              "ERNIE-Tiny-8K",
-              "ERNIE-Character-8K",
-              "ERNIE Speed-AppBuilder"
-            ],
-            "default": "ERNIE-Bot-turbo",
-            "description": "%autodev.anthropic.model.description%",
-            "order": 2
-          }
-        }
-      },
-      {
-        "title": "%configuration.tongyi.title%",
-        "properties": {
-          "autodev.tongyi.apiKey": {
-            "type": "string",
-            "description": "%autodev.tongyi.apiKey.description%",
-            "markdownDescription": "%autodev.tongyi.apiKey.markdownDescription%",
-            "order": 0
-          },
-          "autodev.tongyi.model": {
-            "type": "string",
-            "enum": [
-              "qwen-turbo",
-              "qwen-plus",
-              "qwen-max",
-              "qwen-max-1201",
-              "qwen-max-longcontext",
-              "qwen-7b-chat",
-              "qwen-14b-chat",
-              "qwen-72b-chat",
-              "llama2-7b-chat-v2",
-              "llama2-13b-chat-v2",
-              "baichuan-7b-v1",
-              "baichuan2-13b-chat-v1",
-              "baichuan2-7b-chat-v1",
-              "chatglm3-6b",
-              "chatglm-6b-v2"
-            ],
-            "default": "qwen-turbo",
-            "description": "%autodev.anthropic.model.description%",
-            "order": 2
-          },
-          "autodev.tongyi.enableSearch": {
-            "type": "boolean",
-            "default": false,
-            "description": "%autodev.tongyi.enableSearch.description%",
-            "order": 2
-          }
-        }
-      },
-      {
-        "title": "%configuration.chat.title%",
-        "properties": {
-          "autodev.chat.models": {
-            "type": "array",
-            "default": [
-              {
-                "title": "GPT-4",
-                "provider": "openai",
-                "model": "gpt-4"
-              },
-              {
-                "title": "GPT-3.5 turbo",
-                "provider": "openai",
-                "model": "gpt-3.5-turbo",
-                "temperature": 0.75
-              },
-              {
-                "title": "QWen turbo",
-                "provider": "tongyi",
-                "model": "qwen-turbo"
-              },
-              {
-                "title": "ERNIE-Bot turbo",
-                "provider": "qianfan",
-                "model": "ERNIE-Bot-turbo"
-              }
-            ],
-            "markdownDescription": "%autodev.chat.models.markdownDescription%"
-          }
-        }
-      },
-      {
-        "title": "%configuration.completion.title%",
-        "properties": {
-          "autodev.completion.model": {
-            "type": "string",
-            "default": "",
-            "description": "%autodev.embedding.model.description%",
-            "markdownDescription": "%autodev.completion.model.markdownDescription%"
-          },
-          "autodev.completion.template": {
-            "type": "string",
-            "default": "<fim_prefix>{prefix}<fim_suffix>{suffix}<fim_middle>",
-            "description": "%autodev.completion.template.description%"
-          },
-          "autodev.completion.stops": {
-            "type": "array",
-            "default": [
-              "<｜end▁of▁sentence｜>",
-              "<｜EOT｜>",
-              "\\n",
-              "<|eot_id|>"
-            ],
-            "description": "%autodev.completion.stops.description%"
-          },
-          "autodev.completion.enableLegacyMode": {
-            "type": "boolean",
-            "default": false,
-            "description": "Use legacy \"/v1/completions\" instead of \"/v1/chat/completions\"",
-            "markdownDescription": "%autodev.completion.enableLegacyMode.markdownDescription%"
-          },
-          "autodev.completion.requestDelay": {
-            "type": "integer",
-            "default": 500,
-            "markdownDescription": "%autodev.completion.requestDelay.markdownDescription%"
-          },
-          "autodev.suggestion.enableRename": {
-            "type": "boolean",
-            "default": false,
-            "description": "%autodev.suggestion.enableRename.description%"
-          },
-          "autodev.suggestion.enableCodeCompletion": {
-            "type": "boolean",
-            "default": false,
-            "description": "%autodev.suggestion.enableCodeCompletion.description%"
-          }
-        }
-      },
-      {
-        "title": "%configuration.prompts.title%",
-        "properties": {
-          "autodev.prompts.customDir": {
-            "type": "string",
-            "default": "prompts",
-            "markdownDescription": "%autodev.prompts.customDir.markdownDescription%"
-          }
-        }
-      },
-      {
-        "title": "%configuration.embedding.title%",
-        "properties": {
-          "autodev.embedding.model": {
-            "type": "string",
-            "enum": [
-              "local",
-              "openai",
-              "ollama"
-            ],
-            "default": "local",
-            "description": "%autodev.embedding.model.description%",
-            "markdownDescription": "%autodev.embedding.model.markdownDescription%"
-          }
-        }
-      },
-      {
-        "title": "%configuration.legacy.title%",
-        "properties": {
-          "autodev.customPromptDir": {
-            "type": "string",
-            "default": "prompts",
-            "description": "%autodev.prompts.customDir.markdownDescription%",
-            "markdownDeprecationMessage": "**Deprecated**: Please use `#autodev.prompts.customDir#` instead.",
-            "deprecationMessage": "Deprecated: Please use autodev.prompts.customDir instead."
-          },
-          "autodev.enableRenameSuggestion": {
-            "type": "boolean",
-            "default": false,
-            "description": "%autodev.suggestion.enableRename.description%",
-            "markdownDeprecationMessage": "**Deprecated**: Please use `#autodev.suggestion.enableRename#` instead.",
-            "deprecationMessage": "Deprecated: Please use autodev.suggestion.enableRename instead."
-          },
-          "autodev.openaiCompatibleConfig": {
-            "type": "object",
-            "default": {
-              "apiType": "openai",
-              "apiBase": "https://api.openai.com/v1/",
-              "apiKey": "",
-              "model": "gpt-3.5-turbo"
-            },
-            "description": "%autodev.openaiCompatibleConfig.description%",
-            "markdownDeprecationMessage": "**Deprecated**: Please use `#autodev.openai.model#` instead.",
-            "deprecationMessage": "Deprecated: Please use autodev.openai.model instead."
-          },
-          "autodev.chatModels": {
-            "type": [
-              "array",
-              "null"
-            ],
-            "default": null,
-            "description": "%autodev.chatModels.description%",
-            "markdownDeprecationMessage": "**Deprecated**: Please use `#autodev.chat.models#` instead.",
-            "deprecationMessage": "Deprecated: Please use autodev.chat.models instead."
-          }
-        }
-      }
-    ],
-    "commands": [
-      {
-        "command": "autodev.newSession",
-        "category": "AutoDev",
-        "title": "New Session",
-        "icon": "$(add)",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.debugTerminal",
-        "category": "AutoDev",
-        "title": "Debug Terminal",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.menu.autoComment",
-        "category": "AutoDev",
-        "title": "%AutoComment%",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.genApiData",
-        "category": "AutoDev",
-        "title": "%autodev.command.genApiData%",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.action.quickAction",
-        "category": "AutoDev",
-        "title": "%autodev.command.quickChat%",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.explainThis",
-        "category": "AutoDev",
-        "title": "%autodev.command.explainThis%",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.fixThis",
-        "category": "AutoDev",
-        "title": "%autodev.command.fixThis%",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.autoTest",
-        "category": "AutoDev",
-        "title": "%AutoTest%",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.debugRunR",
-        "category": "AutoDev",
-        "title": "Debug Run R",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.editor.suggestCommand",
-        "category": "AutoDev",
-        "title": "AutoDev Suggest Command",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.terminal.explainTerminalSelectionContextMenu",
-        "category": "AutoDev",
-        "title": "AutoDev: Explain this",
-        "group": "AutoDev"
-      },
-      {
-        "command": "autodev.git.generateCommitMessage",
-        "title": "Gen Commit Message",
-        "icon": "$(autodev-icon)",
-        "category": "AutoDev"
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "autodev.focusAutoDevInput",
-        "mac": "cmd+l",
-        "key": "ctrl+l"
-      },
-      {
-        "command": "autodev.debugTerminal",
-        "mac": "cmd+shift+r",
-        "key": "ctrl+shift+r"
-      },
-      {
-        "command": "autodev.systemAction",
-        "mac": "cmd+i",
-        "key": "ctrl+i"
-      },
-      {
-        "command": "autodev.editor.suggestCommand",
-        "mac": "cmd+shift+j",
-        "key": "ctrl+shift+j"
-      }
-    ],
-    "submenus": [
-      {
-        "id": "autodev.submenus",
-        "label": "AutoDev"
-      }
-    ],
-    "menus": {
-      "view/title": [
-        {
-          "command": "autodev.debugRunR",
-          "when": "view == terminal",
-          "group": "navigation"
-        }
-      ],
-      "editor/context": [
-        {
-          "submenu": "autodev.submenus",
-          "when": "(!editorReadonly || editorHasSelection)",
-          "group": "1_autodev@0"
-        }
-      ],
-      "autodev.submenus": [
-        {
-          "command": "autodev.action.quickAction",
-          "when": "!editorReadonly",
-          "group": "autodev@1"
-        },
-        {
-          "command": "autodev.explainThis",
-          "when": "editorHasSelection",
-          "group": "autodevAction@1"
-        },
-        {
-          "command": "autodev.fixThis",
-          "when": "editorHasSelection",
-          "group": "autodevAction@2"
-        },
-        {
-          "command": "autodev.menu.autoComment",
-          "when": "!editorReadonly",
-          "group": "autodevAction@3"
-        },
-        {
-          "command": "autodev.autoTest",
-          "when": "!editorReadonly",
-          "group": "autodevAction@4"
-        }
-      ],
-      "terminal/context": [
-        {
-          "command": "autodev.terminal.explainTerminalSelectionContextMenu",
-          "group": "1_autodev@0"
-        }
-      ],
-      "scm/title": [
-        {
-          "when": "scmProvider == git",
-          "command": "autodev.git.generateCommitMessage",
-          "group": "navigation"
-        }
-      ],
-      "commandPalette": [
-        {
-          "command": "autodev.debugTerminal"
-        },
-        {
-          "command": "autodev.git.generateCommitMessage",
-          "when": "false"
-        }
-      ]
-    },
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "autodev",
-          "title": "AutoDev",
-          "icon": "media/autodev-dark.svg"
-        }
-      ]
-    },
-    "views": {
-      "autodev": [
-        {
-          "type": "webview",
-          "id": "autodev.autodevGUIView",
-          "name": "",
-          "visibility": "visible"
-        }
-      ]
-    },
-    "languages": [
-      {
-        "id": "DevIns",
-        "aliases": [
-          "devins",
-          "devin"
-        ],
-        "extensions": [
-          ".devins",
-          ".devin"
-        ],
-        "configuration": "syntaxes/language-configuration.json",
-        "icon": {
-          "light": "./media/icon.svg",
-          "dark": "./media/autodev-dark.svg"
-        }
-      }
-    ],
-    "grammars": [
-      {
-        "language": "DevIns",
-        "scopeName": "text.ref",
-        "path": "syntaxes/DevIns.tmLanguage.json"
-      }
-    ],
-    "icons": {
-      "autodev-icon": {
-        "description": "%contributes.icons.autodev-icon.description%",
-        "default": {
-          "fontPath": "media/autodev.woff",
-          "fontCharacter": "\\E900"
-        }
-      },
-      "autodev-dark": {
-        "description": "%contributes.icons.autodev-dark.description%",
-        "default": {
-          "fontPath": "media/autodev.woff",
-          "fontCharacter": "\\E902"
-        }
-      },
-      "autodev-error": {
-        "description": "%contributes.icons.autodev-error.description%",
-        "default": {
-          "fontPath": "media/autodev.woff",
-          "fontCharacter": "\\E904"
-        }
-      },
-      "autodev-pair": {
-        "description": "%contributes.icons.autodev-pair.description%",
-        "default": {
-          "fontPath": "media/autodev.woff",
-          "fontCharacter": "\\E906"
-        }
-      }
-    }
-  },
-  "scripts": {
-    "preinstall": "npx only-allow npm",
-    "postinstall": "node pre-download-build.js",
-    "watch": "vite build --watch --mode=development",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx",
-    "lint:fix": "eslint . --ext ts,tsx --fix",
-    "preintegration-test": "tsc -p . --outDir out",
-    "integration-test": "vscode-test",
-    "integration-test:watch": "tsc -p . -w --outDir out",
-    "test": "vitest --run --coverage.enabled",
-    "test:watch": "vitest --silent=false",
-    "vscode:prepublish": "npm run build",
-    "pa": "vsce package"
-  },
-  "dependencies": {
-    "@apache-arrow/ts": "^14.0.2",
-    "@langchain/anthropic": "^0.1.16",
-    "@langchain/core": "^0.1.59",
-    "@langchain/openai": "^0.0.28",
-    "@mozilla/readability": "^0.5.0",
-    "@octokit/rest": "^20.1.1",
-    "@types/js-yaml": "^4.0.9",
-    "@unit-mesh/treesitter-artifacts": "^1.6.1",
-    "@vscode/l10n": "^0.0.18",
-    "@xenova/transformers": "^2.17.1",
-    "apache-arrow": "^14.0.2",
-    "cheerio": "^1.0.0-rc.12",
-    "csv": "^6.3.8",
-    "csv-parse": "^5.5.5",
-    "graphology": "^0.25.4",
-    "graphology-types": "^0.24.7",
-    "iconv-lite": "^0.6.3",
-    "ignore": "^5.3.1",
-    "inversify": "^6.0.2",
-    "isbinaryfile": "^5.0.2",
-    "js-tiktoken": "^1.0.11",
-    "js-yaml": "^4.1.0",
-    "jsdom": "^24.0.0",
-    "llama-tokenizer-js": "^1.1.3",
-    "lodash": "^4.17.21",
-    "lru-cache": "^10.2.2",
-    "monaco-vscode-textmate-theme-converter": "^0.1.7",
-    "node-fetch": "^3.3.2",
-    "node-machine-id": "^1.1.12",
-    "onnxruntime-common": "1.17.3",
-    "onnxruntime-node": "1.17.3",
-    "openai": "^4.36.0",
-    "reflect-metadata": "^0.2.2",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7",
-    "tokenizers": "^0.13.3",
-    "vectordb": "^0.4.20",
-    "velocityjs": "^2.0.6",
-    "vscode-gradle": "^3.10.1",
-    "web-tree-sitter": "^0.22.2"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.3.14",
-    "@types/jsdom": "^21.1.6",
-    "@types/lodash": "^4.17.4",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "^18.x",
-    "@types/sinon": "^17.0.3",
-    "@types/vscode": "^1.77.0",
-    "@typescript-eslint/eslint-plugin": "^7.6.0",
-    "@typescript-eslint/parser": "^7.6.0",
-    "@vitest/coverage-v8": "^1.5.2",
-    "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.3.9",
-    "@vscode/vsce": "^2.25.0",
-    "add": "^2.0.6",
-    "antlr4ts-cli": "^0.5.0-alpha.4",
-    "chai": "^5.1.0",
-    "eslint": "^8.56.0",
-    "mocha": "^10.0.1",
-    "sinon": "^17.0.1",
-    "typescript": "^5.4.4",
-    "vite": "^5.2.8",
-    "vite-plugin-checker": "^0.6.4",
-    "vite-plugin-externalize-deps": "^0.8.0",
-    "vite-plugin-static-copy": "^1.0.2",
-    "vitest": "^1.4.0"
-  }
+	"name": "autodev",
+	"displayName": "AutoDev - 🧙the AI-powered coding wizard.",
+	"description": " 🧙‍AutoDev: the AI-powered coding wizard with multilingual support 🌐, auto code generation 🏗️, and a helpful bug-slaying assistant 🐞! Customizable prompts 🎨 and a magic Auto Dev/Testing/Document/Agent feature 🧪 included! 🚀 ",
+	"version": "0.3.3",
+	"repository": "https://github.com/unit-mesh/auto-dev-vscode",
+	"publisher": "Phodal",
+	"l10n": "./l10n",
+	"extensionKind": [
+		"ui",
+		"workspace"
+	],
+	"bugs": {
+		"url": "https://github.com/unit-mesh/auto-dev-vscode/issues"
+	},
+	"homepage": "https://vscode.unitmesh.cc",
+	"qna": "https://github.com/unit-mesh/auto-dev-vscode/issues/new/choose",
+	"license": "Apache-2.0",
+	"pricing": "Free",
+	"icon": "media/pluginIcon.png",
+	"engines": {
+		"vscode": "^1.77.0"
+	},
+	"vsce": {
+		"dependencies": true
+	},
+	"categories": [
+		"Programming Languages",
+		"Education",
+		"Machine Learning",
+		"Snippets"
+	],
+	"activationEvents": [
+		"onLanguage:java",
+		"onLanguage:c",
+		"onLanguage:cpp",
+		"onLanguage:csharp",
+		"onLanguage:go",
+		"onLanguage:java",
+		"onLanguage:javascript",
+		"onLanguage:kotlin",
+		"onLanguage:typescript",
+		"onLanguage:typescriptreact",
+		"onLanguage:python",
+		"onLanguage:rust",
+		"onStartupFinished"
+	],
+	"main": "./dist/extension.js",
+	"enabledApiProposals": [],
+	"contributes": {
+		"configuration": [
+			{
+				"title": "%configuration.general.title%",
+				"properties": {
+					"autodev.enableRenameSuggestion": {
+						"type": "boolean",
+						"default": false,
+						"description": "%configuration.enableRenameSuggestion.description%",
+						"order": 1
+					},
+					"autodev.codelensDisplayMode": {
+						"type": "string",
+						"enum": [
+							"expand",
+							"collapse"
+						],
+						"enumItemLabels": [
+							"%configuration.codelensDisplayMode.item.expand%",
+							"%configuration.codelensDisplayMode.item.collapse%"
+						],
+						"description": "%configuration.codelensDisplayMode.description%",
+						"default": "expand"
+					},
+					"autodev.customPromptDir": {
+						"type": "string",
+						"default": "prompts",
+						"description": "%configuration.customPromptDir.description%",
+						"order": 4
+					}
+				},
+				"order": 1
+			},
+			{
+				"title": "%configuration.chat.title%",
+				"properties": {
+					"autodev.chat.enable": {
+						"type": "boolean",
+						"default": true,
+						"description": "%configuration.chat.enable.description%",
+						"order": 1
+					},
+					"autodev.chat.provider": {
+						"type": "string",
+						"description": "%configuration.chat.provider.description%",
+						"enum": [
+							"anthropic",
+							"openai",
+							"qianfan",
+							"tongyi",
+							"ollama"
+						],
+						"default": "openai",
+						"order": 2
+					},
+					"autodev.chat.model": {
+						"type": "string",
+						"description": "%configuration.chat.model.description%",
+						"order": 3
+					},
+					"autodev.chat.models": {
+						"type": "array",
+						"default": [
+							{
+								"title": "GPT-3.5 turbo",
+								"provider": "openai",
+								"model": "gpt-3.5-turbo",
+								"temperature": 0.75
+							},
+							{
+								"title": "QWen turbo",
+								"provider": "tongyi",
+								"model": "qwen-turbo"
+							},
+							{
+								"title": "ERNIE-Bot turbo",
+								"provider": "qianfan",
+								"model": "ERNIE-Bot-turbo"
+							},
+							{
+								"title": "Llama3",
+								"provider": "ollama",
+								"model": "llama3"
+							}
+						],
+						"description": "%configuration.chat.models.description%",
+						"order": 4
+					}
+				},
+				"order": 2
+			},
+			{
+				"title": "%configuration.completions.title%",
+				"properties": {
+					"autodev.completions.enable": {
+						"type": "boolean",
+						"default": true,
+						"description": "%configuration.completions.enable.description%",
+						"order": 1
+					},
+					"autodev.completions.provider": {
+						"type": "string",
+						"description": "%configuration.completions.provider.description%",
+						"enum": [
+							"anthropic",
+							"openai",
+							"qianfan",
+							"tongyi",
+							"ollama"
+						],
+						"default": "openai",
+						"order": 1
+					},
+					"autodev.completions.model": {
+						"type": "string",
+						"description": "%configuration.completions.model.description%",
+						"order": 2
+					},
+					"autodev.completions.template": {
+						"type": "string",
+						"description": "%configuration.completions.template.description%",
+						"order": 3
+					},
+					"autodev.completions.stops": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "%configuration.completions.stops.description%",
+						"order": 4
+					},
+					"autodev.completions.enableLegacyMode": {
+						"type": "boolean",
+						"default": false,
+						"description": "Use legacy \"/v1/completions\" instead of \"/v1/chat/completions\"",
+						"markdownDescription": "%configuration.completions.enableLegacyMode.markdownDescription%",
+						"order": 7
+					},
+					"autodev.completions.requestDelay": {
+						"type": "integer",
+						"default": 500,
+						"markdownDescription": "%configuration.completions.requestDelay.markdownDescription%",
+						"order": 8
+					}
+				},
+				"order": 3
+			},
+			{
+				"title": "%configuration.embeddings.title%",
+				"properties": {
+					"autodev.embeddings.provider": {
+						"type": "string",
+						"enum": [
+							"transformers",
+							"openai",
+							"ollama"
+						],
+						"default": "transformers",
+						"description": "%configuration.embeddings.provider.description%",
+						"order": 1
+					},
+					"autodev.embeddings.model": {
+						"type": "string",
+						"description": "%configuration.embeddings.model.description%",
+						"order": 2
+					},
+					"autodev.embeddings.batchSize": {
+						"type": "integer",
+						"default": 512,
+						"description": "%configuration.embeddings.batchSize.description%",
+						"order": 3
+					}
+				},
+				"order": 5
+			},
+			{
+				"title": "%configuration.storages.title%",
+				"properties": {
+					"autodev.storages.databaseType": {
+						"type": "string",
+						"enum": [
+							"sqlite"
+						],
+						"default": "sqlite",
+						"description": "%configuration.storages.databaseType.description%",
+						"order": 1
+					},
+					"autodev.storages.vectorstoreType": {
+						"type": "string",
+						"enum": [
+							"lancedb"
+						],
+						"default": "lancedb",
+						"description": "%configuration.storages.vectorstoreType.description%",
+						"order": 3
+					}
+				},
+				"order": 6
+			},
+			{
+				"title": "%configuration.providers.title%",
+				"properties": {
+					"autodev.anthropic.baseURL": {
+						"type": "string",
+						"default": "https://api.anthropic.com/v1/",
+						"markdownDescription": "%configuration.anthropic.baseURL.markdownDescription%",
+						"order": 1
+					},
+					"autodev.anthropic.apiKey": {
+						"type": "string",
+						"description": "%configuration.anthropic.apiKey.description%",
+						"order": 2
+					},
+					"autodev.anthropic.model": {
+						"type": "string",
+						"enum": [
+							"claude-2.1",
+							"claude-3-opus-20240229",
+							"claude-3-sonnet-20240229",
+							"claude-3-haiku-20240307",
+							"claude-2.0",
+							"claude-instant-1.2"
+						],
+						"default": "claude-2.0",
+						"description": "%configuration.anthropic.model.description%",
+						"order": 3
+					},
+					"autodev.openai.apiType": {
+						"type": "string",
+						"default": "openai",
+						"enum": [
+							"openai",
+							"azure"
+						],
+						"enumItemLabels": [
+							"OpenAI Official",
+							"Microsoft Azure"
+						],
+						"enumDescriptions": [
+							"Official or any compatible proxy server of OpenAI",
+							"Microsoft azure servers only"
+						],
+						"description": "%configuration.openai.apiType.description%",
+						"order": 3
+					},
+					"autodev.openai.baseURL": {
+						"type": "string",
+						"default": "https://api.openai.com/v1/",
+						"markdownDescription": "%configuration.openai.baseURL.markdownDescription%",
+						"order": 4
+					},
+					"autodev.openai.project": {
+						"type": "string",
+						"default": "",
+						"markdownDescription": "%configuration.openai.project.markdownDescription%",
+						"order": 5
+					},
+					"autodev.openai.apiKey": {
+						"type": "string",
+						"description": "OpenAI API key.",
+						"markdownDescription": "%configuration.openai.apiKey.markdownDescription%",
+						"order": 6
+					},
+					"autodev.openai.organization": {
+						"type": "string",
+						"description": "%configuration.openai.organization.description%",
+						"order": 7
+					},
+					"autodev.openai.model": {
+						"type": "string",
+						"enum": [
+							"gpt-4o",
+							"gpt-4o-2024-05-13",
+							"gpt-4-turbo",
+							"gpt-4-turbo-2024-04-09",
+							"gpt-4-0125-preview",
+							"gpt-4-turbo-preview",
+							"gpt-4-1106-preview",
+							"gpt-4-vision-preview",
+							"gpt-4",
+							"gpt-4-0314",
+							"gpt-4-0613",
+							"gpt-4-32k",
+							"gpt-4-32k-0314",
+							"gpt-4-32k-0613",
+							"gpt-3.5-turbo",
+							"gpt-3.5-turbo-16k",
+							"gpt-3.5-turbo-0301",
+							"gpt-3.5-turbo-0613",
+							"gpt-3.5-turbo-1106",
+							"gpt-3.5-turbo-0125",
+							"gpt-3.5-turbo-16k-0613"
+						],
+						"default": "gpt-3.5-turbo",
+						"description": "%configuration.openai.model.description%",
+						"order": 8
+					},
+					"autodev.openai.completionModel": {
+						"type": "string",
+						"description": "%configuration.openai.completionModel.description%",
+						"order": 9
+					},
+					"autodev.openai.embeddingModel": {
+						"type": "string",
+						"enum": [
+							"text-embedding-ada-002",
+							"text-embedding-3-small",
+							"text-embedding-3-large"
+						],
+						"default": "text-embedding-ada-002",
+						"description": "%configuration.openai.embeddingModel.description%",
+						"order": 10
+					},
+					"autodev.qianfan.apiKey": {
+						"type": "string",
+						"description": "%configuration.qianfan.apiKey.description%",
+						"markdownDescription": "%configuration.qianfan.apiKey.markdownDescription%",
+						"order": 11
+					},
+					"autodev.qianfan.secretKey": {
+						"type": "string",
+						"description": "%configuration.qianfan.secretKey.description%",
+						"order": 12
+					},
+					"autodev.qianfan.model": {
+						"type": "string",
+						"enum": [
+							"ERNIE-Bot",
+							"ERNIE-Bot-turbo",
+							"ERNIE-Bot-4",
+							"ERNIE-Speed-8K",
+							"ERNIE-Speed-128K",
+							"ERNIE-4.0-8K",
+							"ERNIE-4.0-8K-Preview",
+							"ERNIE-3.5-8K",
+							"ERNIE-3.5-8K-Preview",
+							"ERNIE-Lite-8K",
+							"ERNIE-Tiny-8K",
+							"ERNIE-Character-8K",
+							"ERNIE Speed-AppBuilder"
+						],
+						"default": "ERNIE-Bot-turbo",
+						"description": "%configuration.qianfan.model.description%",
+						"order": 13
+					},
+					"autodev.tongyi.apiKey": {
+						"type": "string",
+						"description": "%configuration.tongyi.apiKey.description%",
+						"markdownDescription": "%configuration.tongyi.apiKey.markdownDescription%",
+						"order": 14
+					},
+					"autodev.tongyi.model": {
+						"type": "string",
+						"enum": [
+							"qwen-turbo",
+							"qwen-plus",
+							"qwen-max",
+							"qwen-max-1201",
+							"qwen-max-longcontext",
+							"qwen-7b-chat",
+							"qwen-14b-chat",
+							"qwen-72b-chat",
+							"llama2-7b-chat-v2",
+							"llama2-13b-chat-v2",
+							"baichuan-7b-v1",
+							"baichuan2-13b-chat-v1",
+							"baichuan2-7b-chat-v1",
+							"chatglm3-6b",
+							"chatglm-6b-v2"
+						],
+						"default": "qwen-turbo",
+						"description": "%configuration.tongyi.model.description%",
+						"order": 15
+					},
+					"autodev.tongyi.enableSearch": {
+						"type": "boolean",
+						"default": true,
+						"description": "%configuration.tongyi.enableSearch.description%",
+						"order": 16
+					},
+					"autodev.ollama.baseURL": {
+						"type": "string",
+						"default": "http://localhost:11434",
+						"markdownDescription": "%configuration.ollama.baseURL.markdownDescription%",
+						"order": 17
+					},
+					"autodev.ollama.model": {
+						"type": "string",
+						"default": "llama3",
+						"description": "%configuration.ollama.model.description%",
+						"order": 18
+					},
+					"autodev.ollama.completionModel": {
+						"type": "string",
+						"default": "codeqwen:7b-code-v1.5-q5_1",
+						"description": "%configuration.ollama.completionModel.description%",
+						"order": 19
+					},
+					"autodev.ollama.embeddingModel": {
+						"type": "string",
+						"default": "all-minilm",
+						"description": "%configuration.ollama.embeddingModel.description%",
+						"order": 20
+					},
+					"autodev.transformers.remoteHost": {
+						"type": "string",
+						"default": "https://huggingface.co",
+						"description": "%configuration.transformers.remoteHost.description%",
+						"markdownDescription": "%configuration.transformers.remoteHost.markdownDescription%",
+						"order": 21
+					},
+					"autodev.transformers.remotePathTemplate": {
+						"type": "string",
+						"default": "{model}/resolve/{revision}/",
+						"description": "%configuration.transformers.remotePathTemplate.description%",
+						"markdownDescription": "%configuration.transformers.remotePathTemplate.markdownDescription%",
+						"order": 22
+					},
+					"autodev.transformers.allowLocalModels": {
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "%configuration.transformers.allowLocalModels.markdownDescription%",
+						"order": 23
+					},
+					"autodev.transformers.localModelPath": {
+						"type": "string",
+						"default": "",
+						"markdownDescription": "%configuration.transformers.localModelPath.markdownDescription%",
+						"order": 24
+					},
+					"autodev.transformers.model": {
+						"type": "string",
+						"description": "%configuration.transformers.model.description%",
+						"markdownDescription": "%configuration.transformers.model.markdownDescription%",
+						"order": 25
+					},
+					"autodev.transformers.onnxWasmNumThreads": {
+						"type": [
+							"number",
+							"string"
+						],
+						"default": "auto",
+						"description": "%configuration.transformers.onnxWasmNumThreads.description%",
+						"order": 26
+					},
+					"autodev.transformers.onnxLoglevel": {
+						"type": "string",
+						"enum": [
+							"verbose",
+							"debug",
+							"info",
+							"warning",
+							"error",
+							"fatal"
+						],
+						"default": "error",
+						"description": "%configuration.transformers.onnxLoglevel.description%",
+						"order": 27
+					}
+				},
+				"order": 9
+			}
+		],
+		"commands": [
+			{
+				"command": "autodev.codelens.quickChat",
+				"category": "AutoDev",
+				"title": "%command.quickChat.title%",
+				"group": "AutoDevCodelens"
+			},
+			{
+				"command": "autodev.codelens.explainCode",
+				"title": "%command.explainCode.title%"
+			},
+			{
+				"command": "autodev.codelens..optimizeCode",
+				"title": "%command.optimizeCode.title%"
+			},
+			{
+				"command": "autodev.codelens.autoComment",
+				"title": "%command.autoComment.title%"
+			},
+			{
+				"command": "autodev.codelens.autoTest",
+				"title": "%command.autoTest.title%"
+			},
+			{
+				"command": "autodev.codelens.customAction",
+				"title": "%command.customAction.title%"
+			},
+			{
+				"command": "autodev.explainCode",
+				"title": "%command.explainCode.title%"
+			},
+			{
+				"command": "autodev.optimizeCode",
+				"category": "AutoDev",
+				"title": "%command.optimizeCode.title%",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.quickFix",
+				"category": "AutoDev",
+				"title": "%command.quickFix.title%",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.fixThis",
+				"category": "AutoDev",
+				"title": "%command.fixThis.title%",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.autoComment",
+				"category": "AutoDev",
+				"title": "%command.autoComment.title%",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.autoTest",
+				"category": "AutoDev",
+				"title": "%command.autoTest.title%",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.showChatPanel",
+				"category": "AutoDev",
+				"title": "%command.showChatPanel.title%",
+				"group": "AutoDevMenuItem"
+			},
+			{
+				"command": "autodev.newChatSession",
+				"category": "AutoDev",
+				"title": "%command.newChatSession.title%",
+				"icon": "$(add)",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.showChatHistory",
+				"category": "AutoDev",
+				"title": "%command.showChatHistory.title%",
+				"icon": "$(history)",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.codebase.createIndexes",
+				"category": "AutoDev",
+				"title": "%command.codebase.createIndexes.title%",
+				"icon": "$(database)",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.codebase.retrievalCode",
+				"category": "AutoDev",
+				"title": "%command.codebase.retrievalCode.title%",
+				"icon": "$(database)",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.feedback",
+				"category": "AutoDev",
+				"title": "%command.feedback.title%",
+				"icon": "$(feedback)",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.openSettings",
+				"category": "AutoDev",
+				"title": "%command.openSettings.title%",
+				"icon": "$(add)",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.showTutorial",
+				"title": "%command.showTutorial.title%"
+			},
+			{
+				"command": "autodev.showSystemAction",
+				"title": "%command.showSystemAction.title%",
+				"category": "AutoDev",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.showCodelensDetailQuickPick",
+				"title": "%command.showCodelensDetailQuickPick.title%",
+				"category": "AutoDev",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.debugTerminal",
+				"category": "AutoDev",
+				"title": "Debug Terminal",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.genApiData",
+				"category": "AutoDev",
+				"title": "%command.genApiData.title%",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.debugRunR",
+				"category": "AutoDev",
+				"title": "Debug Run R",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.editor.suggestCommand",
+				"category": "AutoDev",
+				"title": "AutoDev Suggest Command",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.terminal.explainTerminalSelectionContextMenu",
+				"category": "AutoDev",
+				"title": "AutoDev: Explain this",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.git.generateCommitMessage",
+				"title": "Gen Commit Message",
+				"icon": "$(autodev-icon)",
+				"category": "AutoDev"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "autodev.showChatPanel",
+				"mac": "cmd+l",
+				"key": "ctrl+l"
+			},
+			{
+				"command": "autodev.debugTerminal",
+				"mac": "cmd+shift+r",
+				"key": "ctrl+shift+r"
+			},
+			{
+				"command": "autodev.systemAction",
+				"mac": "cmd+i",
+				"key": "ctrl+i"
+			},
+			{
+				"command": "autodev.editor.suggestCommand",
+				"mac": "cmd+shift+j",
+				"key": "ctrl+shift+j"
+			}
+		],
+		"submenus": [
+			{
+				"id": "autodev.submenus",
+				"label": "AutoDev"
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "autodev.feedback",
+					"when": "view == autodev.views.chat",
+					"group": "navigation@1"
+				},
+				{
+					"command": "autodev.newChatSession",
+					"when": "view == autodev.views.chat",
+					"group": "navigation@2"
+				},
+				{
+					"command": "autodev.showChatHistory",
+					"when": "view == autodev.views.chat",
+					"group": "navigation@3"
+				},
+				{
+					"command": "autodev.codebase.retrievalCode",
+					"when": "view == autodev.views.chat"
+				},
+				{
+					"command": "autodev.showTutorial",
+					"when": "view == autodev.views.chat"
+				},
+				{
+					"command": "autodev.openSettings",
+					"when": "view == autodev.views.chat"
+				},
+				{
+					"command": "autodev.debugRunR",
+					"when": "false",
+					"group": "navigation"
+				}
+			],
+			"editor/context": [
+				{
+					"submenu": "autodev.submenus",
+					"when": "(!editorReadonly || editorHasSelection)",
+					"group": "1_autodev@0"
+				}
+			],
+			"autodev.submenus": [
+				{
+					"command": "autodev.explainCode",
+					"when": "editorHasSelection",
+					"group": "0_autodev@1"
+				},
+				{
+					"command": "autodev.optimizeCode",
+					"when": "editorHasSelection",
+					"group": "0_autodev@2"
+				},
+				{
+					"command": "autodev.fixThis",
+					"when": "editorHasSelection",
+					"group": "0_autodev@3"
+				},
+				{
+					"command": "autodev.autoComment",
+					"when": "editorHasSelection",
+					"group": "0_autodev@4"
+				},
+				{
+					"command": "autodev.autoTest",
+					"when": "editorHasSelection",
+					"group": "0_autodev@5"
+				},
+				{
+					"command": "autodev.showChatPanel",
+					"when": "!editorReadonly",
+					"group": "1_autodev@1"
+				},
+				{
+					"command": "autodev.codebase.createIndexes",
+					"when": "!codebase.indexing",
+					"group": "2_autodev@1"
+				},
+				{
+					"command": "autodev.codebase.retrievalCode",
+					"when": "!codebase.indexing",
+					"group": "2_autodev@2"
+				}
+			],
+			"terminal/context": [
+				{
+					"command": "autodev.terminal.explainTerminalSelectionContextMenu",
+					"group": "1_autodev@0"
+				}
+			],
+			"scm/title": [
+				{
+					"when": "scmProvider == git",
+					"command": "autodev.git.generateCommitMessage",
+					"group": "navigation"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "autodev.codelens.quickChat",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens.explainCode",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens..optimizeCode",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens.autoComment",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens.autoTest",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codelens.customAction",
+					"when": "false"
+				},
+				{
+					"command": "autodev.explainCode",
+					"when": "false"
+				},
+				{
+					"command": "autodev.optimizeCode",
+					"when": "false"
+				},
+				{
+					"command": "autodev.fixThis",
+					"when": "false"
+				},
+				{
+					"command": "autodev.quickFix",
+					"when": "false"
+				},
+				{
+					"command": "autodev.autoComment",
+					"when": "false"
+				},
+				{
+					"command": "autodev.autoTest",
+					"when": "false"
+				},
+				{
+					"command": "autodev.showChatPanel"
+				},
+				{
+					"command": "autodev.newChatSession",
+					"when": "false"
+				},
+				{
+					"command": "autodev.showChatHistory",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codebase.createIndexes",
+					"when": "false"
+				},
+				{
+					"command": "autodev.codebase.retrievalCode",
+					"when": "false"
+				},
+				{
+					"command": "autodev.feedback"
+				},
+				{
+					"command": "autodev.openSettings"
+				},
+				{
+					"command": "autodev.showTutorial"
+				},
+				{
+					"command": "autodev.showSystemAction",
+					"when": "false"
+				},
+				{
+					"command": "autodev.showCodelensDetailQuickPick",
+					"when": "false"
+				},
+				{
+					"command": "autodev.debugTerminal",
+					"when": "false"
+				},
+				{
+					"command": "autodev.genApiData",
+					"when": "false"
+				},
+				{
+					"command": "autodev.debugRunR",
+					"when": "false"
+				},
+				{
+					"command": "autodev.editor.suggestCommand",
+					"when": "false"
+				},
+				{
+					"command": "autodev.terminal.explainTerminalSelectionContextMenu",
+					"when": "false"
+				},
+				{
+					"command": "autodev.git.generateCommitMessage",
+					"when": "false"
+				}
+			]
+		},
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "autodev-chat",
+					"title": "%activitybar.chat.title%",
+					"icon": "media/autodev-dark.svg"
+				}
+			]
+		},
+		"views": {
+			"autodev-chat": [
+				{
+					"id": "autodev.views.chat",
+					"name": "%view.chat.title%",
+					"type": "webview",
+					"visibility": "visible",
+					"when": "chat.enabled"
+				}
+			]
+		},
+		"languages": [
+			{
+				"id": "DevIns",
+				"aliases": [
+					"devins",
+					"devin"
+				],
+				"extensions": [
+					".devins",
+					".devin"
+				],
+				"configuration": "syntaxes/language-configuration.json",
+				"icon": {
+					"light": "./media/icon.svg",
+					"dark": "./media/autodev-dark.svg"
+				}
+			}
+		],
+		"grammars": [
+			{
+				"language": "DevIns",
+				"scopeName": "text.ref",
+				"path": "syntaxes/DevIns.tmLanguage.json"
+			}
+		],
+		"icons": {
+			"autodev-icon": {
+				"description": "%contributes.icons.autodev-icon.description%",
+				"default": {
+					"fontPath": "media/autodev.woff",
+					"fontCharacter": "\\E900"
+				}
+			},
+			"autodev-dark": {
+				"description": "%contributes.icons.autodev-dark.description%",
+				"default": {
+					"fontPath": "media/autodev.woff",
+					"fontCharacter": "\\E902"
+				}
+			},
+			"autodev-error": {
+				"description": "%contributes.icons.autodev-error.description%",
+				"default": {
+					"fontPath": "media/autodev.woff",
+					"fontCharacter": "\\E904"
+				}
+			},
+			"autodev-pair": {
+				"description": "%contributes.icons.autodev-pair.description%",
+				"default": {
+					"fontPath": "media/autodev.woff",
+					"fontCharacter": "\\E906"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"preinstall": "npx only-allow npm",
+		"postinstall": "node pre-download-build.js",
+		"watch": "vite build --watch --mode=development",
+		"build": "tsc && vite build",
+		"lint": "eslint . --ext ts,tsx",
+		"lint:fix": "eslint . --ext ts,tsx --fix",
+		"preintegration-test": "tsc -p . --outDir out",
+		"integration-test": "vscode-test",
+		"integration-test:watch": "tsc -p . -w --outDir out",
+		"test": "vitest --run --coverage.enabled",
+		"test:watch": "vitest --silent=false",
+		"fmt": "prettier -w src",
+		"vscode:prepublish": "npm run build",
+		"pa": "vsce package"
+	},
+	"dependencies": {
+		"@langchain/anthropic": "^0.1.21",
+		"@langchain/core": "^0.1.59",
+		"@mozilla/readability": "^0.5.0",
+		"@octokit/rest": "^20.1.1",
+		"@unit-mesh/treesitter-artifacts": "^1.6.1",
+		"@xenova/transformers": "^2.17.1",
+		"cheerio": "^1.0.0-rc.12",
+		"csv-parse": "^5.5.5",
+		"graphology": "^0.25.4",
+		"graphology-types": "^0.24.7",
+		"iconv-lite": "^0.6.3",
+		"ignore": "^5.3.1",
+		"inversify": "^6.0.2",
+		"isbinaryfile": "^5.0.2",
+		"js-tiktoken": "^1.0.11",
+		"js-yaml": "^4.1.0",
+		"jsdom": "^24.0.0",
+		"llama-tokenizer-js": "^1.1.3",
+		"lodash": "^4.17.21",
+		"lru-cache": "^10.2.2",
+		"monaco-vscode-textmate-theme-converter": "^0.1.7",
+		"node-fetch": "^3.3.2",
+		"node-machine-id": "^1.1.12",
+		"ollama": "^0.5.1",
+		"onnxruntime-common": "1.17.3",
+		"onnxruntime-node": "1.17.3",
+		"openai": "^4.36.0",
+		"reflect-metadata": "^0.2.2",
+		"sqlite": "^5.1.1",
+		"sqlite3": "^5.1.7",
+		"tokenizers": "^0.13.3",
+		"vectordb": "^0.5.0",
+		"velocityjs": "^2.0.6",
+		"vscode-gradle": "^3.10.1",
+		"web-tree-sitter": "^0.22.2"
+	},
+	"devDependencies": {
+		"@trivago/prettier-plugin-sort-imports": "^4.3.0",
+		"@types/chai": "^4.3.14",
+		"@types/js-yaml": "^4.0.9",
+		"@types/jsdom": "^21.1.6",
+		"@types/lodash": "^4.17.5",
+		"@types/mocha": "^10.0.1",
+		"@types/node": "^18.x",
+		"@types/sinon": "^17.0.3",
+		"@types/vscode": "^1.77.0",
+		"@typescript-eslint/eslint-plugin": "^7.6.0",
+		"@typescript-eslint/parser": "^7.6.0",
+		"@vitest/coverage-v8": "^1.5.2",
+		"@vscode/test-cli": "^0.0.9",
+		"@vscode/test-electron": "^2.3.9",
+		"@vscode/vsce": "^2.25.0",
+		"chai": "^5.1.1",
+		"eslint": "^8.56.0",
+		"gui": "file:./gui-sidebar",
+		"prettier": "^3.3.2",
+		"typescript": "^5.4.4",
+		"vite": "^5.2.8",
+		"vite-plugin-checker": "^0.6.4",
+		"vite-plugin-externalize-deps": "^0.8.0",
+		"vite-plugin-static-copy": "^1.0.2",
+		"vite-tsconfig-paths": "^4.3.2",
+		"vitest": "^1.4.0"
+	}
 }

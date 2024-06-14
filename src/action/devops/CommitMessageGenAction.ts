@@ -1,53 +1,60 @@
-import vscode, { InputBox } from "vscode";
+import { AutoDevExtension } from 'src/AutoDevExtension';
+import { ProgressLocation, window } from 'vscode';
 
-import { Git } from "../../types/git";
-import { GitAction } from "../../git/GitAction";
-import { LlmProvider } from "../../llm-provider/LlmProvider";
-import { CustomActionPrompt } from "../../prompt-manage/custom-action/CustomActionPrompt";
-import { PromptManager } from "../../prompt-manage/PromptManager";
-import { ActionType } from "../../prompt-manage/ActionType";
-import { TemplateContext } from "../../prompt-manage/template/TemplateContext";
-import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
+import { logger } from 'base/common/log/log';
+import { showErrorMessage } from 'base/common/messages/messages';
+
+import { GitAction } from '../../git/GitAction';
+import { ActionType } from '../../prompt-manage/ActionType';
+import { CustomActionPrompt } from '../../prompt-manage/custom-action/CustomActionPrompt';
+import { TemplateContext } from '../../prompt-manage/template/TemplateContext';
+import type { InputBox } from '../../types/git';
 
 export class CommitMessageGenAction {
-	extension: vscode.Extension<Git>;
+	// extension: Extension<Git>;
 
-	constructor(extension?: vscode.Extension<Git>) {
-		if (extension) {
-			this.extension = extension;
-		} else {
-			this.extension = vscode.extensions.getExtension('vscode.git')!!;
-		}
-	}
+	constructor(private autodev: AutoDevExtension) {}
 
 	async handleDiff(inputBox: InputBox) {
 		let diff = await new GitAction().getDiff();
 
-		console.info("diff: ", JSON.stringify(diff));
+		console.info('diff: ', JSON.stringify(diff));
 
 		let context: CommitMessageTemplateContext = {
-			language: "",
+			language: '',
 			historyExamples: [],
-			diffContent: diff
+			diffContent: diff,
 		};
 
-		let instruction = await PromptManager.getInstance().generateInstruction(ActionType.GenCommitMessage, context);
+		let instruction = await this.autodev.promptManager.generateInstruction(ActionType.GenCommitMessage, context);
 		const messages = CustomActionPrompt.parseChatMessage(instruction);
-		let chatResponseStream = LlmProvider.codeCompletion()._streamChat(messages);
 
-		inputBox.value = "";
+		inputBox.value = '';
 
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
-		try {
-			for await (const chunk of chatResponseStream) {
-				inputBox.value += chunk.content;
-			}
-
-			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
-		} catch (e) {
-			console.error(e);
-			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
-		}
+		await window.withProgress(
+			{
+				location: ProgressLocation.Notification,
+				title: 'Generating Commit Message',
+				cancellable: true,
+			},
+			async (progress, token) => {
+				try {
+					await this.autodev.lm.chat(
+						messages,
+						{},
+						{
+							report(choice) {
+								inputBox.value += choice.part;
+							},
+						},
+						token,
+					);
+				} catch (error) {
+					logger.error((error as Error).message);
+					showErrorMessage('Generate Commit Message Error');
+				}
+			},
+		);
 	}
 }
 

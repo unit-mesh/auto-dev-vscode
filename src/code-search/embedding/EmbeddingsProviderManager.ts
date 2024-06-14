@@ -1,7 +1,11 @@
-import { EmbeddingsProvider } from "./_base/EmbeddingsProvider";
-import { LocalEmbeddingsProvider } from "./LocalEmbeddingsProvider";
-import vscode from "vscode";
+import vscode from 'vscode';
 
+import { EmbeddingsProvider } from './_base/EmbeddingsProvider';
+import { LocalEmbeddingsProvider } from './LocalEmbeddingsProvider';
+
+/**
+ * @deprecated Please use LanguageModelsService instead.
+ */
 export namespace EmbeddingsProviderManager {
 	export function init(context: vscode.ExtensionContext) {
 		LocalEmbeddingsProvider.getInstance().init(context.extensionPath);

@@ -1,10 +1,11 @@
-import vscode from "vscode";
+import vscode from 'vscode';
 
-import { AutoTestTemplateContext } from "./AutoTestTemplateContext";
-import { TSLanguageService } from "../../../editor/language/service/TSLanguageService";
-import { SupportedLanguage } from "../../../editor/language/SupportedLanguage";
-import { NamedElement } from "../../../editor/ast/NamedElement";
-import { ToolchainContextItem } from "../../../toolchain-context/ToolchainContextProvider";
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { NamedElement } from '../../../editor/ast/NamedElement';
+import { ToolchainContextItem } from '../../../toolchain-context/ToolchainContextProvider';
+import { AutoTestTemplateContext } from './AutoTestTemplateContext';
+import { LanguageIdentifier } from 'base/common/languages/languages';
 
 /**
  * `TestGenProvider` is an interface that provides methods for checking application language support, collecting context for test generation, setting up language services, creating test files, and looking up relevant classes for given elements.
@@ -17,8 +18,8 @@ import { ToolchainContextItem } from "../../../toolchain-context/ToolchainContex
  * @method collect(context: AutoTestTemplateContext): Promise<ToolchainContextItem[]>
  * This method collects the context for the test generation, like TestFramework, BuildTool, etc. It takes an `AutoTestTemplateContext` as an argument and returns a Promise that resolves with an array of `ToolchainContextItem`.
  *
- * @method setupLanguage(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext): Promise<void>
- * This method sets up the language service. It takes a `TSLanguageService` and an optional `AutoTestTemplateContext` as arguments and returns a Promise that resolves with void.
+ * @method setupLanguage(defaultLanguageServiceProvider: ILanguageServiceProvider, context?: AutoTestTemplateContext): Promise<void>
+ * This method sets up the language service. It takes a `ILanguageServiceProvider` and an optional `AutoTestTemplateContext` as arguments and returns a Promise that resolves with void.
  *
  * @method setupTestFile(sourceFile: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext>
  * This method creates a test file for the given source file and element, and initializes the context if not already done. It takes a `vscode.TextDocument` and a `NamedElement` as arguments and returns a Promise that resolves with an `AutoTestTemplateContext`.
@@ -31,7 +32,7 @@ export interface TestGenProvider {
 	/**
 	 * checks if the application supports a given language.
 	 */
-	isApplicable(lang: SupportedLanguage): boolean;
+	isApplicable(lang: LanguageIdentifier): boolean;
 
 	/**
 	 * collects the context for the test generation, like TestFramework, BuildTool, etc.
@@ -41,7 +42,7 @@ export interface TestGenProvider {
 	/**
 	 * setup for language service which is used for test generation.
 	 */
-	setupLanguage(defaultLanguageService: TSLanguageService, context?: AutoTestTemplateContext): Promise<void>;
+	setupLanguage(defaultLanguageServiceProvider: ILanguageServiceProvider, context?: AutoTestTemplateContext): Promise<void>;
 
 	/**
 	 * Creates a test file for the given source file and element, and init context if not already done.

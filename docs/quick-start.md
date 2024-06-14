@@ -25,12 +25,9 @@ Config OpenAI example:
 2. add the following configuration
 
 ```
-  "autodev.openaiCompatibleConfig": {
-    "apiType": "openai",
-    "model": "moonshot-v1-8k",
-    "apiBase": "https://api.moonshot.cn/v1",
-    "apiKey": "xxx"
-  }
+	{
+		"autodev.openai.apiKey": "sk-xxxxx",
+	}
 ```
 
 ## Next

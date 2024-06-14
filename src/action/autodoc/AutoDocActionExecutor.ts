@@ -1,29 +1,39 @@
-import vscode, { Position } from "vscode";
+import { AutoDevExtension } from 'src/AutoDevExtension';
+import { CancellationTokenSource, Position, TextDocument, WorkspaceEdit } from 'vscode';
 
-import { NamedElement } from "../../editor/ast/NamedElement";
-import { LANGUAGE_BLOCK_COMMENT_MAP } from "../../editor/language/LanguageCommentMap";
-import { PromptManager } from "../../prompt-manage/PromptManager";
-import { LlmProvider } from "../../llm-provider/LlmProvider";
-import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
-import { AutoDevStatus, AutoDevStatusManager } from "../../editor/editor-api/AutoDevStatusManager";
-import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
-import { CreateToolchainContext } from "../../toolchain-context/ToolchainContextProvider";
-import { ActionExecutor } from "../_base/ActionExecutor";
-import { AutoDocTemplateContext } from "./AutoDocTemplateContext";
-import { MarkdownTextProcessor } from "../../markdown/MarkdownTextProcessor";
-import { ActionType } from "../../prompt-manage/ActionType";
-import { channel } from "../../channel";
-import { insertCodeByRange, selectCodeInRange } from "../../editor/ast/PositionUtil";
+import { ChatMessageRole, IChatMessage } from 'base/common/language-models/languageModels';
+import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
+import { LANGUAGE_BLOCK_COMMENT_MAP } from 'base/common/languages/docstring';
+import { log } from 'base/common/log/log';
+import { MarkdownTextProcessor } from 'base/common/markdown/MarkdownTextProcessor';
+import { StreamingMarkdownCodeBlock } from 'base/common/markdown/StreamingMarkdownCodeBlock';
+
+import { type NamedElement } from '../../editor/ast/NamedElement';
+import { insertCodeByRange, selectCodeInRange } from '../../editor/ast/PositionUtil';
+import { AutoDevStatus, AutoDevStatusManager } from '../../editor/editor-api/AutoDevStatusManager';
+import { ActionType } from '../../prompt-manage/ActionType';
+import { PromptManager } from '../../prompt-manage/PromptManager';
+import { CreateToolchainContext } from '../../toolchain-context/ToolchainContextProvider';
+import { ActionExecutor } from '../_base/ActionExecutor';
+import { AutoDocTemplateContext } from './AutoDocTemplateContext';
 
 export class AutoDocActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
 
-	private document: vscode.TextDocument;
+	private lm: LanguageModelsService;
+	private promptManager: PromptManager;
+	private statusBarManager: AutoDevStatusManager;
+
+	private document: TextDocument;
 	private range: NamedElement;
-	private edit: vscode.WorkspaceEdit;
+	private edit?: WorkspaceEdit;
 	private language: string;
 
-	constructor(document: vscode.TextDocument, range: NamedElement, edit: vscode.WorkspaceEdit) {
+	constructor(autodev: AutoDevExtension, document: TextDocument, range: NamedElement, edit?: WorkspaceEdit) {
+		this.lm = autodev.lm;
+		this.promptManager = autodev.promptManager;
+		this.statusBarManager = autodev.statusBarManager;
+
 		this.document = document;
 		this.range = range;
 		this.edit = edit;
@@ -31,79 +41,80 @@ export class AutoDocActionExecutor implements ActionExecutor {
 	}
 
 	async execute() {
-		const startSymbol = LANGUAGE_BLOCK_COMMENT_MAP[this.language].start;
-		const endSymbol = LANGUAGE_BLOCK_COMMENT_MAP[this.language].end;
+		const document = this.document;
+		const range = this.range;
+		const language = document.languageId;
+
+		const startSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.start;
+		const endSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.end;
 
 		const templateContext: AutoDocTemplateContext = {
-			language: this.language,
+			language: language,
 			startSymbol: startSymbol,
 			endSymbol: endSymbol,
-			code: this.document.getText(this.range.blockRange),
+			code: document.getText(range.blockRange),
 			forbiddenRules: [],
 			// 原有注释
-			originalComments: []
+			originalComments: [],
 		};
 
-		if (this.range.commentRange) {
-			templateContext.originalComments.push(this.document.getText(this.range.commentRange));
+		if (range.commentRange) {
+			templateContext.originalComments.push(document.getText(range.commentRange));
 		}
 
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
+		this.statusBarManager.setStatus(AutoDevStatus.InProgress);
 
-		selectCodeInRange(this.range.blockRange.start, this.range.blockRange.end);
-		if (this.range.commentRange) {
-			selectCodeInRange(this.range.commentRange.start, this.range.commentRange.end);
+		selectCodeInRange(range.blockRange.start, range.blockRange.end);
+		if (range.commentRange) {
+			selectCodeInRange(range.commentRange.start, range.commentRange.end);
 		}
 
 		const creationContext: CreateToolchainContext = {
-			action: "AutoDocAction",
-			filename: this.document.fileName,
-			language: this.language,
-			content: this.document.getText(),
-			element: this.range
+			action: 'AutoDocAction',
+			filename: document.fileName,
+			language: language,
+			content: document.getText(),
+			element: range,
 		};
 
-		const contextItems = await PromptManager.getInstance().collectToolchain(creationContext);
+		const contextItems = await this.promptManager.collectToolchain(creationContext);
 		if (contextItems.length > 0) {
-			templateContext.chatContext = contextItems.map(item => item.text).join("\n - ");
+			templateContext.chatContext = contextItems.map(item => item.text).join('\n - ');
 		}
 
-		let content = await PromptManager.getInstance().generateInstruction(ActionType.AutoDoc, templateContext);
-		console.info(`request: ${content}`);
+		let content = await this.promptManager.generateInstruction(ActionType.AutoDoc, templateContext);
+		log(`request: ${content}`);
 
-		let msg: ChatMessage = {
-			role: ChatRole.User,
-			content: content
+		let msg: IChatMessage = {
+			role: ChatMessageRole.User,
+			content: content,
 		};
-
-		let llm = LlmProvider.codeCompletion();
-		let doc: string = "";
 
 		try {
-			for await (const chunk of llm._streamChat([msg])) {
-				doc += chunk.content;
+			const doc = await this.lm.chat([msg], {});
+
+			this.statusBarManager.setStatus(AutoDevStatus.Done);
+			const finalText = StreamingMarkdownCodeBlock.parse(doc).text;
+
+			log(`FencedCodeBlock parsed output: ${finalText}`);
+
+			let docstring = MarkdownTextProcessor.buildDocFromSuggestion(doc, startSymbol, endSymbol);
+
+			let startLine = range.blockRange.start.line;
+			let startChar = range.blockRange.start.character;
+
+			if (startLine === 0) {
+				startLine = 1;
 			}
+
+			// todo: add format by indent.
+
+			const textRange: Position = new Position(startLine - 1, startChar);
+			insertCodeByRange(textRange, docstring);
 		} catch (e) {
 			console.error(e);
-			AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
+			this.statusBarManager.setStatus(AutoDevStatus.Error);
 			return;
 		}
-
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
-		const finalText = StreamingMarkdownCodeBlock.parse(doc).text;
-
-		channel.appendLine(`FencedCodeBlock parsed output: ${finalText}`);
-		let document = MarkdownTextProcessor.buildDocFromSuggestion(doc, startSymbol, endSymbol);
-
-		let startLine = this.range.blockRange.start.line;
-		let startChar = this.range.blockRange.start.character;
-		if (startLine === 0) {
-			startLine = 1;
-		}
-
-		// todo: add format by indent.
-
-		let textRange: Position = new Position(startLine - 1, startChar);
-		insertCodeByRange(textRange, document);
 	}
 }

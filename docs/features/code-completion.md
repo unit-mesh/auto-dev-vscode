@@ -14,7 +14,7 @@ Not enabled by default, see [AutoDev: Code Completion](../configuration.md#code-
 ```jsonc
 {
   "autodev.openai.apiKey": "sk-xxxxx", // Your openai api key
-  "autodev.suggestion.enableCodeCompletion": true
+  "autodev.completions.enable": true // Enabled Inline Completions
 }
 ```
 
@@ -26,7 +26,7 @@ You can hope that you use specific code models instead of dialog models
 
 ```jsonc
 {
-  "autodev.completion.model": "gpt-4o" // Overriding the default chat model
+  "autodev.completions.model": "gpt-4o" // Overriding the default chat model
 }
 ```
 
@@ -40,7 +40,7 @@ Here is an example of ollama, see [OpenAI compatibility](https://github.com/olla
 {
   "autodev.openai.baseURL": "http://127.0.0.1:11434/v1/", // Your local service url
   "autodev.openai.apiKey": "sk-xxxxx", // Your local service api key
-  "autodev.completion.model": "codeqwen:7b-code-v1.5-q5_1" // Overriding the default chat model
+  "autodev.completions.model": "codeqwen:7b-code-v1.5-q5_1" // Overriding the default chat model
 }
 ```
 
@@ -48,10 +48,12 @@ If your self-built service is deployed in a mode that does not support chat, you
 
 ## Enable Legacy Mode
 
-The default is the traditional `/v1/completion` instead of `/v1/chat/completion`, but you can fall back to the old mode.
+The default is the traditional `/v1/completions` instead of `/v1/chat/completions`, but you can fall back to the old mode.
+
+> Only working on openai provider
 
 ```jsonc
 {
-  "autodev.completion.enableLegacyMode": true
+  "autodev.completions.enableLegacyMode": true
 }
 ```

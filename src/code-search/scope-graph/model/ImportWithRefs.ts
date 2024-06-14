@@ -1,4 +1,4 @@
-import { TextRange } from "./TextRange";
+import { TextRange } from './TextRange';
 
 /**
  * The `ImportWithRefs` interface in TypeScript is used to represent an import statement with its references in the code.

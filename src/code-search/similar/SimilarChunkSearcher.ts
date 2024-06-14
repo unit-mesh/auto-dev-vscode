@@ -1,9 +1,10 @@
-import vscode, { TextDocument, Uri } from "vscode";
-import path from "path";
-import { SimilarSearchElement } from "./SimilarSearchElementBuilder";
-import { JaccardSimilarity } from "./algorithm/JaccardSimilarity";
-import { SimilarSearcher } from "./algorithm/SimilarSearcher";
-import { SimilarChunk } from "./SimilarChunk";
+import path from 'path';
+import vscode, { TextDocument, Uri } from 'vscode';
+
+import { JaccardSimilarity } from './algorithm/JaccardSimilarity';
+import { SimilarSearcher } from './algorithm/SimilarSearcher';
+import { SimilarChunk } from './SimilarChunk';
+import { SimilarSearchElement } from './SimilarSearchElementBuilder';
 
 export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSearcher<TextDocument> {
 	private static instance_: SimilarChunkSearcher;
@@ -29,7 +30,7 @@ export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSe
 		return similarChunks;
 	}
 
-	private similarChunksWithPaths(element: SimilarSearchElement): SimilarChunk [] {
+	private similarChunksWithPaths(element: SimilarSearchElement): SimilarChunk[] {
 		let mostRecentFiles = this.getMostRecentFiles(element.languageId);
 		// todo: update for calculate the relative path
 		let mostRecentFilesRelativePaths = mostRecentFiles.map(it => this.relativePathTo(it.uri));
@@ -45,7 +46,7 @@ export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSe
 			if (targetChunk) {
 				similarChunks.push({
 					path: mostRecentFilesRelativePaths[fileIndex]!!,
-					text: targetChunk
+					text: targetChunk,
 				});
 			}
 		});
@@ -55,11 +56,11 @@ export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSe
 
 	public extractChunks(mostRecentFiles: TextDocument[]) {
 		return mostRecentFiles.map(file => {
-			let lines = file.getText().split("\n");
+			let lines = file.getText().split('\n');
 
 			let chunks: string[] = [];
 			for (let i = 0; i < lines.length; i += this.snippetLength) {
-				chunks.push(lines.slice(i, i + this.snippetLength).join("\n"));
+				chunks.push(lines.slice(i, i + this.snippetLength).join('\n'));
 			}
 
 			return chunks;
@@ -87,4 +88,3 @@ export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSe
 		return path.relative(workspaceFolder.uri.fsPath, relativeFileUri.fsPath);
 	}
 }
-

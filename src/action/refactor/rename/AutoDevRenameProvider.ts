@@ -1,29 +1,60 @@
-import { CancellationToken,
+import { AutoDevExtension } from 'src/AutoDevExtension';
+import { AutoDevStatusManager } from 'src/editor/editor-api/AutoDevStatusManager';
+import { PromptManager } from 'src/prompt-manage/PromptManager';
+import {
+	CancellationToken,
 	Position,
 	ProviderResult,
 	Range,
-	RenameProvider,
+	type RenameProvider,
 	TextDocument,
-	WorkspaceEdit
-} from "vscode";
-import { SettingService } from "../../../settings/SettingService";
-import { RenameLookupExecutor } from "./RenameLookupExecutor";
+	WorkspaceEdit,
+} from 'vscode';
+
+import { ConfigurationService } from 'base/common/configuration/configurationService';
+import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
+
+import { RenameLookupExecutor } from './RenameLookupExecutor';
 
 export class AutoDevRenameProvider implements RenameProvider {
-	prepareRename(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Range | { range: Range; placeholder: string; }> {
-		let range = document.getWordRangeAtPosition(position);
-		if (!range) {
-			return undefined;
-		}
+	private renameLookupExecutor: RenameLookupExecutor;
 
-		if (!SettingService.instance().isEnableRename()) {
-			return range;
-		}
+	private config: ConfigurationService;
+	private lm: LanguageModelsService;
+	private promptManager: PromptManager;
+	private statusBarManager: AutoDevStatusManager;
 
-		return RenameLookupExecutor.suggest(document, position, token);
+	constructor(private extension: AutoDevExtension) {
+		this.lm = extension.lm;
+		this.config = extension.config;
+		this.promptManager = extension.promptManager;
+		this.statusBarManager = extension.statusBarManager;
+		this.renameLookupExecutor = new RenameLookupExecutor(extension);
 	}
 
-	provideRenameEdits(document: TextDocument, position: Position, newName: string, token: CancellationToken): ProviderResult<WorkspaceEdit> {
+	isRenameEnabled() {
+		return this.config.get<boolean>('enableRenameSuggestion') === true;
+	}
+
+	prepareRename(document: TextDocument, position: Position, token: CancellationToken) {
+		if (!this.isRenameEnabled()) {
+			return;
+		}
+
+		const range = document.getWordRangeAtPosition(position);
+		if (!range) {
+			return;
+		}
+
+		return this.renameLookupExecutor.suggest(document, position, token);
+	}
+
+	provideRenameEdits(
+		document: TextDocument,
+		position: Position,
+		newName: string,
+		token: CancellationToken,
+	): ProviderResult<WorkspaceEdit> {
 		if (token.isCancellationRequested) {
 			return;
 		}

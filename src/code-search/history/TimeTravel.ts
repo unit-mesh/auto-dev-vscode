@@ -1,6 +1,6 @@
-import { HistoryAgent } from "./_base/HistoryAgent";
-import { TimeTravelDebugger } from "./_base/TimeTravelDebugger";
-import { GitCommit } from "../../git/model/GitCommit";
+import { GitCommit } from '../../git/model/GitCommit';
+import { HistoryAgent } from './_base/HistoryAgent';
+import { TimeTravelDebugger } from './_base/TimeTravelDebugger';
 
 /**
  * The TimeTravel class is a debugging tool that allows developers to navigate through the history of their codebase.
@@ -8,8 +8,8 @@ import { GitCommit } from "../../git/model/GitCommit";
  *
  */
 export class TimeTravel extends HistoryAgent implements TimeTravelDebugger<GitCommit> {
-	name: string = "TimeTravel";
-	description: string = "Time travel will through the history of your codebase";
+	name: string = 'TimeTravel';
+	description: string = 'Time travel will through the history of your codebase';
 
 	private commitHistory: GitCommit[];
 	private currentIndex: number;
@@ -24,17 +24,16 @@ export class TimeTravel extends HistoryAgent implements TimeTravelDebugger<GitCo
 		return this.commitHistory[this.currentIndex];
 	}
 
-	restoreSnapshot(snapshot: GitCommit): void {
-	}
+	restoreSnapshot(snapshot: GitCommit): void {}
 
 	rewind(steps: number): void {
 		const newIndex = this.currentIndex - steps;
 		if (newIndex >= 0) {
 			this.currentIndex = newIndex;
 			console.log(`Rewind ${steps} steps.`);
-			console.log("Current commit:", this.commitHistory[this.currentIndex]);
+			console.log('Current commit:', this.commitHistory[this.currentIndex]);
 		} else {
-			console.log("Cannot rewind further.");
+			console.log('Cannot rewind further.');
 		}
 	}
 
@@ -43,17 +42,17 @@ export class TimeTravel extends HistoryAgent implements TimeTravelDebugger<GitCo
 		if (newIndex < this.commitHistory.length) {
 			this.currentIndex = newIndex;
 			console.log(`Fast forward ${steps} steps.`);
-			console.log("Current commit:", this.commitHistory[this.currentIndex]);
+			console.log('Current commit:', this.commitHistory[this.currentIndex]);
 		} else {
-			console.log("Already at the latest commit.");
+			console.log('Already at the latest commit.');
 		}
 	}
 
 	pause(): void {
-		console.log("Code execution paused.");
+		console.log('Code execution paused.');
 	}
 
 	replay(): void {
-		console.log("Code execution replayed.");
+		console.log('Code execution replayed.');
 	}
 }

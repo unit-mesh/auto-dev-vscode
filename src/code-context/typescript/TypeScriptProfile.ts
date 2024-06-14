@@ -1,16 +1,16 @@
-import { injectable } from "inversify";
+import { injectable } from 'inversify';
 
-import { MemoizedQuery, LanguageProfile } from "../_base/LanguageProfile";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
-import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
 import tsscm from '../../code-search/schemas/indexes/typescript.scm?raw';
+import { LanguageProfile, MemoizedQuery } from '../_base/LanguageProfile';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+import { LanguageIdentifier } from 'base/common/languages/languages';
 
 @injectable()
 export class TypeScriptProfile implements LanguageProfile {
-	languageIds = ["typescript", "typescriptreact"];
-	fileExtensions = ["ts", "tsx"];
-	grammar = (langService: TSLanguageService, langId?: SupportedLanguage) => {
-		if (langId === "typescriptreact") {
+	languageIds = ['typescript', 'typescriptreact'];
+	fileExtensions = ['ts', 'tsx'];
+	grammar = (langService: ILanguageServiceProvider, langId?: LanguageIdentifier) => {
+		if (langId === 'typescriptreact') {
 			return langService.getLanguage('typescriptreact');
 		}
 
@@ -37,12 +37,12 @@ export class TypeScriptProfile implements LanguageProfile {
 			(generator_function_declaration
 				name: (identifier) @name.identifier.method
 			) @definition.method
-			
+
 			(export_statement
-			  declaration: (lexical_declaration 
+			  declaration: (lexical_declaration
 			    (variable_declarator
 			      name: (identifier) @name.identifier.method
-			      value: (arrow_function) 
+			      value: (arrow_function)
 		      )
 			  ) @definition.method
 			)
@@ -52,7 +52,7 @@ export class TypeScriptProfile implements LanguageProfile {
         body: (class_body
           ((method_definition
             name: (property_identifier) @name.definition.method
-          ) @definition.method) 
+          ) @definition.method)
         )
       )
     `);
@@ -71,12 +71,12 @@ export class TypeScriptProfile implements LanguageProfile {
         )
       )
     )
-    
+
     (import_statement
       (import_clause (identifier)?  @use-name)
       source: (string)? @import-source
     )
-    
+
     (import_statement
       source: (_)? @import-source
     )
@@ -90,11 +90,11 @@ export class TypeScriptProfile implements LanguageProfile {
         )
       )
     )
-		
+
 	  (interface_declaration
 	     name: (type_identifier) @interface-name
 	     body: (interface_body (
-	       (property_signature 
+	       (property_signature
             name: (property_identifier)? @interface-prop-name
             type: (_)? @interface-prop-type
          )?
@@ -106,46 +106,46 @@ export class TypeScriptProfile implements LanguageProfile {
 	       )?
 	     )
 	  )
-			
+
 		(program (function_declaration
           name: (identifier) @function-name))
 		`);
 	namespaces = [
 		[
 			//variables
-			"constant",
-			"variable",
-			"property",
-			"parameter",
+			'constant',
+			'variable',
+			'property',
+			'parameter',
 			// functions
-			"function",
-			"method",
-			"generator",
+			'function',
+			'method',
+			'generator',
 			// types
-			"alias",
-			"enum",
-			"enumerator",
-			"class",
-			"interface",
+			'alias',
+			'enum',
+			'enumerator',
+			'class',
+			'interface',
 			// devops.
-			"label",
-		]
+			'label',
+		],
 	];
-	autoSelectInsideParent = ["export_statement"];
+	autoSelectInsideParent = ['export_statement'];
 	builtInTypes = [
-		"Array",
-		"String",
-		"Number",
-		"Boolean",
-		"Object",
-		"Symbol",
-		"Function",
-		"Promise",
-		"void",
-		"null",
-		"undefined",
-		"unknown",
-		"any",
-		"never"
+		'Array',
+		'String',
+		'Number',
+		'Boolean',
+		'Object',
+		'Symbol',
+		'Function',
+		'Promise',
+		'void',
+		'null',
+		'undefined',
+		'unknown',
+		'any',
+		'never',
 	];
 }

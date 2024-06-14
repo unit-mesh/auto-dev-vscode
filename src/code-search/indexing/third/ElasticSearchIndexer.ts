@@ -1,15 +1,20 @@
 import {
 	CodebaseIndex,
-	IndexTag,
 	IndexingProgressUpdate,
+	IndexTag,
+	MarkCompleteCallback,
 	RefreshIndexResults,
-	MarkCompleteCallback
-} from "../_base/CodebaseIndex";
+} from '../_base/CodebaseIndex';
 
 export class ElasticSearchIndexer implements CodebaseIndex {
-	artifactId = "elasticsearch";
+	artifactId = 'elasticsearch';
 
-	update(tag: IndexTag, result: RefreshIndexResults, markComplete: MarkCompleteCallback, repoName: string | undefined): AsyncGenerator<IndexingProgressUpdate> {
-		throw new Error("Method not implemented.");
+	update(
+		tag: IndexTag,
+		result: RefreshIndexResults,
+		markComplete: MarkCompleteCallback,
+		repoName: string | undefined,
+	): AsyncGenerator<IndexingProgressUpdate> {
+		throw new Error('Method not implemented.');
 	}
 }

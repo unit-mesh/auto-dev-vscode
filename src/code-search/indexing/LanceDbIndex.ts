@@ -13,8 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Connection, MetricType, Table } from "vectordb";
+import { randomUUID } from 'node:crypto';
 
+import { type Table } from 'vectordb';
+import { CancellationTokenSource } from 'vscode';
+
+import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
+import { logger } from 'base/common/log/log';
+
+import { Chunk } from '../chunk/_base/Chunk';
+import { ChunkerManager } from '../chunk/ChunkerManager';
+import { DatabaseConnection, SqliteDb } from '../database/SqliteDb';
+import { Embedding } from '../embedding/_base/Embedding';
+import { RetrievalQueryTerm } from '../retrieval/RetrievalQueryTerm';
+import { MAX_CHUNK_SIZE } from '../utils/constants';
+import { getBasename, getLanceDbPath } from '../utils/IndexPathHelper';
 import {
 	CodebaseIndex,
 	IndexingProgressUpdate,
@@ -23,18 +36,8 @@ import {
 	MarkCompleteCallback,
 	PathAndCacheKey,
 	RefreshIndexResults,
-	tagToString
-} from "./_base/CodebaseIndex";
-import { EmbeddingsProvider } from "../embedding/_base/EmbeddingsProvider";
-import { Chunk } from "../chunk/_base/Chunk";
-import { MAX_CHUNK_SIZE } from "../utils/constants";
-import { ChunkerManager } from "../chunk/ChunkerManager";
-import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
-import { getBasename, getLanceDbPath } from "../utils/IndexPathHelper";
-import { Embedding } from "../embedding/_base/Embedding";
-import { RetrievalQueryTerm } from "../retrieval/RetrievalQueryTerm";
-import { channel } from "../../channel";
-import { uuid } from "../../editor/webview/uuid";
+	tagToString,
+} from './_base/CodebaseIndex';
 
 // LanceDB  converts to lowercase, so names must all be lowercase
 interface LanceDbRow {
@@ -51,38 +54,43 @@ interface LanceDbRow {
 
 export class LanceDbIndex implements CodebaseIndex {
 	get artifactId(): string {
-		return "vectordb::" + this.embeddingsProvider?.id;
+		// TODO from LanguageModelsService
+		return 'vectordb::transformers';
 	}
 
 	constructor(
-		private readonly embeddingsProvider: EmbeddingsProvider,
+		private readonly lm: LanguageModelsService,
 		private readonly readFile: (filepath: string) => Promise<string>,
-	) {
-		this.embeddingsProvider = embeddingsProvider;
-	}
+		private chunkerManager: ChunkerManager,
+	) {}
 
 	private tableNameForTag(tag: IndexTag) {
-		return tagToString(tag)
-			.replace(/\//g, "")
-			.replace(/\\/g, "")
-			.replace(/\:/g, "");
+		return tagToString(tag).replace(/\//g, '').replace(/\\/g, '').replace(/\:/g, '');
 	}
 
-	private async* computeChunks(items: PathAndCacheKey[],): AsyncGenerator<| [number, LanceDbRow, {
-		startLine: number;
-		endLine: number;
-		contents: string
-	}, string,] | PathAndCacheKey> {
-		const contents = await Promise.all(
-			items.map(({ path }) => this.readFile(path)),
-		);
+	private async *computeChunks(items: PathAndCacheKey[]): AsyncGenerator<
+		| [
+				number,
+				LanceDbRow,
+				{
+					startLine: number;
+					endLine: number;
+					contents: string;
+				},
+				string,
+		  ]
+		| PathAndCacheKey
+	> {
+		const contents = await Promise.all(items.map(({ path }) => this.readFile(path)));
+
+		const cancellation = new CancellationTokenSource();
 
 		for (let i = 0; i < items.length; i++) {
 			// Break into chunks
 			const content = contents[i];
 			const chunks: Chunk[] = [];
 
-			for await (let chunk of ChunkerManager.getInstance().chunkDocument(
+			for await (let chunk of this.chunkerManager.chunkDocument(
 				items[i].path,
 				content,
 				MAX_CHUNK_SIZE,
@@ -99,9 +107,13 @@ export class LanceDbIndex implements CodebaseIndex {
 			// Calculate embeddings
 			let embeddings: Embedding[] = [];
 			try {
-				embeddings = await this.embeddingsProvider.embed(chunks.map((c) => c.content));
+				embeddings = await this.lm.embedDocuments(
+					chunks.map(c => c.content),
+					{},
+					cancellation.token,
+				);
 			} catch (e) {
-				console.warn("Failed to embed chunks", items[i].path, e);
+				console.warn('Failed to embed chunks', items[i].path, e);
 				continue;
 			}
 
@@ -112,7 +124,7 @@ export class LanceDbIndex implements CodebaseIndex {
 					vector: embeddings[j],
 					path: items[i].path,
 					cachekey: items[i].cacheKey,
-					uuid: uuid()
+					uuid: randomUUID(),
 				};
 				const chunk = chunks[j];
 				yield [
@@ -143,16 +155,17 @@ export class LanceDbIndex implements CodebaseIndex {
     )`);
 	}
 
-	async* update(tag: IndexTag,
-	              results: RefreshIndexResults,
-	              markComplete: MarkCompleteCallback,
-	              repoName: string | undefined
+	async *update(
+		tag: IndexTag,
+		results: RefreshIndexResults,
+		markComplete: MarkCompleteCallback,
+		repoName: string | undefined,
 	): AsyncGenerator<IndexingProgressUpdate> {
-		const lancedb = await import("vectordb");
+		const lancedb = await import('vectordb');
 		const tableName = this.tableNameForTag(tag);
 		const db = await lancedb.connect(getLanceDbPath());
 
-		channel.appendLine(`== [LanceDB] Indexing ${tagToString(tag)}`);
+		logger.appendLine(`== [LanceDB] Indexing ${tagToString(tag)}`);
 
 		const sqlite = await SqliteDb.get();
 		await this.createSqliteCacheTable(sqlite);
@@ -162,10 +175,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		let needToCreateTable = true;
 		const existingTables = await db.tableNames();
 
-		const addComputedLanceDbRows = async (
-			pathAndCacheKey: PathAndCacheKey,
-			computedRows: LanceDbRow[],
-		) => {
+		const addComputedLanceDbRows = async (pathAndCacheKey: PathAndCacheKey, computedRows: LanceDbRow[]) => {
 			// Create table if needed, add computed rows
 			if (table) {
 				if (computedRows.length > 0) {
@@ -195,7 +205,7 @@ export class LanceDbIndex implements CodebaseIndex {
 
 				// Add the computed row to the cache
 				await sqlite.run(
-					"INSERT INTO lance_db_cache (uuid, cacheKey, path, vector, startLine, endLine, contents) VALUES (?, ?, ?, ?, ?, ?, ?)",
+					'INSERT INTO lance_db_cache (uuid, cacheKey, path, vector, startLine, endLine, contents) VALUES (?, ?, ?, ?, ?, ?, ?)',
 					row.uuid,
 					row.cachekey,
 					row.path,
@@ -211,22 +221,18 @@ export class LanceDbIndex implements CodebaseIndex {
 					await addComputedLanceDbRows(update, computedRows);
 					computedRows = [];
 				} catch (e) {
-					channel.appendLine("Error adding computed rows: " + e);
+					logger.appendLine('Error adding computed rows: ' + e);
 				}
 			}
 		}
 
-		channel.appendLine("Starting insert to cache");
+		logger.appendLine('Starting insert to cache');
 		// Add tag - retrieve the computed info from lance sqlite cache
 		for (let { path, cacheKey } of results.addTag) {
-			const stmt = await sqlite.prepare(
-				"SELECT * FROM lance_db_cache WHERE cacheKey = ? AND path = ?",
-				cacheKey,
-				path,
-			);
+			const stmt = await sqlite.prepare('SELECT * FROM lance_db_cache WHERE cacheKey = ? AND path = ?', cacheKey, path);
 			const cachedItems = await stmt.all();
 
-			const lanceRows: LanceDbRow[] = cachedItems.map((item) => {
+			const lanceRows: LanceDbRow[] = cachedItems.map(item => {
 				// Schema<{ 0: vector: FixedSizeList[1]<Float32>, 1: path: Utf8, 2: cachekey: Utf8, 3: uuid: Utf8 }>
 				return {
 					path,
@@ -257,26 +263,24 @@ export class LanceDbIndex implements CodebaseIndex {
 
 		// Delete - also remove from sqlite cache
 		for (let { path, cacheKey } of results.del) {
-			await sqlite.run(
-				"DELETE FROM lance_db_cache WHERE cacheKey = ? AND path = ?",
-				cacheKey,
-				path,
-			);
+			await sqlite.run('DELETE FROM lance_db_cache WHERE cacheKey = ? AND path = ?', cacheKey, path);
 		}
 
 		markComplete(results.del, IndexResultType.Delete);
-		yield { progress: 1, desc: "Completed Calculating Embeddings" };
+		yield { progress: 1, desc: 'Completed Calculating Embeddings' };
 	}
 
 	async retrieve(term: RetrievalQueryTerm): Promise<Chunk[]> {
-		const lancedb = await import("vectordb");
+		const lancedb = await import('vectordb');
 		if (!lancedb.connect) {
-			throw new Error("LanceDB failed to load a native module");
+			throw new Error('LanceDB failed to load a native module');
 		}
 
-		const [vector] = await this.embeddingsProvider?.embed([term.query]) ?? [[]];
+		const cancellation = new CancellationTokenSource();
+		const vector = await this.lm.embedQuery(term.query, {}, cancellation.token);
+
 		if (!vector) {
-			channel.appendLine("Failed to embed query: " + term.query);
+			logger.appendLine('Failed to embed query: ' + term.query);
 			return [];
 		}
 
@@ -295,7 +299,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		}
 
 		allResults = allResults
-			.filter((r) => r._distance!! >= term.minimumScore)
+			.filter(r => r._distance!! >= term.minimumScore)
 			.sort((a, b) => a._distance!! - b._distance!!)
 			.slice(0, term.n);
 
@@ -303,12 +307,10 @@ export class LanceDbIndex implements CodebaseIndex {
 		const data = await sqliteDb.all(
 			`SELECT *
        FROM lance_db_cache
-       WHERE uuid in (${allResults
-               .map((r) => `'${r.uuid}'`)
-               .join(",")})`,
+       WHERE uuid in (${allResults.map(r => `'${r.uuid}'`).join(',')})`,
 		);
 
-		return data.map((d) => {
+		return data.map(d => {
 			return {
 				digest: d.cacheKey,
 				filepath: d.path,
@@ -344,9 +346,7 @@ export class LanceDbIndex implements CodebaseIndex {
 			query = query.limit(n);
 		}
 
-		const results = await query
-			.metricType("cosine")
-			.execute();
+		const results = await query.metricType('cosine').execute();
 
 		return results.slice(0, n) as any;
 	}

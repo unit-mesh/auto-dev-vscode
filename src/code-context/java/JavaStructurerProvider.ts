@@ -1,17 +1,17 @@
-import Parser, { SyntaxNode } from "web-tree-sitter";
-import { injectable } from "inversify";
+import { injectable } from 'inversify';
+import Parser, { SyntaxNode } from 'web-tree-sitter';
 
-import { SupportedLanguage } from "../../editor/language/SupportedLanguage";
-import { CodeFile, CodeFunction, CodeStructure, CodeVariable, StructureType } from "../../editor/codemodel/CodeElement";
-import { LanguageProfile, LanguageProfileUtil } from "../_base/LanguageProfile";
-import { ScopeGraph } from "../../code-search/scope-graph/ScopeGraph";
-import { TextRange } from "../../code-search/scope-graph/model/TextRange";
 
-import { BaseStructurerProvider } from "../_base/StructurerProvider";
+import { TextRange } from '../../code-search/scope-graph/model/TextRange';
+import { ScopeGraph } from '../../code-search/scope-graph/ScopeGraph';
+import { CodeFile, CodeFunction, CodeStructure, CodeVariable, StructureType } from '../../editor/codemodel/CodeElement';
+import { LanguageProfile, LanguageProfileUtil } from '../_base/LanguageProfile';
+import { BaseStructurerProvider } from '../_base/StructurerProvider';
+import { LanguageIdentifier } from 'base/common/languages/languages';
 
 @injectable()
 export class JavaStructurerProvider extends BaseStructurerProvider {
-	protected langId: SupportedLanguage = "java";
+	protected langId: LanguageIdentifier = 'java';
 	protected config: LanguageProfile = LanguageProfileUtil.from(this.langId)!!;
 	protected parser: Parser | undefined;
 	protected language: Parser.Language | undefined;
@@ -49,10 +49,10 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 			filepath: filepath,
 			language: this.langId,
 			functions: [],
-			path: "",
+			path: '',
 			package: '',
 			imports: [],
-			classes: []
+			classes: [],
 		};
 		let classObj: CodeStructure = {
 			type: StructureType.Class,
@@ -64,7 +64,7 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 			package: '',
 			implements: [],
 			start: { row: 0, column: 0 },
-			end: { row: 0, column: 0 }
+			end: { row: 0, column: 0 },
 		};
 		let isLastNode = false;
 		const methods: CodeFunction[] = [];
@@ -90,7 +90,7 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 						codeFile.classes.push({ ...classObj });
 						classObj = {
 							type: StructureType.Class,
-							canonicalName: "",
+							canonicalName: '',
 							package: codeFile.package,
 							implements: [],
 							constant: [],
@@ -98,12 +98,12 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 							methods: [],
 							name: '',
 							start: { row: 0, column: 0 },
-							end: { row: 0, column: 0 }
+							end: { row: 0, column: 0 },
 						};
 					}
 
 					classObj.name = text;
-					classObj.canonicalName = codeFile.package + "." + classObj.name;
+					classObj.canonicalName = codeFile.package + '.' + classObj.name;
 					const classNode: Parser.SyntaxNode | null = capture.node?.parent ?? null;
 					if (classNode !== null) {
 						this.insertLocation(classNode, classObj);
@@ -161,7 +161,6 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 		return this.combineSimilarClasses(codeFile);
 	}
 
-
 	/**
 	 * `extractMethodIOImports` is an asynchronous method that extracts the import statements related to the input and output
 	 * types of a given method from the source code.
@@ -179,10 +178,15 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 	 *
 	 * Note: The method assumes that the `methodIOQuery` and `language` properties of the `config` object are defined.
 	 */
-	async retrieveMethodIOImports(graph: ScopeGraph, node: SyntaxNode, range: TextRange, src: string): Promise<string[] | undefined> {
+	async retrieveMethodIOImports(
+		graph: ScopeGraph,
+		node: SyntaxNode,
+		range: TextRange,
+		src: string,
+	): Promise<string[] | undefined> {
 		let syntaxNode = node.namedDescendantForPosition(
 			{ row: range.start.line, column: range.start.column },
-			{ row: range.end.line, column: range.end.column }
+			{ row: range.end.line, column: range.end.column },
 		);
 
 		const query = this.config.methodIOQuery!!.query(this.language!!);

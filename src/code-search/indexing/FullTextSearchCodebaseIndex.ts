@@ -13,31 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
+import { Chunk } from '../chunk/_base/Chunk';
+import { DatabaseConnection, SqliteDb } from '../database/SqliteDb';
+import { tagToString } from '../refreshIndex';
+import { RETRIEVAL_PARAMS } from '../utils/constants';
 import {
-  BranchAndDir,
-  CodebaseIndex,
-  IndexingProgressUpdate, IndexResultType,
-  IndexTag,
-  MarkCompleteCallback,
-  RefreshIndexResults
-} from "./_base/CodebaseIndex";
-import { RETRIEVAL_PARAMS } from "../utils/constants";
-import { Chunk } from "../chunk/_base/Chunk";
-import { ChunkCodebaseIndex } from "./ChunkCodebaseIndex";
-import { tagToString } from "../refreshIndex";
+	BranchAndDir,
+	CodebaseIndex,
+	IndexingProgressUpdate,
+	IndexResultType,
+	IndexTag,
+	MarkCompleteCallback,
+	RefreshIndexResults,
+} from './_base/CodebaseIndex';
+import { ChunkCodebaseIndex } from './ChunkCodebaseIndex';
 
 export class FullTextSearchCodebaseIndex implements CodebaseIndex {
-  artifactId: string = "sqliteFts";
+	artifactId: string = 'sqliteFts';
 
-  private async _createTables(db: DatabaseConnection) {
-    await db.exec(`CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts5(
+	private async _createTables(db: DatabaseConnection) {
+		await db.exec(`CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts5(
         path,
         content,
         tokenize = 'trigram'
     )`);
 
-    await db.exec(`CREATE TABLE IF NOT EXISTS fts_metadata (
+		await db.exec(`CREATE TABLE IF NOT EXISTS fts_metadata (
         id INTEGER PRIMARY KEY,
         path TEXT NOT NULL,
         cacheKey TEXT NOT NULL,
@@ -45,119 +46,111 @@ export class FullTextSearchCodebaseIndex implements CodebaseIndex {
         FOREIGN KEY (chunkId) REFERENCES chunks (id),
         FOREIGN KEY (id) REFERENCES fts (rowid)
     )`);
-  }
+	}
 
-  async *update(
-    tag: IndexTag,
-    results: RefreshIndexResults,
-    markComplete: MarkCompleteCallback,
-    repoName: string | undefined,
-  ): AsyncGenerator<IndexingProgressUpdate, any, unknown> {
-    const db = await SqliteDb.get();
-    await this._createTables(db);
+	async *update(
+		tag: IndexTag,
+		results: RefreshIndexResults,
+		markComplete: MarkCompleteCallback,
+		repoName: string | undefined,
+	): AsyncGenerator<IndexingProgressUpdate, any, unknown> {
+		const db = await SqliteDb.get();
+		await this._createTables(db);
 
-    for (let i = 0; i < results.compute.length; i++) {
-      const item = results.compute[i];
+		for (let i = 0; i < results.compute.length; i++) {
+			const item = results.compute[i];
 
-      // Insert chunks
-      const chunks = await db.all(
-        `SELECT * FROM chunks WHERE path = ? AND cacheKey = ?`,
-        [item.path, item.cacheKey],
-      );
+			// Insert chunks
+			const chunks = await db.all(`SELECT * FROM chunks WHERE path = ? AND cacheKey = ?`, [item.path, item.cacheKey]);
 
-      for (let chunk of chunks) {
-        const { lastID } = await db.run(
-          `INSERT INTO fts (path, content) VALUES (?, ?)`,
-          [item.path, chunk.content],
-        );
-        await db.run(
-          `INSERT INTO fts_metadata (id, path, cacheKey, chunkId) VALUES (?, ?, ?, ?)`,
-          [lastID, item.path, item.cacheKey, chunk.id],
-        );
-      }
+			for (let chunk of chunks) {
+				const { lastID } = await db.run(`INSERT INTO fts (path, content) VALUES (?, ?)`, [item.path, chunk.content]);
+				await db.run(`INSERT INTO fts_metadata (id, path, cacheKey, chunkId) VALUES (?, ?, ?, ?)`, [
+					lastID,
+					item.path,
+					item.cacheKey,
+					chunk.id,
+				]);
+			}
 
-      yield {
-        progress: i / results.compute.length,
-        desc: `Indexing ${item.path}`,
-      };
-      markComplete([item], IndexResultType.Compute);
-    }
+			yield {
+				progress: i / results.compute.length,
+				desc: `Indexing ${item.path}`,
+			};
+			markComplete([item], IndexResultType.Compute);
+		}
 
-    // Add tag
-    for (const item of results.addTag) {
-      markComplete([item], IndexResultType.AddTag);
-    }
+		// Add tag
+		for (const item of results.addTag) {
+			markComplete([item], IndexResultType.AddTag);
+		}
 
-    // Remove tag
-    for (const item of results.removeTag) {
-      markComplete([item], IndexResultType.RemoveTag);
-    }
+		// Remove tag
+		for (const item of results.removeTag) {
+			markComplete([item], IndexResultType.RemoveTag);
+		}
 
-    // Delete
-    for (const item of results.del) {
-      const { lastID } = await db.run(
-        `DELETE FROM fts_metadata WHERE path = ? AND cacheKey = ?`,
-        [item.path, item.cacheKey],
-      );
-      await db.run(`DELETE FROM fts WHERE rowid = ?`, [lastID]);
+		// Delete
+		for (const item of results.del) {
+			const { lastID } = await db.run(`DELETE FROM fts_metadata WHERE path = ? AND cacheKey = ?`, [
+				item.path,
+				item.cacheKey,
+			]);
+			await db.run(`DELETE FROM fts WHERE rowid = ?`, [lastID]);
 
-      markComplete([item], IndexResultType.Delete);
-    }
-  }
+			markComplete([item], IndexResultType.Delete);
+		}
+	}
 
-  async retrieve(
-    tags: BranchAndDir[],
-    text: string,
-    n: number,
-    directory: string | undefined,
-    filterPaths: string[] | undefined,
-    bm25Threshold: number = RETRIEVAL_PARAMS.bm25Threshold,
-    language: string | undefined = undefined,
-  ): Promise<Chunk[]> {
-    const db = await SqliteDb.get();
+	async retrieve(
+		tags: BranchAndDir[],
+		text: string,
+		n: number,
+		directory: string | undefined,
+		filterPaths: string[] | undefined,
+		bm25Threshold: number = RETRIEVAL_PARAMS.bm25Threshold,
+		language: string | undefined = undefined,
+	): Promise<Chunk[]> {
+		const db = await SqliteDb.get();
 
-    // Notice that the "chunks" artifactId is used because of linking between tables
-    const tagStrings = tags.map((tag) => {
-      return tagToString({ ...tag, artifactId: ChunkCodebaseIndex.artifactId });
-    });
+		// Notice that the "chunks" artifactId is used because of linking between tables
+		const tagStrings = tags.map(tag => {
+			return tagToString({ ...tag, artifactId: ChunkCodebaseIndex.artifactId });
+		});
 
-    const query = `SELECT fts_metadata.chunkId, fts_metadata.path, fts.content, rank
+		const query = `SELECT fts_metadata.chunkId, fts_metadata.path, fts.content, rank
     FROM fts
     JOIN fts_metadata ON fts.rowid = fts_metadata.id
     JOIN chunk_tags ON fts_metadata.chunkId = chunk_tags.chunkId
-    WHERE fts MATCH '${text.replace(/\?/g, "",)}' AND chunk_tags.tag IN (${tagStrings.map(() => "?").join(",")})
-      ${ filterPaths ? `AND fts_metadata.path IN (${filterPaths.map(() => "?").join(",")})` : "" }
+    WHERE fts MATCH '${text.replace(/\?/g, '')}' AND chunk_tags.tag IN (${tagStrings.map(() => '?').join(',')})
+      ${filterPaths ? `AND fts_metadata.path IN (${filterPaths.map(() => '?').join(',')})` : ''}
     ORDER BY rank
     LIMIT ?`;
 
-    let results = await db.all(query, [
-      ...tagStrings,
-      ...(filterPaths || []),
-      Math.ceil(n),
-    ]);
+		let results = await db.all(query, [...tagStrings, ...(filterPaths || []), Math.ceil(n)]);
 
-    results = results.filter((result) => result.rank <= bm25Threshold);
+		results = results.filter(result => result.rank <= bm25Threshold);
 
-    let sql = `SELECT * FROM chunks 
-       WHERE id IN (${results.map(() => "?").join(",")})
-       ${ language ? `AND language == '${language}'` : ""}
+		let sql = `SELECT * FROM chunks 
+       WHERE id IN (${results.map(() => '?').join(',')})
+       ${language ? `AND language == '${language}'` : ''}
     `;
 
-    const chunks = await db.all(
-      sql,
-      results.map((result) => result.chunkId),
-    );
+		const chunks = await db.all(
+			sql,
+			results.map(result => result.chunkId),
+		);
 
-    return chunks.map((chunk) => {
-      return {
-        filepath: chunk.path,
-        index: chunk.index,
-        startLine: chunk.startLine,
-        endLine: chunk.endLine,
-        content: chunk.content,
-        digest: chunk.cacheKey,
-        language: chunk.language,
-      };
-    });
-  }
+		return chunks.map(chunk => {
+			return {
+				filepath: chunk.path,
+				index: chunk.index,
+				startLine: chunk.startLine,
+				endLine: chunk.endLine,
+				content: chunk.content,
+				digest: chunk.cacheKey,
+				language: chunk.language,
+			};
+		});
+	}
 }

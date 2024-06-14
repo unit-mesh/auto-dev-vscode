@@ -1,18 +1,18 @@
-import Graph from "graphology";
-import { SyntaxNode } from "web-tree-sitter";
+import Graph from 'graphology';
+import { SyntaxNode } from 'web-tree-sitter';
 
-import { TextRange } from "./model/TextRange";
-import { LocalScope, ScopeStack } from "./node/LocalScope";
-import { LocalImport } from "./node/LocalImport";
-import { LocalDef } from "./node/LocalDef";
-import { Reference } from "./node/Reference";
-import { NodeKind } from "./node/NodeKind";
-import { LanguageProfile } from "../../code-context/_base/LanguageProfile";
-import { ScopeDebug } from "../../test/ScopeDebug";
-import { ImportWithRefs } from "./model/ImportWithRefs";
-import { DefToScope, EdgeKind, ImportToScope, RefToDef, RefToImport, ScopeToScope } from "./edge/EdgeKind";
-import { nameOfSymbol } from "./model/SymbolId";
-import { Symbol } from "./model/Symbol";
+import { LanguageProfile } from '../../code-context/_base/LanguageProfile';
+import { ScopeDebug } from '../../test/ScopeDebug';
+import { DefToScope, EdgeKind, ImportToScope, RefToDef, RefToImport, ScopeToScope } from './edge/EdgeKind';
+import { ImportWithRefs } from './model/ImportWithRefs';
+import { Symbol } from './model/Symbol';
+import { nameOfSymbol } from './model/SymbolId';
+import { TextRange } from './model/TextRange';
+import { LocalDef } from './node/LocalDef';
+import { LocalImport } from './node/LocalImport';
+import { LocalScope, ScopeStack } from './node/LocalScope';
+import { NodeKind } from './node/NodeKind';
+import { Reference } from './node/Reference';
 
 export type NodeIndex = string;
 
@@ -44,7 +44,7 @@ export class ScopeGraph {
 		if (parentScope) {
 			const indexId = this.graph.nodes().length + 1;
 			this.graph.addNode(indexId, scope);
-			this.graph.addEdge(indexId, parentScope, new ScopeToScope);
+			this.graph.addEdge(indexId, parentScope, new ScopeToScope());
 		}
 	}
 
@@ -53,7 +53,7 @@ export class ScopeGraph {
 		if (definingScope) {
 			const indexId = this.graph.nodes().length + 1;
 			this.graph.addNode(indexId, localDef);
-			this.graph.addEdge(indexId, definingScope, new DefToScope);
+			this.graph.addEdge(indexId, definingScope, new DefToScope());
 		}
 	}
 
@@ -64,14 +64,14 @@ export class ScopeGraph {
 			this.graph.addNode(newIndexId, localDef);
 
 			const targetScope = this.parentScope(definingScope) || definingScope;
-			this.graph.addEdge(newIndexId, targetScope, new DefToScope);
+			this.graph.addEdge(newIndexId, targetScope, new DefToScope());
 		}
 	}
 
 	insertGlobalDef(localDef: LocalDef) {
 		const indexId = this.graph.nodes().length + 1;
 		this.graph.addNode(indexId, localDef);
-		this.graph.addEdge(indexId, this.rootIndex, new DefToScope);
+		this.graph.addEdge(indexId, this.rootIndex, new DefToScope());
 	}
 
 	insertLocalImport(import_: LocalImport) {
@@ -79,7 +79,7 @@ export class ScopeGraph {
 		if (definingScope) {
 			const indexId = this.graph.nodes().length + 1;
 			this.graph.addNode(indexId, import_);
-			this.graph.addEdge(indexId, definingScope, new ImportToScope);
+			this.graph.addEdge(indexId, definingScope, new ImportToScope());
 		}
 	}
 
@@ -91,19 +91,26 @@ export class ScopeGraph {
 		if (localScopeIndex) {
 			let stack = this.scopeStack(localScopeIndex);
 			for (const scope of stack) {
-				this.graph.inEdges(scope).filter(edge => {
-					return this.graph.getEdgeAttributes(edge) instanceof DefToScope
-				}).forEach(edge => {
-					const localDef = this.graph.source(edge);
-					const def = this.graph.getNodeAttributes(localDef) as LocalDef;
-					if (reference.name(sourceCode) === def.name(sourceCode)) {
-						if (def.symbolId && reference.symbolId && def.symbolId.namespaceIndex !== reference.symbolId.namespaceIndex) {
-							// both contain symbols, but they don't belong to the same namepspace
-						} else {
-							possibleDefs.push(localDef);
+				this.graph
+					.inEdges(scope)
+					.filter(edge => {
+						return this.graph.getEdgeAttributes(edge) instanceof DefToScope;
+					})
+					.forEach(edge => {
+						const localDef = this.graph.source(edge);
+						const def = this.graph.getNodeAttributes(localDef) as LocalDef;
+						if (reference.name(sourceCode) === def.name(sourceCode)) {
+							if (
+								def.symbolId &&
+								reference.symbolId &&
+								def.symbolId.namespaceIndex !== reference.symbolId.namespaceIndex
+							) {
+								// both contain symbols, but they don't belong to the same namepspace
+							} else {
+								possibleDefs.push(localDef);
+							}
 						}
-					}
-				});
+					});
 
 				this.graph.inEdges(scope).forEach(edge => {
 					if (this.graph.getEdgeAttributes(edge) instanceof ImportToScope) {
@@ -122,10 +129,10 @@ export class ScopeGraph {
 			const refIndex = this.graph.nodes().length + 1;
 			this.graph.addNode(refIndex, newRef);
 			for (const defIndex of possibleDefs) {
-				this.graph.addEdge(refIndex, defIndex, new RefToDef);
+				this.graph.addEdge(refIndex, defIndex, new RefToDef());
 			}
 			for (const impIndex of possibleImports) {
-				this.graph.addEdge(refIndex, impIndex, new RefToImport);
+				this.graph.addEdge(refIndex, impIndex, new RefToImport());
 			}
 		}
 	}
@@ -137,7 +144,8 @@ export class ScopeGraph {
 	private scopeByRange(range: TextRange, start: NodeIndex): NodeIndex | null {
 		const targetRange = this.graph.getNodeAttributes(start).range;
 		if (targetRange.contains(range)) {
-			const childScopes = this.graph.inEdges(start)
+			const childScopes = this.graph
+				.inEdges(start)
 				.filter(edge => this.graph.getEdgeAttributes(edge) instanceof ScopeToScope)
 				.map(edge => this.graph.source(edge));
 
@@ -168,13 +176,15 @@ export class ScopeGraph {
 
 	public hoverableRanges(): TextRange[] {
 		const iterator = this.graph.nodes();
-		return iterator.filter(node => {
-			const nodeKind = this.graph.getNodeAttributes(node);
-			return nodeKind instanceof LocalDef || nodeKind instanceof Reference || nodeKind instanceof LocalImport;
-		}).map(node => {
-			const nodeKind = this.graph.getNodeAttributes(node);
-			return nodeKind.range;
-		});
+		return iterator
+			.filter(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				return nodeKind instanceof LocalDef || nodeKind instanceof Reference || nodeKind instanceof LocalImport;
+			})
+			.map(node => {
+				const nodeKind = this.graph.getNodeAttributes(node);
+				return nodeKind.range;
+			});
 	}
 
 	public definitions(referenceNode: NodeIndex): NodeIndex[] {
@@ -189,13 +199,16 @@ export class ScopeGraph {
 
 	public references(definitionNode: NodeIndex): NodeIndex[] {
 		const iterator = this.graph.inEdges(definitionNode);
-		return iterator.filter(edge =>
-			this.graph.getEdgeAttributes(edge) instanceof RefToDef || this.graph.getEdgeAttributes(edge) instanceof RefToImport
+		return iterator.filter(
+			edge =>
+				this.graph.getEdgeAttributes(edge) instanceof RefToDef ||
+				this.graph.getEdgeAttributes(edge) instanceof RefToImport,
 		);
 	}
 
 	public nodeByRange(startByte: number, endByte: number): NodeIndex | undefined {
-		return this.graph.nodes()
+		return this.graph
+			.nodes()
 			.filter(node => {
 				const nodeKind = this.graph.getNodeAttributes(node);
 				return nodeKind instanceof LocalDef || nodeKind instanceof Reference || nodeKind instanceof LocalImport;
@@ -213,7 +226,8 @@ export class ScopeGraph {
 	}
 
 	nodeByPosition(line: number, column: number): NodeIndex | undefined {
-		return this.graph.nodes()
+		return this.graph
+			.nodes()
 			.filter(node => {
 				const nodeKind = this.graph.getNodeAttributes(node);
 				return nodeKind instanceof LocalDef || nodeKind instanceof Reference || nodeKind instanceof LocalImport;
@@ -221,12 +235,18 @@ export class ScopeGraph {
 			.find(node => {
 				const nodeKind = this.graph.getNodeAttributes(node);
 				const range = nodeKind.range;
-				return range.start.line === line && range.end.line === line && range.start.column <= column && range.end.column >= column;
+				return (
+					range.start.line === line &&
+					range.end.line === line &&
+					range.start.column <= column &&
+					range.end.column >= column
+				);
 			});
 	}
 
 	allLocalDefs(): NodeKind[] {
-		return this.graph.nodes()
+		return this.graph
+			.nodes()
 			.filter(node => this.graph.getNodeAttributes(node) instanceof LocalDef)
 			.map(node => this.graph.getNodeAttributes(node));
 	}
@@ -270,7 +290,8 @@ export class ScopeGraph {
 
 	symbols(): Symbol[] {
 		const namespaces = this.languageProfile.namespaces;
-		return this.graph.nodes()
+		return this.graph
+			.nodes()
 			.filter(node => {
 				const nodeKind = this.graph.getNodeAttributes(node);
 				return nodeKind instanceof LocalDef;
@@ -279,10 +300,7 @@ export class ScopeGraph {
 				const nodeKind = this.graph.getNodeAttributes(node);
 				const localDef = nodeKind as LocalDef;
 				if (localDef.symbolId) {
-					return new Symbol(
-						nameOfSymbol(namespaces, localDef.symbolId),
-						localDef.range
-					);
+					return new Symbol(nameOfSymbol(namespaces, localDef.symbolId), localDef.range);
 				}
 				return undefined;
 			})
@@ -301,4 +319,3 @@ export class ScopeGraph {
 		return undefined;
 	}
 }
-

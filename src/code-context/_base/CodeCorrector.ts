@@ -1,4 +1,4 @@
-import vscode from "vscode";
+import vscode from 'vscode';
 
 export interface CorrectorContext {
 	document: vscode.TextDocument;

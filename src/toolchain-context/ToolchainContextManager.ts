@@ -1,22 +1,10 @@
-import { ToolchainContextItem, ToolchainContextProvider, CreateToolchainContext } from "./ToolchainContextProvider";
+import { ToolchainContextItem, CreateToolchainContext } from "./ToolchainContextProvider";
 import { providerContainer } from "../ProviderContainer.config";
-import { PROVIDER_TYPES } from "../ProviderTypes";
+import { IToolchainContextProvider } from "src/ProviderTypes";
 
 export class ToolchainContextManager {
-	private static instance_: ToolchainContextManager;
-
-	private constructor() {
-	}
-
-	static instance(): ToolchainContextManager {
-		if (!ToolchainContextManager.instance_) {
-			ToolchainContextManager.instance_ = new ToolchainContextManager();
-		}
-		return ToolchainContextManager.instance_;
-	}
-
 	async collectContextItems(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
-		let map: Promise<ToolchainContextItem[]>[] = providerContainer.getAll<ToolchainContextProvider>(PROVIDER_TYPES.ToolchainContextProvider)
+		let map: Promise<ToolchainContextItem[]>[] = providerContainer.getAll(IToolchainContextProvider)
 			.map(async (provider) => {
 				try {
 					if (await provider?.isApplicable(context)) {

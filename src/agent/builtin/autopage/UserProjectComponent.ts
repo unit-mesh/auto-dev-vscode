@@ -4,7 +4,7 @@ export class UserProjectComponent {
 	signature?: string;
 	props?: string[];
 
-	constructor(name: string, path: string, signature: string = "", props: string[] = []) {
+	constructor(name: string, path: string, signature: string = '', props: string[] = []) {
 		this.name = name;
 		this.path = path;
 		this.signature = signature;

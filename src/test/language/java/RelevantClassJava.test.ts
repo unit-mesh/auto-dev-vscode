@@ -1,34 +1,30 @@
-import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
+import { LanguageProfileUtil } from '../../../code-context/_base/LanguageProfile';
+import { TreeSitterFile } from '../../../code-context/ast/TreeSitterFile';
+import { JavaStructurerProvider } from '../../../code-context/java/JavaStructurerProvider';
+import { JavaRelevantLookup } from '../../../code-context/java/utils/JavaRelevantLookup';
+import { ScopeGraph } from '../../../code-search/scope-graph/ScopeGraph';
+import { functionToRange } from '../../../editor/codemodel/CodeElement';
+import { TestLanguageServiceProvider } from '../../../test/TestLanguageService';
 
-const Parser = require("web-tree-sitter");
-import 'reflect-metadata';
-
-import { JavaRelevantLookup } from "../../../code-context/java/utils/JavaRelevantLookup";
-import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
-import { TestLanguageService } from "../../TestLanguageService";
-import { ScopeGraph } from "../../../code-search/scope-graph/ScopeGraph";
-import { JavaStructurerProvider } from "../../../code-context/java/JavaStructurerProvider";
-import { functionToRange } from "../../../editor/codemodel/CodeElement";
-
+const Parser = require('web-tree-sitter');
 
 describe('RelevantClass for Java', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = LanguageProfileUtil.from("java")!!;
+	let langConfig = LanguageProfileUtil.from('java')!!;
 
 	beforeEach(async () => {
 		await Parser.init();
 		parser = new Parser();
-		const languageService = new TestLanguageService(parser);
+		const languageService = new TestLanguageServiceProvider(parser);
 
-		language = await langConfig.grammar(languageService, "java")!!;
+		language = await langConfig.grammar(languageService, 'java')!!;
 		parser.setLanguage(language);
 		parser.setLogger(null);
 	});
 
 	it('calculate for services', async () => {
-		const controller =
-			`package cc.unitmesh.untitled.demo.controller;
+		const controller = `package cc.unitmesh.untitled.demo.controller;
 
 import cc.unitmesh.untitled.demo.entity.BlogPost;
 import cc.unitmesh.untitled.demo.service.BlogService;
@@ -52,19 +48,20 @@ public class BlogController {
 `;
 
 		let tree = parser.parse(controller);
-		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
+		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, '');
 		const graph: ScopeGraph = await tsf.scopeGraph();
 		let structurer = new JavaStructurerProvider();
-		await structurer.init(new TestLanguageService(parser));
+		await structurer.init(new TestLanguageServiceProvider(parser));
 
-		let codeFile = await structurer.parseFile(controller, "");
+		let codeFile = await structurer.parseFile(controller, '');
 		let secondFunc = codeFile!!.classes[0].methods[0];
 		let textRange = functionToRange(secondFunc);
 
-		let ios: string[] = await structurer.retrieveMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
+		let ios: string[] =
+			(await structurer.retrieveMethodIOImports(graph, tsf.tree.rootNode, textRange, controller)) ?? [];
 		expect(ios).toEqual([
 			'import cc.unitmesh.untitled.demo.entity.BlogPost;',
-			'import org.springframework.web.bind.annotation.PathVariable;'
+			'import org.springframework.web.bind.annotation.PathVariable;',
 		]);
 
 		let fields = await structurer.extractFields(tsf.tree.rootNode);
@@ -74,8 +71,7 @@ public class BlogController {
 	});
 
 	it('calculate for services with array', async () => {
-		const controller =
-			`package cc.unitmesh.untitled.demo.controller;
+		const controller = `package cc.unitmesh.untitled.demo.controller;
 
 import cc.unitmesh.untitled.demo.dto.CreateBlogRequest;
 import cc.unitmesh.untitled.demo.dto.CreateBlogResponse;
@@ -110,29 +106,30 @@ public class BlogController {
 `;
 
 		let tree = parser.parse(controller);
-		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, "");
+		const tsf = new TreeSitterFile(controller, tree, langConfig, parser, language, '');
 		const graph: ScopeGraph = await tsf.scopeGraph();
 
 		let structurer = new JavaStructurerProvider();
-		await structurer.init(new TestLanguageService(parser));
-		let codeFile = await structurer.parseFile(controller, "");
+		await structurer.init(new TestLanguageServiceProvider(parser));
+		let codeFile = await structurer.parseFile(controller, '');
 
 		// first func
 		let firstFunc = codeFile!!.classes[0].methods[0];
 		let textRange = functionToRange(firstFunc);
 		let lookup = new JavaRelevantLookup(tsf);
-		let ios: string[] = await structurer.retrieveMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
+		let ios: string[] =
+			(await structurer.retrieveMethodIOImports(graph, tsf.tree.rootNode, textRange, controller)) ?? [];
 		let relevantClasses = lookup.relevantImportToFilePath(ios);
 		expect(relevantClasses).toEqual(['src/main/java/cc/unitmesh/untitled/demo/entity/BlogPost.java']);
 
 		// for second func
 		let secondFunc = codeFile!!.classes[0].methods[1];
 		textRange = functionToRange(secondFunc);
-		ios = await structurer.retrieveMethodIOImports(graph, tsf.tree.rootNode, textRange, controller) ?? [];
+		ios = (await structurer.retrieveMethodIOImports(graph, tsf.tree.rootNode, textRange, controller)) ?? [];
 		relevantClasses = lookup.relevantImportToFilePath(ios);
 		expect(relevantClasses).toEqual([
 			'src/main/java/cc/unitmesh/untitled/demo/dto/CreateBlogRequest.java',
-			'src/main/java/cc/unitmesh/untitled/demo/dto/CreateBlogResponse.java'
+			'src/main/java/cc/unitmesh/untitled/demo/dto/CreateBlogResponse.java',
 		]);
 	});
 });

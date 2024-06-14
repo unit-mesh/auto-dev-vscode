@@ -1,8 +1,8 @@
+import { Uri, WorkspaceFolder } from 'vscode';
+
 const ignore = require('ignore');
 const fs = require('fs');
-const isBinaryFile = require("isbinaryfile").isBinaryFile;
-
-import { Uri, WorkspaceFolder } from 'vscode';
+const isBinaryFile = require('isbinaryfile').isBinaryFile;
 
 /**
  * Example usage:
@@ -19,12 +19,10 @@ import { Uri, WorkspaceFolder } from 'vscode';
  */
 class FileFilter {
 	isIgnored(uri: Uri, workspaceFolder: WorkspaceFolder | undefined) {
-		let ignored = ignore()
-			.add(fs.readFileSync(".gitignore").toString());
+		let ignored = ignore().add(fs.readFileSync('.gitignore').toString());
 
 		return ignored.ignores(uri.path);
 	}
-
 
 	private getFileExtension(uri: Uri): string {
 		const pathSegments = uri.path.split('/');

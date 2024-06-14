@@ -19,18 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import vscode, { extensions, Uri } from "vscode";
-import * as util from "node:util";
-import { Writable } from "node:stream";
-import { spawn } from "node:child_process";
+import { spawn } from 'node:child_process';
+import { Writable } from 'node:stream';
+import * as util from 'node:util';
+
 import * as iconv from 'iconv-lite';
+import vscode, { extensions, Uri } from 'vscode';
 
-import { API, Commit, GitExtension, Repository } from "../types/git";
-import { DiffManager } from "../editor/diff/DiffManager";
-import { ParsedFileChange, parseGitLog } from "./parser/SimpleGitLogParser";
-import { EXT_LANGUAGE_MAP } from "../editor/language/ExtensionLanguageMap";
+import { inferLanguage } from 'base/common/languages/languages';
 
-export const asyncExec = util.promisify(require("child_process").exec);
+import { DiffManager } from '../editor/diff/DiffManager';
+import { API, Commit, GitExtension, Repository } from '../types/git';
+import { ParsedFileChange, parseGitLog } from './parser/SimpleGitLogParser';
+
+export const asyncExec = util.promisify(require('child_process').exec);
 
 export class StopWatch {
 	private started = new Date().getTime();
@@ -135,7 +137,7 @@ export class GitAction extends GitCommand {
 		let repo = await this._getRepo(forDirectory);
 		let i = 0;
 		while (!repo?.state?.HEAD?.name) {
-			await new Promise((resolve) => setTimeout(resolve, 1000));
+			await new Promise(resolve => setTimeout(resolve, 1000));
 			i++;
 			if (i >= 20) {
 				return undefined;
@@ -155,16 +157,16 @@ export class GitAction extends GitCommand {
 		let repo = await this.getRepo(forDirectory);
 		if (repo?.state?.HEAD?.name === undefined) {
 			try {
-				const { stdout } = await asyncExec("git rev-parse --abbrev-ref HEAD", {
+				const { stdout } = await asyncExec('git rev-parse --abbrev-ref HEAD', {
 					cwd: forDirectory.fsPath,
 				});
-				return stdout?.trim() || "NONE";
+				return stdout?.trim() || 'NONE';
 			} catch (e) {
-				return "NONE";
+				return 'NONE';
 			}
 		}
 
-		return repo?.state?.HEAD?.name || "NONE";
+		return repo?.state?.HEAD?.name || 'NONE';
 	}
 
 	async getDiff(): Promise<string> {
@@ -179,15 +181,15 @@ export class GitAction extends GitCommand {
 			diffs.push(await this.getRepositoryChanges(repo));
 		}
 
-		return diffs.join("\n\n");
+		return diffs.join('\n\n');
 	}
 
 	async getRepositoryChanges(repository: Repository): Promise<string> {
-		let diffResult: string = await repository.diff(true) || await repository.diff();
+		let diffResult: string = (await repository.diff(true)) || (await repository.diff());
 		if (diffResult !== '') {
 			return this.parseGitDiff(repository, diffResult);
 		} else {
-			return "";
+			return '';
 		}
 	}
 
@@ -202,7 +204,7 @@ export class GitAction extends GitCommand {
 		let commits = await repository.log({ maxEntries: 10 });
 		repositoryHistories.push(...commits.map(commit => commit.message));
 
-		let userName = await repository.getConfig('user.name') ?? await repository.getGlobalConfig('user.name');
+		let userName = (await repository.getConfig('user.name')) ?? (await repository.getGlobalConfig('user.name'));
 		let userCommits = await repository.log({ maxEntries: 10, author: userName });
 		userHistories.push(...userCommits.map(commit => commit.message));
 
@@ -210,10 +212,7 @@ export class GitAction extends GitCommand {
 	}
 
 	getWorkspaceDirectories(): string[] {
-		return (
-			vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath) ||
-			[]
-		);
+		return vscode.workspace.workspaceFolders?.map(folder => folder.uri.fsPath) || [];
 	}
 
 	async getRepoName(uri: Uri) {
@@ -221,7 +220,7 @@ export class GitAction extends GitCommand {
 		if (repo) {
 			return repo.state.HEAD?.name;
 		} else {
-			return "NONE";
+			return 'NONE';
 		}
 	}
 
@@ -260,17 +259,13 @@ export class GitAction extends GitCommand {
 			throw new Error(`Commit with hash ${hash} not found in repository`);
 		}
 
-		let gitOutput = await this.exec(repository.rootUri.fsPath, 'show', '--format=', hash);
-		let changes = parseGitLog(gitOutput);
+		const gitOutput = await this.exec(repository.rootUri.fsPath, 'show', '--format=', hash);
 
-		let output: ParsedFileChange[] = [];
-		changes.filter((change: ParsedFileChange) => {
-			let ext = change.filename.split('.').pop();
-			if (!ext) {
-				return false;
-			}
+		const changes = parseGitLog(gitOutput);
+		const output: ParsedFileChange[] = [];
 
-			if (EXT_LANGUAGE_MAP[ext]) {
+		changes.forEach((change: ParsedFileChange) => {
+			if (inferLanguage(change.filename)) {
 				output.push(change);
 			}
 		});

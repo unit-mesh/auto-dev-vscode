@@ -1,5 +1,6 @@
-import { CancellationToken } from "vscode";
-import { SearchOptions } from "./SearchOptions";
+import { CancellationToken } from 'vscode';
+
+import { SearchOptions } from './SearchOptions';
 
 export interface SemanticSearch {
 	/**
@@ -11,5 +12,10 @@ export interface SemanticSearch {
 	 * @param {object} cancellationToken - 用于取消操作的信号对象。
 	 * @returns {Promise<Array>} - 返回搜索结果的数组。
 	 */
-	searchChunks(items: string[], maxResults: number, options: SearchOptions, cancellationToken: CancellationToken): Promise<Array<any>>;
+	searchChunks(
+		items: string[],
+		maxResults: number,
+		options: SearchOptions,
+		cancellationToken: CancellationToken,
+	): Promise<Array<any>>;
 }

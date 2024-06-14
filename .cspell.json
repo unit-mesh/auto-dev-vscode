@@ -11,9 +11,16 @@
   "useGitignore": true,
   "ignorePaths": [],
   "words": [
+    "inversify",
     "ollama",
+    "onnx",
     "openai",
-    "phodal"
+    "phodal",
+		"identifer",
+    "qianfan",
+    "tolist",
+    "tongyi",
+    "xenova"
   ],
   "allowCompoundWords": true,
   "overrides": []

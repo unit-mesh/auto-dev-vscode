@@ -4,5 +4,5 @@ export enum CustomAgentResponseAction {
 	TextChunk = 'TextChunk',
 	Flow = 'Flow',
 	WebView = 'WebView',
-	DevIns = 'DevIns'
+	DevIns = 'DevIns',
 }

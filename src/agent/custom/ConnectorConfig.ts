@@ -8,7 +8,7 @@ export class ConnectorConfig {
 	 */
 	responseFormat: string;
 
-	constructor(requestFormat: string = "", responseFormat: string = "") {
+	constructor(requestFormat: string = '', responseFormat: string = '') {
 		this.requestFormat = requestFormat;
 		this.responseFormat = responseFormat;
 	}

@@ -1,6 +1,6 @@
-import { TextRange } from "../model/TextRange";
-import { NodeKind } from "./NodeKind";
-import { SymbolId } from "../model/SymbolId";
+import { SymbolId } from '../model/SymbolId';
+import { TextRange } from '../model/TextRange';
+import { NodeKind } from './NodeKind';
 
 /// A definition node
 export class LocalDef extends NodeKind {

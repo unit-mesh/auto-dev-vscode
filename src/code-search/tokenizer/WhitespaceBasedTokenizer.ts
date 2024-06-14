@@ -1,4 +1,4 @@
-import { CodeTokenizer } from "./CodeTokenizer";
+import { CodeTokenizer } from './CodeTokenizer';
 
 export class WhitespaceBasedTokenizer implements CodeTokenizer {
 	tokenize(input: string): Set<string> {

@@ -1,35 +1,26 @@
-import { AutoDevExtension } from "../../AutoDevExtension";
-import { channel } from "../../channel";
-import { HydeKeywordsStrategy } from "../../code-search/search-strategy/HydeKeywordsStrategy";
-import { SystemActionType } from "../../action/setting/SystemActionType";
-import { HydeCodeStrategy } from "../../code-search/search-strategy/HydeCodeStrategy";
-import { StrategyFinalPrompt } from "../../code-search/search-strategy/_base/StrategyFinalPrompt";
-import { NamedChunk } from "../../code-search/embedding/_base/NamedChunk";
-import { TeamTermService } from "../../domain/TeamTermService";
-import { QueryExpansion } from "../../domain/QueryExpansion";
+import { SystemActionType } from '../../action/setting/SystemActionType';
+import { AutoDevExtension } from '../../AutoDevExtension';
+import { logger } from '../../base/common/log/log';
+import { StrategyFinalPrompt } from '../../code-search/search-strategy/_base/StrategyFinalPrompt';
+import { HydeCodeStrategy } from '../../code-search/search-strategy/HydeCodeStrategy';
+import { HydeKeywordsStrategy } from '../../code-search/search-strategy/HydeKeywordsStrategy';
+import { QueryExpansion } from '../../domain/QueryExpansion';
+import { TeamTermService } from '../../domain/TeamTermService';
 
 export class Catalyser {
-	private static instance: Catalyser;
-	private extension: AutoDevExtension;
+	private queryExpansion: QueryExpansion;
 
-	private constructor(extension: AutoDevExtension) {
-		this.extension = extension;
+	constructor(
+		private extension: AutoDevExtension,
+		private teamTermService: TeamTermService,
+	) {
+		this.queryExpansion = new QueryExpansion(this.teamTermService);
 	}
 
-	/**
-	 * Get the instance of the Catalyser.
-	 */
-	static getInstance(extension: AutoDevExtension): Catalyser {
-		if (!Catalyser.instance) {
-			Catalyser.instance = new Catalyser(extension);
-		}
-		return Catalyser.instance;
-	}
-
-	async query(query: string, type: SystemActionType): Promise<void> {
-		channel.append("Semantic search for code: " + query + "\n");
-		let expandedQuery = QueryExpansion.instance().expand(query);
-		channel.append("Expanded query: " + expandedQuery + "\n");
+	async query(query: string, type: SystemActionType): Promise<string | undefined> {
+		logger.append('Semantic search for code: ' + query + '\n');
+		let expandedQuery = this.queryExpansion.expand(query);
+		logger.append('Expanded query: ' + expandedQuery + '\n');
 
 		let finalPrompt: StrategyFinalPrompt | undefined = undefined;
 		switch (type) {
@@ -42,21 +33,17 @@ export class Catalyser {
 				finalPrompt = await strategy.execute();
 				break;
 			default:
-				channel.append("Unknown action type: " + type + "\n");
+				logger.append('Unknown action type: ' + type + '\n');
 				break;
 		}
 
 		if (!finalPrompt) {
-			channel.append("No output from the strategy\n");
+			logger.append('No output from the strategy\n');
 			return;
 		}
 
-		this.extension.sidebar.webviewProtocol?.request("userInput", {
-			input: finalPrompt.prompt,
-		});
-
 		if (finalPrompt.chunks.length > 0) {
-			channel.appendLine("Found " + finalPrompt.chunks.length + " code snippets\n");
+			logger.appendLine('Found ' + finalPrompt.chunks.length + ' code snippets\n');
 			for (let chunk of finalPrompt.chunks) {
 				// a file path will be like: `build.gradle.kts (0-5)`, we need to parse range from name
 				let rangeResult = chunk.name.match(/\((\d+)-(\d+)\)/);
@@ -64,8 +51,10 @@ export class Catalyser {
 				let start = rangeResult ? parseInt(rangeResult[1]) : 0;
 				let end = rangeResult ? parseInt(rangeResult[2]) : chunk.text.length;
 
-				channel.appendLine("File: " + chunk.path + " (" + start + " - " + end + ")");
+				logger.appendLine('File: ' + chunk.path + ' (' + start + ' - ' + end + ')');
 			}
 		}
+
+		return finalPrompt.prompt;
 	}
 }

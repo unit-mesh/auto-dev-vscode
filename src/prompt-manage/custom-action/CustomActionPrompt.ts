@@ -1,9 +1,10 @@
-import yaml from "js-yaml";
+import yaml from 'js-yaml';
 
-import { InteractionType } from "../InteractionType";
-import { TemplateRoleSplitter } from "../team-prompts/TemplateRoleSplitter";
-import { ChatMessage, ChatRole } from "../../llm-provider/ChatMessage";
-import { CustomActionType } from "./CustomActionType";
+import { ChatMessageRole, IChatMessage } from 'base/common/language-models/languageModels';
+
+import { InteractionType } from '../InteractionType';
+import { TemplateRoleSplitter } from '../team-prompts/TemplateRoleSplitter';
+import { CustomActionType } from './CustomActionType';
 
 export class CustomActionPrompt {
 	name?: string;
@@ -13,7 +14,7 @@ export class CustomActionPrompt {
 	type: CustomActionType;
 	other: { [key: string]: any };
 	// which include the `.vm` file content
-	messages: ChatMessage[];
+	messages: IChatMessage[];
 	pathmatch?: string;
 
 	constructor(
@@ -22,8 +23,8 @@ export class CustomActionPrompt {
 		priority: number = 0,
 		type: CustomActionType = CustomActionType.Default,
 		other: { [key: string]: any } = {},
-		messages: ChatMessage[] = [],
-		match?: string
+		messages: IChatMessage[] = [],
+		match?: string,
 	) {
 		this.interaction = interaction;
 		this.priority = priority;
@@ -89,13 +90,17 @@ export class CustomActionPrompt {
 			const frontMatter = matchResult[1];
 			const frontMatterMap = yaml.load(frontMatter) as any;
 
-			prompt.name = frontMatterMap["name"];
-			prompt.interaction = frontMatterMap["interaction"] ? InteractionType[frontMatterMap["interaction"] as keyof typeof InteractionType] : InteractionType.AppendCursorStream;
-			prompt.priority = frontMatterMap["priority"] ? parseInt(frontMatterMap["priority"]) : 0;
-			prompt.type = frontMatterMap["type"] ? CustomActionType[frontMatterMap["type"] as keyof typeof CustomActionType] : CustomActionType.Default;
+			prompt.name = frontMatterMap['name'];
+			prompt.interaction = frontMatterMap['interaction']
+				? InteractionType[frontMatterMap['interaction'] as keyof typeof InteractionType]
+				: InteractionType.AppendCursorStream;
+			prompt.priority = frontMatterMap['priority'] ? parseInt(frontMatterMap['priority']) : 0;
+			prompt.type = frontMatterMap['type']
+				? CustomActionType[frontMatterMap['type'] as keyof typeof CustomActionType]
+				: CustomActionType.Default;
 
 			prompt.other = Object.keys(frontMatterMap)
-				.filter(key => key !== "interaction" && key !== "priority" && key !== "type")
+				.filter(key => key !== 'interaction' && key !== 'priority' && key !== 'type')
 				.reduce((acc: any, key) => {
 					acc[key] = frontMatterMap[key];
 					return acc;
@@ -110,19 +115,21 @@ export class CustomActionPrompt {
 		return prompt;
 	}
 
-	static parseChatMessage(chatContent: string): ChatMessage[] {
+	static parseChatMessage(chatContent: string): IChatMessage[] {
 		try {
 			const messages = TemplateRoleSplitter.split(chatContent);
 			return Object.entries(messages).map(([key, value]) => ({
-				role: key as ChatRole,
-				content: value
+				role: key as ChatMessageRole,
+				content: value,
 			}));
 		} catch (e) {
 			console.warn(`Failed to parse chat message: ${chatContent}`, e);
-			return [{
-				role: ChatRole.User,
-				content: chatContent
-			}];
+			return [
+				{
+					role: ChatMessageRole.User,
+					content: chatContent,
+				},
+			];
 		}
 	}
 }

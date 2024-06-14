@@ -1,5 +1,5 @@
-import { GradleDependencyInspector } from "../../../../toolchain-context/buildtool/gradle/GradleDependencyInspector";
-import { DEP_SCOPE } from "../../../../toolchain-context/buildtool/_base/Dependence";
+import { DEP_SCOPE } from '../../../../toolchain-context/buildtool/_base/Dependence';
+import { GradleDependencyInspector } from '../../../../toolchain-context/buildtool/gradle/GradleDependencyInspector';
 
 describe('GradleVersionParser', () => {
 	let parser: GradleDependencyInspector;
@@ -22,15 +22,15 @@ dependencies {
 		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(2);
-		expect(dependencies[0].name).toBe("joda-time:joda-time");
-		expect(dependencies[0].version).toBe("2.2");
-		expect(dependencies[0].group).toBe("joda-time");
-		expect(dependencies[0].artifact).toBe("joda-time");
+		expect(dependencies[0].name).toBe('joda-time:joda-time');
+		expect(dependencies[0].version).toBe('2.2');
+		expect(dependencies[0].group).toBe('joda-time');
+		expect(dependencies[0].artifact).toBe('joda-time');
 		expect(dependencies[0].scope).toBe(DEP_SCOPE.NORMAL);
 
-		expect(dependencies[1].group).toBe("junit");
-		expect(dependencies[1].artifact).toBe("junit");
-		expect(dependencies[1].version).toBe("4.12");
+		expect(dependencies[1].group).toBe('junit');
+		expect(dependencies[1].artifact).toBe('junit');
+		expect(dependencies[1].version).toBe('4.12');
 		expect(dependencies[1].scope).toBe(DEP_SCOPE.TEST);
 	});
 
@@ -44,9 +44,9 @@ dependencies {
 		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(1);
-		expect(dependencies[0].group).toBe("org.springframework");
-		expect(dependencies[0].artifact).toBe("spring-core");
-		expect(dependencies[0].version).toBe("2.5");
+		expect(dependencies[0].group).toBe('org.springframework');
+		expect(dependencies[0].artifact).toBe('spring-core');
+		expect(dependencies[0].version).toBe('2.5');
 		expect(dependencies[0].scope).toBe(DEP_SCOPE.RUNTIME);
 	});
 
@@ -60,8 +60,8 @@ dependencySet(group:'org.slf4j', version: '1.7.7') {
 		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(1);
-		expect(dependencies[0].artifact).toBe("slf4j-api");
-		expect(dependencies[0].version).toBe("1.7.7");
+		expect(dependencies[0].artifact).toBe('slf4j-api');
+		expect(dependencies[0].version).toBe('1.7.7');
 	});
 
 	test('dependency_set_multiple', () => {
@@ -74,11 +74,11 @@ dependencySet(group:'org.slf4j', version: '1.7.7') {
 		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(2);
-		expect(dependencies[0].artifact).toBe("slf4j-api");
-		expect(dependencies[0].version).toBe("1.7.7");
+		expect(dependencies[0].artifact).toBe('slf4j-api');
+		expect(dependencies[0].version).toBe('1.7.7');
 
-		expect(dependencies[1].artifact).toBe("slf4j-simple");
-		expect(dependencies[1].version).toBe("1.7.7");
+		expect(dependencies[1].artifact).toBe('slf4j-simple');
+		expect(dependencies[1].version).toBe('1.7.7');
 	});
 
 	test('error_single_line', () => {
@@ -109,7 +109,7 @@ dependencies {
 		const dependencies = parser.parseDependency(gradleSample)[0].dependencies;
 
 		expect(dependencies.length).toBe(7);
-		expect(dependencies[0].name).toBe("libs.kotlin.stdlib");
+		expect(dependencies[0].name).toBe('libs.kotlin.stdlib');
 	});
 
 	test('sub_projects', () => {
@@ -143,6 +143,6 @@ subprojects {
 		expect(dependencies.length).toBe(18);
 		dependencies.sort((a, b) => a.name.localeCompare(b.name));
 
-		expect(dependencies[0].name).toBe("ch.vorburger.mariaDB4j:mariaDB4j");
+		expect(dependencies[0].name).toBe('ch.vorburger.mariaDB4j:mariaDB4j');
 	});
 });

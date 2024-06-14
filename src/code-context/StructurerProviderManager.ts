@@ -1,13 +1,13 @@
-import { SupportedLanguage } from "../editor/language/SupportedLanguage";
-import { StructurerProvider } from "./_base/StructurerProvider";
-import { providerContainer } from "../ProviderContainer.config";
-import { PROVIDER_TYPES } from "../ProviderTypes";
+
+import { LanguageIdentifier } from 'base/common/languages/languages';
+import { providerContainer } from '../ProviderContainer.config';
+import { StructurerProvider } from './_base/StructurerProvider';
+import { IStructurerProvider } from 'src/ProviderTypes';
 
 export class StructurerProviderManager {
 	private static instance: StructurerProviderManager;
 
-	private constructor() {
-	}
+	private constructor() {}
 
 	static getInstance(): StructurerProviderManager {
 		if (!StructurerProviderManager.instance) {
@@ -16,9 +16,9 @@ export class StructurerProviderManager {
 		return StructurerProviderManager.instance;
 	}
 
-	getStructurer(lang: SupportedLanguage): StructurerProvider | undefined {
-		let testProviders = providerContainer.getAll<StructurerProvider>(PROVIDER_TYPES.StructurerProvider);
-		let provider = testProviders.find((provider) => {
+	getStructurer(lang: LanguageIdentifier): StructurerProvider | undefined {
+		let testProviders = providerContainer.getAll(IStructurerProvider);
+		let provider = testProviders.find(provider => {
 			return provider.isApplicable(lang);
 		});
 

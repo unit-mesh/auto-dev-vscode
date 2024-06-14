@@ -1,18 +1,18 @@
-import { Query, SyntaxNode } from "web-tree-sitter";
+import { Query, SyntaxNode } from 'web-tree-sitter';
 
-import { LanguageProfile } from "../../code-context/_base/LanguageProfile";
-import { TextRange } from "./model/TextRange";
-import { LocalImport } from "./node/LocalImport";
-import { LocalScope } from "./node/LocalScope";
-import { LocalDef } from "./node/LocalDef";
-import { Reference } from "./node/Reference";
-import { ScopeGraph } from "./ScopeGraph";
-import { symbolIdOf } from "./model/SymbolId";
+import { LanguageProfile } from '../../code-context/_base/LanguageProfile';
+import { symbolIdOf } from './model/SymbolId';
+import { TextRange } from './model/TextRange';
+import { LocalDef } from './node/LocalDef';
+import { LocalImport } from './node/LocalImport';
+import { LocalScope } from './node/LocalScope';
+import { Reference } from './node/Reference';
+import { ScopeGraph } from './ScopeGraph';
 
 export enum Scoping {
-	global = "global",
-	hoisted = "hoisted",
-	local = "local"
+	global = 'global',
+	hoisted = 'hoisted',
+	local = 'local',
 }
 
 export interface LocalDefCapture {
@@ -26,16 +26,15 @@ export interface LocalRefCapture {
 	symbol: string | undefined | null;
 }
 
-export class ScopingError extends Error {
-}
+export class ScopingError extends Error {}
 
 function parseScoping(s: string): Scoping {
 	switch (s) {
-		case "hoist":
+		case 'hoist':
 			return Scoping.hoisted;
-		case "global":
+		case 'global':
 			return Scoping.global;
-		case "local":
+		case 'local':
 			return Scoping.local;
 		default:
 			throw new ScopingError(s);
@@ -55,7 +54,7 @@ export class ScopeBuilder {
 		this.languageConfig = languageConfig;
 	}
 
-	async build() : Promise<ScopeGraph> {
+	async build(): Promise<ScopeGraph> {
 		let namespaces = this.languageConfig.namespaces;
 
 		const localDefCaptures: LocalDefCapture[] = [];
@@ -68,7 +67,7 @@ export class ScopeBuilder {
 			const parts = name.split('.');
 			const partLength = parts.length;
 
-			if (parts[0] === "local") {
+			if (parts[0] === 'local') {
 				handleLocalParts(parts, partLength, index);
 			} else {
 				handleDefinitionParts(parts, index);
@@ -88,13 +87,13 @@ export class ScopeBuilder {
 
 		function handleLocalPartsLengthTwo(parts: string[], index: number) {
 			switch (parts[1]) {
-				case "reference":
+				case 'reference':
 					localRefCaptures.push({ index: index, symbol: undefined });
 					break;
-				case "scope":
+				case 'scope':
 					localScopeCaptureIndex = index;
 					break;
-				case "import":
+				case 'import':
 					localImportCaptureIndex = index;
 					break;
 			}
@@ -102,10 +101,10 @@ export class ScopeBuilder {
 
 		function handleDefinitionAndReference(parts: string[], index: number) {
 			switch (parts[1]) {
-				case "reference":
+				case 'reference':
 					localRefCaptures.push({ index: index, symbol: parts[2] });
 					break;
-				case "definition":
+				case 'definition':
 					localDefCaptures.push({
 						index: index,
 						symbol: parts[2],
@@ -119,7 +118,7 @@ export class ScopeBuilder {
 
 		function handleDefinitionParts(parts: string[], i: number) {
 			switch (parts[1]) {
-				case "definition":
+				case 'definition':
 					localDefCaptures.push({
 						index: i,
 						symbol: parts[2] || undefined,
@@ -132,7 +131,7 @@ export class ScopeBuilder {
 		}
 
 		function warnUnknownCaptureName(name: string) {
-			if (!name.startsWith("_")) {
+			if (!name.startsWith('_')) {
 				console.warn(`Unknown capture name: ${name}`);
 			}
 		}

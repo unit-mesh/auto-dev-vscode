@@ -1,4 +1,4 @@
-import { ToolchainContextItem } from "../../toolchain-context/ToolchainContextProvider";
+import { ToolchainContextItem } from '../../toolchain-context/ToolchainContextProvider';
 
 export interface CustomActionExecutePrompt {
 	displayPrompt: string;

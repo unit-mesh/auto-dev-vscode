@@ -1,19 +1,20 @@
-import vscode from "vscode";
+import vscode from 'vscode';
 
-import { TreeSitterFile } from "../ast/TreeSitterFile";
-import { PositionUtil } from "../../editor/ast/PositionUtil";
-import { textToTreeSitterFile } from "../ast/TreeSitterWrapper";
-import { CodeCorrector, CorrectorContext } from "../_base/CodeCorrector";
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { PositionUtil } from '../../editor/ast/PositionUtil';
+import { CodeCorrector, CorrectorContext } from '../_base/CodeCorrector';
+import { TreeSitterFile } from '../ast/TreeSitterFile';
+import { textToTreeSitterFile } from '../ast/TreeSitterWrapper';
 
 export class JavaCodeCorrector implements CodeCorrector {
-	private context: CorrectorContext;
-
-	constructor(context: CorrectorContext) {
-		this.context = context;
-	}
+	constructor(
+		private context: CorrectorContext,
+		private lsp: ILanguageServiceProvider,
+	) {}
 
 	async correct(): Promise<void> {
-		let tsfile = await textToTreeSitterFile(this.context.sourcecode, "java");
+		let tsfile = await textToTreeSitterFile(this.context.sourcecode, 'java', this.lsp);
 
 		if (!tsfile) {
 			return Promise.reject(`Failed to find tree-sitter file for: ${this.context.document.uri}`);
@@ -30,7 +31,7 @@ export class JavaCodeCorrector implements CodeCorrector {
 		let query = tsfile.languageProfile.classQuery.query(tsfile.tsLanguage);
 		const captures = query!!.captures(tsfile.tree.rootNode);
 
-		const queryCapture = captures.find((c) => c.name === "name.definition.class");
+		const queryCapture = captures.find(c => c.name === 'name.definition.class');
 		if (queryCapture) {
 			// compare targetClassName to queryCapture.text if they are different, replace queryCapture.text with targetClassName
 			let classNode = queryCapture.node;
@@ -39,7 +40,7 @@ export class JavaCodeCorrector implements CodeCorrector {
 
 				let classNameRange = new vscode.Range(
 					PositionUtil.fromNode(classNode.startPosition),
-					PositionUtil.fromNode(classNode.endPosition)
+					PositionUtil.fromNode(classNode.endPosition),
 				);
 
 				edit.replace(document.uri, classNameRange, this.context.targetClassName);
@@ -58,7 +59,7 @@ export class JavaCodeCorrector implements CodeCorrector {
 
 		// if package is not found, add package to the top of the file
 		if (packageCapture.length === 0) {
-			let content = "package " + this.context.packageName + ";\n\n";
+			let content = 'package ' + this.context.packageName + ';\n\n';
 
 			let edit = new vscode.WorkspaceEdit();
 			edit.insert(document.uri, new vscode.Position(0, 0), content);
@@ -75,7 +76,7 @@ export class JavaCodeCorrector implements CodeCorrector {
 
 				let pkgNameRange = new vscode.Range(
 					PositionUtil.fromNode(packageNode.startPosition),
-					PositionUtil.fromNode(packageNode.endPosition)
+					PositionUtil.fromNode(packageNode.endPosition),
 				);
 
 				edit.replace(document.uri, pkgNameRange, this.context.packageName);

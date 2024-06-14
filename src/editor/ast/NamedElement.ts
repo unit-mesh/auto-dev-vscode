@@ -1,6 +1,6 @@
-import { TextInRange } from "./TextInRange";
-import { CodeElementType } from "../codemodel/CodeElementType";
-import { TreeSitterFile } from "../../code-context/ast/TreeSitterFile";
+import { TreeSitterFile } from '../../code-context/ast/TreeSitterFile';
+import { CodeElementType } from '../codemodel/CodeElementType';
+import { TextInRange } from './TextInRange';
 
 /**
  * Represents a named element block for AST element.
@@ -35,7 +35,7 @@ export class NamedElement {
 		identifierRange: TextInRange,
 		codeElementType: CodeElementType,
 		blockContent: string,
-		file: TreeSitterFile
+		file: TreeSitterFile,
 	) {
 		this.blockRange = blockRange;
 		this.identifierRange = identifierRange;

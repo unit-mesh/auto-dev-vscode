@@ -1,53 +1,43 @@
-import path from "path";
-import vscode from "vscode";
-import { injectable } from "inversify";
+import path from 'path';
+import vscode from 'vscode';
 
-import { DEP_SCOPE, DependencyEntry, PackageDependencies } from "./_base/Dependence";
-import { PackageManger } from "./_base/PackageManger";
 import {
 	JsDependenciesSnapshot,
 	PackageJsonDependency,
-	PackageJsonDependencyEntry
-} from "../framework/javascript/JsDependenciesSnapshot";
-import { getExtensionContext } from "../../context";
-import { BaseBuildToolProvider } from "./_base/BaseBuildToolProvider";
+	PackageJsonDependencyEntry,
+} from '../framework/javascript/JsDependenciesSnapshot';
+import { BaseBuildToolProvider } from './_base/BaseBuildToolProvider';
+import { DEP_SCOPE, DependencyEntry, PackageDependencies } from './_base/Dependence';
+import { PackageManger } from './_base/PackageManger';
 
-@injectable()
 export class NpmBuildToolProvider extends BaseBuildToolProvider {
-	// singleton
-	private static instance_: NpmBuildToolProvider;
-
-	static instance(): NpmBuildToolProvider {
-		if (!NpmBuildToolProvider.instance_) {
-			NpmBuildToolProvider.instance_ = new NpmBuildToolProvider();
-		}
-
-		return NpmBuildToolProvider.instance_;
+	constructor(private context: vscode.ExtensionContext) {
+		super();
 	}
 
-	moduleTarget = ["package.json"];
+	moduleTarget = ['package.json'];
 
 	depTypeMap: { [key: string]: DEP_SCOPE } = {
-		'dependencies': DEP_SCOPE.NORMAL,
-		'optionalDependencies': DEP_SCOPE.OPTIONAL,
-		'devDependencies': DEP_SCOPE.DEV
+		dependencies: DEP_SCOPE.NORMAL,
+		optionalDependencies: DEP_SCOPE.OPTIONAL,
+		devDependencies: DEP_SCOPE.DEV,
 	};
 
 	async getDependencies(): Promise<PackageDependencies> {
-		let deps = await this.create(getExtensionContext());
+		let deps = await this.create(this.context);
 		let packageDependencies: PackageDependencies = {
-			name: "package.json",
+			name: 'package.json',
 			dependencies: [],
-			version: "",
-			path: "package.json",
-			packageManager: PackageManger.NPM
+			version: '',
+			path: 'package.json',
+			packageManager: PackageManger.NPM,
 		};
 
 		deps.packages.forEach((value, key) => {
 			packageDependencies.dependencies.push(<DependencyEntry>{
 				name: value.name,
 				version: value.version,
-				scope: this.depTypeMap[value.dependencyType]
+				scope: this.depTypeMap[value.dependencyType],
 			});
 		});
 
@@ -55,11 +45,11 @@ export class NpmBuildToolProvider extends BaseBuildToolProvider {
 	}
 
 	getToolingName(): string {
-		return "npm";
+		return 'npm';
 	}
 
 	async getToolingVersion(): Promise<string> {
-		return "";
+		return '';
 	}
 
 	async create(context: vscode.ExtensionContext): Promise<JsDependenciesSnapshot> {
@@ -98,14 +88,14 @@ export class NpmBuildToolProvider extends BaseBuildToolProvider {
 				allPackages.set(name, <PackageJsonDependencyEntry>{
 					name,
 					version,
-					dependencyType: PackageJsonDependency.dependencies
+					dependencyType: PackageJsonDependency.dependencies,
 				});
 			}
 			for (const [name, version] of Object.entries(packageJson.devDependencies || {})) {
 				allPackages.set(name, <PackageJsonDependencyEntry>{
 					name,
 					version,
-					dependencyType: PackageJsonDependency.devDependencies
+					dependencyType: PackageJsonDependency.devDependencies,
 				});
 			}
 		}

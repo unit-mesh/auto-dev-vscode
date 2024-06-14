@@ -1,29 +1,38 @@
-import { injectable } from "inversify";
+import { inject, injectable } from 'inversify';
 
-import { CreateToolchainContext, ToolchainContextItem, ToolchainContextProvider } from "../../ToolchainContextProvider";
-import { JsDependenciesSnapshot, PackageJsonDependency } from "./JsDependenciesSnapshot";
-import { TechStack } from "../jvm/TechStack";
-import { getExtensionContext } from "../../../context";
-import { JsTestFrameworks, JsWebFrameworks } from "./JavaScriptFrameworks";
-import { NpmBuildToolProvider } from "../../buildtool/NpmBuildToolProvider";
-import { applyJavaScript } from "./utils/JavaScriptUtils";
+import { IExtensionContext } from 'base/common/configuration/context';
+
+import { NpmBuildToolProvider } from '../../buildtool/NpmBuildToolProvider';
+import { CreateToolchainContext, ToolchainContextItem, ToolchainContextProvider } from '../../ToolchainContextProvider';
+import { TechStack } from '../jvm/TechStack';
+import { JsTestFrameworks, JsWebFrameworks } from './JavaScriptFrameworks';
+import { JsDependenciesSnapshot, PackageJsonDependency } from './JsDependenciesSnapshot';
+import { applyJavaScript } from './utils/JavaScriptUtils';
 
 @injectable()
 export class JavaScriptContextProvider implements ToolchainContextProvider {
 	private clazzName = this.constructor.name;
+	private npmBuildToolProvider: NpmBuildToolProvider;
+
+	constructor(
+		@inject(IExtensionContext)
+		private extensionContext: IExtensionContext,
+	) {
+		this.npmBuildToolProvider = new NpmBuildToolProvider(extensionContext);
+	}
 
 	async isApplicable(context: CreateToolchainContext): Promise<boolean> {
 		return applyJavaScript(context);
 	}
 
 	async collect(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
-		let isApplicable = await NpmBuildToolProvider.instance().isApplicable(context);
+		let isApplicable = await this.npmBuildToolProvider.isApplicable(context);
 		if (!isApplicable) {
 			return [];
 		}
 
 		let results: ToolchainContextItem[] = [];
-		let snapshot = await new NpmBuildToolProvider().create(getExtensionContext());
+		let snapshot = await this.npmBuildToolProvider.create(this.extensionContext);
 		let typeScriptLanguageContext = this.getTypeScriptLanguageContext(snapshot);
 		let mostPopularPackagesContext = this.getMostPopularPackagesContext(snapshot);
 
@@ -39,7 +48,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 		if (techStack.coreFrameworksList().length > 0) {
 			let element = {
 				clazz: this.clazzName,
-				text: `The project uses the following JavaScript frameworks: ${techStack.coreFrameworksList()}`
+				text: `The project uses the following JavaScript frameworks: ${techStack.coreFrameworksList()}`,
 			};
 			results.push(element);
 		}
@@ -47,7 +56,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 		if (techStack.testFrameworksList().length > 0) {
 			let testChatContext = {
 				clazz: this.clazzName,
-				text: `The project uses ${techStack.testFrameworksList()} to test source code.`
+				text: `The project uses ${techStack.testFrameworksList()} to test source code.`,
 			};
 
 			results.push(testChatContext);
@@ -64,8 +73,11 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 
 		for (const [name, entry] of snapshot.packages) {
 			let dependencyType = entry.dependencyType;
-			if (dependencyType === PackageJsonDependency.dependencies || dependencyType === PackageJsonDependency.devDependencies) {
-				if (name.startsWith("@types/") || name.endsWith("-types")) {
+			if (
+				dependencyType === PackageJsonDependency.dependencies ||
+				dependencyType === PackageJsonDependency.devDependencies
+			) {
+				if (name.startsWith('@types/') || name.endsWith('-types')) {
 					continue;
 				}
 
@@ -118,7 +130,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 		const version = packageJson.version;
 		return {
 			clazz: this.clazzName,
-			text: `The project uses TypeScript language${version ? `, version: ${version}` : ''}`
+			text: `The project uses TypeScript language${version ? `, version: ${version}` : ''}`,
 		};
 	}
 
@@ -137,7 +149,7 @@ export class JavaScriptContextProvider implements ToolchainContextProvider {
 
 		return {
 			clazz: this.clazzName,
-			text: `The project uses the following JavaScript packages: ${dependencies.join(', ')}`
+			text: `The project uses the following JavaScript packages: ${dependencies.join(', ')}`,
 		};
 	}
 }

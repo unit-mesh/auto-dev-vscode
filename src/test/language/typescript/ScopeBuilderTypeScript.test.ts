@@ -1,22 +1,21 @@
-import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
+import { LanguageProfileUtil } from '../../../code-context/_base/LanguageProfile';
+import { TreeSitterFile } from '../../../code-context/ast/TreeSitterFile';
+import { ScopeBuilder } from '../../../code-search/scope-graph/ScopeBuilder';
+import { TestLanguageServiceProvider } from '../../../test/TestLanguageService';
 
-const Parser = require("web-tree-sitter");
-
-import { TreeSitterFile } from "../../../code-context/ast/TreeSitterFile";
-import { ScopeBuilder } from "../../../code-search/scope-graph/ScopeBuilder";
-import { TestLanguageService } from "../../TestLanguageService";
+const Parser = require('web-tree-sitter');
 
 describe('ScopeBuilder for TypeScript', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = LanguageProfileUtil.from("typescript")!!;
+	let langConfig = LanguageProfileUtil.from('typescript')!!;
 
 	beforeEach(async () => {
 		await Parser.init();
 		parser = new Parser();
-		const languageService = new TestLanguageService(parser);
+		const languageService = new TestLanguageServiceProvider(parser);
 
-		language = await langConfig.grammar(languageService, "java")!!;
+		language = await langConfig.grammar(languageService, 'java')!!;
 		parser.setLanguage(language);
 		parser.setLogger(null);
 	});
@@ -48,8 +47,8 @@ export default function IndexPage() {
 		const hoverRanges = output.hoverableRanges();
 		expect(hoverRanges.length).toBe(5);
 
-		const allText = hoverRanges.map((range) => range.getText()).join(", ");
-		expect(allText).toBe("Link, IndexPage, href, href, Link");
+		const allText = hoverRanges.map(range => range.getText()).join(', ');
+		expect(allText).toBe('Link, IndexPage, href, href, Link');
 	});
 
 	it('test for main scopes', async () => {
@@ -71,7 +70,7 @@ export default function IndexPage() {
 `;
 
 		let tree = parser.parse(sourceCode);
-		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language, "");
+		const tsf = new TreeSitterFile(sourceCode, tree, langConfig, parser, language, '');
 		let scopeGraph = await tsf.scopeGraph();
 		const imports = scopeGraph.allImportsBySource(sourceCode);
 

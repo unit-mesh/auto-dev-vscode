@@ -1,39 +1,38 @@
-import vscode from "vscode";
+import { env, window } from 'vscode';
 
-import { VSCodeTemplateLoader } from "./loader/VSCodeTemplateLoader";
-import { TemplateRender } from "./template/TemplateRender";
-import { TemplateContext } from "./template/TemplateContext";
-import { ToolchainContextManager } from "../toolchain-context/ToolchainContextManager";
-import { CreateToolchainContext, ToolchainContextItem } from "../toolchain-context/ToolchainContextProvider";
-import { ActionType } from "./ActionType";
-import { CustomActionTemplateContext } from "./custom-action/CustomActionTemplateContext";
-import { CustomActionExecutePrompt } from "./custom-action/CustomActionExecutePrompt";
-import { HydeStep } from "../code-search/search-strategy/_base/HydeStep";
-import { HydeDocumentType } from "../code-search/search-strategy/_base/HydeDocument";
+import { IExtensionContext } from 'base/common/configuration/context';
+import { log } from 'base/common/log/log';
+
+import { HydeDocumentType } from '../code-search/search-strategy/_base/HydeDocument';
+import { HydeStep } from '../code-search/search-strategy/_base/HydeStep';
+import { ToolchainContextManager } from '../toolchain-context/ToolchainContextManager';
+import { CreateToolchainContext, ToolchainContextItem } from '../toolchain-context/ToolchainContextProvider';
+import { ActionType } from './ActionType';
+import { CustomActionExecutePrompt } from './custom-action/CustomActionExecutePrompt';
+import { CustomActionTemplateContext } from './custom-action/CustomActionTemplateContext';
+import { VSCodeTemplateLoader } from './loader/VSCodeTemplateLoader';
+import { TemplateContext } from './template/TemplateContext';
+import { TemplateRender } from './template/TemplateRender';
 
 export class PromptManager {
-	private static _instance: PromptManager;
 	private templateLoader: VSCodeTemplateLoader;
 
-	private constructor() {
-		this.templateLoader = new VSCodeTemplateLoader();
-	}
-
-	static getInstance(): PromptManager {
-		if (!PromptManager._instance) {
-			PromptManager._instance = new PromptManager();
-		}
-		return PromptManager._instance;
+	constructor(
+		extensionContext: IExtensionContext,
+		private toolchainContextManager: ToolchainContextManager,
+	) {
+		this.templateLoader = new VSCodeTemplateLoader(extensionContext.extensionUri);
 	}
 
 	async collectToolchain(context: CreateToolchainContext): Promise<ToolchainContextItem[]> {
-		return ToolchainContextManager.instance().collectContextItems(context);
+		return this.toolchainContextManager.collectContextItems(context);
 	}
 
 	async collectByCurrentDocument(): Promise<ToolchainContextItem[]> {
-		const editor = vscode.window.activeTextEditor;
+		const editor = window.activeTextEditor;
 		if (!editor) {
-			throw new Error("No active text editor found.");
+			log('No active text editor found.');
+			return [];
 		}
 
 		const document = editor.document;
@@ -42,7 +41,7 @@ export class PromptManager {
 		const filename = document.fileName;
 
 		const context: CreateToolchainContext = {
-			action: "CollectByCurrentDocument",
+			action: 'CollectByCurrentDocument',
 			language,
 			content,
 			filename,
@@ -52,7 +51,7 @@ export class PromptManager {
 	}
 
 	async constructContext(): Promise<CustomActionTemplateContext> {
-		return Promise.reject("Not implemented");
+		return Promise.reject('Not implemented');
 	}
 
 	/**
@@ -68,7 +67,6 @@ export class PromptManager {
 	async constructCustomPrompt(): Promise<CustomActionExecutePrompt[]> {
 		return [];
 	}
-
 
 	/**
 	 * Asynchronously retrieves a Hyde template based on the provided step, Hyde document type, and template context.
@@ -101,9 +99,9 @@ export class PromptManager {
 		let template: string | undefined;
 
 		// only for english in this version
-		let humanLanguage = vscode.env.language;
-		if (humanLanguage !== "zh-cn") {
-			humanLanguage = "en";
+		let humanLanguage = env.language;
+		if (humanLanguage !== 'zh-cn') {
+			humanLanguage = 'en';
 		}
 
 		template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/hyde/${hydeType}/${step}.vm`);
@@ -127,9 +125,9 @@ export class PromptManager {
 		let template: string | undefined;
 
 		// we only support for zh-cn-cn and en only, if the language is not supported, we default to en
-		let humanLanguage = vscode.env.language;
-		if (humanLanguage !== "zh-cn") {
-			humanLanguage = "en";
+		let humanLanguage = env.language;
+		if (humanLanguage !== 'zh-cn') {
+			humanLanguage = 'en';
 		}
 
 		switch (type) {

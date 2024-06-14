@@ -1,10 +1,10 @@
-import path from "path";
+import { InferenceSession, Tensor as ONNXTensor } from 'onnxruntime-common';
+import path from 'path';
 
-import { InferenceSession, Tensor as ONNXTensor } from "onnxruntime-common";
-import { mean_pooling, mergedTensor, normalize_, reshape, tensorData } from "./_base/EmbeddingUtils";
-import { EmbeddingsProvider } from "./_base/EmbeddingsProvider";
-import { Embedding } from "./_base/Embedding";
-import { channel } from "../../channel";
+import { Embedding } from './_base/Embedding';
+import { EmbeddingsProvider } from './_base/EmbeddingsProvider';
+import { mean_pooling, mergedTensor, normalize_, reshape, tensorData } from './_base/EmbeddingUtils';
+import { logger } from 'base/common/log/log';
 
 // @ts-expect-error
 const ortPromise = import('onnxruntime-node');
@@ -17,9 +17,11 @@ const InferenceSessionCreate = (...args: any[]) => {
 
 /**
  * Which will use ONNXRuntime and all-MiniLM-L6-v2 to embed the text.
+ *
+ * @deprecated Please use LanguageModelsService instead.
  */
 export class LocalEmbeddingsProvider implements EmbeddingsProvider {
-	id: string = "local";
+	id: string = 'local';
 	env: any;
 	tokenizer: any;
 	session: InferenceSession | undefined;
@@ -28,8 +30,7 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 
 	private static instance: LocalEmbeddingsProvider;
 
-	private constructor() {
-	}
+	private constructor() {}
 
 	static getInstance(): LocalEmbeddingsProvider {
 		if (!LocalEmbeddingsProvider.instance) {
@@ -46,8 +47,8 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 		const { env, AutoTokenizer } = await import('@xenova/transformers');
 		this.env = env;
 		env.allowLocalModels = true;
-		let modelPath = path.join(basepath, "models", "all-MiniLM-L6-v2", "onnx", "model_quantized.onnx");
-		let modelBase = path.join(".", "all-MiniLM-L6-v2");
+		let modelPath = path.join(basepath, 'models', 'all-MiniLM-L6-v2', 'onnx', 'model_quantized.onnx');
+		let modelBase = path.join('.', 'all-MiniLM-L6-v2');
 
 		this.tokenizer = await AutoTokenizer.from_pretrained(modelBase, {
 			quantized: true,
@@ -55,12 +56,12 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 		});
 
 		this.session = await InferenceSessionCreate(modelPath, {
-			executionProviders: ['cpu']
+			executionProviders: ['cpu'],
 		});
 
-		channel.appendLine("embedding provider initialized");
+		logger.appendLine('embedding provider initialized');
 		let value = await this.embed(['hello']);
-		channel.appendLine("'hello' text's first 10 values" + value[0].slice(0, 10).join(", "));
+		logger.appendLine("'hello' text's first 10 values" + value[0].slice(0, 10).join(', '));
 	}
 
 	async embed(chunks: string[]): Promise<Embedding[]> {
@@ -70,23 +71,23 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 
 		let outputs = [];
 		for (let i = 0; i < chunks.length; i += this.MaxGroupSize) {
-			let chunkGroup = chunks.slice(i, i + this.MaxGroupSize,);
+			let chunkGroup = chunks.slice(i, i + this.MaxGroupSize);
 			for (const chunksString of chunkGroup) {
 				try {
 					let embededChunk = await this.embedChunk(chunksString);
 					outputs.push(embededChunk);
 				} catch (e) {
-					channel.appendLine("Failed to embed chunk" + e?.toString());
+					logger.appendLine('Failed to embed chunk' + e?.toString());
 					// try reembedding by reduce the chunk string to two chunk string
 					try {
-						channel.appendLine("Try to re-embed by reducing the chunk string to two chunk string");
+						logger.appendLine('Try to re-embed by reducing the chunk string to two chunk string');
 						let half = Math.floor(chunksString.length / 2);
 						let firstHalf = chunksString.substring(0, half);
 						let secondHalf = chunksString.substring(half);
 						outputs.push(await this.embedChunk(firstHalf));
 						outputs.push(await this.embedChunk(secondHalf));
 					} catch (e) {
-						channel.appendLine("Failed to re-embed chunk" + e?.toString());
+						logger.appendLine('Failed to re-embed chunk' + e?.toString());
 					}
 				}
 			}
@@ -101,18 +102,26 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 
 		// if dims > 512
 		if ((encodings.input_ids.dims?.[1] ?? 0) > this.MaxChunkSize) {
-			console.warn("Input sequence is too long, skipping embedding: " + sequence);
+			console.warn('Input sequence is too long, skipping embedding: ' + sequence);
 			return [];
 		}
 
 		const inputIdsTensor = new ONNXTensor('int64', tensorData(encodings.input_ids), encodings.input_ids.dims);
-		const attentionMaskTensor = new ONNXTensor('int64', tensorData(encodings.attention_mask), encodings.attention_mask.dims);
-		const tokenTypeIdsTensor = new ONNXTensor('int64', tensorData(encodings.token_type_ids), encodings.token_type_ids.dims);
+		const attentionMaskTensor = new ONNXTensor(
+			'int64',
+			tensorData(encodings.attention_mask),
+			encodings.attention_mask.dims,
+		);
+		const tokenTypeIdsTensor = new ONNXTensor(
+			'int64',
+			tensorData(encodings.token_type_ids),
+			encodings.token_type_ids.dims,
+		);
 
 		const outputs: InferenceSession.ReturnType = await this.session!!.run({
 			input_ids: inputIdsTensor,
 			attention_mask: attentionMaskTensor,
-			token_type_ids: tokenTypeIdsTensor
+			token_type_ids: tokenTypeIdsTensor,
 		});
 
 		let result = outputs.last_hidden_state ?? outputs.logits;

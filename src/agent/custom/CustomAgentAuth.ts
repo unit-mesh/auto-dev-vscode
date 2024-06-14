@@ -9,5 +9,5 @@ export class CustomAgentAuth {
 }
 
 export enum AuthType {
-	Bearer = 'Bearer'
+	Bearer = 'Bearer',
 }

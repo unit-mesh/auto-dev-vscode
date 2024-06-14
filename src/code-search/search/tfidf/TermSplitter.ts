@@ -1,6 +1,7 @@
 // todo: add support for chinese characters??
 export class TermSplitter {
-	private static allPattern = /(?<![\p{Alphabetic}\p{Number}_$])[\p{Letter}_$][\p{Alphabetic}\p{Number}_$]{2,}(?![\p{Alphabetic}\p{Number}_$])/gu;
+	private static allPattern =
+		/(?<![\p{Alphabetic}\p{Number}_$])[\p{Letter}_$][\p{Alphabetic}\p{Number}_$]{2,}(?![\p{Alphabetic}\p{Number}_$])/gu;
 	private static camelCasePattern = /(?<=[a-z$])(?=[A-Z])/g;
 	private static numericPattern = /^(\D+)\p{Number}+$/u;
 
@@ -23,7 +24,7 @@ export class TermSplitter {
 	 * @yield {String} - Yields each unique term.
 	 *
 	 */
-	static* splitTerms(input: string) {
+	static *splitTerms(input: string) {
 		let matchAll = input.matchAll(this.allPattern);
 		for (let [match_] of matchAll) {
 			let uniqueTerms: Set<string> = new Set();
@@ -32,7 +33,7 @@ export class TermSplitter {
 			let terms = [];
 
 			let camelCaseSplits = match_.split(this.camelCasePattern);
-			if(camelCaseSplits.length > 1) {
+			if (camelCaseSplits.length > 1) {
 				terms.push(...camelCaseSplits);
 			}
 
@@ -54,7 +55,7 @@ export class TermSplitter {
 		}
 	}
 
-	static syncSplitTerms(input: string) : string[] {
+	static syncSplitTerms(input: string): string[] {
 		const terms = TermSplitter.splitTerms(input);
 		const result = [];
 

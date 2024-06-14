@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { ParsedFileChange, parseGitLog } from "../../git/parser/SimpleGitLogParser";
+
+import { ParsedFileChange, parseGitLog } from '../../git/parser/SimpleGitLogParser';
 
 describe('GitParser', () => {
 	describe('parseGitLog', () => {
@@ -17,8 +18,8 @@ index 123..456 789
 				{
 					filename: 'test.txt',
 					status: 'added',
-					content: '@@ -1,3 +1,2 @@\n-test line 1\n test line 2\n+test line 3\n'
-				}
+					content: '@@ -1,3 +1,2 @@\n-test line 1\n test line 2\n+test line 3\n',
+				},
 			];
 
 			const result = parseGitLog(log);
@@ -42,8 +43,8 @@ index 123..456 789
 				{
 					filename: 'test.txt',
 					status: 'added',
-					content: ''
-				}
+					content: '',
+				},
 			];
 
 			const result = parseGitLog(log);

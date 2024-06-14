@@ -2,11 +2,12 @@ import vscode, { Extension } from "vscode";
 import { ExtensionApi as GradleApi, RunTaskOpts, Output } from "vscode-gradle";
 import { injectable } from "inversify";
 
+import { log } from "base/common/log/log";
+
 import { DependencyEntry, PackageDependencies } from "./_base/Dependence";
 import { PackageManger } from "./_base/PackageManger";
 import { VSCodeAction } from "../../editor/editor-api/VSCodeAction";
 import { GradleVersionInfo, parseGradleVersionInfo } from "./gradle/GradleVersionInfo";
-import { channel } from "../../channel";
 import { BaseBuildToolProvider } from "./_base/BaseBuildToolProvider";
 import { GradleDependencyInspector } from "./gradle/GradleDependencyInspector";
 
@@ -44,7 +45,7 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 			return dependencies;
 		}
 
-		channel.appendLine("Not found vscode-gradle extension, try to parse build.gradle file.");
+		log("Not found vscode-gradle extension, try to parse build.gradle file.");
 
 		// check moduleTarget in rootDir
 		for (const target of this.moduleTarget) {
@@ -134,7 +135,7 @@ export class GradleBuildToolProvider extends BaseBuildToolProvider {
 
 			await gradleApi.runTask(runTaskOpts);
 
-			channel.append("Gradle Info:\n" + outputString);
+			log("Gradle Info:\n" + outputString);
 			return parseGradleVersionInfo(outputString);
 		}) ?? await Promise.reject("Gradle not found");
 	}

@@ -1,6 +1,7 @@
-import Parser, { SyntaxNode } from "web-tree-sitter";
-import { ChunkWithoutID } from "./Chunk";
-import { countTokens } from "../../token/TokenCounter";
+import Parser, { SyntaxNode } from 'web-tree-sitter';
+
+import { countTokens } from '../../token/TokenCounter';
+import { ChunkWithoutID } from './Chunk';
 
 /**
  * The `CollapsedCodeChunker` class provides methods to parse and chunk code into smaller pieces. It also provides
@@ -8,7 +9,7 @@ import { countTokens } from "../../token/TokenCounter";
  * code more readable and manageable.
  */
 export class CollapsedCodeChunker {
-	async* parsedCodeChunker(
+	async *parsedCodeChunker(
 		parser: Parser,
 		contents: string,
 		maxChunkSize: number,
@@ -19,23 +20,18 @@ export class CollapsedCodeChunker {
 	}
 
 	collapsedReplacement(node: SyntaxNode): string {
-		if (node.type === "statement_block") {
-			return "{ ... }";
+		if (node.type === 'statement_block') {
+			return '{ ... }';
 		} else {
-			return "...";
+			return '...';
 		}
 	}
 
-	firstChild(
-		node: SyntaxNode,
-		grammarName: string | string[],
-	): SyntaxNode | null {
+	firstChild(node: SyntaxNode, grammarName: string | string[]): SyntaxNode | null {
 		if (Array.isArray(grammarName)) {
-			return (
-				node.children.find((child) => grammarName.includes(child.type)) || null
-			);
+			return node.children.find(child => grammarName.includes(child.type)) || null;
 		} else {
-			return node.children.find((child) => child.type === grammarName) || null;
+			return node.children.find(child => child.type === grammarName) || null;
 		}
 	}
 
@@ -52,21 +48,14 @@ export class CollapsedCodeChunker {
 		const collapsedChildren = [];
 
 		if (block) {
-			const childrenToCollapse = block.children.filter((child) =>
-				collapseTypes.includes(child.type),
-			);
+			const childrenToCollapse = block.children.filter(child => collapseTypes.includes(child.type));
 			for (const child of childrenToCollapse.reverse()) {
 				const grandChild = this.firstChild(child, collapseBlockTypes);
 				if (grandChild) {
 					const start = grandChild.startIndex;
 					const end = grandChild.endIndex;
-					const collapsedChild =
-						code.slice(child.startIndex, start) +
-						this.collapsedReplacement(grandChild);
-					code =
-						code.slice(0, start) +
-						this.collapsedReplacement(grandChild) +
-						code.slice(end);
+					const collapsedChild = code.slice(child.startIndex, start) + this.collapsedReplacement(grandChild);
+					code = code.slice(0, start) + this.collapsedReplacement(grandChild) + code.slice(end);
 
 					collapsedChildren.unshift(collapsedChild);
 				}
@@ -86,78 +75,67 @@ export class CollapsedCodeChunker {
 
 		if (removedChild) {
 			// Remove the extra blank lines
-			let lines = code.split("\n");
+			let lines = code.split('\n');
 			let firstWhiteSpaceInGroup = -1;
 			for (let i = lines.length - 1; i >= 0; i--) {
-				if (lines[i].trim() === "") {
+				if (lines[i].trim() === '') {
 					if (firstWhiteSpaceInGroup < 0) {
 						firstWhiteSpaceInGroup = i;
 					}
 				} else {
 					if (firstWhiteSpaceInGroup - i > 1) {
 						// Remove the lines
-						lines = [
-							...lines.slice(0, i + 1),
-							...lines.slice(firstWhiteSpaceInGroup + 1),
-						];
+						lines = [...lines.slice(0, i + 1), ...lines.slice(firstWhiteSpaceInGroup + 1)];
 					}
 					firstWhiteSpaceInGroup = -1;
 				}
 			}
 
-			code = lines.join("\n");
+			code = lines.join('\n');
 		}
 
 		return code;
 	}
 
 	// TODO: chunk in different languages
-	constructClassDefinitionChunk(
-		node: SyntaxNode,
-		code: string,
-		maxChunkSize: number,
-	): string {
+	constructClassDefinitionChunk(node: SyntaxNode, code: string, maxChunkSize: number): string {
 		return this.collapseChildren(
 			node,
 			code,
-			["block", "class_body", "declaration_list"],
-			["method_definition", "function_definition", "function_item"],
-			["block", "statement_block"],
+			['block', 'class_body', 'declaration_list'],
+			['method_definition', 'function_definition', 'function_item'],
+			['block', 'statement_block'],
 			maxChunkSize,
 		);
 	}
 
 	// TODO: chunk in different languages
-	constructFunctionDefinitionChunk(
-		node: SyntaxNode,
-		code: string,
-		maxChunkSize: number,
-	): string {
+	constructFunctionDefinitionChunk(node: SyntaxNode, code: string, maxChunkSize: number): string {
 		const bodyNode = node.children[node.children.length - 1];
-		const funcText =
-			code.slice(node.startIndex, bodyNode.startIndex) +
-			this.collapsedReplacement(bodyNode);
+		const funcText = code.slice(node.startIndex, bodyNode.startIndex) + this.collapsedReplacement(bodyNode);
 
 		if (
 			node.parent &&
-			["block", "declaration_list"].includes(node.parent.type) &&
+			['block', 'declaration_list'].includes(node.parent.type) &&
 			node.parent.parent &&
-			["class_definition", "impl_item"].includes(node.parent.parent.type)
+			['class_definition', 'impl_item'].includes(node.parent.parent.type)
 		) {
 			// If inside a class, include the class header
 			const classNode = node.parent.parent;
 			const classBlock = node.parent;
 			return (
 				code.slice(classNode.startIndex, classBlock.startIndex) +
-				"...\n\n" +
-				" ".repeat(node.startPosition.column) + // ...
+				'...\n\n' +
+				' '.repeat(node.startPosition.column) + // ...
 				funcText
 			);
 		}
 		return funcText;
 	}
 
-	collapsedNodeConstructors: { [key: string]: (node: SyntaxNode, code: string, maxChunkSize: number,) => string; } = {
+	collapsedNodeConstructors: {
+		[key: string]: (node: SyntaxNode, code: string, maxChunkSize: number) => string;
+	} = {
 		// Classes, structs, etc
 		class_definition: this.constructClassDefinitionChunk.bind(this),
 		class_declaration: this.constructClassDefinitionChunk.bind(this),
@@ -168,7 +146,7 @@ export class CollapsedCodeChunker {
 		function_item: this.constructFunctionDefinitionChunk.bind(this),
 	};
 
-	* getSmartCollapsedChunks(
+	*getSmartCollapsedChunks(
 		node: SyntaxNode,
 		code: string,
 		maxChunkSize: number,

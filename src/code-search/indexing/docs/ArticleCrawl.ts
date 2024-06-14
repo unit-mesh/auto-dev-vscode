@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Readability } from "@mozilla/readability";
-import { JSDOM } from "jsdom";
+import { Readability } from '@mozilla/readability';
+import { JSDOM } from 'jsdom';
 
 export type ArticleComponent = {
 	title: string;
@@ -28,11 +28,7 @@ export type Article = {
 	article_components: ArticleComponent[];
 };
 
-export function stringToArticle(
-	url: string,
-	html: string,
-	subpath: string,
-): Article | undefined {
+export function stringToArticle(url: string, html: string, subpath: string): Article | undefined {
 	try {
 		const dom = new JSDOM(html);
 		let reader = new Readability(dom.window.document);
@@ -51,7 +47,7 @@ export function stringToArticle(
 			article_components,
 		};
 	} catch (err) {
-		console.error("Error converting URL to article components", err);
+		console.error('Error converting URL to article components', err);
 		return undefined;
 	}
 }
@@ -60,14 +56,14 @@ function extractTitlesAndBodies(html: string): ArticleComponent[] {
 	const dom = new JSDOM(html);
 	const document = dom.window.document;
 
-	const titles = Array.from(document.querySelectorAll("h2"));
-	const result = titles.map((titleElement) => {
-		const title = titleElement.textContent || "";
-		let body = "";
+	const titles = Array.from(document.querySelectorAll('h2'));
+	const result = titles.map(titleElement => {
+		const title = titleElement.textContent || '';
+		let body = '';
 		let nextSibling = titleElement.nextElementSibling;
 
-		while (nextSibling && nextSibling.tagName !== "H2") {
-			body += nextSibling.textContent || "";
+		while (nextSibling && nextSibling.tagName !== 'H2') {
+			body += nextSibling.textContent || '';
 			nextSibling = nextSibling.nextElementSibling;
 		}
 

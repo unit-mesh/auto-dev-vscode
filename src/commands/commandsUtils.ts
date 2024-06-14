@@ -1,59 +1,22 @@
-import path from "path";
-import { getExtensionUri } from "../context";
-import fs from "fs";
-import vscode from "vscode";
-import { AutoDevWebviewProtocol } from "../editor/webview/AutoDevWebviewProtocol";
+import fs from 'fs';
+import path from 'path';
+import { ChatViewService } from 'src/editor/views/chat/chatViewService';
+import { Range, Selection, TextEditor, Uri, window, workspace } from 'vscode';
 
-export async function showTutorial() {
-	const tutorialPath = path.join(getExtensionUri().fsPath, "autodev_tutorial.py");
+import { CHAT_VIEW_ID } from 'base/common/configuration/configuration';
+
+export async function showTutorial(extensionUri: Uri) {
+	const tutorialPath = path.join(extensionUri.fsPath, 'autodev_tutorial.py');
 	// Ensure keyboard shortcuts match OS
-	if (process.platform !== "darwin") {
-		let tutorialContent = fs.readFileSync(tutorialPath, "utf8");
-		tutorialContent = tutorialContent.replace("⌘", "^").replace("Cmd", "Ctrl");
+	if (process.platform !== 'darwin') {
+		let tutorialContent = fs.readFileSync(tutorialPath, 'utf8');
+		tutorialContent = tutorialContent.replace('⌘', '^').replace('Cmd', 'Ctrl');
 		fs.writeFileSync(tutorialPath, tutorialContent);
 	}
 
-	const doc = await vscode.workspace.openTextDocument(
-		vscode.Uri.file(tutorialPath),
-	);
-	await vscode.window.showTextDocument(doc, { preview: false });
-}
+	const doc = await workspace.openTextDocument(Uri.file(tutorialPath));
 
-export async function addHighlightedCodeToContext(edit: boolean, webviewProtocol: AutoDevWebviewProtocol | undefined,) {
-	const editor = vscode.window.activeTextEditor;
-	if (editor) {
-		const selection = editor.selection;
-		if (selection.isEmpty) {
-			return;
-		}
-		const range = new vscode.Range(selection.start, selection.end);
-		const contents = editor.document.getText(range);
-		const rangeInFileWithContents = {
-			filepath: editor.document.uri.fsPath,
-			contents,
-			range: {
-				start: {
-					line: selection.start.line,
-					character: selection.start.character,
-				},
-				end: {
-					line: selection.end.line,
-					character: selection.end.character,
-				},
-			},
-		};
-
-		webviewProtocol?.request("highlightedCode", {
-			rangeInFileWithContents,
-		});
-	}
-}
-
-export function getFullScreenTab() {
-	const tabs = vscode.window.tabGroups.all.flatMap((tabGroup) => tabGroup.tabs);
-	return tabs.find(
-		(tab) => (tab.input as any)?.viewType?.endsWith("continue.continueGUIView"),
-	);
+	await window.showTextDocument(doc, { preview: false });
 }
 
 /**
@@ -76,21 +39,49 @@ export function getFullScreenTab() {
  * - {@link https://code.visualstudio.com/api/references/vscode-api#TextEditor.selection | VSCode API: TextEditor.selection}
  * - {@link https://code.visualstudio.com/api/references/vscode-api#TextDocument.getText | VSCode API: TextDocument.getText}
  */
-export function getInput() {
-	const editor = vscode.window.activeTextEditor;
+export function getInput(): [undefined, undefined] | [string, string] {
+	const editor = window.activeTextEditor;
 	if (!editor) {
-		return undefined;
+		return [undefined, undefined];
 	}
-	let selection: string = editor.document.getText(editor.selection);
 
-	let document = editor.document;
-	let input;
+	const document = editor.document;
+	const languageId = document.languageId;
+
+	let selection: string = document.getText(editor.selection);
 
 	if (selection.length > 0) {
-		input = selection;
-	} else {
-		input = document.getText();
+		return [selection, languageId];
 	}
 
-	return input;
+	return [document.getText(), languageId];
+}
+
+export function getFullScreenTab() {
+	const tabs = window.tabGroups.all.flatMap(tabGroup => tabGroup.tabs);
+	return tabs.find(tab => (tab.input as any)?.viewType?.endsWith(CHAT_VIEW_ID));
+}
+
+export async function addHighlightedCodeToContext(editor: TextEditor, selection: Selection, chat: ChatViewService) {
+	const range = new Range(selection.start, selection.end);
+	const contents = editor.document.getText(range);
+
+	const rangeInFileWithContents = {
+		filepath: editor.document.uri.fsPath,
+		contents,
+		range: {
+			start: {
+				line: selection.start.line,
+				character: selection.start.character,
+			},
+			end: {
+				line: selection.end.line,
+				character: selection.end.character,
+			},
+		},
+	};
+
+	await chat.send('highlightedCode', {
+		rangeInFileWithContents,
+	});
 }

@@ -1,33 +1,38 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext", "ES2021"],
-    "module": "NodeNext",
-    "skipLibCheck": true,
-    "types": ["vitest/globals", "reflect-metadata"],
+	"compilerOptions": {
+		"target": "ESNext",
+		"useDefineForClassFields": true,
+		"lib": ["DOM", "DOM.Iterable", "ESNext", "ES2021"],
+		"module": "NodeNext",
+		"skipLibCheck": true,
+		"types": ["vite/client", "vitest/globals", "reflect-metadata"],
 
-    /* ioc */
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+		/* Module paths alias */
+		"baseUrl": ".",
+		"paths": {
+			"base/*": ["src/base/*"]
+		},
 
-    /* Bundler mode */
-    "moduleResolution": "NodeNext",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
+		/* ioc */
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
 
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true
-  },
-  "include": ["src"],
-  "references": [
-    { "path": "./tsconfig.node.json" }
-  ]
+		/* Bundler mode */
+		"moduleResolution": "NodeNext",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react-jsx",
+
+		/* Linting */
+		"strict": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"noFallthroughCasesInSwitch": true
+	},
+	"include": ["src"],
+	"exclude": ["node_modules"],
+	"references": [{ "path": "./tsconfig.node.json" }]
 }

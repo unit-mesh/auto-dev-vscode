@@ -1,6 +1,5 @@
-import { TaskFlow } from "../BuiltinFlow";
-import { UserProjectComponent } from "./UserProjectComponent";
-
+import { TaskFlow } from '../BuiltinFlow';
+import { UserProjectComponent } from './UserProjectComponent';
 
 /**
  * FrontendFlow is an interface that represents the flow of tasks in a frontend application.
@@ -54,4 +53,3 @@ export interface AutoPage extends TaskFlow<string> {
 	 */
 	sampleStateManagement(): string | null;
 }
-

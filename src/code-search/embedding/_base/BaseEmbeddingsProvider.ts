@@ -1,5 +1,5 @@
-import { Embedding } from "./Embedding";
-import { EmbeddingsProvider } from "./EmbeddingsProvider";
+import { Embedding } from './Embedding';
+import { EmbeddingsProvider } from './EmbeddingsProvider';
 
 export class BaseEmbeddingsProvider implements EmbeddingsProvider {
 	id: string;
@@ -9,6 +9,6 @@ export class BaseEmbeddingsProvider implements EmbeddingsProvider {
 	}
 
 	async embed(chunks: string[]): Promise<Embedding[]> {
-		throw new Error("Method not implemented.");
+		throw new Error('Method not implemented.');
 	}
 }

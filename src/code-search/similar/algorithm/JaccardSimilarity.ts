@@ -1,4 +1,4 @@
-import { StopwordsBasedTokenizer } from "../../tokenizer/StopwordsBasedTokenizer";
+import { StopwordsBasedTokenizer } from '../../tokenizer/StopwordsBasedTokenizer';
 
 /**
  * Calculates the similarity score between a given path and a set of strings.
@@ -42,13 +42,14 @@ export class JaccardSimilarity {
 	 * @returns A number representing the similarity score between the path and the set of strings.
 	 */
 	public pathSimilarity(path: string, sets: Set<string>): number {
-		const splitPath = path.split("/");
+		const splitPath = path.split('/');
 		const set1 = splitPath
 			.map(it => this.tokenize(it))
 			.reduce((acc, it) => new Set([...acc, ...it]), new Set<string>());
 
 		/// tokenize for sets too
-		const set2 = Array.from(sets).map(it => this.tokenize(it))
+		const set2 = Array.from(sets)
+			.map(it => this.tokenize(it))
 			.reduce((acc, it) => new Set([...acc, ...it]), new Set<string>());
 
 		return this.similarityScore(set1, set2);

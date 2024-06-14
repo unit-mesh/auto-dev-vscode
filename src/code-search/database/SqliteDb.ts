@@ -1,14 +1,16 @@
-import * as fs from 'fs';
-import * as path from "path";
-import { open, Database } from "sqlite";
-import * as sqlite3 from "sqlite3";
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
-import { getIndexFolderPath } from "../utils/IndexPathHelper";
+import { Database, open } from 'sqlite';
+import * as sqlite3 from 'sqlite3';
+
+import { getIndexFolderPath } from '../utils/IndexPathHelper';
 
 export type DatabaseConnection = Database<sqlite3.Database>;
 
 export function getIndexSqlitePath(): string {
-	return path.join(getIndexFolderPath(), "autodev-index.sqlite");
+	return path.join(getIndexFolderPath(), 'autodev-index.sqlite');
 }
 
 /**
@@ -57,5 +59,13 @@ export class SqliteDb {
 
 		await SqliteDb.createTables(SqliteDb.db);
 		return SqliteDb.db;
+	}
+
+	static setUrl(url?: string) {
+		if (url) {
+			this.indexSqlitePath = url.replace('~', os.homedir());
+		} else {
+			this.indexSqlitePath = getIndexSqlitePath();
+		}
 	}
 }

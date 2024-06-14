@@ -1,8 +1,8 @@
-import { TextRange } from "../../code-search/scope-graph/model/TextRange";
-import { Reranker } from "../../code-search/reranker/Reranker";
-import { EmbeddingsProvider } from "../../code-search/embedding/_base/EmbeddingsProvider";
-import { IdeAction } from "../../editor/editor-api/IdeAction";
-import { OpenAICompletion } from "../../llm-provider/OpenAICompletion";
+import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
+import { EmbeddingsProvider } from '../../code-search/embedding/_base/EmbeddingsProvider';
+import { Reranker } from '../../code-search/reranker/Reranker';
+import { TextRange } from '../../code-search/scope-graph/model/TextRange';
+import { IdeAction } from '../../editor/editor-api/IdeAction';
 
 export interface ContextSubmenuItem {
 	id: string;
@@ -20,7 +20,7 @@ export interface ContextItem {
 	editable?: boolean;
 }
 
-export type ContextProviderType = "normal" | "query" | "submenu";
+export type ContextProviderType = 'normal' | 'query' | 'submenu';
 
 export interface ContextProviderDescription {
 	title: string;
@@ -47,24 +47,19 @@ export interface ContextProviderExtras {
 	embeddingsProvider: EmbeddingsProvider;
 	reranker: Reranker | undefined;
 	// todo: replace to other models
-	llm: OpenAICompletion;
+	llm: LanguageModelsService;
 	ide: IdeAction;
 	selectedCode: RangeInFile[];
 	fetch: FetchFunction;
 }
 
-
 export interface IContextProvider {
 	get description(): ContextProviderDescription;
 
-	getContextItems(
-		query: string,
-		extras: ContextProviderExtras,
-	): Promise<ContextItem[]>;
+	getContextItems(query: string, extras: ContextProviderExtras): Promise<ContextItem[]>;
 
 	loadSubmenuItems(args: LoadSubmenuItemsArgs): Promise<ContextSubmenuItem[]>;
 }
-
 
 export abstract class BaseContextProvider implements IContextProvider {
 	options: { [key: string]: any };
@@ -80,14 +75,9 @@ export abstract class BaseContextProvider implements IContextProvider {
 	}
 
 	// Maybe just include the chat message in here. Should never have to go back to the context provider once you have the information.
-	abstract getContextItems(
-		query: string,
-		extras: ContextProviderExtras,
-	): Promise<ContextItem[]>;
+	abstract getContextItems(query: string, extras: ContextProviderExtras): Promise<ContextItem[]>;
 
-	async loadSubmenuItems(
-		args: LoadSubmenuItemsArgs,
-	): Promise<ContextSubmenuItem[]> {
+	async loadSubmenuItems(args: LoadSubmenuItemsArgs): Promise<ContextSubmenuItem[]> {
 		return [];
 	}
 }

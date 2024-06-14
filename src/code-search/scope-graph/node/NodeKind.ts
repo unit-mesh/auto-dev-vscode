@@ -1,4 +1,4 @@
-import { TextRange } from "../model/TextRange";
+import { TextRange } from '../model/TextRange';
 
 export class NodeKind {
 	range: TextRange;

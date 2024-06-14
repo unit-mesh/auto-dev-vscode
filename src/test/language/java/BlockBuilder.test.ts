@@ -1,20 +1,20 @@
-const Parser = require("web-tree-sitter");
+import { LanguageProfileUtil } from '../../../code-context/_base/LanguageProfile';
+import { TreeSitterUtil } from '../../../code-context/ast/TreeSitterUtil';
+import { TestLanguageServiceProvider } from '../../../test/TestLanguageService';
 
-import { TestLanguageService } from "../../TestLanguageService";
-import { TreeSitterUtil } from "../../../code-context/ast/TreeSitterUtil";
-import { LanguageProfileUtil } from "../../../code-context/_base/LanguageProfile";
+const Parser = require('web-tree-sitter');
 
 describe('BlockBuilder for Java', () => {
 	let parser: any;
 	let language: any;
-	let langConfig = LanguageProfileUtil.from("java")!!
+	let langConfig = LanguageProfileUtil.from('java')!!;
 
 	beforeEach(async () => {
 		await Parser.init();
 		parser = new Parser();
-		const languageService = new TestLanguageService(parser);
+		const languageService = new TestLanguageServiceProvider(parser);
 
-		language = await langConfig.grammar(languageService, "java")!!;
+		language = await langConfig.grammar(languageService, 'java')!!;
 		parser.setLanguage(language);
 	});
 
@@ -45,6 +45,6 @@ class HelloWorld {
 		let commentNode = TreeSitterUtil.previousNodesOfType(blockNode, ['block_comment', 'line_comment']);
 
 		expect(commentNode.length).toBe(1);
-		expect(commentNode[0].text).includes("This is a method comment");
+		expect(commentNode[0].text).includes('This is a method comment');
 	});
 });

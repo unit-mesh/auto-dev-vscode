@@ -1,10 +1,12 @@
-import { ChunkItem, Embedding } from "../../embedding/_base/Embedding";
-import { HydeDocument, HydeDocumentType } from "./HydeDocument";
-import { StrategyFinalPrompt } from "./StrategyFinalPrompt";
-import { CustomActionPrompt } from "../../../prompt-manage/custom-action/CustomActionPrompt";
-import { AutoDevStatus, AutoDevStatusManager } from "../../../editor/editor-api/AutoDevStatusManager";
-import { LlmProvider } from "../../../llm-provider/LlmProvider";
-import { channel } from "../../../channel";
+import { AutoDevExtension } from 'src/AutoDevExtension';
+import { AutoDevStatus } from 'src/editor/editor-api/AutoDevStatusManager';
+
+import { logger } from 'base/common/log/log';
+
+import { CustomActionPrompt } from '../../../prompt-manage/custom-action/CustomActionPrompt';
+import { ChunkItem, Embedding } from '../../embedding/_base/Embedding';
+import { HydeDocument, HydeDocumentType } from './HydeDocument';
+import { StrategyFinalPrompt } from './StrategyFinalPrompt';
 
 export type HydeQuery = string | RegExp | Embedding;
 
@@ -51,7 +53,7 @@ export interface HydeStrategy<T> {
 	 * @param condition - The condition to be used for retrieval
 	 * @returns The most relevant code snippets
 	 */
-	retrieveChunks: (condition: HydeQuery) => Promise<ChunkItem[]>
+	retrieveChunks: (condition: HydeQuery) => Promise<ChunkItem[]>;
 
 	/**
 	 * Retrieve the most relevant code snippets based on the given condition
@@ -68,23 +70,20 @@ export interface HydeStrategy<T> {
 	execute(): Promise<StrategyFinalPrompt>;
 }
 
-export async function executeIns(instruction: string) {
-	console.log("\ninstruction: \n" + instruction);
-	let result = "";
+export async function executeIns(extension: AutoDevExtension, instruction: string) {
+	console.log('\ninstruction: \n' + instruction);
+
 	try {
 		let chatMessages = CustomActionPrompt.parseChatMessage(instruction);
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.InProgress);
-		let response = await LlmProvider.codeCompletion()._streamChat(chatMessages);
-		for await (let chatMessage of response) {
-			result += chatMessage.content;
-		}
+		extension.statusBarManager.setIsLoading();
+		const result = await extension.lm.chat(chatMessages);
 
-		channel.append(result);
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Done);
+		logger.append(result);
+		extension.statusBarManager.setStatus(AutoDevStatus.Done);
 		return result;
 	} catch (e) {
-		console.log("error:" + e);
-		AutoDevStatusManager.instance.setStatus(AutoDevStatus.Error);
-		return "";
+		console.log('error:' + e);
+		extension.statusBarManager.setStatus(AutoDevStatus.Error);
+		return '';
 	}
 }

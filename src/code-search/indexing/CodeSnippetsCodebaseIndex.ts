@@ -1,32 +1,35 @@
-import path from "path";
-import fs from "fs";
+import fs from 'fs';
+import path from 'path';
 
+import { inferLanguage } from 'base/common/languages/languages';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
+
+import { ContextItem, ContextSubmenuItem } from '../../context-provider/_base/BaseContextProvider';
+import { IdeAction } from '../../editor/editor-api/IdeAction';
+import { ChunkWithoutID } from '../chunk/_base/Chunk';
+import { DatabaseConnection, SqliteDb } from '../database/SqliteDb';
+import { tagToString } from '../refreshIndex';
+import { Point, TextRange } from '../scope-graph/model/TextRange';
+import { getBasename } from '../utils/IndexPathHelper';
 import {
 	CodebaseIndex,
 	IndexingProgressUpdate,
 	IndexResultType,
 	IndexTag,
 	MarkCompleteCallback,
-	RefreshIndexResults
-} from "./_base/CodebaseIndex";
-import { IdeAction } from "../../editor/editor-api/IdeAction";
-import { DatabaseConnection, SqliteDb } from "../database/SqliteDb";
-import { EXT_LANGUAGE_MAP, languageFromPath } from "../../editor/language/ExtensionLanguageMap";
-import { ChunkWithoutID } from "../chunk/_base/Chunk";
-import { getLanguageForFile } from "../../editor/language/parser/TreeSitterParser";
-import { getParserForFile } from "../../editor/language/parser/ParserUtil";
-import { tagToString } from "../refreshIndex";
-import { getBasename } from "../utils/IndexPathHelper";
-import { Point, TextRange } from "../scope-graph/model/TextRange";
-import { ContextItem, ContextSubmenuItem } from "../../context-provider/_base/BaseContextProvider";
+	RefreshIndexResults,
+} from './_base/CodebaseIndex';
 
 /**
  * for provider {@link CodeContextProvider}
  */
 export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
-	artifactId = "codeSnippets";
+	artifactId = 'codeSnippets';
 
-	constructor(private readonly ide: IdeAction) {}
+	constructor(
+		private readonly ide: IdeAction,
+		private languageService: ILanguageServiceProvider,
+	) {}
 
 	private static async _createTables(db: DatabaseConnection) {
 		await db.exec(`CREATE TABLE IF NOT EXISTS code_snippets (
@@ -48,40 +51,37 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 	}
 
 	private getQuerySource(filepath: string) {
-		const fullLangName = EXT_LANGUAGE_MAP[filepath.split(".").pop() ?? ""];
+		const fullLangName = inferLanguage(filepath);
 		const sourcePath = path.join(
 			__dirname,
-			"..",
-			"schemas",
-			"code-snippet-queries",
+			'..',
+			'schemas',
+			'code-snippet-queries',
 			`tree-sitter-${fullLangName}-tags.scm`,
 		);
 		if (!fs.existsSync(sourcePath)) {
-			return "";
+			return '';
 		}
 
 		return fs.readFileSync(sourcePath).toString();
 	}
 
-	async getSnippetsInFile(
-		filepath: string,
-		contents: string,
-	): Promise<(ChunkWithoutID & { title: string })[]> {
-		const lang = await getLanguageForFile(filepath);
-		if (!lang) {
-			return [];
-		}
-		const parser = await getParserForFile(filepath);
+	async getSnippetsInFile(filepath: string, contents: string): Promise<(ChunkWithoutID & { title: string })[]> {
+		const language = inferLanguage(filepath);
+
+		const parser = await this.languageService.getParser(language);
 		if (!parser) {
 			return [];
 		}
+
+		const lang = parser.getLanguage();
+
 		const ast = parser.parse(contents);
-		const query = lang?.query(this.getQuerySource(filepath));
-		const matches = query?.matches(ast.rootNode);
-		const language = languageFromPath(filepath);
+		const query = lang.query(this.getQuerySource(filepath));
+		const matches = query.matches(ast.rootNode);
 
 		return (
-			matches?.flatMap((match) => {
+			matches?.flatMap(match => {
 				const node = match.captures[0].node;
 				const title = match.captures[1].node.text;
 				const results = {
@@ -111,10 +111,7 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 
 			let snippets: (ChunkWithoutID & { title: string })[] = [];
 			try {
-				snippets = await this.getSnippetsInFile(
-					compute.path,
-					await this.ide.readFile(compute.path),
-				);
+				snippets = await this.getSnippetsInFile(compute.path, await this.ide.readFile(compute.path));
 			} catch (e) {
 				// If can't parse, assume malformatted code
 			}
@@ -123,20 +120,10 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 			for (const snippet of snippets) {
 				const { lastID } = await db.run(
 					`INSERT INTO code_snippets (path, cacheKey, content, title, startLine, endLine) VALUES (?, ?, ?, ?, ?, ?)`,
-					[
-						compute.path,
-						compute.cacheKey,
-						snippet.content,
-						snippet.title,
-						snippet.startLine,
-						snippet.endLine,
-					],
+					[compute.path, compute.cacheKey, snippet.content, snippet.title, snippet.startLine, snippet.endLine],
 				);
 
-				await db.run(
-					`INSERT INTO code_snippets_tags (snippetId, tag) VALUES (?, ?)`,
-					[lastID, tagString],
-				);
+				await db.run(`INSERT INTO code_snippets_tags (snippetId, tag) VALUES (?, ?)`, [lastID, tagString]);
 			}
 
 			yield {
@@ -148,27 +135,21 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 
 		for (let i = 0; i < results.del.length; i++) {
 			const del = results.del[i];
-			const deleted = await db.run(
-				`DELETE FROM code_snippets WHERE path = ? AND cacheKey = ?`,
-				[del.path, del.cacheKey],
-			);
-			await db.run(`DELETE FROM code_snippets_tags WHERE snippetId = ?`, [
-				deleted.lastID,
+			const deleted = await db.run(`DELETE FROM code_snippets WHERE path = ? AND cacheKey = ?`, [
+				del.path,
+				del.cacheKey,
 			]);
+			await db.run(`DELETE FROM code_snippets_tags WHERE snippetId = ?`, [deleted.lastID]);
 			markComplete([del], IndexResultType.Delete);
 		}
 
 		for (let i = 0; i < results.addTag.length; i++) {
-			const snippetsWithPath = await db.all(
-				`SELECT * FROM code_snippets WHERE cacheKey = ?`,
-				[results.addTag[i].cacheKey],
-			);
+			const snippetsWithPath = await db.all(`SELECT * FROM code_snippets WHERE cacheKey = ?`, [
+				results.addTag[i].cacheKey,
+			]);
 
 			for (const snippet of snippetsWithPath) {
-				await db.run(
-					`INSERT INTO code_snippets_tags (snippetId, tag) VALUES (?, ?)`,
-					[snippet.id, tagString],
-				);
+				await db.run(`INSERT INTO code_snippets_tags (snippetId, tag) VALUES (?, ?)`, [snippet.id, tagString]);
 			}
 
 			markComplete([results.addTag[i]], IndexResultType.AddTag);
@@ -194,11 +175,7 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 	static async getForId(id: number): Promise<ContextItem> {
 		const db = await SqliteDb.get();
 		const row = await db.get(`SELECT * FROM code_snippets WHERE id = ?`, [id]);
-		const range = new TextRange(
-			new Point(row.startLine, 0, 0),
-			new Point(row.endLine, 0, 0),
-			row.content
-		);
+		const range = new TextRange(new Point(row.startLine, 0, 0), new Point(row.endLine, 0, 0), row.content);
 
 		return {
 			name: row.title,
@@ -222,13 +199,13 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 				[tagToString(tag)],
 			);
 
-			return rows.map((row) => ({
+			return rows.map(row => ({
 				title: row.title,
 				description: getBasename(row.path, 2),
 				id: row.id.toString(),
 			}));
 		} catch (e) {
-			console.warn("Error getting all code snippets: ", e);
+			console.warn('Error getting all code snippets: ', e);
 			return [];
 		}
 	}

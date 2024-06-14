@@ -1,37 +1,31 @@
-import * as vscode from "vscode";
+import * as vscode from 'vscode';
 
-import { AutoDevExtension } from "../../AutoDevExtension";
-import { SUPPORTED_LANGUAGES } from "../../editor/language/SupportedLanguage";
-import { NamedElement } from "../../editor/ast/NamedElement";
-import { providerContainer } from "../../ProviderContainer.config";
-import { PROVIDER_TYPES } from "../../ProviderTypes";
-import { ActionCreator } from "../_base/ActionCreator";
-import { ActionCreatorContext } from "../_base/ActionCreatorContext";
-import { createNamedElement } from "../../code-context/ast/TreeSitterWrapper";
+import { SUPPORTED_LANGUAGES } from 'base/common/languages/languages';
+
+import { AutoDevExtension } from '../../AutoDevExtension';
+import { createNamedElement } from '../../code-context/ast/TreeSitterWrapper';
+import { NamedElement } from '../../editor/ast/NamedElement';
+import { providerContainer } from '../../ProviderContainer.config';
+import { IActionCreator } from '../../ProviderTypes';
+import { ActionCreatorContext } from '../_base/ActionCreatorContext';
 
 export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
-	private context: AutoDevExtension;
+	static readonly providedCodeActionKinds = [vscode.CodeActionKind.RefactorRewrite];
 
-	constructor(context: AutoDevExtension) {
-		this.context = context;
-	}
-
-	static readonly providedCodeActionKinds = [
-		vscode.CodeActionKind.RefactorRewrite,
-	];
+	constructor(private autodev: AutoDevExtension) {}
 
 	async provideCodeActions(
 		document: vscode.TextDocument,
 		range: vscode.Range | vscode.Selection,
 		context: vscode.CodeActionContext,
-		token: vscode.CancellationToken
+		token: vscode.CancellationToken,
 	): Promise<vscode.CodeAction[] | null | undefined> {
 		const lang = document.languageId;
 		if (!SUPPORTED_LANGUAGES.includes(lang)) {
 			return [];
 		}
 
-		let blockBuilder = await createNamedElement(document);
+		let blockBuilder = await createNamedElement(this.autodev.treeSitterFileManager, document);
 
 		const methodRanges: NamedElement[] = blockBuilder.buildMethod();
 		const classRanges: NamedElement[] = blockBuilder.buildClass();
@@ -47,17 +41,17 @@ export class AutoDevCodeActionProvider implements vscode.CodeActionProvider {
 			document: document,
 			lang: lang,
 			namedElementBlocks: allRanges,
-			range: range
+			range: range,
 		};
 
-		let actionCreators = providerContainer.getAll<ActionCreator>(PROVIDER_TYPES.ActionCreator);
+		let actionCreators = providerContainer.getAll(IActionCreator);
 		let creators = actionCreators
 			.filter(item => item.isApplicable(creatorContext))
 			.map(item => item.buildActions(creatorContext));
 
 		let actions: vscode.CodeAction[] = [];
 		for (const items of creators) {
-			for (let codeAction of (await items)) {
+			for (let codeAction of await items) {
 				actions.push(codeAction);
 			}
 		}

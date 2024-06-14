@@ -1,14 +1,14 @@
-import { injectable } from "inversify";
+import { injectable } from 'inversify';
 
-import { MemoizedQuery, LanguageProfile } from "../_base/LanguageProfile";
-import { TSLanguageService } from "../../editor/language/service/TSLanguageService";
 import python from '../../code-search/schemas/indexes/python.scm?raw';
+import { LanguageProfile, MemoizedQuery } from '../_base/LanguageProfile';
+import { ILanguageServiceProvider } from 'base/common/languages/languageService';
 
 @injectable()
 export class PythonProfile implements LanguageProfile {
-	languageIds = ["python"];
-	fileExtensions = ["py"];
-	grammar = (langService: TSLanguageService) => langService.getLanguage('python');
+	languageIds = ['python'];
+	fileExtensions = ['py'];
+	grammar = (langService: ILanguageServiceProvider) => langService.getLanguage('python');
 	isTestFile = (filePath: string) => filePath.endsWith('_test.py');
 	scopeQuery = new MemoizedQuery(python);
 	hoverableQuery = new MemoizedQuery(`
@@ -33,12 +33,27 @@ export class PythonProfile implements LanguageProfile {
 		) @function
 	`);
 	structureQuery = new MemoizedQuery(``);
-	namespaces = [
-		["class", "function", "parameter", "variable"]
-	];
+	namespaces = [['class', 'function', 'parameter', 'variable']];
 	autoSelectInsideParent = [];
 	builtInTypes = [
-		"int", "float", "str", "bool", "list", "dict", "tuple", "set", "complex", "bytes", "bytearray", "memoryview",
-		"range", "frozenset", "type", "None", "NotImplemented", "Ellipsis", "object"
+		'int',
+		'float',
+		'str',
+		'bool',
+		'list',
+		'dict',
+		'tuple',
+		'set',
+		'complex',
+		'bytes',
+		'bytearray',
+		'memoryview',
+		'range',
+		'frozenset',
+		'type',
+		'None',
+		'NotImplemented',
+		'Ellipsis',
+		'object',
 	];
 }

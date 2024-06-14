@@ -1,10 +1,10 @@
-import { injectable } from "inversify";
-import vscode from "vscode";
+import { injectable } from 'inversify';
+import vscode from 'vscode';
 
-import { ActionCreatorContext } from "./ActionCreatorContext";
-import { ActionCreator } from "./ActionCreator";
-import { CodeElementType } from "../../editor/codemodel/CodeElementType";
-import { NamedElement } from "../../editor/ast/NamedElement";
+import { NamedElement } from '../../editor/ast/NamedElement';
+import { CodeElementType } from '../../editor/codemodel/CodeElementType';
+import { ActionCreator } from './ActionCreator';
+import { ActionCreatorContext } from './ActionCreatorContext';
 
 @injectable()
 export abstract class CodeActionCreator implements ActionCreator {
@@ -32,7 +32,7 @@ export abstract class CodeActionCreator implements ActionCreator {
 				case CodeElementType.Structure:
 					if (nameBlock.identifierRange.contains(context.range)) {
 						let classAction = this.buildClassAction(context, nameBlock);
-						if (classAction)  {
+						if (classAction) {
 							actions.push(classAction);
 						}
 					}

@@ -1,11 +1,11 @@
-import { PositionElement } from "./PositionElement";
-import { SupportedLanguage } from "../language/SupportedLanguage";
-import { Point, TextRange } from "../../code-search/scope-graph/model/TextRange";
+import { LanguageIdentifier } from 'base/common/languages/languages';
+import { Point, TextRange } from '../../code-search/scope-graph/model/TextRange';
+import { PositionElement } from './PositionElement';
 
 export interface CodeFile extends CodeElement {
 	name: string;
 	filepath: string;
-	language: SupportedLanguage;
+	language: LanguageIdentifier;
 	path: string;
 	package: string;
 	imports: string[];
@@ -14,17 +14,17 @@ export interface CodeFile extends CodeElement {
 }
 
 export enum StructureType {
-	Class = "class",
-	Interface = "interface",
-	Enum = "enum",
-	Structure = "struct",
-	Annotation = "annotation",
+	Class = 'class',
+	Interface = 'interface',
+	Enum = 'enum',
+	Structure = 'struct',
+	Annotation = 'annotation',
 }
 
 export interface CodeStructure extends PositionElement, CodeElement {
 	name: string;
 	// like a package, `com.example.ExampleClass` is the canonical name
-	canonicalName: string,
+	canonicalName: string;
 	type: StructureType;
 	package: string;
 	extends?: string[];
@@ -65,5 +65,5 @@ export interface CodePosition {
 export function functionToRange(element: CodeFunction): TextRange {
 	const startPoint: Point = { line: element.start.row, column: element.start.column, byte: 0 };
 	const endPoint: Point = { line: element.end.row, column: element.end.column, byte: 0 };
-	return new TextRange(startPoint, endPoint, "");
+	return new TextRange(startPoint, endPoint, '');
 }

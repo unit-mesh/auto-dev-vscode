@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Tensor as ONNXTensor } from "onnxruntime-common";
+import { Tensor as ONNXTensor } from 'onnxruntime-common';
 
 export function tensorData(tensor: any) {
 	if (tensor['data'] !== undefined) {
@@ -28,7 +28,7 @@ export function tensorData(tensor: any) {
 	return [];
 }
 
-export function mergedTensor(tensor: any) : any {
+export function mergedTensor(tensor: any): any {
 	// merge cpuData to data
 	if (tensor['data'] === undefined && tensor['cpuData'] !== undefined) {
 		tensor['data'] = tensor['cpuData'];
@@ -73,11 +73,7 @@ export async function mean_pooling(last_hidden_state: any, attention_mask: any) 
 		}
 	}
 
-	return new ONNXTensor(
-		last_hidden_state.type,
-		returnedData,
-		shape
-	);
+	return new ONNXTensor(last_hidden_state.type, returnedData, shape);
 }
 
 /**
@@ -106,17 +102,20 @@ export function reshape(data: any, dimensions: any[]) {
 	let reshapedArray = data;
 
 	for (let i = dimensions.length - 1; i >= 0; i--) {
-		reshapedArray = reshapedArray.reduce((acc: any[], val: any) => {
-			let lastArray = acc[acc.length - 1];
+		reshapedArray = reshapedArray.reduce(
+			(acc: any[], val: any) => {
+				let lastArray = acc[acc.length - 1];
 
-			if (lastArray.length < dimensions[i]) {
-				lastArray.push(val);
-			} else {
-				acc.push([val]);
-			}
+				if (lastArray.length < dimensions[i]) {
+					lastArray.push(val);
+				} else {
+					acc.push([val]);
+				}
 
-			return acc;
-		}, [[]]);
+				return acc;
+			},
+			[[]],
+		);
 	}
 
 	return reshapedArray[0];
@@ -124,7 +123,9 @@ export function reshape(data: any, dimensions: any[]) {
 
 export function safeIndex(index: number, size: number, dimension = null) {
 	if (index < -size || index >= size) {
-		throw new Error(`IndexError: index ${index} is out of bounds for dimension${dimension === null ? '' : ' ' + dimension} with size ${size}`);
+		throw new Error(
+			`IndexError: index ${index} is out of bounds for dimension${dimension === null ? '' : ' ' + dimension} with size ${size}`,
+		);
 	}
 
 	if (index < 0) {
@@ -140,7 +141,6 @@ export function normalize_(tensor: any, p = 2.0, dim = 1) {
 	const norm = mergedTensor(tensor.norm(p, dim, true));
 
 	for (let i = 0; i < tensor.data.length; ++i) {
-
 		// Calculate the index in the resulting array
 		let resultIndex = 0;
 

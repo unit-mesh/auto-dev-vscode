@@ -1,15 +1,16 @@
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+
 import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
-import { StreamingMarkdownCodeBlock } from "../../markdown/StreamingMarkdownCodeBlock";
+
+import { StreamingMarkdownCodeBlock } from 'base/common/markdown/StreamingMarkdownCodeBlock';
 
 export class FileGenerateTask {
 	constructor(
 		private readonly project: vscode.WorkspaceFolder,
 		private readonly outputText: string,
-		private readonly fileName: string | undefined = undefined
-	) {
-	}
+		private readonly fileName: string | undefined = undefined,
+	) {}
 
 	public async run() {
 		let parsedCode = StreamingMarkdownCodeBlock.parse(this.outputText);

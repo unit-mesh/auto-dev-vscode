@@ -1,5 +1,5 @@
-import { EmbeddingsProvider } from "./EmbeddingsProvider";
-import { Embedding } from "./Embedding";
+import { Embedding } from './Embedding';
+import { EmbeddingsProvider } from './EmbeddingsProvider';
 
 export interface AuthedEmbedOptions {
 	apiBase?: string;
@@ -25,7 +25,7 @@ export class AuthedEmbeddingsProvider implements EmbeddingsProvider {
 	static defaultOptions: Partial<AuthedEmbedOptions> | undefined = undefined;
 
 	get id(): string {
-		throw new Error("Method not implemented.");
+		throw new Error('Method not implemented.');
 	}
 
 	constructor(options: AuthedEmbedOptions, fetch: FetchFunction) {
@@ -38,7 +38,7 @@ export class AuthedEmbeddingsProvider implements EmbeddingsProvider {
 	}
 
 	embed(chunks: string[]): Promise<Embedding[]> {
-		throw new Error("Method not implemented.");
+		throw new Error('Method not implemented.');
 	}
 }
 
