@@ -41,7 +41,7 @@ export class OllamaLanguageModelProvider implements ILanguageModelProvider {
 	}
 
 	async provideCompletionResponse(
-		input: string | string[],
+		input: string,
 		options: { [name: string]: any },
 		progress?: Progress<IChatResponseFragment>,
 	): Promise<string> {

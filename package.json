@@ -59,18 +59,18 @@
 						"order": 1
 					},
 					"autodev.codelensDisplayMode": {
-            "type": "string",
-            "enum": [
-              "expand",
-              "collapse"
-            ],
-            "enumItemLabels": [
-              "%configuration.codelensDisplayMode.item.expand%",
-              "%configuration.codelensDisplayMode.item.collapse%"
-            ],
-            "description": "%configuration.codelensDisplayMode.description%",
-            "default": "expand"
-          },
+						"type": "string",
+						"enum": [
+							"expand",
+							"collapse"
+						],
+						"enumItemLabels": [
+							"%configuration.codelensDisplayMode.item.expand%",
+							"%configuration.codelensDisplayMode.item.collapse%"
+						],
+						"description": "%configuration.codelensDisplayMode.description%",
+						"default": "expand"
+					},
 					"autodev.customPromptDir": {
 						"type": "string",
 						"default": "prompts",
@@ -678,21 +678,21 @@
 				"mac": "cmd+l",
 				"key": "ctrl+l"
 			},
-      {
-        "command": "autodev.debugTerminal",
-        "mac": "cmd+shift+r",
-        "key": "ctrl+shift+r"
-      },
-      {
-        "command": "autodev.systemAction",
-        "mac": "cmd+i",
-        "key": "ctrl+i"
-      },
-      {
-        "command": "autodev.editor.suggestCommand",
-        "mac": "cmd+shift+j",
-        "key": "ctrl+shift+j"
-      }
+			{
+				"command": "autodev.debugTerminal",
+				"mac": "cmd+shift+r",
+				"key": "ctrl+shift+r"
+			},
+			{
+				"command": "autodev.systemAction",
+				"mac": "cmd+i",
+				"key": "ctrl+i"
+			},
+			{
+				"command": "autodev.editor.suggestCommand",
+				"mac": "cmd+shift+j",
+				"key": "ctrl+shift+j"
+			}
 		],
 		"submenus": [
 			{
@@ -1001,7 +1001,7 @@
 		"pa": "vsce package"
 	},
 	"dependencies": {
-		"@langchain/anthropic": "^0.1.16",
+		"@langchain/anthropic": "^0.1.21",
 		"@langchain/core": "^0.1.59",
 		"@mozilla/readability": "^0.5.0",
 		"@octokit/rest": "^20.1.1",

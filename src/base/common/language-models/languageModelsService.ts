@@ -4,9 +4,12 @@ import { type CancellationToken, Progress } from 'vscode';
 import { EMBEDDING_BATCH_SIZE } from '../configuration/configuration';
 import { ConfigurationService } from '../configuration/configurationService';
 import { IChatMessage, IChatResponseFragment, ILanguageModelProvider } from './languageModels';
-import { HuggingFaceTransformersLanguageModelProvider } from './providers/hgTransformersLMProvider';
-import { OllamaLanguageModelProvider } from './providers/ollamaLMProvider';
-import { OpenAILanguageModelProvider } from './providers/openaiLMProvider';
+import { AnthropicLanguageModelProvider } from './providers/anthropicProvider';
+import { HuggingFaceTransformersLanguageModelProvider } from './providers/hgTransformersProvider';
+import { OllamaLanguageModelProvider } from './providers/ollamaProvider';
+import { OpenAILanguageModelProvider } from './providers/openaiProvider';
+import { TongyiLanguageModelProvider } from './providers/TongyiProvider';
+import { WenxinLanguageModelProvider } from './providers/WenxinProvider';
 
 export interface LanguageModelSelector {
 	/**
@@ -30,7 +33,10 @@ export class LanguageModelsService {
 		private configService: ConfigurationService,
 	) {
 		this._providers = new Map<string, ILanguageModelProvider>([
+			['anthropic', new AnthropicLanguageModelProvider(configService)],
 			['openai', new OpenAILanguageModelProvider(configService)],
+			['qianfan', new WenxinLanguageModelProvider(configService)],
+			['tongyi', new TongyiLanguageModelProvider(configService)],
 			['ollama', new OllamaLanguageModelProvider(configService)],
 			['transformers', new HuggingFaceTransformersLanguageModelProvider(configService)],
 		]);

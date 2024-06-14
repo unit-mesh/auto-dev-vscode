@@ -15,16 +15,15 @@ import { AutoDevExtension } from '../../AutoDevExtension';
 // 'export function' => 15
 const MIN_CONTEXT_LENGTH = 12;
 
-const BEFORE_CURSOR = '<|fim_prefix|>';
-const AFTER_CURSOR = '<|fim_suffix|>';
-const AT_CURSOR = '<|fim_middle|>';
-const FILE_SEPARATOR = '<|file_separator|>';
+const BEFORE_CURSOR = '<fim_prefix>';
+const AFTER_CURSOR = '<fim_suffix>';
+const AT_CURSOR = '<fim_middle>';
 
 const CODE_STOR_WORDS = [
 	BEFORE_CURSOR,
 	AFTER_CURSOR,
 	AT_CURSOR,
-	FILE_SEPARATOR,
+	'<|fim_end|>',
 	'<|end▁of▁sentence|>',
 	'<|EOT|>',
 	'\\n',
