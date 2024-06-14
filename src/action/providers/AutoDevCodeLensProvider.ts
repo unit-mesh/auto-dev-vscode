@@ -14,8 +14,6 @@ import {
 	commands,
 	Disposable,
 	l10n,
-	Range,
-	Selection,
 	TextDocument,
 	window,
 	WorkspaceEdit,
@@ -37,6 +35,8 @@ import { ILanguageServiceProvider } from 'base/common/languages/languageService'
 import { logger } from 'base/common/log/log';
 
 import { type AutoDevExtension } from '../../AutoDevExtension';
+
+type CodeLensItemType = 'quickChat' | 'explainCode' | 'optimizeCode' | 'autoComment' | 'autoTest' | 'customAction';
 
 export class AutoDevCodeLensProvider implements CodeLensProvider {
 	private config: ConfigurationService;
@@ -134,12 +134,21 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 		return this.config.get<string>('codelensDisplayMode') === 'collapse';
 	}
 
+	getDisplayCodelensItems() {
+		return new Set(this.config.get<CodeLensItemType[]>('codelensDislayItems'));
+	}
+
 	hasCustomPromps() {
-		return this.autodev.teamPromptsBuilder.teamPrompts().length;
+		return this.autodev.teamPromptsBuilder.teamPrompts().length > 0;
 	}
 
 	async provideCodeLenses(document: TextDocument, token: CancellationToken) {
 		if (isFileTooLarge(document) || !isSupportedLanguage(document.languageId)) {
+			return [];
+		}
+
+		const displayItems = this.getDisplayCodelensItems();
+		if (displayItems.size === 0) {
 			return [];
 		}
 
@@ -149,7 +158,7 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 			return [];
 		}
 
-		const groups = this.buildCodeLensGroups(elements, document, token);
+		const groups = this.buildCodeLensGroups(displayItems, elements, document, token);
 		if (groups.length === 0) {
 			return [];
 		}
@@ -173,53 +182,87 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 		});
 	}
 
-	private buildCodeLensGroups(elements: NamedElement[], document: TextDocument, token: CancellationToken) {
+	private buildCodeLensGroups(
+		displaySet: Set<CodeLensItemType>,
+		elements: NamedElement[],
+		document: TextDocument,
+		token: CancellationToken,
+	) {
 		const result: CodeLens[][] = [];
+		const hasCustomPromps = this.hasCustomPromps();
 
 		for (const element of elements) {
 			const codelenses: CodeLens[] = [];
 
-			codelenses.push(
-				new CodeLens(element.identifierRange, {
-					title: l10n.t('Quick Chat'),
-					command: CMD_CODELENS_QUICK_CHAT,
-					arguments: [document, element],
-				}),
-				new CodeLens(element.identifierRange, {
-					title: l10n.t('Explain Code'),
-					command: CMD_CODELENS_EXPLAIN_CODE,
-					arguments: [document, element],
-				}),
-				new CodeLens(element.identifierRange, {
-					title: l10n.t('Optimize Code'),
-					command: CMD_CODELENS_OPTIMIZE_CODE,
-					arguments: [document, element],
-				}),
-			);
+			for (const type of displaySet) {
+				if (type === 'quickChat') {
+					codelenses.push(
+						new CodeLens(element.identifierRange, {
+							title: l10n.t('Quick Chat'),
+							command: CMD_CODELENS_QUICK_CHAT,
+							arguments: [document, element],
+						}),
+					);
+					continue;
+				}
 
-			if (!element.isTestFile()) {
-				codelenses.push(
-					new CodeLens(element.identifierRange, {
-						title: l10n.t('AutoComment'),
-						command: CMD_CODELENS_GEN_DOCSTRING,
-						arguments: [document, element],
-					}),
-					new CodeLens(element.identifierRange, {
-						title: l10n.t('AutoTest'),
-						command: CMD_CODELENS_CREATE_UNIT_TEST,
-						arguments: [document, element, new WorkspaceEdit()],
-					}),
-				);
-			}
+				if (type === 'explainCode') {
+					codelenses.push(
+						new CodeLens(element.identifierRange, {
+							title: l10n.t('Explain Code'),
+							command: CMD_CODELENS_EXPLAIN_CODE,
+							arguments: [document, element],
+						}),
+					);
+					continue;
+				}
+				if (type === 'optimizeCode') {
+					codelenses.push(
+						new CodeLens(element.identifierRange, {
+							title: l10n.t('Optimize Code'),
+							command: CMD_CODELENS_OPTIMIZE_CODE,
+							arguments: [document, element],
+						}),
+					);
+					continue;
+				}
 
-			if (this.hasCustomPromps()) {
-				codelenses.push(
-					new CodeLens(element.identifierRange, {
-						title: l10n.t('Custom Action'),
-						command: CMD_CODELENS_SHOW_CUSTOM_ACTION,
-						arguments: [document, element],
-					}),
-				);
+				if (type === 'autoComment') {
+					codelenses.push(
+						new CodeLens(element.identifierRange, {
+							title: l10n.t('AutoComment'),
+							command: CMD_CODELENS_GEN_DOCSTRING,
+							arguments: [document, element],
+						}),
+					);
+					continue;
+				}
+
+				if (type === 'autoTest') {
+					if (!element.isTestFile()) {
+						codelenses.push(
+							new CodeLens(element.identifierRange, {
+								title: l10n.t('AutoTest'),
+								command: CMD_CODELENS_CREATE_UNIT_TEST,
+								arguments: [document, element, new WorkspaceEdit()],
+							}),
+						);
+					}
+					continue;
+				}
+
+				if (type === 'customAction') {
+					if (hasCustomPromps) {
+						codelenses.push(
+							new CodeLens(element.identifierRange, {
+								title: l10n.t('Custom Action'),
+								command: CMD_CODELENS_SHOW_CUSTOM_ACTION,
+								arguments: [document, element],
+							}),
+						);
+					}
+					continue;
+				}
 			}
 
 			result.push(codelenses);
