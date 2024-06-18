@@ -43,12 +43,19 @@ export class OpenAILanguageModelProvider implements ILanguageModelProvider {
 		);
 
 		let content = '';
-		let part = '';
+		let part: string | undefined | null;
 
 		for await (const chunk of completion) {
-			part = chunk.choices[0].delta.content!;
-			content += part;
+			const [choice] = chunk.choices || [];
 
+			part = choice.delta.content;
+
+			// Note: Empty if finish_reason exists.
+			if (!part || choice.finish_reason) {
+				break;
+			}
+
+			content += part;
 			progress?.report({ index: 0, part: part });
 		}
 
