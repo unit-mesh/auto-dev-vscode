@@ -78,15 +78,25 @@ export class AnthropicLanguageModelProvider implements ILanguageModelProvider {
 
 	private _newLLM(options: { [name: string]: any }) {
 		const config = this.configService;
+		const {
+			model,
+			baseURL = config.get('anthropic.baseURL'),
+			apiKey = config.get('anthropic.apiKey'),
+			temperature,
+			maxTokens,
+			topP,
+			clientOptions = {}
+		} = options;
 
 		return new ChatAnthropic({
-			anthropicApiKey: config.get<string>('anthropic.apiKey'),
-			anthropicApiUrl: config.get<string>('anthropic.baseURL'),
+			anthropicApiKey: apiKey,
+			anthropicApiUrl: baseURL,
 			streaming: true,
-			model: this._resolveChatModel(options.model),
-			temperature: options.temperature,
-			maxTokens: options.maxTokens,
-			topP: options.topP,
+			temperature,
+			maxTokens,
+			topP,
+			model: this._resolveChatModel(model),
+			...clientOptions,
 		});
 	}
 
