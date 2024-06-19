@@ -79,14 +79,25 @@ export class WenxinLanguageModelProvider implements ILanguageModelProvider {
 	private _newLLM(options: { [name: string]: any }) {
 		const config = this.configService;
 
+		const {
+			model,
+			temperature,
+			penaltyScore,
+			topP,
+			apiKey = config.get<string>('qianfan.apiKey'),
+			secretKey = config.get('qianfan.secretKey'),
+			clientOptions = {},
+		} = options;
+
 		return new ChatBaiduWenxin({
-			baiduApiKey: config.get<string>('qianfan.apiKey'),
-			baiduSecretKey: config.get<string>('qianfan.secretKey'),
+			baiduApiKey: apiKey,
+			baiduSecretKey: secretKey,
 			streaming: true,
-			model: this._resolveChatModel(options.model),
-			temperature: options.temperature,
-			topP: options.topP,
-			penaltyScore: options.penaltyScore,
+			model: this._resolveChatModel(model),
+			temperature: temperature,
+			topP: topP,
+			penaltyScore: penaltyScore,
+			...clientOptions,
 		});
 	}
 

@@ -235,17 +235,7 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 
 	private async listModels(): Promise<IChatModelResource[]> {
 		const resources = this.configService.getConfig<IChatModelResource[]>('chat.models');
-		if (!resources) {
-			return [];
-		}
-
-		return resources.map(res => {
-			return {
-				title: res.title,
-				provider: res.provider,
-				model: res.model,
-			};
-		});
+		return resources ?? [];
 	}
 
 	readonly slashCommandsMap: Record<string, string> = {
@@ -324,16 +314,15 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 			const models = await this.listModels();
 
 			const title = event.data.title;
-			const metadata = models.find(m => m.title === title);
+			const resource = models.find(m => m.title === title);
 
 			const completionOptions = event.data.completionOptions;
 
 			await this.lm.chat(
 				mapToChatMessages(event.data.messages),
 				{
+					...resource,
 					...completionOptions,
-					provider: metadata?.provider,
-					model: metadata?.model,
 				},
 				{
 					report(fragment) {

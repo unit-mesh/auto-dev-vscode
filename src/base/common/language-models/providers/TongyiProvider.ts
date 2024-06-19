@@ -79,14 +79,25 @@ export class TongyiLanguageModelProvider implements ILanguageModelProvider {
 	private _newLLM(options: { [name: string]: any }) {
 		const config = this.configService;
 
+		const {
+			model,
+			temperature,
+			maxTokens,
+			topP,
+			apiKey = config.get<string>('tongyi.apiKey'),
+			enableSearch = config.get('tongyi.enableSearch', true),
+			clientOptions = {},
+		} = options;
+
 		return new ChatAlibabaTongyi({
-			alibabaApiKey: config.get<string>('tongyi.apiKey'),
+			alibabaApiKey: apiKey,
 			streaming: true,
-			model: this._resolveChatModel(options.model),
-			temperature: options.temperature,
-			maxTokens: options.maxTokens,
-			topP: options.topP,
-			enableSearch: config.get('tongyi.enableSearch'),
+			model: this._resolveChatModel(model),
+			temperature: temperature,
+			maxTokens: maxTokens,
+			topP: topP,
+			enableSearch: enableSearch,
+			...clientOptions,
 		});
 	}
 

@@ -178,24 +178,29 @@ export class OpenAILanguageModelProvider implements ILanguageModelProvider {
 	}
 
 	private _newLLM(options: { [name: string]: any }) {
-		const { baseURL, apiKey, project, organization } = options;
-		const configService = this.configService;
-
-		const apiType = configService.get<'openai' | 'azure'>('openai.apiType');
+		const config = this.configService;
+		const {
+			baseURL = config.get('openai.baseURL'),
+			apiKey = config.get('openai.apiKey'),
+			project = config.get('openai.project'),
+			organization = config.get('openai.organization'),
+			deployment = organization,
+			apiType = config.get<'openai' | 'azure'>('openai.apiType'),
+		} = options;
 
 		if (apiType === 'azure') {
 			return new AzureOpenAI({
-				baseURL: baseURL || configService.get('openai.baseURL'),
-				apiKey: apiKey || configService.get('openai.apiKey'),
-				deployment: organization || configService.get('openai.organization'),
+				baseURL: baseURL,
+				apiKey: apiKey,
+				deployment: deployment,
 			});
 		}
 
 		return new OpenAI({
-			baseURL: configService.get('openai.baseURL'),
-			project: project || configService.get('openai.project'),
-			apiKey: apiKey || configService.get('openai.apiKey'),
-			organization: organization || configService.get('openai.organization'),
+			baseURL: baseURL,
+			project: project,
+			apiKey: apiKey,
+			organization: organization,
 		});
 	}
 
