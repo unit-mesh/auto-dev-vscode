@@ -3,7 +3,7 @@
 	"view.chat.title": "Chat",
 
 	"contributes.icons.autodev-icon.description": "autodev icon",
-	"contributes.icons.autodev-dark.description": "autodev-drak",
+	"contributes.icons.autodev-dark.description": "autodev-dark",
 	"contributes.icons.autodev-error.description": "AutoDev Error",
 	"contributes.icons.autodev-pair.description": "AutoDev Pair",
 
@@ -27,8 +27,8 @@
 	"configuration.completions.enableLegacyMode.markdownDescription": "Use legacy `/v1/completions` instead of `/v1/chat/completions`, only openai provider.",
 
 	"configuration.storages.title": "Storages",
-	"configuration.storages.databaseType.description": "Databsae Type.",
-	"configuration.storages.databaseUrl.description": "Databsae Database URL. Defaults to `~/.autodev/index/autodev-index.sqlite`.",
+	"configuration.storages.databaseType.description": "Database Type.",
+	"configuration.storages.databaseUrl.description": "Database URL. Defaults to `~/.autodev/index/autodev-index.sqlite`.",
 	"configuration.storages.vectorstoreType.description": "Vector Store Type.",
 	"configuration.storages.vectorstorePath.description": "Vector Store Database URL. Defaults to `~/.autodev/index/lancedb`.",
 

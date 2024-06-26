@@ -206,6 +206,7 @@
 						"default": false,
 						"description": "Use legacy \"/v1/completions\" instead of \"/v1/chat/completions\"",
 						"markdownDescription": "%configuration.completions.enableLegacyMode.markdownDescription%",
+						"deprecationMessage": " Will be deprecated when infill is universally supported or openai stop \"/v1/completions\" support.",
 						"order": 7
 					},
 					"autodev.completions.requestDelay": {
@@ -268,6 +269,74 @@
 					}
 				},
 				"order": 6
+			},
+			{
+				"title": "%configuration.experimental.title%",
+				"properties": {
+					"autodev.experimental.infill.enable": {
+						"type": "boolean",
+						"description": "%configuration.experimental.infill.enable.description%",
+						"default": false,
+						"order": 1
+					},
+					"autodev.experimental.infill.provider": {
+						"type": "string",
+						"description": "%configuration.experimental.infill.provider.description%",
+						"enum": [
+							"anthropic",
+							"openai",
+							"qianfan",
+							"tongyi",
+							"ollama"
+						],
+						"default": "openai",
+						"order": 2
+					},
+					"autodev.experimental.infill.model": {
+						"type": "string",
+						"description": "%configuration.experimental.infill.model.description%",
+						"default": "gpt-3.5-turbo-instruct",
+						"order": 3
+					},
+					"autodev.experimental.infill.enableFIM": {
+						"type": "boolean",
+						"description": "%configuration.experimental.infill.enableFIM.description%",
+						"default": false,
+						"order": 4
+					},
+					"autodev.experimental.infill.fimTokens": {
+						"type": "object",
+						"description": "%configuration.experimental.infill.fimTokens.description%",
+						"properties": {
+							"prefix": {
+								"type": "string",
+								"default": "<fim_prefix>"
+							},
+							"suffix": {
+								"type": "string",
+								"default": "<fim_prefix>"
+							},
+							"middle": {
+								"type": "string",
+								"default": "<fim_middle>"
+							}
+						},
+						"order": 5
+					},
+					"autodev.experimental.infill.fimTokenSelfClosing": {
+						"type": "boolean",
+						"description": "%configuration.experimental.infill.fimTokenSelfClosing.description%",
+						"default": false,
+						"order": 6
+					},
+					"autodev.experimental.infill.doSamples": {
+						"type": "boolean",
+						"description": "%configuration.experimental.infill.doSamples.description%",
+						"default": true,
+						"order": 7
+					}
+				},
+				"order": 8
 			},
 			{
 				"title": "%configuration.providers.title%",

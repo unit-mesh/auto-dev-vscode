@@ -38,8 +38,9 @@ export async function activate(context: ExtensionContext) {
 
 	logger.info(l10n.t('Welcome to AutoDev, 🧙 the AI-powered coding wizard.'));
 
-	if (process.env.NODE_ENV === 'development') {
-		logger.show(false);
+	// @ts-expect-error - This is a hack code that only works with vite.
+	if (import.meta.env.MODE === 'development') {
+		logger.show(true);
 	}
 }
 

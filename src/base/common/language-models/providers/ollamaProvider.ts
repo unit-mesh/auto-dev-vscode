@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { Ollama } from 'ollama';
 import { type CancellationToken, type Progress } from 'vscode';
 
