@@ -8,7 +8,7 @@ export const enum ChatMessageRole {
 }
 
 export interface IChatMessage {
-	role: ChatMessageRole;
+	role: 'system' | 'user' | 'assistant';
 	content: string;
 }
 

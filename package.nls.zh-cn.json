@@ -1,5 +1,5 @@
 {
-  "view.chat.title": "聊天",
+	"view.chat.title": "聊天",
 
 	"configuration.general.title": "通用",
 	"configuration.enableRenameSuggestion.description": "启用重命名建议",
@@ -20,6 +20,7 @@
 	"configuration.completions.model.description": "覆盖模型供应商中的初始模型",
 	"configuration.completions.template.description": "代码模型的提示语模板。",
 	"configuration.completions.stops.description": "代码模型的停用词列表。",
+	"configuration.v.fimSpecialTokens.description": "中间填充（FIM）是代码自动完成模型支持的一种特殊提示格式，可以在两个已编写的代码块之间完成代码。",
 	"configuration.completions.requestDelay.markdownDescription": "发起自动补全的请求延迟时间，避免过度消耗 API 令牌。只有启用 `#autodev.completions.enable#` 后，`requestDelay` 配置才生效。",
 	"configuration.completions.enableLegacyMode.markdownDescription": "启用兼容模型，使用旧的 `/v1/completions` 代替 `/v1/chat/completions`，仅 openai 服务支持。",
 
@@ -54,18 +55,18 @@
 	"configuration.tongyi.model.description": "模型名称",
 	"configuration.tongyi.enableSearch.description": "启用互联网搜索",
 
-  "configuration.ollama.baseURL.markdownDescription": "Ollama 的 API URL, Key。参考 [API Reference](https://github.com/ollama/ollama/blob/main/docs/api.md)",
-  "configuration.ollama.model.description": "模型名称",
+	"configuration.ollama.baseURL.markdownDescription": "Ollama 的 API URL, Key。参考 [API Reference](https://github.com/ollama/ollama/blob/main/docs/api.md)",
+	"configuration.ollama.model.description": "模型名称",
 
-  "configuration.transformers.remoteHost.description": "加载模型的主机 URL，默认为 Hugging Face Hub。",
+	"configuration.transformers.remoteHost.description": "加载模型的主机 URL，默认为 Hugging Face Hub。",
 	"configuration.transformers.remoteHost.markdownDescription": "加载模型的主机 URL，默认为  [Hugging Face Hub](https://huggingface.co)",
-  "configuration.transformers.remotePathTemplate.description": "加载模型时填写并合并到 remoteHost 的路径模板。",
-  "configuration.transformers.remotePathTemplate.markdownDescription": "加载模型时填写并合并到 `#autodev.transformers.remoteHost#` 的路径模板。",
-  "configuration.transformers.allowLocalModels.markdownDescription": "是否允许加载本地文件，默认为 `true`。如果设置为 `false`，将跳过本地文件检查，尝试从远程主机加载模型。",
-  "configuration.transformers.localModelPath.markdownDescription": "加载本地模型的路径，默认为 `~/.autodev/models/`。",
-  "configuration.transformers.model.markdownDescription": "设置嵌入模型名称。默认为 `all-MiniLM-L6-v2`。",
-  "configuration.transformers.onnxWasmNumThreads.description": "设置 ONNX WebAssembly 运行时的线程数。默认为你的 CPU 数量。",
-  "configuration.transformers.onnxLoglevel.description": "设置 ONNX 运行时的日志级别。默认为错误。",
+	"configuration.transformers.remotePathTemplate.description": "加载模型时填写并合并到 remoteHost 的路径模板。",
+	"configuration.transformers.remotePathTemplate.markdownDescription": "加载模型时填写并合并到 `#autodev.transformers.remoteHost#` 的路径模板。",
+	"configuration.transformers.allowLocalModels.markdownDescription": "是否允许加载本地文件，默认为 `true`。如果设置为 `false`，将跳过本地文件检查，尝试从远程主机加载模型。",
+	"configuration.transformers.localModelPath.markdownDescription": "加载本地模型的路径，默认为 `~/.autodev/models/`。",
+	"configuration.transformers.model.markdownDescription": "设置嵌入模型名称。默认为 `all-MiniLM-L6-v2`。",
+	"configuration.transformers.onnxWasmNumThreads.description": "设置 ONNX WebAssembly 运行时的线程数。默认为你的 CPU 数量。",
+	"configuration.transformers.onnxLoglevel.description": "设置 ONNX 运行时的日志级别。默认为错误。",
 
 	"command.showChatPanel.title": "开始对话",
 	"command.explainCode.title": "解释代码",

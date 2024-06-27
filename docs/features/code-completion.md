@@ -7,53 +7,108 @@ nav_order: 1
 
 Automatically completes your code based on the position of your cursor.
 
-## Enable Feature
+> We validate the codegemma, codeqwen, and codellama，other models need to be tested on their own.
+
+## Enable Code Completions
 
 Not enabled by default, see [AutoDev: Code Completion](../configuration.md#code-completion)。
 
 ```jsonc
 {
-  "autodev.openai.apiKey": "sk-xxxxx", // Your openai api key
-  "autodev.completions.enable": true // Enabled Inline Completions
+	"autodev.completions.enable": true, // Enabled or disable
 }
 ```
 
-Now let's try writing some code.
+Next step: select a code pre-training variant that specializes in code completion and generation of code prefixes and/or suffixes.
 
-## Select code Model
+## Fill-in-the-middle
 
-You can hope that you use specific code models instead of dialog models
+Fill-in-the-middle (FIM) is a special prompt format supported by the code completion model can complete code between two already written code blocks.
 
-```jsonc
+[codellama](https://ollama.com/blog/how-to-prompt-code-llama) expects a specific format for infilling code:
+
+```json
 {
-  "autodev.completions.model": "gpt-4o" // Overriding the default chat model
+	"autodev.experimental.fimSpecialTokens": {
+		"prefix": "<PRE>",
+		"suffix": "<SUF>",
+		"middle": "<MID>"
+	}
 }
 ```
 
-Recommended to use a specially trained code model, or a base model that supports fim.
+[codeqwen](https://github.com/QwenLM/CodeQwen1.5/blob/main/examples/CodeQwen1.5-base-fim.py) expects a specific format for infilling code:
 
-## Connect to local model
-
-Here is an example of ollama, see [OpenAI compatibility](https://github.com/ollama/ollama/blob/main/docs/openai.md) for details.
-
-```jsonc
+```json
 {
-  "autodev.openai.baseURL": "http://127.0.0.1:11434/v1/", // Your local service url
-  "autodev.openai.apiKey": "sk-xxxxx", // Your local service api key
-  "autodev.completions.model": "codeqwen:7b-code-v1.5-q5_1" // Overriding the default chat model
+	"autodev.experimental.fimSpecialTokens": {
+		"prefix": "<fim_prefix>",
+		"suffix": "<fim_suffix>",
+		"middle": "<fim_middle>"
+	}
 }
 ```
 
-If your self-built service is deployed in a mode that does not support chat, you may need to enable [legacy mode](#enable-legacy-mode).
+[codegemma](https://ai.google.dev/gemma/docs/formatting) expects a specific format for infilling code:
 
-## Enable Legacy Mode
+```json
+{
+	"autodev.experimental.fimSpecialTokens": {
+		"prefix": "<|fim_prefix|>",
+		"suffix": "<|fim_suffix|>",
+		"middle": "<|fim_middle|>"
+	}
+}
+```
 
-The default is the traditional `/v1/completions` instead of `/v1/chat/completions`, but you can fall back to the old mode.
+For other models, please select the appropriate special format.
 
-> Only working on openai provider
+**TIP:** codeqwen and codegemma can be used with the same.
+
+## Best practice
+
+Because of the lack of resources, we used "ollama" to verify the reliability of the model.
+
+### Use CodeQwen
+
+Support for `codeqwen:7b-code-v1.5-q5_1`.
+
+> The most stable model available.
 
 ```jsonc
 {
-  "autodev.completions.enableLegacyMode": true
+	"autodev.completions.provider": "ollama",
+	"autodev.completions.model": "codeqwen:7b-code-v1.5-q5_1",
+}
+```
+
+### Use CodeLlama
+
+Support for `codellama:7b`, `codellama:7b-code`, `codellama:7b-instruct`
+
+> Unstable generation.
+
+```jsonc
+{
+	"autodev.completions.provider": "ollama",
+	"autodev.completions.model": "codellama:7b-code",
+	"autodev.experimental.fimSpecialTokens": {
+		"prefix": "<PRE>",
+		"suffix": "<SUF>",
+		"middle": "<MID>",
+	},
+}
+```
+
+### Use CodeGemma
+
+Support for `codegemma:2b-code`
+
+> Unstable generation.
+
+```jsonc
+{
+	"autodev.completions.provider": "ollama",
+	"autodev.completions.model": "codegemma:2b-code",
 }
 ```

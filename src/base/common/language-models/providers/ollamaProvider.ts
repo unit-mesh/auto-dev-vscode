@@ -1,5 +1,4 @@
-import _ from 'lodash';
-import { Ollama } from 'ollama';
+import { type GenerateResponse, Ollama } from 'ollama';
 import { type CancellationToken, type Progress } from 'vscode';
 
 import { ConfigurationService } from '../../configuration/configurationService';
@@ -16,15 +15,23 @@ export class OllamaLanguageModelProvider implements ILanguageModelProvider {
 		progress?: Progress<IChatResponseFragment>,
 		token?: CancellationToken,
 	): Promise<string> {
-		const { model, ...rest } = options;
+		const { model, max_tokens, ...reset } = options;
 
 		const llm = this._newLLM();
+
+		// TODO: Does it affect completion or embedding?
+		token?.onCancellationRequested(() => {
+			llm.abort();
+		});
 
 		const completion = await llm.chat({
 			stream: true,
 			model: this._resolveChatModel(model),
 			messages: messages,
-			options: rest,
+			options: {
+				...reset,
+				num_predict: max_tokens,
+			},
 		});
 
 		let content = '';
@@ -44,27 +51,40 @@ export class OllamaLanguageModelProvider implements ILanguageModelProvider {
 		input: string,
 		options: { [name: string]: any },
 		progress?: Progress<IChatResponseFragment>,
+		token?: CancellationToken,
 	): Promise<string> {
-		const { model, ...rest } = options;
+		const { model, stream = true, max_tokens, ...rest } = options;
 
 		const llm = this._newLLM();
+
+		// TODO: Does it affect chat or embedding?
+		token?.onCancellationRequested(() => {
+			llm.abort();
+		});
+
 		const completion = await llm.generate({
-			stream: true,
+			stream: stream,
 			model: this._resolveComletionModel(model),
-			// TODO: only works with single prompts for now?
-			prompt: Array.isArray(input) ? input.join('\n') : input,
+			prompt: input,
 			raw: true,
-			options: rest,
+			options: {
+				...rest,
+				num_predict: max_tokens,
+			},
 		});
 
 		let content = '';
 		let part = '';
 
-		for await (const chunk of completion) {
-			part = chunk.response;
-			content += part;
+		if (stream) {
+			for await (const chunk of completion) {
+				part = chunk.response;
+				content += part;
 
-			progress?.report({ index: 0, part: part });
+				progress?.report({ index: 0, part: part });
+			}
+		} else {
+			content = (completion as unknown as GenerateResponse).response;
 		}
 
 		return content;
@@ -80,6 +100,12 @@ export class OllamaLanguageModelProvider implements ILanguageModelProvider {
 		const batches = texts.slice(0, batchSize);
 
 		const llm = this._newLLM();
+
+		// TODO: Does it affect chat or completion?
+		token?.onCancellationRequested(() => {
+			llm.abort();
+		});
+
 		const batchResponses = await Promise.all(
 			batches.map(batch =>
 				llm.embeddings({

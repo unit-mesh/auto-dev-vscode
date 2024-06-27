@@ -105,12 +105,63 @@ Choose a default model provider to give code generation.
 
 Model for overwrite provider in the provider completion model
 
+### FIM Special Tokens
+
+Fill-in-the-middle (FIM) is a special prompt format supported by the code completion model can complete code between two already written code blocks.
+
+See [Code Completions](./features/code-completion.md).
+
+```json
+{
+	"autodev.completions.fimSpecialTokens": {
+		"prefix": "<PRE>",
+		"suffix": "<SUF>",
+		"middle": "<MID>"
+	}
+}
+```
+
+### Parameters
+
+Some model parameters.
+
+> Please don't modify it unless you know what you're doing.
+
+```json
+{
+	"autodev.completions.parameters": {
+		"temperature": 0,
+		"top_p": 0.9,
+		"max_tokens": 500
+	}
+}
+```
+
+### Stops
+
+Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.
+
+### Request Delay
+
+Code auto-completion delay request time. Avoid excessive consumption of API tokens. `requestDelay` only works if `Autodev: Enable Code Completions` is enabled.
+
+### Enable Legacy Mode
+
+Use legacy `/v1/completion` instead of `/v1/chat/completion`. Only working `openai` provider.
+
+> Will be deprecated when infill is universally supported or openai stop "/v1/completions" support.
+
 ### Template
 
 Customize your modeling cue template.
 
-> [!IMPORTANT]
-> Variables use string replacement, please fill in strictly according to instructions.
+> Place use [FIM Special Tokens](#fim-special-tokens) instead.
+
+Available Variables:
+
+- `prefix` Code before the cursor.
+- `suffix` Code after the cursor.
+- `language` Current editing file language, for example: "javascript".
 
 The recommended format is FIM ( filling in the middle ), for example:
 
@@ -122,25 +173,7 @@ The recommended format is FIM ( filling in the middle ), for example:
 <PRE>{prefix}<SUF>{suffix}<MID>
 ```
 
-Available Variables:
-
-- `prefix` Code before the cursor.
-- `suffix` Code after the cursor.
-- `language` Current editing file language, for example: "javascript".
-
-### Stops
-
-Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.
-
-### Enable Legacy Mode
-
-> Only working `openai` provider
-
-Use legacy `/v1/completion` instead of `/v1/chat/completion`
-
-### Request Delay
-
-Code auto-completion delay request time. Avoid excessive consumption of API tokens. `requestDelay` only works if `Autodev: Enable Code Completions` is enabled.
+Variables use string replacement, please fill in strictly according to instructions.
 
 ## Embeddings
 
@@ -201,6 +234,4 @@ See [ollama](https://ollama.com/)
 
 ### Transformers
 
-local model runtime. For codebase and embedding only. 
-
-
+local model runtime. For codebase and embedding only.

@@ -11,13 +11,16 @@
   "useGitignore": true,
   "ignorePaths": [],
   "words": [
+    "codeqwen",
+    "identifer",
     "inversify",
+    "lancedb",
     "ollama",
     "onnx",
     "openai",
     "phodal",
-		"identifer",
     "qianfan",
+    "qwen",
     "tolist",
     "tongyi",
     "xenova"

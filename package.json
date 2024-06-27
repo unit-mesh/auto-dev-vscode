@@ -166,7 +166,7 @@
 				"properties": {
 					"autodev.completions.enable": {
 						"type": "boolean",
-						"default": true,
+						"default": false,
 						"description": "%configuration.completions.enable.description%",
 						"order": 1
 					},
@@ -180,26 +180,83 @@
 							"tongyi",
 							"ollama"
 						],
-						"default": "openai",
+						"default": "ollama",
 						"order": 1
 					},
 					"autodev.completions.model": {
 						"type": "string",
 						"description": "%configuration.completions.model.description%",
+						"default": "codeqwen:7b-code-v1.5-q5_1",
 						"order": 2
 					},
-					"autodev.completions.template": {
-						"type": "string",
-						"description": "%configuration.completions.template.description%",
-						"order": 3
+					"autodev.completions.parameters": {
+						"type": "object",
+						"properties": {
+							"temperature": {
+								"type": "number",
+								"default": 0
+							},
+							"top_p": {
+								"type": "number",
+								"default": 0.9
+							},
+							"max_tokens": {
+								"type": "integer",
+								"default": 500
+							}
+						},
+						"additionalProperties": false,
+						"default": {
+							"temperature": 0,
+							"top_p": 0.9,
+							"max_tokens": 500
+						},
+						"description": "%configuration.completions.parameters.description%",
+						"order": 4
+					},
+					"autodev.completions.fimSpecialTokens": {
+						"type": "object",
+						"description": "%configuration.completions.fimSpecialTokens.description%",
+						"properties": {
+							"prefix": {
+								"type": "string",
+								"description": "The prefix of the special token.",
+								"default": "<|fim_prefix|>"
+							},
+							"suffix": {
+								"type": "string",
+								"description": "The suffix of the special token.",
+								"default": "<|fim_suffix|>"
+							},
+							"middle": {
+								"type": "string",
+								"description": "The middle of the special token.",
+								"default": "<|fim_middle|>"
+							}
+						},
+						"additionalProperties": false,
+						"default": {
+							"prefix": "<|fim_prefix|>",
+							"suffix": "<|fim_suffix|>",
+							"middle": "<|fim_middle|>"
+						},
+						"order": 5
 					},
 					"autodev.completions.stops": {
 						"type": "array",
 						"items": {
 							"type": "string"
 						},
+						"additionalProperties": false,
+						"default": [],
 						"description": "%configuration.completions.stops.description%",
 						"order": 4
+					},
+					"autodev.completions.requestDelay": {
+						"type": "integer",
+						"default": 500,
+						"markdownDescription": "%configuration.completions.requestDelay.markdownDescription%",
+						"order": 6
 					},
 					"autodev.completions.enableLegacyMode": {
 						"type": "boolean",
@@ -208,10 +265,9 @@
 						"markdownDescription": "%configuration.completions.enableLegacyMode.markdownDescription%",
 						"order": 7
 					},
-					"autodev.completions.requestDelay": {
-						"type": "integer",
-						"default": 500,
-						"markdownDescription": "%configuration.completions.requestDelay.markdownDescription%",
+					"autodev.completions.template": {
+						"type": "string",
+						"description": "%configuration.completions.template.description%",
 						"order": 8
 					}
 				},
@@ -545,7 +601,7 @@
 				"title": "%command.explainCode.title%"
 			},
 			{
-				"command": "autodev.codelens..optimizeCode",
+				"command": "autodev.codelens.optimizeCode",
 				"title": "%command.optimizeCode.title%"
 			},
 			{
@@ -830,7 +886,7 @@
 					"when": "false"
 				},
 				{
-					"command": "autodev.codelens..optimizeCode",
+					"command": "autodev.codelens.optimizeCode",
 					"when": "false"
 				},
 				{
