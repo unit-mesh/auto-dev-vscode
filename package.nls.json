@@ -3,7 +3,7 @@
 	"view.chat.title": "Chat",
 
 	"contributes.icons.autodev-icon.description": "autodev icon",
-	"contributes.icons.autodev-dark.description": "autodev-drak",
+	"contributes.icons.autodev-dark.description": "autodev-dark",
 	"contributes.icons.autodev-error.description": "AutoDev Error",
 	"contributes.icons.autodev-pair.description": "AutoDev Pair",
 
@@ -21,14 +21,16 @@
 	"configuration.completions.enable.description": "Enable or disable inline completions",
 	"configuration.completions.provider.description": "Model Service Provider",
 	"configuration.completions.model.description": "Model for overwrite provider in the provider completions model.",
-	"configuration.completions.template.description": "Prompt of model.",
+	"configuration.completions.template.description": "Prompt of model. Recommended use of \"fimSpecialTokens\"",
+	"configuration.completions.parameters.description": "Completion parameters of model.",
+	"configuration.completions.fimSpecialTokens.description": "Fill-in-the-middle (FIM) is a special prompt format supported by the code completion model can complete code between two already written code blocks.",
 	"configuration.completions.stops.description": "Stop words of model.",
 	"configuration.completions.requestDelay.markdownDescription": "Code auto-completion delay request time. Avoid excessive consumption of API tokens. `requestDelay` only works if `#autodev.completions.enable#` is enabled.",
 	"configuration.completions.enableLegacyMode.markdownDescription": "Use legacy `/v1/completions` instead of `/v1/chat/completions`, only openai provider.",
 
 	"configuration.storages.title": "Storages",
-	"configuration.storages.databaseType.description": "Databsae Type.",
-	"configuration.storages.databaseUrl.description": "Databsae Database URL. Defaults to `~/.autodev/index/autodev-index.sqlite`.",
+	"configuration.storages.databaseType.description": "Database Type.",
+	"configuration.storages.databaseUrl.description": "Database URL. Defaults to `~/.autodev/index/autodev-index.sqlite`.",
 	"configuration.storages.vectorstoreType.description": "Vector Store Type.",
 	"configuration.storages.vectorstorePath.description": "Vector Store Database URL. Defaults to `~/.autodev/index/lancedb`.",
 

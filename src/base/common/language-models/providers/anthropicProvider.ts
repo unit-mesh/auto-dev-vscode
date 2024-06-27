@@ -1,6 +1,5 @@
 import { ChatAnthropic } from '@langchain/anthropic';
 import { ChatMessage } from '@langchain/core/messages';
-import _ from 'lodash';
 import { type CancellationToken, type Progress } from 'vscode';
 
 import { ConfigurationService } from '../../configuration/configurationService';
