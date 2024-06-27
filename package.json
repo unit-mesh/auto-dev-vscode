@@ -166,7 +166,7 @@
 				"properties": {
 					"autodev.completions.enable": {
 						"type": "boolean",
-						"default": true,
+						"default": false,
 						"description": "%configuration.completions.enable.description%",
 						"order": 1
 					},
@@ -180,39 +180,94 @@
 							"tongyi",
 							"ollama"
 						],
-						"default": "openai",
+						"default": "ollama",
 						"order": 1
 					},
 					"autodev.completions.model": {
 						"type": "string",
 						"description": "%configuration.completions.model.description%",
+						"default": "codeqwen:7b-code-v1.5-q5_1",
 						"order": 2
 					},
-					"autodev.completions.template": {
-						"type": "string",
-						"description": "%configuration.completions.template.description%",
-						"order": 3
+					"autodev.completions.parameters": {
+						"type": "object",
+						"properties": {
+							"temperature": {
+								"type": "number",
+								"default": 0
+							},
+							"top_p": {
+								"type": "number",
+								"default": 0.9
+							},
+							"max_tokens": {
+								"type": "integer",
+								"default": 500
+							}
+						},
+						"additionalProperties": false,
+						"default": {
+							"temperature": 0,
+							"top_p": 0.9,
+							"max_tokens": 500
+						},
+						"description": "%configuration.completions.parameters.description%",
+						"order": 4
+					},
+					"autodev.completions.fimSpecialTokens": {
+						"type": "object",
+						"description": "%configuration.completions.fimSpecialTokens.description%",
+						"properties": {
+							"prefix": {
+								"type": "string",
+								"description": "The prefix of the special token.",
+								"default": "<|fim_prefix|>"
+							},
+							"suffix": {
+								"type": "string",
+								"description": "The suffix of the special token.",
+								"default": "<|fim_suffix|>"
+							},
+							"middle": {
+								"type": "string",
+								"description": "The middle of the special token.",
+								"default": "<|fim_middle|>"
+							}
+						},
+						"additionalProperties": false,
+						"default": {
+							"prefix": "<|fim_prefix|>",
+							"suffix": "<|fim_suffix|>",
+							"middle": "<|fim_middle|>"
+						},
+						"order": 5
 					},
 					"autodev.completions.stops": {
 						"type": "array",
 						"items": {
 							"type": "string"
 						},
+						"additionalProperties": false,
+						"default": [],
 						"description": "%configuration.completions.stops.description%",
 						"order": 4
+					},
+					"autodev.completions.requestDelay": {
+						"type": "integer",
+						"default": 500,
+						"markdownDescription": "%configuration.completions.requestDelay.markdownDescription%",
+						"order": 6
 					},
 					"autodev.completions.enableLegacyMode": {
 						"type": "boolean",
 						"default": false,
 						"description": "Use legacy \"/v1/completions\" instead of \"/v1/chat/completions\"",
 						"markdownDescription": "%configuration.completions.enableLegacyMode.markdownDescription%",
-						"deprecationMessage": " Will be deprecated when infill is universally supported or openai stop \"/v1/completions\" support.",
 						"order": 7
 					},
-					"autodev.completions.requestDelay": {
-						"type": "integer",
-						"default": 500,
-						"markdownDescription": "%configuration.completions.requestDelay.markdownDescription%",
+					"autodev.completions.template": {
+						"type": "string",
+						"description": "%configuration.completions.template.description%",
 						"order": 8
 					}
 				},
@@ -269,74 +324,6 @@
 					}
 				},
 				"order": 6
-			},
-			{
-				"title": "%configuration.experimental.title%",
-				"properties": {
-					"autodev.experimental.infill.enable": {
-						"type": "boolean",
-						"description": "%configuration.experimental.infill.enable.description%",
-						"default": false,
-						"order": 1
-					},
-					"autodev.experimental.infill.provider": {
-						"type": "string",
-						"description": "%configuration.experimental.infill.provider.description%",
-						"enum": [
-							"anthropic",
-							"openai",
-							"qianfan",
-							"tongyi",
-							"ollama"
-						],
-						"default": "openai",
-						"order": 2
-					},
-					"autodev.experimental.infill.model": {
-						"type": "string",
-						"description": "%configuration.experimental.infill.model.description%",
-						"default": "gpt-3.5-turbo-instruct",
-						"order": 3
-					},
-					"autodev.experimental.infill.enableFIM": {
-						"type": "boolean",
-						"description": "%configuration.experimental.infill.enableFIM.description%",
-						"default": false,
-						"order": 4
-					},
-					"autodev.experimental.infill.fimTokens": {
-						"type": "object",
-						"description": "%configuration.experimental.infill.fimTokens.description%",
-						"properties": {
-							"prefix": {
-								"type": "string",
-								"default": "<fim_prefix>"
-							},
-							"suffix": {
-								"type": "string",
-								"default": "<fim_prefix>"
-							},
-							"middle": {
-								"type": "string",
-								"default": "<fim_middle>"
-							}
-						},
-						"order": 5
-					},
-					"autodev.experimental.infill.fimTokenSelfClosing": {
-						"type": "boolean",
-						"description": "%configuration.experimental.infill.fimTokenSelfClosing.description%",
-						"default": false,
-						"order": 6
-					},
-					"autodev.experimental.infill.doSamples": {
-						"type": "boolean",
-						"description": "%configuration.experimental.infill.doSamples.description%",
-						"default": true,
-						"order": 7
-					}
-				},
-				"order": 8
 			},
 			{
 				"title": "%configuration.providers.title%",
@@ -614,7 +601,7 @@
 				"title": "%command.explainCode.title%"
 			},
 			{
-				"command": "autodev.codelens..optimizeCode",
+				"command": "autodev.codelens.optimizeCode",
 				"title": "%command.optimizeCode.title%"
 			},
 			{
@@ -899,7 +886,7 @@
 					"when": "false"
 				},
 				{
-					"command": "autodev.codelens..optimizeCode",
+					"command": "autodev.codelens.optimizeCode",
 					"when": "false"
 				},
 				{
