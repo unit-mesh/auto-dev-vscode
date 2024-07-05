@@ -1,4 +1,6 @@
 import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { chunkArray } from '@langchain/core/utils/chunk_array';
 import {
@@ -18,8 +20,8 @@ interface HuggingFaceTransformersParams {
 	remoteHost: string;
 	remotePathTemplate: string;
 	allowLocalModels: boolean;
-	localModelPath: string;
-	onnxWasmNumThreads: 'auto' | number;
+	localModelPath: string | null;
+	onnxWasmNumThreads: 'auto' | number | null;
 	logLevel: 'verbose' | 'info' | 'warning' | 'error' | 'fatal';
 }
 
@@ -28,8 +30,8 @@ const defaults: HuggingFaceTransformersParams = {
 	remoteHost: 'https://huggingface.co',
 	remotePathTemplate: '{model}/resolve/{revision}/',
 	allowLocalModels: true,
-	localModelPath: 'models',
-	onnxWasmNumThreads: 'auto',
+	localModelPath: null,
+	onnxWasmNumThreads: null,
 	logLevel: 'error',
 };
 
@@ -156,23 +158,43 @@ export class HuggingFaceTransformersLanguageModelProvider implements ILanguageMo
 		env.remoteHost = valueGetter('remoteHost');
 		env.remotePathTemplate = valueGetter('remotePathTemplate');
 
+		// NOTE: Enabled or disable the internal embedding models
+		// The extension has a built-in embedding model, prevent users from overwriting the model paths
+		// If you must disable local adoption of an external, use a remote cache to overwrite the
 		const allowLocalModels = valueGetter('allowLocalModels');
 
 		if (allowLocalModels) {
 			env.allowLocalModels = true;
-			env.localModelPath = configService.joinPath('models');
+			const internalModelsUri = configService.extensionJoinPath('dist', 'models');
+			env.localModelPath = fileURLToPath(internalModelsUri.toString());
 		} else {
 			env.allowLocalModels = false;
 		}
 
-		env.cacheDir = configService.joinPath(valueGetter('localModelPath').replace('~', os.homedir()));
+		const localModelPath = valueGetter('localModelPath');
+
+		if (localModelPath) {
+			// ~/.autodev/models
+			if (localModelPath.startsWith('~')) {
+				env.cacheDir = path.join(localModelPath.replace('~', ''), os.homedir());
+			} else {
+				// Maybe cache into the current workspace
+				env.cacheDir = configService.joinPath(localModelPath);
+			}
+		} else {
+			// Default cache into home directory
+			env.cacheDir = path.join(os.homedir(), '.autodev', 'models');
+		}
 
 		const numThreads = valueGetter('onnxWasmNumThreads');
 
 		if (numThreads === 'auto') {
 			env.backends.onnx.wasm.numThreads = os.cpus().length;
-		} else {
+		} else if (typeof numThreads === 'number') {
 			env.backends.onnx.wasm.numThreads = numThreads;
+		} else {
+			// see https://github.com/microsoft/onnxruntime/issues/17274#issuecomment-1692587686
+			env.backends.onnx.wasm.numThreads = 1;
 		}
 
 		env.backends.onnx.logLevel = valueGetter('logLevel');
