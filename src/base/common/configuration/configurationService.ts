@@ -10,6 +10,7 @@ import {
 	EventEmitter,
 	workspace,
 	type WorkspaceConfiguration,
+	Uri
 } from 'vscode';
 
 import { AUTODEV_CONFIG_PREFIX } from './configuration';
@@ -27,7 +28,7 @@ export class ConfigurationService {
 
 	constructor(
 		@inject(IExtensionContext)
-		extensionContext: IExtensionContext,
+		private readonly extensionContext: IExtensionContext,
 	) {
 		this._projectConfig = resolveProjectConfig(extensionContext.extension.packageJSON);
 		this._config = workspace.getConfiguration(AUTODEV_CONFIG_PREFIX);
@@ -92,6 +93,11 @@ export class ConfigurationService {
 	joinPath(...paths: string[]): string {
 		const base = workspace.workspaceFolders?.[0].uri.fsPath || os.homedir();
 		return path.join(base, '.autodev', ...paths);
+	}
+
+	extensionJoinPath(...paths: string[]): Uri {
+		const base = this.extensionContext.extensionUri;
+		return Uri.joinPath(base, ...paths);
 	}
 
 	dispose(): void {
