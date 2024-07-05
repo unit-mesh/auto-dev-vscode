@@ -26,6 +26,8 @@
 
    ```sh
    # 因 vsce 原因，插件依赖请使用 npm 进行安装
+	 # see https://github.com/microsoft/vscode-vsce/issues/517
+	 # see https://github.com/microsoft/vscode-vsce/issues/421
    $ npm install
    ```
 

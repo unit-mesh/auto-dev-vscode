@@ -59,7 +59,7 @@
 	"configuration.ollama.model.description": "模型名称",
 
 	"configuration.transformers.remoteHost.description": "加载模型的主机 URL，默认为 Hugging Face Hub。",
-	"configuration.transformers.remoteHost.markdownDescription": "加载模型的主机 URL，默认为  [Hugging Face Hub](https://huggingface.co)",
+	"configuration.transformers.remoteHost.markdownDescription": "加载模型的主机 URL，默认为  [Hugging Face Hub](https://huggingface.co)，国内推荐走 https://hf-mirror.com 代理站点。",
 	"configuration.transformers.remotePathTemplate.description": "加载模型时填写并合并到 remoteHost 的路径模板。",
 	"configuration.transformers.remotePathTemplate.markdownDescription": "加载模型时填写并合并到 `#autodev.transformers.remoteHost#` 的路径模板。",
 	"configuration.transformers.allowLocalModels.markdownDescription": "是否允许加载本地文件，默认为 `true`。如果设置为 `false`，将跳过本地文件检查，尝试从远程主机加载模型。",

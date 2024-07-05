@@ -21,6 +21,8 @@ To run extension, follow these steps.
 
     ```sh
     # vsce currently only supports npm
+		# see https://github.com/microsoft/vscode-vsce/issues/517
+		# see https://github.com/microsoft/vscode-vsce/issues/421
     $ npm install
     ```
 
