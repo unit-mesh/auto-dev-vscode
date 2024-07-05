@@ -28,40 +28,84 @@ const targetToLanceDb = {
 
 const platforms = ["darwin", "linux", "win32"];
 const architectures = ["x64", "arm64"];
-let targets = platforms.flatMap((platform) =>
-  architectures.map((arch) => `${platform}-${arch}`),
-);
 
-console.log("[info] Building binaries with pkg...");
-for (const target of targets) {
-  const targetDir = `bin/${target}`;
-  fs.mkdirSync(targetDir, { recursive: true });
-  console.log(`[info] Building ${target}...`);
-  // execSync(
-  //   `npx pkg --no-bytecode --public-packages "*" --public pkgJson/${target} --out-path ${targetDir}`,
-  // );
+function download(base) {
+	let targets = platforms.flatMap((platform) =>
+		architectures.map((arch) => `${platform}-${arch}`),
+	);
 
-  // Download and unzip prebuilt sqlite3 binary for the target
-  const downloadUrl = `https://github.com/TryGhost/node-sqlite3/releases/download/v5.1.7/sqlite3-v5.1.7-napi-v6-${
-    target === "win32-arm64" ? "win32-ia32" : target
-  }.tar.gz`;
-  execSync(`curl -L -o ${targetDir}/build.tar.gz ${downloadUrl}`);
-  execSync(`cd ${targetDir} && tar -xvzf build.tar.gz`);
-  fs.copyFileSync(
-    `${targetDir}/build/Release/node_sqlite3.node`,
-    `${targetDir}/node_sqlite3.node`,
-  );
-  fs.unlinkSync(`${targetDir}/build.tar.gz`);
-  fs.rmSync(`${targetDir}/build`, {
-    recursive: true,
-    force: true,
-  });
+	console.log("[info] Building binaries with pkg...");
+	for (const target of targets) {
+		const targetDir = `bin/${target}`;
+		fs.mkdirSync(targetDir, { recursive: true });
+		console.log(`[info] Building ${target}...`);
+		// execSync(
+		//   `npx pkg --no-bytecode --public-packages "*" --public pkgJson/${target} --out-path ${targetDir}`,
+		// );
+
+		// Download and unzip prebuilt sqlite3 binary for the target
+		const downloadUrl = `${base}/releases/download/v5.1.7/sqlite3-v5.1.7-napi-v6-${
+			target === "win32-arm64" ? "win32-ia32" : target
+		}.tar.gz`;
+		execSync(`curl -L -o ${targetDir}/build.tar.gz ${downloadUrl}`);
+		execSync(`cd ${targetDir} && tar -xvzf build.tar.gz`);
+		fs.copyFileSync(
+			`${targetDir}/build/Release/node_sqlite3.node`,
+			`${targetDir}/node_sqlite3.node`,
+		);
+		fs.unlinkSync(`${targetDir}/build.tar.gz`);
+		fs.rmSync(`${targetDir}/build`, {
+			recursive: true,
+			force: true,
+		});
+	}
+
+	console.log("[info] Downloading prebuilt lancedb...");
+	for (const target of targets) {
+		if (targetToLanceDb[target]) {
+			console.log(`[info] Downloading ${target}...`);
+			execSync(`npm install -f ${targetToLanceDb[target]}@0.4.20 --no-save`);
+		}
+	}
 }
 
-console.log("[info] Downloading prebuilt lancedb...");
-for (const target of targets) {
-  if (targetToLanceDb[target]) {
-    console.log(`[info] Downloading ${target}...`);
-    execSync(`npm install -f ${targetToLanceDb[target]}@0.4.20 --no-save`);
-  }
+getSqliteRepoUrl().then(repoUrl => {
+	console.log("[info] Downloading sqlite3 from", repoUrl)
+	download(repoUrl);
+})
+
+function getSqliteRepoUrl() {
+	const github = 'https://github.com/TryGhost/node-sqlite3'
+	const gitee = 'https://gitee.com/Ypeng/node-sqlite3' // china proxy repo
+
+	// Like any
+	const promise = new Promise((resolve) => {
+		let counter = 0;
+
+		function fallback() {
+			counter++;
+
+			if (counter === 2) {
+				resolve(github);
+			}
+		}
+
+		function ping(url) {
+			return fetch(url).then(
+				res => {
+					if (res.ok) {
+						resolve(url)
+					} else {
+						fallback()
+					}
+				},
+				fallback
+			)
+		}
+
+		ping(github)
+		ping(gitee)
+	})
+
+	return promise
 }
