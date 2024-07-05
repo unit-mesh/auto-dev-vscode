@@ -5,6 +5,8 @@ import { Embedding } from './_base/Embedding';
 import { EmbeddingsProvider } from './_base/EmbeddingsProvider';
 import { mean_pooling, mergedTensor, normalize_, reshape, tensorData } from './_base/EmbeddingUtils';
 import { logger } from 'base/common/log/log';
+import type { ILanguageModelProvider } from "base/common/language-models/languageModels";
+import { CancellationToken } from 'vscode';
 
 // @ts-expect-error
 const ortPromise = import('onnxruntime-node');
@@ -20,7 +22,7 @@ const InferenceSessionCreate = (...args: any[]) => {
  *
  * @deprecated Please use LanguageModelsService instead.
  */
-export class LocalEmbeddingsProvider implements EmbeddingsProvider {
+export class LocalEmbeddingsProvider implements EmbeddingsProvider, ILanguageModelProvider {
 	id: string = 'local';
 	env: any;
 	tokenizer: any;
@@ -30,12 +32,25 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 
 	private static instance: LocalEmbeddingsProvider;
 
-	private constructor() {}
+	private constructor() {
+	}
+
+	identifier: string = 'local';
+
+	async provideChatResponse(): Promise<never> {
+		throw new Error('This method is not implemented');
+	}
+
+	async provideCompletionResponse(): Promise<never> {
+		throw new Error('This method is not implemented');
+	}
 
 	static getInstance(): LocalEmbeddingsProvider {
 		if (!LocalEmbeddingsProvider.instance) {
 			LocalEmbeddingsProvider.instance = new LocalEmbeddingsProvider();
+			LocalEmbeddingsProvider.instance.init();
 		}
+
 		return LocalEmbeddingsProvider.instance;
 	}
 
@@ -62,6 +77,22 @@ export class LocalEmbeddingsProvider implements EmbeddingsProvider {
 		logger.appendLine('embedding provider initialized');
 		let value = await this.embed(['hello']);
 		logger.appendLine("'hello' text's first 10 values" + value[0].slice(0, 10).join(', '));
+	}
+
+	async provideEmbedDocuments(
+			texts: string[],
+			options: { [name: string]: any },
+			token?: CancellationToken,
+	): Promise<number[][]> {
+		return this.embed(texts);
+	}
+
+	async provideEmbedQuery(
+			input: string | string[],
+			options: { [name: string]: any },
+			token?: CancellationToken,
+	): Promise<number[]> {
+		return (await this.embed(Array.isArray(input) ? input : [input]))[0];
 	}
 
 	async embed(chunks: string[]): Promise<Embedding[]> {

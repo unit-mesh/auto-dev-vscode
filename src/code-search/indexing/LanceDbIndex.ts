@@ -267,6 +267,7 @@ export class LanceDbIndex implements CodebaseIndex {
 		}
 
 		markComplete(results.del, IndexResultType.Delete);
+		logger.appendLine('Completed LanceDB Indexing');
 		yield { progress: 1, desc: 'Completed Calculating Embeddings' };
 	}
 

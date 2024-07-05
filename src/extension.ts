@@ -15,6 +15,8 @@ import { LanguageModelsService } from './base/common/language-models/languageMod
 import { CommandsService } from './commands/commandsService';
 import { ChatViewService } from './editor/views/chat/chatViewService';
 
+(globalThis as any).self = globalThis;
+
 export async function activate(context: ExtensionContext) {
 	const instantiationService = new InstantiationService();
 
