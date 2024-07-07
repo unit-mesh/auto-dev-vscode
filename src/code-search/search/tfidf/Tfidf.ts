@@ -357,6 +357,22 @@ export class TfIdf<K, V> {
 		}
 	}
 
+	removeDocument(key: string) {
+		const index = this.documents.findIndex(function (document) {
+			return (document as any)['__key'] === key;
+		});
+
+		// If found, remove it
+		if (index > -1) {
+			this.documents.splice(index, 1);
+			// Invalidate the cache
+			this._idfCache = Object.create(null);
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * The `tfidf` method is used to calculate the Term Frequency-Inverse Document Frequency (TF-IDF) for a
 	 * given term or array of terms in a specific document. TF-IDF is a numerical statistic that reflects how
