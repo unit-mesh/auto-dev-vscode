@@ -55,6 +55,11 @@
 	"configuration.tongyi.model.description": "模型名称",
 	"configuration.tongyi.enableSearch.description": "启用互联网搜索",
 
+	"configuration.zhipuai.apiKey.description": "智谱 AI 的 API Key。",
+	"configuration.zhipuai.apiKey.markdownDescription": "智谱 AI 的 API Key。参考 [智谱 AI 开放平台](https://open.bigmodel.cn/dev/api).",
+	"configuration.zhipuai.model.description": "模型名称",
+	"configuration.zhipuai.embeddingModel.description": "向量化模型名称",
+
 	"configuration.ollama.baseURL.markdownDescription": "Ollama 的 API URL, Key。参考 [API Reference](https://github.com/ollama/ollama/blob/main/docs/api.md)",
 	"configuration.ollama.model.description": "模型名称",
 

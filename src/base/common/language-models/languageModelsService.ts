@@ -10,6 +10,7 @@ import { OllamaLanguageModelProvider } from './providers/ollamaProvider';
 import { OpenAILanguageModelProvider } from './providers/openaiProvider';
 import { TongyiLanguageModelProvider } from './providers/TongyiProvider';
 import { WenxinLanguageModelProvider } from './providers/WenxinProvider';
+import { ZhipuAILanguageModelProvider } from './providers/zhipuaiProvider';
 import { LocalEmbeddingsProvider } from "../../../code-search/embedding/LocalEmbeddingsProvider";
 
 export interface LanguageModelSelector {
@@ -38,6 +39,7 @@ export class LanguageModelsService {
 			['openai', new OpenAILanguageModelProvider(configService)],
 			['qianfan', new WenxinLanguageModelProvider(configService)],
 			['tongyi', new TongyiLanguageModelProvider(configService)],
+			['zhipuai', new ZhipuAILanguageModelProvider(configService)],
 			['ollama', new OllamaLanguageModelProvider(configService)],
 			['transformers', new HuggingFaceTransformersLanguageModelProvider(configService)],
 			// ['transformers', LocalEmbeddingsProvider.getInstance()],
