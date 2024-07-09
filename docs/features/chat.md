@@ -21,6 +21,8 @@ We support the following providers:
   - see [AutoDev: OpenAI](../configuration.md#openai)
 - **provider**: `tongyi`
   - see [AutoDev: Ali Cloud TongY](../configuration.md#ali-cloud-tongyi)
+- **provider**: `zhipuai`
+  - see [AutoDev: ZhipuAI](../configuration.md#ZhipuAI)
 
 For example, use openai:
 

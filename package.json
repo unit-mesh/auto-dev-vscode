@@ -120,6 +120,7 @@
 							"openai",
 							"qianfan",
 							"tongyi",
+							"zhipuai",
 							"ollama"
 						],
 						"default": "openai",
@@ -148,6 +149,11 @@
 								"title": "ERNIE-Bot turbo",
 								"provider": "qianfan",
 								"model": "ERNIE-Bot-turbo"
+							},
+							{
+								"title": "ChatGLM 4",
+								"provider": "zhipuai",
+								"model": "glm-4"
 							},
 							{
 								"title": "Llama3",
@@ -506,61 +512,89 @@
 						"description": "%configuration.tongyi.enableSearch.description%",
 						"order": 16
 					},
+					"autodev.zhipuai.apiKey": {
+						"type": "string",
+						"description": "%configuration.zhipuai.apiKey.description%",
+						"markdownDescription": "%configuration.zhipuai.apiKey.markdownDescription%",
+						"order": 17
+					},
+					"autodev.zhipuai.model": {
+						"type": "string",
+						"enum": [
+							"glm-4-0520",
+							"glm-4",
+							"glm-4-air",
+							"glm-4-airx",
+							"glm-4-flash"
+						],
+						"default": "glm-4",
+						"description": "%configuration.zhipuai.model.description%",
+						"order": 18
+					},
+					"autodev.zhipuai.embeddings.model": {
+						"type": "string",
+						"enum": [
+							"embedding-2"
+						],
+						"default": "embedding-2",
+						"description": "%configuration.zhipuai.embeddingModel.description%",
+						"order": 19
+					},
 					"autodev.ollama.baseURL": {
 						"type": "string",
 						"default": "http://localhost:11434",
 						"markdownDescription": "%configuration.ollama.baseURL.markdownDescription%",
-						"order": 17
+						"order": 20
 					},
 					"autodev.ollama.model": {
 						"type": "string",
 						"default": "llama3",
 						"description": "%configuration.ollama.model.description%",
-						"order": 18
+						"order": 21
 					},
 					"autodev.ollama.completionModel": {
 						"type": "string",
 						"default": "codeqwen:7b-code-v1.5-q5_1",
 						"description": "%configuration.ollama.completionModel.description%",
-						"order": 19
+						"order": 22
 					},
 					"autodev.ollama.embeddingModel": {
 						"type": "string",
 						"default": "all-minilm",
 						"description": "%configuration.ollama.embeddingModel.description%",
-						"order": 20
+						"order": 23
 					},
 					"autodev.transformers.remoteHost": {
 						"type": "string",
 						"default": "https://huggingface.co",
 						"description": "%configuration.transformers.remoteHost.description%",
 						"markdownDescription": "%configuration.transformers.remoteHost.markdownDescription%",
-						"order": 21
+						"order": 24
 					},
 					"autodev.transformers.remotePathTemplate": {
 						"type": "string",
 						"default": "{model}/resolve/{revision}/",
 						"description": "%configuration.transformers.remotePathTemplate.description%",
 						"markdownDescription": "%configuration.transformers.remotePathTemplate.markdownDescription%",
-						"order": 22
+						"order": 25
 					},
 					"autodev.transformers.allowLocalModels": {
 						"type": "boolean",
 						"default": true,
 						"markdownDescription": "%configuration.transformers.allowLocalModels.markdownDescription%",
-						"order": 23
+						"order": 26
 					},
 					"autodev.transformers.localModelPath": {
 						"type": "string",
 						"default": "",
 						"markdownDescription": "%configuration.transformers.localModelPath.markdownDescription%",
-						"order": 24
+						"order": 27
 					},
 					"autodev.transformers.model": {
 						"type": "string",
 						"description": "%configuration.transformers.model.description%",
 						"markdownDescription": "%configuration.transformers.model.markdownDescription%",
-						"order": 25
+						"order": 28
 					},
 					"autodev.transformers.onnxWasmNumThreads": {
 						"type": [
@@ -569,7 +603,7 @@
 						],
 						"default": "auto",
 						"description": "%configuration.transformers.onnxWasmNumThreads.description%",
-						"order": 26
+						"order": 29
 					},
 					"autodev.transformers.onnxLoglevel": {
 						"type": "string",
@@ -583,7 +617,7 @@
 						],
 						"default": "error",
 						"description": "%configuration.transformers.onnxLoglevel.description%",
-						"order": 27
+						"order": 30
 					}
 				},
 				"order": 9

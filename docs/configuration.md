@@ -39,7 +39,7 @@ Shows in chat panel model selection list.
 - **title** Display selected text
   - **type** `string`
 - **provider** Use that LLM Provider.
-  - **type** `"anthropic" | "openai" | "qianfan" | "tongyi"`
+  - **type** `"anthropic" | "openai" | "qianfan" | "tongyi" | "zhipuai"`
 - **baseURL** LLM API baseURL, Default use provider config.
   - **type** `string | undefined`
 - **apiKey** LLM API key, Default use provider config.
@@ -83,6 +83,11 @@ examples:
 		"title": "ERNIE-Bot turbo",
 		"provider": "qianfan",
 		"model": "ERNIE-Bot-turbo",
+	},
+	{
+		"title": "ChatGLM 4",
+		"provider": "zhipuai",
+		"model": "glm-4",
 	},
 ]
 ```
@@ -231,6 +236,14 @@ See [开通 DashScope 并创建 API-KEY](https://help.aliyun.com/zh/dashscope/de
 ### Ollama
 
 See [ollama](https://ollama.com/)
+
+### ZhipuAI
+
+See [智谱 AI 开放平台](https://open.bigmodel.cn/dev/api).
+
+- **API Key** ZhipuAI API Key
+- **Model** Chat model used
+- **EnableSearch** 启用互联网搜索，模型会将搜索结果作为文本生成过程中的参考信息，但模型会基于其内部逻辑判断是否使用互联网搜索结果。默认：关闭。
 
 ### Transformers
 
