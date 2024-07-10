@@ -41,8 +41,8 @@ export class LanguageModelsService {
 			['tongyi', new TongyiLanguageModelProvider(configService)],
 			['zhipuai', new ZhipuAILanguageModelProvider(configService)],
 			['ollama', new OllamaLanguageModelProvider(configService)],
-			['transformers', new HuggingFaceTransformersLanguageModelProvider(configService)],
-			// ['transformers', LocalEmbeddingsProvider.getInstance()],
+			// ['transformers', new HuggingFaceTransformersLanguageModelProvider(configService)],
+			['transformers', LocalEmbeddingsProvider.getInstance()],
 		]);
 	}
 
