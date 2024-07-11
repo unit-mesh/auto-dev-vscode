@@ -195,7 +195,7 @@ export class ZhipuAILanguageModelProvider implements ILanguageModelProvider {
 			return model;
 		}
 
-		return this.configService.get<string>('zhipuai.model', 'glm-4');
+		return this.configService.get<string>('zhipuai.model', 'codegeex-4');
 	}
 
 	private _resolveComletionModel(model?: string) {

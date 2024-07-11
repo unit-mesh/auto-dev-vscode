@@ -85,10 +85,10 @@ examples:
 		"model": "ERNIE-Bot-turbo",
 	},
 	{
-		"title": "ChatGLM 4",
+		"title": "CodeGeeX 4",
 		"provider": "zhipuai",
-		"model": "glm-4",
-	},
+		"model": "codegeex-4",
+	}
 ]
 ```
 
