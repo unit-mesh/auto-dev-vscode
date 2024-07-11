@@ -21,7 +21,18 @@ export class ZhipuAILanguageModelProvider implements ILanguageModelProvider {
 		progress?: Progress<IChatResponseFragment>,
 		token?: CancellationToken,
 	): Promise<string> {
+		// https://open.bigmodel.cn/dev/api#codegeex-4
+		// Using these 4 stops is enough
+		options.stop = ["<|endoftext|>", "<|user|>", "<|assistant|>", "<|observation|>"];
 		const { model, ...rest } = options;
+		// magic for completions prompt
+		if (messages.length === 1 && messages[0].content){
+			const partials = messages[0].content.match(/^<\|fim_prefix\|>(.*)<\|fim_suffix\|>(.*)<\|fim_middle\|>$/s);
+			if (partials) {
+				messages[0].content = `<|code_suffix|>${partials[2]}<|code_prefix|>${partials[1]}<|code_middle|>`;
+			}
+		}
+		
 
 		const llm = this._newLLM(options);
 
@@ -33,7 +44,7 @@ export class ZhipuAILanguageModelProvider implements ILanguageModelProvider {
 
 		const completion = await llm.chat.completions.create(
 			{
-				...rest,
+				...rest ,
 				stream: true,
 				model: this._resolveChatModel(model),
 				messages: messages,
@@ -69,10 +80,6 @@ export class ZhipuAILanguageModelProvider implements ILanguageModelProvider {
 		progress?: Progress<IChatResponseFragment>,
 		token?: CancellationToken,
 	): Promise<string> {
-		if (this.configService.get('completions.enableLegacyMode')) {
-			return this._legacyCompletionResponse(prompt, options, progress, token);
-		}
-
 		return this.provideChatResponse([{ role: ChatMessageRole.User, content: prompt }], options, progress, token);
 	}
 
@@ -195,11 +202,12 @@ export class ZhipuAILanguageModelProvider implements ILanguageModelProvider {
 			return model;
 		}
 
-		return this.configService.get<string>('zhipuai.model', 'glm-4');
+		return this.configService.get<string>('zhipuai.model', 'codegeex-4');
 	}
 
 	private _resolveComletionModel(model?: string) {
-		return model || this._resolveChatModel(this.configService.get<string>('zhipuai.model'));
+		// codegeex-4 is the best choice for code completion :)
+		return 'codegeex-4';
 	}
 
 	private _resolveEmbeddingModel(model?: string) {

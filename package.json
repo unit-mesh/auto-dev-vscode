@@ -151,9 +151,9 @@
 								"model": "ERNIE-Bot-turbo"
 							},
 							{
-								"title": "ChatGLM 4",
+								"title": "CodeGeeX-4",
 								"provider": "zhipuai",
-								"model": "glm-4"
+								"model": "codegeex-4"
 							},
 							{
 								"title": "Llama3",
@@ -181,6 +181,7 @@
 						"description": "%configuration.completions.provider.description%",
 						"enum": [
 							"anthropic",
+							"codegeex-4",
 							"openai",
 							"qianfan",
 							"tongyi",
@@ -521,13 +522,14 @@
 					"autodev.zhipuai.model": {
 						"type": "string",
 						"enum": [
+							"codegeex-4",
 							"glm-4-0520",
 							"glm-4",
 							"glm-4-air",
 							"glm-4-airx",
 							"glm-4-flash"
 						],
-						"default": "glm-4",
+						"default": "codegeex-4",
 						"description": "%configuration.zhipuai.model.description%",
 						"order": 18
 					},
