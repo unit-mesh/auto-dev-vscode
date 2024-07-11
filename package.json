@@ -181,6 +181,7 @@
 						"description": "%configuration.completions.provider.description%",
 						"enum": [
 							"anthropic",
+							"codegeex-4",
 							"openai",
 							"qianfan",
 							"tongyi",
