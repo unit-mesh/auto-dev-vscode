@@ -305,11 +305,11 @@ export class CommandsService {
 	}
 
 	codespaceCodeAnalysis(input: string) {
-		return this.autodev.catalyser.query(input, SystemActionType.SemanticSearchKeyword);
+		return this.autodev.catalyser.query(input, SystemActionType.SemanticSearchCode);
 	}
 
 	codespaceKeywordsAnalysis(input: string) {
-		return this.autodev.catalyser.query(input, SystemActionType.SemanticSearchCode);
+		return this.autodev.catalyser.query(input, SystemActionType.SemanticSearchKeyword);
 	}
 
 	async explainTerminalSelectionContextMenu() {
