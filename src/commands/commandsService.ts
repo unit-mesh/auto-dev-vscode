@@ -76,10 +76,25 @@ export class CommandsService {
 		this.autodev.systemAction.show();
 	}
 
-	showChatPanel() {
-		this.autodev.showChatPanel();
-	}
+	async showChatPanel() {
 
+		const chat = this.autodev.chat;
+		await chat.show();
+
+		const editor = window.activeTextEditor;
+		if (!editor) {
+			return;
+		}
+
+		const selection = editor.selection;
+		if (selection.isEmpty) {
+			return;
+		}
+		// TODO hack message render empty
+		await setTimeout(800);
+		await addHighlightedCodeToContext(editor, selection, chat);
+
+	}
 	newChatSession(prompt?: string) {
 		this.autodev.newChatSession(prompt);
 	}
