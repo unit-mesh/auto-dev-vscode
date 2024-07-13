@@ -30,6 +30,7 @@ export const CMD_CODELENS_SHOW_CUSTOM_ACTION = 'autodev.codelens.customAction';
 
 // Chat Commands
 export const CMD_SHOW_CHAT_PANEL = 'autodev.showChatPanel';
+export const CMD_QUICK_CHAT = 'autodev.quickChat';
 export const CMD_NEW_CHAT_SESSION = 'autodev.newChatSession';
 export const CMD_SHOW_CHAT_HISTORY = 'autodev.showChatHistory';
 
