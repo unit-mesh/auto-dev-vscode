@@ -32,6 +32,7 @@ import {
 	CMD_NEW_CHAT_SESSION,
 	CMD_OPEN_SETTINGS,
 	CMD_OPTIMIZE_CODE,
+	CMD_QUICK_CHAT,
 	CMD_QUICK_FIX,
 	CMD_SHOW_CHAT_HISTORY,
 	CMD_SHOW_CHAT_PANEL,
@@ -76,10 +77,30 @@ export class CommandsService {
 		this.autodev.systemAction.show();
 	}
 
-	showChatPanel() {
+	async showChatPanel() {
 		this.autodev.showChatPanel();
 	}
 
+	async quickChat() {
+		const chat = this.autodev.chat;
+		await chat.show();
+
+		const editor = window.activeTextEditor;
+		if (!editor) {
+			return;
+		}
+
+		// TODO hack message render empty
+		await setTimeout(800);
+
+		const selection = editor.selection;
+		if (selection.isEmpty) {
+			await chat.send('focusAutoDevInput', undefined);
+			return;
+		}
+
+		await addHighlightedCodeToContext(editor, selection, chat);
+	}
 	newChatSession(prompt?: string) {
 		this.autodev.newChatSession(prompt);
 	}
@@ -352,6 +373,7 @@ export class CommandsService {
 			commands.registerCommand(CMD_SHOW_SYSTEM_ACTION, this.showSystemAction, this),
 			// Chat Commands
 			commands.registerCommand(CMD_SHOW_CHAT_PANEL, this.showChatPanel, this),
+			commands.registerCommand(CMD_QUICK_CHAT, this.quickChat, this),
 			commands.registerCommand(CMD_NEW_CHAT_SESSION, this.newChatSession, this),
 			commands.registerCommand(CMD_SHOW_CHAT_HISTORY, this.showChatHistory, this),
 			// ContextMenu Commands

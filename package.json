@@ -687,7 +687,7 @@
 				"group": "AutoDev"
 			},
 			{
-				"command": "autodev.showChatPanel",
+				"command": "autodev.quickChat",
 				"category": "AutoDev",
 				"title": "%command.showChatPanel.title%",
 				"group": "AutoDevMenuItem"
@@ -789,7 +789,7 @@
 		],
 		"keybindings": [
 			{
-				"command": "autodev.showChatPanel",
+				"command": "autodev.quickChat",
 				"mac": "cmd+l",
 				"key": "ctrl+l"
 			},
@@ -884,7 +884,7 @@
 					"group": "0_autodev@5"
 				},
 				{
-					"command": "autodev.showChatPanel",
+					"command": "autodev.quickChat",
 					"when": "!editorReadonly",
 					"group": "1_autodev@1"
 				},
@@ -962,7 +962,7 @@
 					"when": "false"
 				},
 				{
-					"command": "autodev.showChatPanel"
+					"command": "autodev.quickChat"
 				},
 				{
 					"command": "autodev.newChatSession",
