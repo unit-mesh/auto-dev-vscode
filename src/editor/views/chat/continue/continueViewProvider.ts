@@ -33,6 +33,7 @@ import {
 	type FromWebviewMessage,
 	type IChatMessageParam,
 	IChatModelResource,
+	Message,
 	PersistedSessionInfo,
 	SessionInfo,
 	type ShowErrorMessage,
@@ -48,6 +49,7 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 	) {
 		super(context);
 
+		logger.debug('ContinueViewProvider init');
 		// TODO disposable
 		configService.onDidChange(event => {
 			if (event.affectsConfiguration('autodev.chat.models')) {
@@ -76,6 +78,37 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 			messageId: randomUUID(),
 			messageType: type,
 			data: data,
+		});
+	}
+
+	async request(type: string, data?: unknown): Promise<boolean> {
+		const messageId = randomUUID();
+
+		let i = 0;
+
+		while (!this._webview) {
+			if (i >= 10) {
+				return false;
+			} else {
+				await new Promise(res => setTimeout(res, i >= 5 ? 1000 : 500));
+				i++;
+			}
+		}
+
+		return new Promise((resolve, reject) => {
+			const disposable = this._webview!.onDidReceiveMessage((msg: Message) => {
+				if (msg.messageId === messageId) {
+					logger.debug(`message received, messageID: ${messageId}`);
+					resolve(msg.data);
+					disposable?.dispose();
+				}
+			});
+			this.postMessage({
+				messageId: messageId,
+				messageType: type,
+				data: data,
+			});
+			logger.debug(`send success, messageType:${type},messageID:${messageId}`);
 		});
 	}
 
@@ -130,6 +163,7 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 
 			switch (payload.messageType) {
 				case 'onLoad':
+					logger.debug('sidebar webview onLoad ');
 					this.handleViewLoad(new ContinueEvent(webview, payload));
 					break;
 
