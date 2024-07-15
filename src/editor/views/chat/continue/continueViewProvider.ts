@@ -19,6 +19,7 @@ import {
 
 import { CMD_CODEASPACE_ANALYSIS, CMD_CODEASPACE_KEYWORDS_ANALYSIS } from 'base/common/configuration/configuration';
 import { ConfigurationService } from 'base/common/configuration/configurationService';
+import { defer } from 'base/common/defer';
 import { ChatMessageRole, type IChatMessage } from 'base/common/language-models/languageModels';
 import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
 import { logger } from 'base/common/log/log';
@@ -41,6 +42,7 @@ import {
 
 export class ContinueViewProvider extends AbstractWebviewViewProvider implements WebviewViewProvider {
 	private historySaveDir = path.join(os.homedir(), '.autodev/sessions');
+	private _readyDefer = defer<void>();
 
 	constructor(
 		private context: ExtensionContext,
@@ -59,6 +61,10 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 				});
 			}
 		});
+	}
+
+	ready() {
+		return this._readyDefer.promise;
 	}
 
 	newSession(prompt?: string) {
@@ -84,16 +90,7 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 	async request(type: string, data?: unknown): Promise<boolean> {
 		const messageId = randomUUID();
 
-		let i = 0;
-
-		while (!this._webview) {
-			if (i >= 10) {
-				return false;
-			} else {
-				await new Promise(res => setTimeout(res, i >= 5 ? 1000 : 500));
-				i++;
-			}
-		}
+		await this.ready();
 
 		return new Promise((resolve, reject) => {
 			const disposable = this._webview!.onDidReceiveMessage((msg: Message) => {
@@ -243,6 +240,7 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 			vscMachineId: '1111',
 			vscMediaUrl: '',
 		});
+		this._readyDefer.resolve();
 	}
 
 	private handleGetOpenFiles(event: ContinueEvent<'getOpenFiles'>) {
