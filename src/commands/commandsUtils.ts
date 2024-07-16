@@ -81,7 +81,7 @@ export async function addHighlightedCodeToContext(editor: TextEditor, selection:
 		},
 	};
 
-	await chat.send('highlightedCode', {
+	await chat.request('highlightedCode', {
 		rangeInFileWithContents,
 	});
 }

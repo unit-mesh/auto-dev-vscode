@@ -29,6 +29,9 @@ export class ChatViewService {
 		return this.continueViewProvider.send(type, message);
 	}
 
+	request(type: string, message?: unknown) {
+		return this.continueViewProvider.request(type, message);
+	}
 	postMessage(message: unknown) {
 		return this.continueViewProvider.postMessage(message);
 	}
@@ -46,6 +49,8 @@ export class ChatViewService {
 	}
 
 	register() {
-		return window.registerWebviewViewProvider(CHAT_VIEW_ID, this.continueViewProvider);
+		return window.registerWebviewViewProvider(CHAT_VIEW_ID, this.continueViewProvider, {
+			webviewOptions: { retainContextWhenHidden: true },
+		});
 	}
 }

@@ -90,8 +90,6 @@ export class CommandsService {
 			return;
 		}
 
-		// TODO hack message render empty
-		await setTimeout(800);
 
 		const selection = editor.selection;
 		if (selection.isEmpty) {
@@ -124,8 +122,6 @@ export class CommandsService {
 
 		await chat.show();
 
-		// TODO hack message render empty
-		await setTimeout(800);
 		await addHighlightedCodeToContext(editor, selection, chat);
 
 		await setTimeout(800);
@@ -147,8 +143,6 @@ export class CommandsService {
 
 		await chat.show();
 
-		// TODO hack message render empty
-		await setTimeout(600);
 		await addHighlightedCodeToContext(editor, selection, chat);
 
 		await setTimeout(800);
