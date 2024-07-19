@@ -17,7 +17,7 @@ describe('JaccardSimilarity', () => {
 				['another', 'test'],
 				['query', 'test'],
 			];
-			const result = jaccardSimilarity.tokenLevelJaccardSimilarity(query, chunks);
+			const result = jaccardSimilarity.computeInputSimilarity(query, chunks);
 			expect(result).to.be.an('array');
 			expect(result[0][0]).to.be.closeTo(0.5, 0.5);
 			expect(result[1][0]).to.be.closeTo(0, 0.05);

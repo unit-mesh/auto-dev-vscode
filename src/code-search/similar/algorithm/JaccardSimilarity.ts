@@ -1,4 +1,5 @@
 import { StopwordsBasedTokenizer } from '../../tokenizer/StopwordsBasedTokenizer';
+import { Similarity } from "./Similarity";
 
 /**
  * Calculates the similarity score between a given path and a set of strings.
@@ -7,14 +8,14 @@ import { StopwordsBasedTokenizer } from '../../tokenizer/StopwordsBasedTokenizer
  * @param sets The set of strings to compare with the path.
  * @returns A number representing the similarity score between the path and the set of strings.
  */
-export class JaccardSimilarity {
+export class JaccardSimilarity extends Similarity {
 	/**
 	 * The `tokenLevelJaccardSimilarity` method calculates the Jaccard similarity between a query string and an array of string
 	 * arrays (chunks). The Jaccard similarity is a measure of the similarity between two sets and is defined as the size of
 	 * the intersection divided by the size of the union of the two sets.
 	 *
 	 */
-	public tokenLevelJaccardSimilarity(query: string, chunks: string[][]): number[][] {
+	public computeInputSimilarity(query: string, chunks: string[][]): number[][] {
 		const currentFileTokens: Set<string> = new Set(this.tokenize(query));
 		return chunks.map(list => {
 			return list.map(it => {
@@ -22,10 +23,6 @@ export class JaccardSimilarity {
 				return this.similarityScore(currentFileTokens, tokenizedFile);
 			});
 		});
-	}
-
-	private tokenize(input: string): Set<string> {
-		return StopwordsBasedTokenizer.instance().tokenize(input);
 	}
 
 	private similarityScore(set1: Set<string>, set2: Set<string>): number {

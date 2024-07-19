@@ -36,7 +36,7 @@ export class SimilarChunkSearcher extends JaccardSimilarity implements SimilarSe
 		let mostRecentFilesRelativePaths = mostRecentFiles.map(it => this.relativePathTo(it.uri));
 
 		let chunks = this.extractChunks(mostRecentFiles);
-		let jaccardSimilarities = this.tokenLevelJaccardSimilarity(element.beforeCursor, chunks);
+		let jaccardSimilarities = this.computeInputSimilarity(element.beforeCursor, chunks);
 
 		let similarChunks: SimilarChunk[] = [];
 		jaccardSimilarities.forEach((jaccardList, fileIndex) => {
