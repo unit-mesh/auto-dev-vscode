@@ -11,3 +11,4 @@ export abstract class TokenizedSimilarity implements Similarity {
 
 	abstract computeInputSimilarity(query: string, chunks: Array<Array<string>>): Array<Array<number>>;
 }
+
