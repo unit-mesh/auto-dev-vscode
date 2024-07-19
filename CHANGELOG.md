@@ -1,3 +1,31 @@
+## [0.5.2](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.5.0...v0.5.2) (2024-07-19)
+
+
+### Bug Fixes
+
+* add simple local test for local version ([ddff9fb](https://github.com/unit-mesh/auto-dev-vscode/commit/ddff9fb87abb7087455980194c9a540c49f36dd8))
+* **commandsService:** swap SemanticSearchKeyword and SemanticSearchCode methods ([f87dbc7](https://github.com/unit-mesh/auto-dev-vscode/commit/f87dbc7d126ae0ccfd3cc2f7400c8587c81da4ff))
+* **extension:** fix hf local model and remote cache paths ([#64](https://github.com/unit-mesh/auto-dev-vscode/issues/64)) ([1d5c96f](https://github.com/unit-mesh/auto-dev-vscode/commit/1d5c96f0ef3e074743854f6e29e90a16600cc7b8))
+* invoke codebase indexing action ([69f35cf](https://github.com/unit-mesh/auto-dev-vscode/commit/69f35cf9fec418b5f67ab66c3751bb1b0c7ca5b7))
+* openai end-of-stream output is undefined ([be24963](https://github.com/unit-mesh/auto-dev-vscode/commit/be249634de4a6677069c3b2b27b99aaa3aed19e1))
+* support for chat.models override base configuration ([#60](https://github.com/unit-mesh/auto-dev-vscode/issues/60)) ([e2070d4](https://github.com/unit-mesh/auto-dev-vscode/commit/e2070d45cf10b231399e61bec7c8bc926bed6e13))
+* version field is not configured ([9ebfe0e](https://github.com/unit-mesh/auto-dev-vscode/commit/9ebfe0e347b0ef6eb72cd137537f42183dd1832e))
+
+
+### Features
+
+* **chatView:** auto add selected code to chat panel when shortcut  (ctrl + l) or the menu ([c0c97ef](https://github.com/unit-mesh/auto-dev-vscode/commit/c0c97effe7be0a44789ac487b3f886eee1dbceed))
+* **code-search:** implement BM25 similarity algorithm ([6a9175c](https://github.com/unit-mesh/auto-dev-vscode/commit/6a9175c21ff656a6447fb5af356cad9adb04fd4b))
+* **completion:** Add new language model "codegeex-4" for inline completion ([15a6c80](https://github.com/unit-mesh/auto-dev-vscode/commit/15a6c80093c34d66ba1bf9e18d3b4d9d54c3a31f))
+* custom display and sort codelens items ([#57](https://github.com/unit-mesh/auto-dev-vscode/issues/57)) ([e66a4f8](https://github.com/unit-mesh/auto-dev-vscode/commit/e66a4f889be02d4040d5c8962a03c7428c00af4e))
+* **embedding:** implement ILanguageModelProvider in LocalEmbeddingsProvider ([a7a1862](https://github.com/unit-mesh/auto-dev-vscode/commit/a7a18629007605b103372967067f46329bab3d9d))
+* **llm:** add codegeex-4 model support for chats ([3e8e2d2](https://github.com/unit-mesh/auto-dev-vscode/commit/3e8e2d2f45d38e60cf481f63fed391b2b15ff889))
+* **llm:** add glm-4 model support for chats ([c6a92b4](https://github.com/unit-mesh/auto-dev-vscode/commit/c6a92b4285e1f19ff36ec7a80cebc4b281e61176))
+* **search:** add removeDocument method to Tfidf class ([9b63fcd](https://github.com/unit-mesh/auto-dev-vscode/commit/9b63fcd7c1f500d3c56325a74ed30f1d5efcf76d))
+* support fim special tokens configuration ([#62](https://github.com/unit-mesh/auto-dev-vscode/issues/62)) ([ccc47fb](https://github.com/unit-mesh/auto-dev-vscode/commit/ccc47fb27f93fe3b93d2e67b0209e54de3e0641a))
+
+
+
 # [0.5.0](https://github.com/unit-mesh/auto-dev-vscode/compare/v0.3.3...v0.5.0) (2024-06-14)
 
 
