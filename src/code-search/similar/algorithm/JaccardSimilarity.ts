@@ -1,5 +1,4 @@
-import { StopwordsBasedTokenizer } from '../../tokenizer/StopwordsBasedTokenizer';
-import { Similarity } from "./Similarity";
+import { TokenizedSimilarity } from "./TokenizedSimilarity";
 
 /**
  * Calculates the similarity score between a given path and a set of strings.
@@ -8,7 +7,7 @@ import { Similarity } from "./Similarity";
  * @param sets The set of strings to compare with the path.
  * @returns A number representing the similarity score between the path and the set of strings.
  */
-export class JaccardSimilarity extends Similarity {
+export class JaccardSimilarity extends TokenizedSimilarity {
 	/**
 	 * The `tokenLevelJaccardSimilarity` method calculates the Jaccard similarity between a query string and an array of string
 	 * arrays (chunks). The Jaccard similarity is a measure of the similarity between two sets and is defined as the size of
