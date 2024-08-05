@@ -52,7 +52,7 @@ interaction type:
 
 ## English Examples
 
-variables list: [https://ide.unitmesh.cc/variables](https://ide.unitmesh.cc/variables)
+variables list: [https://vscode.unitmesh.cc/customize/variables](https://vscode.unitmesh.cc/customize/variables)
 
     ---
     interaction: AppendCursorStream
@@ -77,7 +77,7 @@ example: [https://github.com/unit-mesh/untitled/tree/english/prompts](https://gi
 
 ## 中文示例（Chinese example)：
 
-变量列表： [AutoDev 模板变量](/variables)。
+变量列表： [AutoDev 模板变量](/customize/variables)。
 
     ---
     interaction: AppendCursorStream
