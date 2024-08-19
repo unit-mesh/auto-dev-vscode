@@ -13,6 +13,15 @@ import { TreeSitterFile } from '../ast/TreeSitterFile';
  *
  * @interface RelevantCodeProvider
  */
+/**
+*“RelatedProvider”类提供了检索与给定符号相关的输入和输出结构的方法。
+*
+*输入结构是用作符号输入的代码文件，而输出结构是代码
+*接收符号输出的文件。
+*
+*@interface 相关代码提供程序
+**/
+
 export interface RelevantCodeProvider {
 	language: LanguageIdentifier;
 

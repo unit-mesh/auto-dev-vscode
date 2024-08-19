@@ -76,6 +76,23 @@ export interface LanguageProfile {
  *
  * The `MemoizedQuery` class is exported, which means that it can be imported and used in other TypeScript files.
  */
+
+
+/**
+ * MemorizedQuery类是一个TypeScript类，它提供了一种缓存和重用查询的方法。
+ * 此类旨在通过避免多次重新编译同一查询的开销来提高性能。
+ *
+ * MemorizedQuery类有两个私有属性：queryStr和compiledQuery。
+ * `queryStr`是一个字符串，表示要编译和执行的查询。
+ * “compiledQuery”是表示已编译查询的“Query”类的实例。它最初是未定义的，在第一次调用`query`方法时被赋值。
+ * MemoizedQuery类的构造函数只接受一个参数：scopeQuery。此参数是一个字符串，表示要编译和执行的查询。构造函数将`scopeQuery `分配给`queryStr`。
+ *
+ * MemoizedQuery类的query方法只接受一个参数：language。此参数是“Language”类的一个实例，该类表示编写查询的语言。`query `方法检查是否定义了`compiledQuery `。如果是，则该方法返回“compiledQuery”。如果不是，则该方法使用“language”对象的“query”方法编译“queryStr”，将结果分配给“compiledQuery”，然后返回“compilehQuery”。
+ *
+ * “MemorizedQuery”类被导出，这意味着它可以被导入并在其他TypeScript文件中使用。
+*/
+
+
 export class MemoizedQuery {
 	private readonly queryStr: string;
 	private compiledQuery: Query | undefined;

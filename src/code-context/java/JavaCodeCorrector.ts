@@ -12,7 +12,23 @@ export class JavaCodeCorrector implements CodeCorrector {
 		private context: CorrectorContext,
 		private lsp: ILanguageServiceProvider,
 	) {}
-
+/**
+ * 修正函数，用于修正Java源代码中的类名和包名。
+ *
+ * @async
+ * @function correct
+ * @returns {Promise<void>} 一个Promise对象，表示修正操作的完成。
+ *
+ * @throws {Error} 如果无法找到tree-sitter文件，则抛出错误。
+ *
+ * @example
+ * try {
+ *   await correct();
+ *   console.log('修正操作完成');
+ * } catch (error) {
+ *   console.error('发生错误:', error.message);
+ * }
+ */
 	async correct(): Promise<void> {
 		let tsfile = await textToTreeSitterFile(this.context.sourcecode, 'java', this.lsp);
 
@@ -26,7 +42,17 @@ export class JavaCodeCorrector implements CodeCorrector {
 
 	/**
 	 * Fix LLM generated test file lost class name issue
-	 */
+	/**
+ * 修复不正确的类名
+ *
+ * @param {TreeSitterFile} tsfile - 包含类定义的 TreeSitter 文件
+ * @param {vscode.TextDocument} document - 当前打开的文档
+ *
+ * @description
+ * 此函数用于修复给定 TreeSitter 文件中不正确的类名。它使用查询来查找类定义，
+ * 然后将其与目标类名进行比较。如果它们不同，则使用新的目标类名替换当前类名。
+ * 修改将应用于给定的文档。
+ */
 	private async fixIncorrectClassName(tsfile: TreeSitterFile, document: vscode.TextDocument) {
 		let query = tsfile.languageProfile.classQuery.query(tsfile.tsLanguage);
 		const captures = query!!.captures(tsfile.tree.rootNode);

@@ -38,6 +38,21 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 	 *
 	 * Note: This method assumes that the code string is written in a language that the parser can parse. If the parser cannot parse the code, the method may fail or return incorrect results.
 	 */
+
+	/**
+	 * `parseFile`方法是一个异步函数，它解析给定的代码字符串并生成CodeFile对象。此对象表示代码的结构。
+	 *
+	 * @param code 表示要解析的代码的字符串。
+	 * @param filepath 表示文件路径的字符串。
+	 * @returns 解析为CodeFile对象的Promise。此对象包含有关解析代码结构的信息，包括名称、文件路径、语言、函数、路径、包、导入和类。如果解析失败，Promise将解析为undefined。
+   *
+   * 该方法使用解析器来解析代码，并使用查询来捕获代码的结构。然后，它迭代这些捕获，以提取有关包、导入、类、方法和代码其他元素的信息。此信息用于填充CodeFile对象。
+   *
+   * 该方法还处理嵌套的类和方法，确保每个类和方法与其父类或方法正确关联。
+   *
+   * 注意：此方法假定代码字符串是用解析器可以解析的语言编写的。如果解析器无法解析代码，则该方法可能会失败或返回不正确的结果。
+   *
+	 */
 	async parseFile(code: string, filepath: string): Promise<CodeFile | undefined> {
 		const tree = this.parser!!.parse(code);
 		const query = this.config.structureQuery.query(this.language!!);
@@ -178,6 +193,25 @@ export class JavaStructurerProvider extends BaseStructurerProvider {
 	 *
 	 * Note: The method assumes that the `methodIOQuery` and `language` properties of the `config` object are defined.
 	 */
+
+/**
+*`extractMethodIOImports`是一个异步方法，用于提取与输入和输出相关的导入语句
+*源代码中给定方法的类型。
+*
+* @param ｛ScopeGraph｝ graph -源代码的节点图。
+* @param {SyntaxNode} 节点 -表示源代码中方法的语法节点。
+* @param ｛TextRange｝ range -源代码中方法的范围。
+* @param {string} src-源代码为字符串。
+*
+* @returns {Promise<string[] | undefined>} 一个promise，解析为一个import语句数组，如果找不到import语句，则解析为undefined。
+*
+* 该方法的工作原理是首先在源代码中找到与给定范围对应的语法节点。然后，它使用查询来捕获方法的返回类型和参数类型。对于每个捕获的元素，它从源代码中获取相应的导入语句并将其添加到数组中。最后，在返回数组之前，它会从数组中删除任何重复的导入语句。
+*
+* 该方法使用“fetchImportsWithinScope”方法从源代码中获取给定语法节点的导入语句。
+*
+* 注意：该方法假定定义了`config`对象的`methodIOQuery`和`language`属性。
+*/
+
 	async retrieveMethodIOImports(
 		graph: ScopeGraph,
 		node: SyntaxNode,

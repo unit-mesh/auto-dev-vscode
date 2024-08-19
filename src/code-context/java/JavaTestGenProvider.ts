@@ -70,6 +70,32 @@ export class JavaTestGenProvider implements TestGenProvider {
 	 *
 	 * Finally, the method returns a promise that resolves to the created AutoTestTemplateContext object.
 	 */
+
+
+
+	/**
+	 *
+	 * @param document -要为其设置测试文件的文档。
+	 * @param element  -要为其设置测试文件的命名元素。
+	 * @returns {Promise<AutoTestTemplateContext>} -返回一个解析为AutoTestTemplateContext对象的promise。
+	 *
+	 * 该方法的工作原理是首先在源代码中找到与给定范围对应的语法节点。然后，它使用查询来捕获方法的返回类型和参数类型。对于每个捕获的元素，它从源代码中获取相应的导入语句并将其添加到数组中。最后，在返回数组之前，它会从数组中删除任何重复的导入语句。**该方法使用`fetchImportsWithinScope`方法从源代码中获取给定语法节点的导入声明。**注意：该方法假设定义了`config`对象的`methodIOQuery`和`language`属性。
+	 *
+	 * 该方法首先将文档转换为TreeSitterFile并为其生成作用域图。然后，通过在文档文件名中将“.java”替换为“test.java”，将“src/main/java”替换为”src/test/java“，为测试文件构建目标路径。
+	 *
+	 * 然后创建具有以下属性的AutoTestTemplateContext对象：
+	 * filename：文档的文件名。
+	 * -language：文档的语言ID。
+	 * -targetPath：测试文件的目标路径。
+	 * -testClassName：命名元素的标识符范围的文本。
+	 * -sourceCode：指定元素的块范围的文本。
+	 * -relatedClasses：一个空数组。
+	 * -imports：一个空数组。
+	 *
+	 * 然后，该方法为目标路径创建一个URI，并在工作区的文件系统中向其写入一个空文件。
+	 *
+	 * 最后，该方法返回一个promise，该promise解析为创建的AutoTestTemplateContext对象。
+*/
 	async setupTestFile(document: vscode.TextDocument, element: NamedElement): Promise<AutoTestTemplateContext> {
 		this.tsfile = await this.treeSitterFileManager.create(document);
 		this.graph = await this.tsfile.scopeGraph();

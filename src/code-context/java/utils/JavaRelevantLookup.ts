@@ -8,21 +8,21 @@ export class JavaRelevantLookup {
 		this.tsfile = tsfile;
 	}
 
-	/**
-	 * The `relevantImportToFilePath` method is used to filter out the relevant class from the given imports and return their file paths.
+  /**
+   *“relevantImportToFilePath”方法用于从给定的导入中筛选出相关类并返回其文件路径。
+   *
+   *@param import 这是一个字符串数组，其中每个字符串代表一个导入语句。
 	 *
-	 * @param imports This is an array of strings where each string represents an import statement.
-	 *
-	 * @returns This method returns an array of strings where each string is the file path of the relevant import.
-	 *
-	 * The method first refines the import types by calling the `refineImportTypes` method on the `imports` parameter. The `refineImportTypes` method is expected to return an array of relevant imports.
-	 *
-	 * Then, it maps over the array of relevant imports and for each import, it calls the `pathByPackageName` method. The `pathByPackageName` method is expected to return the file path of the import.
-	 *
-	 * The resulting array of file paths is then returned by the `relevantImportToFilePath` method.
-	 *
-	 * Note: The `refineImportTypes` and `pathByPackageName` methods are not defined in this snippet. They should be defined elsewhere in the code and should be used as per the requirements.
-	 */
+   * @return 此方法返回一个字符串数组，其中每个字符串都是相关导入的文件路径。
+   *
+   *该方法首先通过调用“imports”参数上的“refineImportTypes”方法来细化导入类型。“refineImportTypes”方法预计将返回一个相关导入的数组。
+   *
+   *然后，它映射相关导入的数组，并为每个导入调用`pathByPackageName`方法。`pathByPackageName`方法应返回导入的文件路径。
+   *
+   *然后，`relevantImportToFilePath`方法返回生成的文件路径数组。
+   *
+   *注意：此代码段中未定义“refineImportTypes”和“pathByPackageName”方法。它们应在规范的其他地方定义，并应按照要求使用。
+   **/
 	relevantImportToFilePath(imports: string[]): string[] {
 		const relevantImports = this.refineImportTypes(imports);
 
@@ -60,12 +60,15 @@ export class JavaRelevantLookup {
 		return packageNameNode.text;
 	}
 
+
+
+
 	/**
-	 * Given a package name, if similar to the current tsfile package, try to look up in the codebase.
-	 *
-	 * For example, if the current file package name is `cc.unitmesh.untitled.demo.service`, the relevant package name
-	 * is `cc.unitmesh.untitled.demo.repository`, then we can be according current filepath to look up a relevant class path;
-	 */
+	*给定一个包名，如果与当前的tsfile包相似，请尝试在代码库中查找。
+	*
+	*例如，如果当前文件包名为“cc.unitmesh.unttled.demo.service”，则相关的包名
+	*是`cc.unitmesh.unttled.demo.repository`，那么我们可以根据当前的文件路径查找相关的类路径；
+	**/
 	pathByPackageName(packageName: string) {
 		let currentPath = this.tsfile.filePath;
 		const currentPackageName = this.extractCurrentPackageName();
