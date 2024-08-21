@@ -26,16 +26,6 @@ export class CsharpCodeCorrector implements CodeCorrector {
 
 	/**
 	 * Fix LLM generated test file lost class name issue
-	/**
- * 修复不正确的类名
- *
- * @param {TreeSitterFile} tsfile - 包含类定义的 TreeSitter 文件
- * @param {vscode.TextDocument} document - 当前打开的文档
- *
- * @description
- * 此函数用于修复给定 TreeSitter 文件中不正确的类名。它使用查询来查找类定义，
- * 然后将其与目标类名进行比较。如果它们不同，则使用新的目标类名替换当前类名。
- * 修改将应用于给定的文档。
  */
 	private async fixIncorrectClassName(tsfile: TreeSitterFile, document: vscode.TextDocument) {
 		let query = tsfile.languageProfile.classQuery.query(tsfile.tsLanguage);
