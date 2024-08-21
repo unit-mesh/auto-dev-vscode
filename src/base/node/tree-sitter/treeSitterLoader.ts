@@ -95,6 +95,10 @@ export class TreeSitterLoader {
 			return readFile(pathFactory(languageId));
 		}
 
+		if (languageId === 'csharp') {
+			languageId = 'c_sharp';
+		}
+
 		return readFile(formatWasmFileName(pathTemplate || WASM_FILE_PATH_TEMPLATE, languageId));
 	}
 
