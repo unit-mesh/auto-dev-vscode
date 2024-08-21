@@ -153,6 +153,7 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 		}
 
 		const elements = await this.parseToNamedElements(document);
+// elements为空导致codelens组没有数据，无法生成codelens
 
 		if (token.isCancellationRequested || elements.length === 0) {
 			return [];

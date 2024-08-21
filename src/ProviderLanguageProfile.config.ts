@@ -5,6 +5,7 @@ import { JavaProfile } from './code-context/java/JavaProfile';
 import { PythonProfile } from './code-context/python/PythonProfile';
 import { TypeScriptProfile } from './code-context/typescript/TypeScriptProfile';
 import { ILanguageProfile } from './ProviderTypes';
+import { CsharpProfile } from './code-context/csharp/CsharpProfile';
 
 const languageContainer = new Container();
 
@@ -12,5 +13,6 @@ languageContainer.bind(ILanguageProfile).to(JavaProfile);
 languageContainer.bind(ILanguageProfile).to(TypeScriptProfile);
 languageContainer.bind(ILanguageProfile).to(GolangProfile);
 languageContainer.bind(ILanguageProfile).to(PythonProfile);
+languageContainer.bind(ILanguageProfile).to(CsharpProfile)
 
 export { languageContainer };
