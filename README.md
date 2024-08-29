@@ -21,6 +21,10 @@ JetBrains' IDE Version: [https://github.com/unit-mesh/auto-dev](https://github.c
 
 Documentation: [https://vscode.unitmesh.cc/](https://vscode.unitmesh.cc/)
 
+## Quick Start Guide to Contributing
+
+Contributing Documentation: [https://vscode.unitmesh.cc/development](https://vscode.unitmesh.cc/development)
+
 ## Join the Community
 
 <img src="https://unitmesh.cc/images/qrcode.jpg" height="400px" alt="wechat qrcode" />
