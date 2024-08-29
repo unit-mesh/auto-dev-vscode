@@ -5,6 +5,11 @@ nav_order: 3
 parent: Development
 ---
 
+## Before adding a new language
+
+1. check if the language is already supported by tree-sitter
+2. check the wasm file of tree-sitter grammar exist in https://github.com/unit-mesh/treesitter-artifacts
+
 ## Add a New Language
 
 If you want to add a new language support, you can follow the steps below:
@@ -26,7 +31,7 @@ providerContainer.bind(IBuildToolProvider).to(GradleBuildToolProvider);
 providerContainer.bind(IStructurerProvider).to(JavaStructurerProvider);
 ```
 
-## LanguageConfig
+### LanguageConfig example
 
 ```typescript
 export interface LanguageProfile {
