@@ -34,9 +34,11 @@ import { JavaScriptContextProvider } from './toolchain-context/framework/javascr
 import { SpringContextProvider } from './toolchain-context/framework/jvm/SpringContextProvider';
 import { ToolchainContextProvider } from './toolchain-context/ToolchainContextProvider';
 import { JavaVersionProvider } from './toolchain-context/version/JavaVersionProvider';
+import { AutoMethodActionCreator } from './action/autoMethod/AutoMethodActionCreator';
 
 // Action Register
 providerContainer.bind(IActionCreator).to(AutoDocActionCreator);
+providerContainer.bind(IActionCreator).to(AutoMethodActionCreator);
 providerContainer.bind(IActionCreator).to(AutoTestActionCreator);
 providerContainer.bind(IActionCreator).to(GenApiDataActionCreator);
 

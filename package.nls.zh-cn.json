@@ -78,6 +78,7 @@
 	"command.optimizeCode.title": "优化代码",
 	"command.quickFix.title": "快速修复",
 	"command.autoComment.title": "生成注释",
+	"command.AutoMethod.title":"填充当前方法",
 	"command.autoTest.title": "生成测试",
 
 	"command.openSettings.title": "打开设置",

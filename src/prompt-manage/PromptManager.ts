@@ -134,6 +134,9 @@ export class PromptManager {
 			case ActionType.AutoDoc:
 				template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/code/auto-doc.vm`);
 				break;
+			case ActionType.AutoMethod:
+				template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/code/auto-Method.vm`);
+				break;
 			case ActionType.AutoTest:
 				template = await templateRender.getTemplate(`prompts/genius/${humanLanguage}/code/test-gen.vm`);
 				break;
