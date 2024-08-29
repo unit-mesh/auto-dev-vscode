@@ -9,6 +9,17 @@ permalink: /development
 {: .no_toc }
 
 # Development
+> Quick Start Guide to Development
+
+1. Clone: `git clone https://github.com/unit-mesh/auto-dev-vscode.git`
+
+2. Install Dependencies for project: `cd auto-dev-vscode && npm install`
+
+3. Install dependencies for gui-sidebar: `cd gui-sidebar && npm install && build`
+
+4. open `auto-dev-vscode` folder in VSCode
+
+5. press `F5` to start the extension
 
 ## Contributing
 > Quick Start Guide to Contributing
