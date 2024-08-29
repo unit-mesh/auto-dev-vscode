@@ -5,7 +5,6 @@ import { EMBEDDING_BATCH_SIZE } from '../configuration/configuration';
 import { ConfigurationService } from '../configuration/configurationService';
 import { IChatMessage, IChatResponseFragment, ILanguageModelProvider } from './languageModels';
 import { AnthropicLanguageModelProvider } from './providers/anthropicProvider';
-import { HuggingFaceTransformersLanguageModelProvider } from './providers/hgTransformersProvider';
 import { OllamaLanguageModelProvider } from './providers/ollamaProvider';
 import { OpenAILanguageModelProvider } from './providers/openaiProvider';
 import { TongyiLanguageModelProvider } from './providers/TongyiProvider';

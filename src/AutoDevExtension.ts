@@ -21,7 +21,7 @@ import {
 } from './action/ProviderRegister';
 import { SystemActionService } from './action/setting/SystemActionService';
 import { Catalyser } from './agent/catalyser/Catalyser';
-import { LanguageModelsService } from './base/common/language-models/languageModelsService';
+import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
 import { ChunkerManager } from './code-search/chunk/ChunkerManager';
 import { CodebaseIndexer } from './code-search/indexing/CodebaseIndexer';
 import { LanceDbIndex } from './code-search/indexing/LanceDbIndex';
