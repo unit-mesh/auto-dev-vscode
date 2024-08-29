@@ -6,4 +6,5 @@ export enum ActionType {
 	Rename,
 	GenCommitMessage,
 	LlmReranker,
+	AutoMethod,
 }

@@ -10,6 +10,8 @@ import { logger } from 'base/common/log/log';
 
 import { AutoDocActionExecutor } from './action/autodoc/AutoDocActionExecutor';
 import { AutoTestActionExecutor } from './action/autotest/AutoTestActionExecutor';
+import { AutoMethodActionExecutor } from './action/autoMethod/AutoMethodActionExecutor';
+
 import {
 	registerAutoDevProviders,
 	registerCodeLensProvider,
@@ -41,6 +43,7 @@ import { TemplateContext } from './prompt-manage/template/TemplateContext';
 import { TemplateRender } from './prompt-manage/template/TemplateRender';
 import { IProjectService } from './ProviderTypes';
 import { ToolchainContextManager } from './toolchain-context/ToolchainContextManager';
+
 
 @injectable()
 export class AutoDevExtension {
@@ -222,6 +225,9 @@ export class AutoDevExtension {
 
 	executeAutoDocAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
 		return new AutoDocActionExecutor(this, document, nameElement, edit).execute();
+	}
+	executeAutoMethodAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		return new AutoMethodActionExecutor(this, document, nameElement, edit).execute();
 	}
 
 	executeAutoTestAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {

@@ -9,14 +9,9 @@ ${context.forbiddenRules}
 Here is User's code:
 ```${context.language}
 ${context.code}
---- methodName
-${context.methodName}
----fileName
-${context.methodName}
----filePath
-${context.filePath}
----beforeCursor
-${context.beforeCursor}
----afterCursor
-${context.afterCursor}
-Please write documentation for this code inside the Markdown code block.
+```
+#if($context.originalComments.length > 0)
+Here is code Origin comment: ${context.originalComments}
+Please according to the code to update documentation.
+#end
+Please write documentation for user's code inside the Markdown code block.

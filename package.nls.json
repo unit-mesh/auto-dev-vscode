@@ -91,8 +91,8 @@
 	"command.openSettings.title": "Open Settings",
 	"command.showTutorial.title": "Show Tutorial",
 	"command.feedback.title": "Feedback",
-
 	"command.quickChat.title": "Quick Chat",
+	"command.AutoMethod.title": "Generate Method Codes",
 	"command.explainCode.title": "Explain Code",
 	"command.optimizeCode.title": "Optimize Code",
 	"command.quickFix.title": "Quick Fix",

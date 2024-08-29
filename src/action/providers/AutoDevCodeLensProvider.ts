@@ -27,6 +27,7 @@ import {
 	CMD_CODELENS_QUICK_CHAT,
 	CMD_CODELENS_SHOW_CUSTOM_ACTION,
 	CMD_SHOW_CODELENS_DETAIL_QUICKPICK,
+	CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS,
 } from 'base/common/configuration/configuration';
 import { ConfigurationService } from 'base/common/configuration/configurationService';
 import { isFileTooLarge } from 'base/common/files/files';
@@ -35,8 +36,9 @@ import { ILanguageServiceProvider } from 'base/common/languages/languageService'
 import { logger } from 'base/common/log/log';
 
 import { type AutoDevExtension } from '../../AutoDevExtension';
+import { CodeElementType } from 'src/editor/codemodel/CodeElementType';
 
-type CodeLensItemType = 'quickChat' | 'explainCode' | 'optimizeCode' | 'autoComment' | 'autoTest' | 'customAction';
+type CodeLensItemType = 'quickChat' | 'explainCode' | 'optimizeCode' | 'autoComment' | 'autoTest' | 'customAction'|'AutoMethod';
 
 export class AutoDevCodeLensProvider implements CodeLensProvider {
 	private config: ConfigurationService;
@@ -122,6 +124,9 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 			),
 			commands.registerCommand(CMD_CODELENS_SHOW_CUSTOM_ACTION, (document: TextDocument, nameElement: NamedElement) => {
 				autodev.executeCustomAction(document, nameElement);
+			}),
+			commands.registerCommand(CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS, (document: TextDocument, nameElement: NamedElement) => {
+				autodev.executeAutoMethodAction(document, nameElement);
 			}),
 		];
 	}
@@ -251,7 +256,6 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 					}
 					continue;
 				}
-
 				if (type === 'customAction') {
 					if (hasCustomPromps) {
 						codelenses.push(
@@ -264,6 +268,19 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 					}
 					continue;
 				}
+				if (type === 'AutoMethod') {
+					if (element.codeElementType==CodeElementType.Method) {
+						codelenses.push(
+							new CodeLens(element.identifierRange, {
+								title: l10n.t('AutoMethod'),
+								command: CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS,
+								arguments: [document, element],
+							}),
+						);
+					}
+					continue;
+				}
+
 			}
 
 			result.push(codelenses);

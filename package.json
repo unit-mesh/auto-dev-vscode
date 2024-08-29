@@ -88,14 +88,16 @@
 								"optimizeCode",
 								"autoComment",
 								"autoTest",
-								"customAction"
+								"customAction",
+								"AutoMethod"
 							]
 						},
 						"uniqueItems": true,
 						"default": [
 							"quickChat",
 							"autoTest",
-							"autoComment"
+							"autoComment",
+							"AutoMethod"
 						],
 						"description": "%configuration.codelensDisplayItems.description%",
 						"order": 4
@@ -644,6 +646,11 @@
 				"command": "autodev.codelens.autoComment",
 				"title": "%command.autoComment.title%"
 			},
+			{
+				"command": "autodev.codelens.CodeCompletions",
+				"title": "%command.CodeCompletions.title%"
+			},
+
 			{
 				"command": "autodev.codelens.autoTest",
 				"title": "%command.autoTest.title%"
