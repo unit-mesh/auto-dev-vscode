@@ -647,7 +647,7 @@
 				"title": "%command.autoComment.title%"
 			},
 			{
-				"command": "autodev.codelens.CodeCompletions",
+				"command": "autodev.codelens.methodCompletions",
 				"title": "%command.AutoMethod.title%"
 			},
 
