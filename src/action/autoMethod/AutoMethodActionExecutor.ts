@@ -15,7 +15,6 @@ import { ActionType } from '../../prompt-manage/ActionType';
 import { PromptManager } from '../../prompt-manage/PromptManager';
 import { CreateToolchainContext } from '../../toolchain-context/ToolchainContextProvider';
 import { ActionExecutor } from '../_base/ActionExecutor';
-import { AutoDocTemplateContext } from '../autodoc/AutoDocTemplateContext';
 import { AutoMethodTemplateContext } from './AutoMethodTemplateContext';
 
 export class AutoMethodActionExecutor implements ActionExecutor {
