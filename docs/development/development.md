@@ -10,7 +10,8 @@ permalink: /development
 
 # Development
 
-1. `git clone https://github.com/unit-mesh/auto-dev-for-code`
+> Quick Start Guide to Contributing
+1. `git clone https://github.com/unit-mesh/auto-dev-vscode.git`
 2. init submodules
 3. build gui-sidebar: `cd gui-sidebar && npm install && build`
 4. open in VSCode
