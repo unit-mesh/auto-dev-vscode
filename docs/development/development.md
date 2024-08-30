@@ -6,7 +6,6 @@ has_children: true
 permalink: /development
 ---
 
-{: .no_toc }
 
 # Development
 > Quick Start Guide to Development
@@ -26,11 +25,14 @@ permalink: /development
 1. Fork: Click this URL [https://github.com/unit-mesh/auto-dev-vscode](https://github.com/unit-mesh/auto-dev-vscode), Click the `Fork` button to create your own copy of this repository
 
 2. Clone: Use this command in the terminal tool to clone this project to your local machine: 
+
 ```
+
 # Replace "<Your GitHub personal account>" with your GitHub account
 # such as "git clone git@github.com:unit-mesh/auto-dev-vscode.git"
 
 git clone git@github.com:<Your GitHub personal account>/auto-dev-vscode.git
+
 ```
 
 3. PR: Coding or edit documentation of this project, then commit your changes, and finally submit a pull request on GitHub
@@ -40,11 +42,12 @@ git clone git@github.com:<Your GitHub personal account>/auto-dev-vscode.git
 > Before you start developing or debugging, make sure to initialize submodules
 1. Clone: If you don't  have the [auto-dev-vscode](https://github.com/unit-mesh/auto-dev-vscode) repository yet, please clone it first
 
-2. Visual Studio Code: Start VSCode and open the cloned folder named `auto-dev-vscode`; if you don't have VSCode, you can click here to download: [https://code.visualstudio.com/download](https://code.visualstudio.com/download)
+2. Visual Studio Code: Start VSCode and `open` the cloned folder named `auto-dev-vscode`; if you don't have VSCode, you can click here to download: [https://code.visualstudio.com/download](https://code.visualstudio.com/download)
 
 3. Install Dependencies: 
 
 ```
+
 # macOS 
 
 # Install nvm to manage different versions of Node.js.
@@ -74,10 +77,11 @@ npm config set registry https://registry.npmmirror.com
 # Install dependencies.
 npm install
 
+```
+
 
 ```
 
-```
 # Windows
 
 # Install nvm, the Node.js version manager, which is used to manage different versions of Node.js (nvm officially does not recommend installing via brew; a personal VPN is required for a successful installation in mainland China).
@@ -113,17 +117,20 @@ npm config set registry https://registry.npmmirror.com
 
 # Install dependencies
 npm install
+
 ```
 
-4. Install dependencies for gui-sidebar: 
+4. `Install` dependencies for gui-sidebar: 
+
 ```
+
 # Open the terminal command interface in VSCode, and then execute this command to build gui-sidebar: 
 cd gui-sidebar && cnpm install && buildy
-```
-4. Uninstall AutoDev extension
-If you have previously installed the AutoDev extension in Visual Studio Code, please uninstall it first, then restart Visual Studio Code.
 
- previously installed extension's configurations can still be automatically applied to cloned projects.
+```
+4. `Uninstall` AutoDev extension
+If you have previously installed the AutoDev extension in Visual Studio Code, please uninstall it first, then restart Visual Studio Code.
+previously installed extension's configurations can still be automatically applied to cloned projects.
 
 
 5. press `F5` to start the extension
@@ -133,22 +140,25 @@ Then, in the newly opened window, you can debug the cloned AutoDev extension.
 
 
 ## Note
-1. Installed Node.js version v22.7.0 and encountered issues with this version.
-When running `npm install`, an error is reported stating "The plugin vscode-gradle requires a specific version of Node.js (^14.15.4) and npm (^6.14.10)".
 
-After pressing F5, a prompt still appears indicating that "apache-arrow" is not installed.
+Right now, with `npm install`, these Node.js versions show:
+- v20.11.0 is okay.
+- v14.15.4 and v22.7.0 have errors.
 
-2. Installed Node.js version v14.15.4 and encountered issues with this version.
-The error message will be "Failed at the onnxruntime-node@1.17.3 postinstall script."
+Tip:
 
-After researching, it was found that Node.js version v18 or higher is required.
+Use `nvm` to switch Node.js versions. 
 
-3. Finally, after installing Node.js version v20.11.0, everything executed normally.
+Remove `node_modules` from the root and `gui-sidebar` folders when changing versions.
 
-4. Common NVM commands.
+
+Common `nvm` commands.
+
 ```
-nvm install <version>: Install the specified version of Node.js.
-nvm use <version>: Switch to the specified version of Node.js.
-nvm ls: List the installed versions of Node.js.
-nvm current: Display the current version of Node.js being used.
+
+nvm install <version>    # Install the specified version of Node.js.
+nvm use <version>        # Switch to the specified version of Node.js.
+nvm ls                   # List the installed versions of Node.js.
+nvm current              # Display the current version of Node.js being used.
+
 ```
