@@ -625,6 +625,19 @@
 					}
 				},
 				"order": 9
+			},
+			{
+				"title": "%autodev.Workspace.customFrameworkCodeFiles.title%",
+				"properties": {
+					"autodev.Workspace.customFrameworkCodeFiles": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"default": [],
+						"description": "%autodev.Workspace.customFrameworkCodeFiles.description%"
+					}
+				}
 			}
 		],
 		"commands": [
@@ -650,7 +663,6 @@
 				"command": "autodev.codelens.methodCompletions",
 				"title": "%command.AutoMethod.title%"
 			},
-
 			{
 				"command": "autodev.codelens.autoTest",
 				"title": "%command.autoTest.title%"
