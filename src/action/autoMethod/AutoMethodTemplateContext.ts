@@ -6,4 +6,5 @@ export interface AutoMethodTemplateContext extends TemplateContext {
 	code: string;
 	forbiddenRules: string[];
 	originalMethodCodes: string[];
+	customFrameworkCodeFileContext?:string;
 }
