@@ -16,7 +16,8 @@ import { PromptManager } from '../../prompt-manage/PromptManager';
 import { CreateToolchainContext } from '../../toolchain-context/ToolchainContextProvider';
 import { ActionExecutor } from '../_base/ActionExecutor';
 import { AutoMethodTemplateContext } from './AutoMethodTemplateContext';
-
+import fs from 'fs'
+import vscode from 'vscode';
 export class AutoMethodActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
 
@@ -48,6 +49,23 @@ export class AutoMethodActionExecutor implements ActionExecutor {
 		const startSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.start;
 		const endSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.end;
 
+		const config=vscode.workspace.getConfiguration('autodev.WorkSpeace');
+		const customFrameworkCodeFilesPath=config.get<string[]>('customFrameworkCodeFiles', []);
+		let customFrameworkCodeFileContext:string="";
+		if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+			const workspaceFolder = vscode.workspace.workspaceFolders[0];
+			const workspacePath = workspaceFolder.uri.fsPath;
+			if(customFrameworkCodeFilesPath.length>0)
+			{	for(let i=0;i<customFrameworkCodeFilesPath.length;i++)
+				{
+					let codeFileNormalPath=workspacePath+'\\'+customFrameworkCodeFilesPath[i];
+					customFrameworkCodeFileContext+=fs.readFileSync(codeFileNormalPath).toString();
+					customFrameworkCodeFileContext+='\n'
+				}
+			}
+		}
+
+
 		const templateContext: AutoMethodTemplateContext = {
 			language: language,
 			startSymbol: startSymbol,
@@ -56,6 +74,7 @@ export class AutoMethodActionExecutor implements ActionExecutor {
 			forbiddenRules: [],
 			// 原有代码块
 			originalMethodCodes: [],
+			customFrameworkCodeFileContext
 		};
 
 		if (range.commentRange) {
