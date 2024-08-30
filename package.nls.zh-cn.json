@@ -88,6 +88,6 @@
 
 	"command.codebase.createIndexes.title": "索引生成",
 	"command.codebase.retrievalCode.title": "代码检索",
-	"autodev.WorkSpeace.customFrameworkCodeFiles.title":"自定义项目框架上下文代码文件组",
-	"autodev.WorkSpeace.customFrameworkCodeFiles.description":"提示：自定义项目框架上下文代码文件组"
+	"autodev.Workspace.customFrameworkCodeFiles.title":"自定义项目框架上下文代码文件组",
+	"autodev.Workspace.customFrameworkCodeFiles.description":"提示：自定义项目框架上下文代码文件组"
 }

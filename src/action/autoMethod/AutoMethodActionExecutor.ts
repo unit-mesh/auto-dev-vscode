@@ -1,5 +1,5 @@
 import { AutoDevExtension } from 'src/AutoDevExtension';
-import { CancellationTokenSource, Position, TextDocument, WorkspaceEdit } from 'vscode';
+import { Position, TextDocument, WorkspaceEdit } from 'vscode';
 
 import { ChatMessageRole, IChatMessage } from 'base/common/language-models/languageModels';
 import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
@@ -49,22 +49,21 @@ export class AutoMethodActionExecutor implements ActionExecutor {
 		const startSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.start;
 		const endSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.end;
 
-		const config=vscode.workspace.getConfiguration('autodev.WorkSpeace');
-		const customFrameworkCodeFilesPath=config.get<string[]>('customFrameworkCodeFiles', []);
-		let customFrameworkCodeFileContext:string="";
+		const config = vscode.workspace.getConfiguration('autodev.Workspace');
+		const customFrameworkCodeFilesPath = config.get<string[]>('customFrameworkCodeFiles', []);
+		let customFrameworkCodeFileContext: string = "";
 		if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
 			const workspaceFolder = vscode.workspace.workspaceFolders[0];
 			const workspacePath = workspaceFolder.uri.fsPath;
-			if(customFrameworkCodeFilesPath.length>0)
-			{	for(let i=0;i<customFrameworkCodeFilesPath.length;i++)
-				{
-					let codeFileNormalPath=workspacePath+'\\'+customFrameworkCodeFilesPath[i];
-					customFrameworkCodeFileContext+=fs.readFileSync(codeFileNormalPath).toString();
-					customFrameworkCodeFileContext+='\n'
+			if (customFrameworkCodeFilesPath.length > 0) {
+				for (let i = 0; i < customFrameworkCodeFilesPath.length; i++) {
+					let codeFileNormalPath = workspacePath + '\\' + customFrameworkCodeFilesPath[i];
+					// add support for linux
+					customFrameworkCodeFileContext += fs.readFileSync(codeFileNormalPath).toString();
+					customFrameworkCodeFileContext += '\n'
 				}
 			}
 		}
-
 
 		const templateContext: AutoMethodTemplateContext = {
 			language: language,

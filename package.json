@@ -627,15 +627,15 @@
 				"order": 9
 			},
 			{
-				"title": "%autodev.WorkSpeace.customFrameworkCodeFiles.title%",
+				"title": "%autodev.Workspace.customFrameworkCodeFiles.title%",
 				"properties": {
-					"autodev.WorkSpeace.customFrameworkCodeFiles": {
+					"autodev.Workspace.customFrameworkCodeFiles": {
 						"type": "array",
 						"items": {
 							"type": "string"
 						},
 						"default": [],
-						"description": "%autodev.WorkSpeace.customFrameworkCodeFiles.description%"
+						"description": "%autodev.Workspace.customFrameworkCodeFiles.description%"
 					}
 				}
 			}
