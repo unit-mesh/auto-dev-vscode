@@ -9,6 +9,7 @@ parent: Development
 
 1. check if the language is already supported by tree-sitter
 2. check the wasm file of tree-sitter grammar exist in https://github.com/unit-mesh/treesitter-artifacts
+3. our version treesiter playground: https://unit-mesh.github.io/treesitter-artifacts/
 
 ## Add a New Language
 
