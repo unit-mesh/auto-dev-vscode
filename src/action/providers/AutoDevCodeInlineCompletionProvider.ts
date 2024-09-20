@@ -116,7 +116,8 @@ export class AutoDevCodeInlineCompletionProvider implements vscode.InlineComplet
 			}
 
 			if (result) {
-				return [new vscode.InlineCompletionItem(result.trimStart())];
+				// return [new vscode.InlineCompletionItem(result.trimStart())];
+				return [new vscode.InlineCompletionItem(result)];
 			}
 		} catch (error) {
 			if (!token.isCancellationRequested) {
