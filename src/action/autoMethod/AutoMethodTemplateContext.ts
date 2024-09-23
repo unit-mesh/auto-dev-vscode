@@ -1,75 +1,19 @@
 import { Interface } from 'readline';
 
 import { TemplateContext } from '../../prompt-manage/template/TemplateContext';
+import { ClassInfo } from 'src/code-context/csharp/model/CsharpClassExtractor';
+import { FrameworkCodeFragment } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
+import { CodeSample } from '../AddCodeSample/AddCodeSampleExecutor';
+import { MethodInfo } from 'src/code-context/csharp/model/MethodInfo';
+
 
 export interface AutoMethodTemplateContext extends TemplateContext {
 	startSymbol: string;
 	endSymbol: string;
 	code: string;
 	forbiddenRules: string[];
-	originalMethodCodes: string[];
-	customFrameworkCodeFileContext?: string;
-	classInfo?: ClassInfo;
-	completedMethodInfo?: CompletedMethodInfo[];
+	classInfo?: ClassInfo|null;
 	classDescriptionInfo?: string;
-	classMemberVariable?: string[];
-	classMemberMethodInfo?: string;
-	customFrameworkCodeFragments?: FrameworkCodeFragment[];
-}
-/**
- * 自定义框架代码片段
- */
-export interface FrameworkCodeFragment {
-	doc: string;
-	context: string;
-	code: string;
-}
-/**
- *
- *
- **/
-export interface CompletedMethodInfo {
-	doc: string;
-	context: string;
-	code: string;
-	paramters: Parameter[];
-}
-
-export interface NeedCompletedMethodInfo {
-	name: string;
-	accessModifier: string;
-	returnValueType: string;
-	purpose: string;
-	paramters: Parameter[];
-}
-export interface Parameter {
-	name: string;
-	type: string;
-	doc: string;
-}
-export interface ClassInfo {
-	name: string;
-	nameSpace: string;
-	purpose: string;
-	doc: string;
-	memberVariables: MemberVariableInfo[];
-	memberMethods: MemberMethod[];
-}
-
-export interface MemberVariableInfo {
-	name: string;
-	doc: string;
-	type: string;
-}
-export interface MemberMethod {
-	name: string;
-	doc: string;
-	returnType: string;
-	parameterInfos: ParameterInfo[];
-}
-
-export interface ParameterInfo {
-	name: string;
-	doc: string;
-	type: string;
+	codeSamples?:CodeSample[]
+	customFrameworkCodeFragments?: FrameworkCodeFragment[]|null;
 }

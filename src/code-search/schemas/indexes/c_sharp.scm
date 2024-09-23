@@ -22,7 +22,9 @@
  (destructor_declaration)
  (indexer_declaration)
  (method_declaration)
- 
+
+
+
  ;; enum items
  (enum_member_declaration_list)
 
@@ -40,7 +42,7 @@
  (catch_clause)
 
  ;; using statement:
- ;; 
+ ;;
  ;; using (var a = b) { .. }
  (using_statement)
 
@@ -66,7 +68,7 @@
   (identifier) @local.definition.local)
 
 ;; namespaces
-(namespace_declaration 
+(namespace_declaration
   (identifier) @hoist.definition.namespace)
 
 ;; classes
@@ -80,9 +82,9 @@
   name: (identifier) @hoist.definition.class)
 (constructor_declaration
   name: (identifier) @hoist.definition.method)
-(destructor_declaration 
+(destructor_declaration
   name: (identifier) @hoist.definition.method)
-(method_declaration 
+(method_declaration
   name: (identifier) @hoist.definition.method)
 
 ;; enums
@@ -98,10 +100,10 @@
 ;; records
 ;;
 ;; record F {}
-(record_declaration 
+(record_declaration
   name: (identifier) @hoist.definition.class)
 ;; record struct F {}
-(record_struct_declaration 
+(record_struct_declaration
   name: (identifier) @hoist.definition.struct)
 
 ;; structs
@@ -139,7 +141,7 @@
   name: (identifier) @local.definition.local)
 
 ;; type params make defs
-(type_parameter 
+(type_parameter
   (identifier) @local.definition.typedef)
 
 ;; [params string[] args]
@@ -157,7 +159,7 @@
   name: (identifier) @local.definition.local)
 
 ;; foreach(Type x in y) { .. }
-;; 
+;;
 ;; `Type` is a ref
 ;; `x` is a def
 ;; `y` is a ref
@@ -167,7 +169,7 @@
 ;; imports
 
 ;; using System.Text
-;; 
+;;
 ;; `Text` is an import
 (using_directive
   .
@@ -200,7 +202,7 @@
 ;; x is int
 (is_expression
   (identifier) @local.reference)
-;; x is String 
+;; x is String
 (is_pattern_expression
   (identifier) @local.reference)
 
@@ -240,13 +242,13 @@
   (identifier) @local.reference)
 
 ;; function or array args
-(argument 
+(argument
   (identifier) @local.reference)
 
 ;; ident switch {}
 (switch_expression
   (identifier) @local.reference)
-(switch_expression_arm 
+(switch_expression_arm
   (identifier) @local.reference)
 
 ;; checked(ident)
@@ -281,12 +283,12 @@
 (object_creation_expression
   (identifier) @local.reference)
 
-;; foo() 
+;; foo()
 (invocation_expression
   (identifier) @local.reference)
 
 ;; A.b
-(member_access_expression
+(member_
   .
   (identifier) @local.reference)
 
@@ -314,7 +316,7 @@
   (identifier) @local.reference)
 
 ;; lambda body
-(lambda_expression 
+(lambda_expression
   body: (identifier) @local.reference)
 
 ;; new [] {a, b, c}
@@ -369,7 +371,7 @@
   (identifier) @local.reference)
 
 ;; foreach(Type x in y) { .. }
-;; 
+;;
 ;; `Type` is a ref
 ;; `x` is a def
 ;; `y` is a ref
@@ -425,7 +427,7 @@
 ;; type constraints
 (type_parameter_constraints_clause
   (identifier) @local.reference)
-(type_constraint 
+(type_constraint
   (identifier) @local.reference)
 
 ;; base types in enums & interfaces
@@ -441,5 +443,5 @@
     (identifier) @local.reference))
 
 ;; function return type
-(local_function_statement 
+(local_function_statement
   type: (identifier) @local.reference)

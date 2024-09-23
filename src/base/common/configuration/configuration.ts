@@ -18,7 +18,7 @@ export const CMD_FIX_THIS = 'autodev.fixThis';
 export const CMD_EXPLAIN_CODE = 'autodev.explainCode';
 export const CMD_OPTIMIZE_CODE = 'autodev.optimizeCode';
 export const CMD_GEN_DOCSTRING = 'autodev.autoComment';
-export const CMD_GEN_CODE_METHOD_COMPLETIONS= 'autodev.methodCompletions';
+export const CMD_GEN_CODE_METHOD_COMPLETIONS = 'autodev.methodCompletions';
 export const CMD_CREATE_UNIT_TEST = 'autodev.autoTest';
 
 // Codelens Commands
@@ -28,8 +28,9 @@ export const CMD_CODELENS_OPTIMIZE_CODE = 'autodev.codelens.optimizeCode';
 export const CMD_CODELENS_GEN_DOCSTRING = 'autodev.codelens.autoComment';
 export const CMD_CODELENS_CREATE_UNIT_TEST = 'autodev.codelens.autoTest';
 export const CMD_CODELENS_SHOW_CUSTOM_ACTION = 'autodev.codelens.customAction';
-export const CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS= 'autodev.codelens.methodCompletions';
-
+export const CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS = 'autodev.codelens.methodCompletions';
+export const CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE = 'autodev.codelen.addCodeSample';
+export const CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT = 'autodev.codelen.addFrameworkCodeFragment';
 // Chat Commands
 export const CMD_SHOW_CHAT_PANEL = 'autodev.showChatPanel';
 export const CMD_QUICK_CHAT = 'autodev.quickChat';

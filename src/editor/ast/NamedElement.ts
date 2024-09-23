@@ -1,3 +1,4 @@
+import { SyntaxNode } from 'web-tree-sitter';
 import { TreeSitterFile } from '../../code-context/ast/TreeSitterFile';
 import { CodeElementType } from '../codemodel/CodeElementType';
 import { TextInRange } from './TextInRange';
@@ -29,19 +30,21 @@ export class NamedElement {
 	blockContent: string;
 	commentRange: TextInRange | undefined;
 	file: TreeSitterFile;
-
+	node:SyntaxNode;
 	constructor(
 		blockRange: TextInRange,
 		identifierRange: TextInRange,
 		codeElementType: CodeElementType,
 		blockContent: string,
 		file: TreeSitterFile,
+		node:SyntaxNode
 	) {
 		this.blockRange = blockRange;
 		this.identifierRange = identifierRange;
 		this.blockContent = blockContent;
 		this.codeElementType = codeElementType;
 		this.file = file;
+		this.node=node;
 	}
 
 	isTestFile(): boolean {

@@ -148,6 +148,7 @@ export class NamedElementBuilder {
 						elementType,
 						blockNode.text,
 						this.file,
+						blockNode
 					);
 
 					let commentNode = TreeSitterUtil.previousNodesOfType(blockNode, ['block_comment', 'line_comment']);

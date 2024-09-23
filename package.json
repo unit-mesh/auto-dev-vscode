@@ -89,7 +89,9 @@
 								"autoComment",
 								"autoTest",
 								"customAction",
-								"AutoMethod"
+								"AutoMethod",
+								"addCodeSample",
+								"addFrameworkCodeFragment"
 							]
 						},
 						"uniqueItems": true,
@@ -97,7 +99,9 @@
 							"quickChat",
 							"autoTest",
 							"autoComment",
-							"AutoMethod"
+							"AutoMethod",
+							"addCodeSample",
+							"addFrameworkCodeFragment"
 						],
 						"description": "%configuration.codelensDisplayItems.description%",
 						"order": 4

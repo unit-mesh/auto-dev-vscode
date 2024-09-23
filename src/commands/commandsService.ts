@@ -23,6 +23,7 @@ import {
 	CMD_CODEASPACE_KEYWORDS_ANALYSIS,
 	CMD_CODEBASE_INDEXING,
 	CMD_CODEBASE_RETRIEVAL,
+	CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE,
 	CMD_CREATE_UNIT_TEST,
 	CMD_EXPLAIN_CODE,
 	CMD_FEEDBACK,
@@ -180,7 +181,29 @@ export class CommandsService {
 		await setTimeout(800);
 		chat.input(`${l10n.t('I got the following error, can you please help explain how to fix it?')}: ${input}`);
 	}
+	async addCodeSample() {
+		const editor = window.activeTextEditor;
+		if (!editor) {
+			return;
+		}
 
+		try {
+			const document = editor.document;
+			const edit = new WorkspaceEdit();
+			const elementBuilder = await createNamedElement(this.autodev.treeSitterFileManager, document);
+			const currentLine = editor.selection.active.line;
+			const ranges = elementBuilder.getElementForAction(currentLine);
+
+			if (ranges.length === 0) {
+				return;
+			}
+
+			await this.autodev.executeAddCodeSampleExecutorAction(document, ranges[0], edit);
+		} catch (error) {
+			logger.error(`Commands error`, error);
+			showErrorMessage('Command Call Error');
+		}
+ }
 	async generateMethod() {
 		const editor = window.activeTextEditor;
 		if (!editor) {
@@ -401,6 +424,7 @@ export class CommandsService {
 			commands.registerCommand(CMD_QUICK_FIX, this.quickFix, this),
 			commands.registerCommand(CMD_GEN_DOCSTRING, this.generateDocstring, this),
 			commands.registerCommand(CMD_GEN_CODE_METHOD_COMPLETIONS, this.generateMethod, this),
+			commands.registerCommand(CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE,this.addCodeSample,this),
 			commands.registerCommand(CMD_CREATE_UNIT_TEST, this.generateUnitTest, this),
 			// Codebase Commands
 			commands.registerCommand(CMD_CODEBASE_INDEXING, this.startCodebaseIndexing, this),
@@ -420,6 +444,7 @@ export class CommandsService {
 			commands.registerCommand(CMD_GIT_MESSAGE_COMMIT_GENERATE, this.generateCommitMessage, this),
 		);
 	}
+
 }
 
 interface CodebaseResultItem extends QuickPickItem {

@@ -28,6 +28,8 @@ import {
 	CMD_CODELENS_SHOW_CUSTOM_ACTION,
 	CMD_SHOW_CODELENS_DETAIL_QUICKPICK,
 	CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS,
+	CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT,
+	CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE
 } from 'base/common/configuration/configuration';
 import { ConfigurationService } from 'base/common/configuration/configurationService';
 import { isFileTooLarge } from 'base/common/files/files';
@@ -38,7 +40,8 @@ import { logger } from 'base/common/log/log';
 import { type AutoDevExtension } from '../../AutoDevExtension';
 import { CodeElementType } from 'src/editor/codemodel/CodeElementType';
 
-type CodeLensItemType = 'quickChat' | 'explainCode' | 'optimizeCode' | 'autoComment' | 'autoTest' | 'customAction'|'AutoMethod';
+type CodeLensItemType = 'quickChat' | 'explainCode' | 'optimizeCode' | 'autoComment' |'addCodeSample'|
+                        'autoTest' | 'customAction'|'AutoMethod'|'addFrameworkCodeFragment';
 
 export class AutoDevCodeLensProvider implements CodeLensProvider {
 	private config: ConfigurationService;
@@ -128,6 +131,14 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 			commands.registerCommand(CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS, (document: TextDocument, nameElement: NamedElement) => {
 				autodev.executeAutoMethodAction(document, nameElement);
 			}),
+			commands.registerCommand(CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT, (document: TextDocument, nameElement: NamedElement) => {
+				autodev.executeAddFrameworkCodeFragmentAction(document, nameElement);
+			}),
+			commands.registerCommand(CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE, (document: TextDocument, nameElement: NamedElement) => {
+				autodev.executeAddCodeSampleExecutorAction(document, nameElement);
+			}),
+
+
 		];
 	}
 
@@ -281,6 +292,30 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 					continue;
 				}
 
+				if (type === 'addCodeSample') {
+					if (element.codeElementType==CodeElementType.Method||element.codeElementType==CodeElementType.Structure) {
+						codelenses.push(
+							new CodeLens(element.identifierRange, {
+								title: l10n.t('addCodeSample'),
+								command: CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE,
+								arguments: [document, element],
+							}),
+						);
+					}
+					continue;
+				}
+				if (type === 'addFrameworkCodeFragment') {
+					if (element.codeElementType==CodeElementType.Method||element.codeElementType==CodeElementType.Structure) {
+						codelenses.push(
+							new CodeLens(element.identifierRange, {
+								title: l10n.t('addFrameworkCodeFragment'),
+								command: CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT,
+								arguments: [document, element],
+							}),
+						);
+					}
+					continue;
+				}
 			}
 
 			result.push(codelenses);

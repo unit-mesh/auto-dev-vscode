@@ -11,3 +11,8 @@ Here is User's code:
 ${context.code}
 
 Please write documentation for this code inside the Markdown code block.
+#foreach($item in ${context.FrameworkCodeFragments})
+ 自定义代码段说明：$item.doc
+ 自定义代码的上下文:$items.context
+ 自定义代码的代码实例：$items.code
+#end

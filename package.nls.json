@@ -86,6 +86,7 @@
 	"configuration.transformers.onnxWasmNumThreads.description": "Number of threads to use for the WebAssembly backend. Defaults to cpus numbers.",
 	"configuration.transformers.onnxLoglevel.description": "Log level for the ONNX runtime. Defaults to error.",
 
+	"Not Completed": "(Not Completed)",
 	"command.autoTest.title": "Generate Test",
 	"command.genApiData.title": "Generate API Data",
 	"command.openSettings.title": "Open Settings",
@@ -93,6 +94,8 @@
 	"command.feedback.title": "Feedback",
 	"command.quickChat.title": "Quick Chat",
 	"command.AutoMethod.title": "Generate Method Codes",
+	"command.addFrameworkCodeFragment.title": "Add Framework Code Fragment",
+	"command.addCodeSample.title": "Add Code Sample",
 	"command.explainCode.title": "Explain Code",
 	"command.optimizeCode.title": "Optimize Code",
 	"command.quickFix.title": "Quick Fix",

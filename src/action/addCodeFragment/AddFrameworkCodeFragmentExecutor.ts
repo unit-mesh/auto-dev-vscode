@@ -17,13 +17,10 @@ import { ActionType } from '../../prompt-manage/ActionType';
 import { PromptManager } from '../../prompt-manage/PromptManager';
 import { CreateToolchainContext } from '../../toolchain-context/ToolchainContextProvider';
 import { ActionExecutor } from '../_base/ActionExecutor';
-import { AutoMethodTemplateContext } from './AutoMethodTemplateContext';
 import { CsharpClassExtractor } from 'src/code-context/csharp/model/CsharpClassExtractor';
-import { FrameworkCodeFragment } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
-import { CodeSample } from '../AddCodeSample/AddCodeSampleExecutor';
-import { MethodInfo } from 'src/code-context/csharp/model/MethodInfo';
+import { FrameworkCodeFragmentExtractor } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
 
-export class AutoMethodActionExecutor implements ActionExecutor {
+export class AddFrameworkCodeFragmentExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
 
 	private lm: LanguageModelsService;
@@ -56,76 +53,12 @@ export class AutoMethodActionExecutor implements ActionExecutor {
 
 		const startSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.start;
 		const endSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.end;
-    const classExtractor=new CsharpClassExtractor(this.range.node)
-    const classInfo=classExtractor.ExtractClass();
-		let unfinishedMethods: MethodInfo[]=[];
-
-		const templateContext: AutoMethodTemplateContext = {
-			language: language,
-			startSymbol: startSymbol,
-			endSymbol: endSymbol,
-			code: document.getText(range.blockRange),
-			forbiddenRules: [],
-			classInfo:classInfo,
-			customFrameworkCodeFragments:this.autodev.workSpace.GetDataStorage(language,FrameworkCodeFragment.name) as FrameworkCodeFragment[],
-		  codeSamples:this.autodev.workSpace.GetDataStorage(language,CodeSample.name) as CodeSample[]
-		};
-
-
+    const frameworkCodeFragmentInfo=new FrameworkCodeFragmentExtractor(range.node,document.uri.fsPath).ExtractFrameworkCodeFragment();
+		this.autodev.workSpace.AddDataStorage(language,frameworkCodeFragmentInfo)
 		this.statusBarManager.setStatus(AutoDevStatus.InProgress);
-
 		selectCodeInRange(range.blockRange.start, range.blockRange.end);
 		if (range.commentRange) {
 			selectCodeInRange(range.commentRange.start, range.commentRange.end);
-		}
-
-		const creationContext: CreateToolchainContext = {
-			action: 'AutoMethodAction',
-			filename: document.fileName,
-			language: language,
-
-			content: document.getText(),
-			element: range,
-		};
-
-		const contextItems = await this.promptManager.collectToolchain(creationContext);
-		if (contextItems.length > 0) {
-			templateContext.chatContext = contextItems.map(item => item.text).join('\n - ');
-		}
-
-		let content = await this.promptManager.generateInstruction(ActionType.AutoMethod, templateContext);
-		log(`request: ${content}`);
-
-		let msg: IChatMessage = {
-			role: ChatMessageRole.User,
-			content: content,
-		};
-
-		try {
-			const doc = await this.lm.chat([msg], {});
-
-			this.statusBarManager.setStatus(AutoDevStatus.Done);
-			const finalText = StreamingMarkdownCodeBlock.parse(doc).text;
-
-			log(`FencedCodeBlock parsed output: ${finalText}`);
-
-			let codestring = MarkdownTextProcessor.buildDocFromSuggestion(doc, startSymbol, endSymbol);
-
-			let startLine = range.blockRange.start.line;
-			let startChar = range.blockRange.start.character;
-
-			if (startLine === 0) {
-				startLine = 1;
-			}
-
-			// todo: add format by indent.
-
-			const textRange: Position = new Position(startLine - 1, startChar);
-			insertCodeByRange(textRange, codestring);
-		} catch (e) {
-			console.error(e);
-			this.statusBarManager.setStatus(AutoDevStatus.Error);
-			return;
 		}
 	}
 }

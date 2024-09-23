@@ -1,19 +1,15 @@
 {
 	"view.chat.title": "聊天",
-
 	"configuration.general.title": "通用",
 	"configuration.enableRenameSuggestion.description": "启用重命名建议",
 	"configuration.customPromptDir.description": "自定义提示目录",
-
 	"configuration.codelensDisplayMode.item.expand": "操作平铺",
 	"configuration.codelensDisplayMode.item.collapse": "操作收起",
 	"configuration.codelensDisplayMode.description": "控制行间按钮的显示方式",
 	"configuration.codelensDisplayItems.description": "配置生成注释、生成测试、代码解释、代码优化等行间按钮的展示",
-
 	"configuration.chat.title": "对话",
 	"configuration.chat.enable.description": "启用或禁用聊天功能",
 	"configuration.chat.models.description": "可供聊天界面选择的模型列表",
-
 	"configuration.completions.title": "代码补全",
 	"configuration.completions.enable.description": "启用或禁用代码补全",
 	"configuration.completions.provider.description": "模型供应商",
@@ -23,15 +19,12 @@
 	"configuration.v.fimSpecialTokens.description": "中间填充（FIM）是代码自动完成模型支持的一种特殊提示格式，可以在两个已编写的代码块之间完成代码。",
 	"configuration.completions.requestDelay.markdownDescription": "发起自动补全的请求延迟时间，避免过度消耗 API 令牌。只有启用 `#autodev.completions.enable#` 后，`requestDelay` 配置才生效。",
 	"configuration.completions.enableLegacyMode.markdownDescription": "启用兼容模型，使用旧的 `/v1/completions` 代替 `/v1/chat/completions`，仅 openai 服务支持。",
-
 	"configuration.embeddings.title": "向量生成",
 	"configuration.embeddings.provider.description": "模型供应商",
 	"configuration.embeddings.model.description": "覆盖模型供应商中的初始模型",
 	"configuration.embeddings.model.markdownDescription": "为代码生成向量的模型。默认为 transformers.js 支持的模型，点击 [这里](https://vscode.unitmesh.cc) 以了解更多。",
-
 	"configuration.storages.title": "数据存储",
 	"configuration.providers.title": "模型供应商",
-
 	"configuration.openai.apiType.description": "OpenAI 的服务提供商",
 	"configuration.openai.baseURL.markdownDescription": "OpenAI 的 API URL。详见 [API 文档](https://platform.openai.com/docs/api-reference/introduction)",
 	"configuration.openai.apiKey.markdownDescription": "OpenAI 的遗留密钥。提供对用户已添加到的所有组织和所有项目的访问；访问 [API密钥](https://platform.openai.com/account/api-keys) 以查看可用的密钥。目前仍可正常使用，但强烈建议过渡到项目密钥以获得最佳安全实践。",
@@ -39,30 +32,24 @@
 	"configuration.openai.organization.description": "对于多组织用户或使用旧的 API 密钥访问的用户，可配置组织ID将请求归入所选组织及项目。",
 	"configuration.openai.model.description": "模型名称",
 	"configuration.openai.embeddingModel.description": "模型名称",
-
 	"configuration.anthropic.baseURL.markdownDescription": "Anthropic API URL，详见 [API 文档](https://docs.anthropic.com/en/api/getting-started)",
 	"configuration.anthropic.apiKey.description": "Anthropic API 密钥",
 	"configuration.anthropic.model.description": "模型名称",
-
 	"configuration.qianfan.apiKey.description": "Baidu Cloud API Key",
 	"configuration.qianfan.apiKey.markdownDescription": "百度云的 API Key。参考 [创建应用程序](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application)。",
 	"configuration.qianfan.secretKey.description": "Baidu Cloud Secret Key.",
 	"configuration.qianfan.secretKey.markdownDescription": "百度云的 Secret Key。",
 	"configuration.qianfan.model.description": "模型名称",
-
 	"configuration.tongyi.apiKey.description": "阿里云的 API Key。",
 	"configuration.tongyi.apiKey.markdownDescription": "阿里云的 API Key。参考 [开通 DashScope 并创建 API-KEY](https://help.aliyun.com/zh/dashscope/developer-reference/activate-dashscope-and-create-an-api-key).",
 	"configuration.tongyi.model.description": "模型名称",
 	"configuration.tongyi.enableSearch.description": "启用互联网搜索",
-
 	"configuration.zhipuai.apiKey.description": "智谱 AI 的 API Key。",
 	"configuration.zhipuai.apiKey.markdownDescription": "智谱 AI 的 API Key。参考 [智谱 AI 开放平台](https://open.bigmodel.cn/dev/api).",
 	"configuration.zhipuai.model.description": "模型名称",
 	"configuration.zhipuai.embeddingModel.description": "向量化模型名称",
-
 	"configuration.ollama.baseURL.markdownDescription": "Ollama 的 API URL, Key。参考 [API Reference](https://github.com/ollama/ollama/blob/main/docs/api.md)",
 	"configuration.ollama.model.description": "模型名称",
-
 	"configuration.transformers.remoteHost.description": "加载模型的主机 URL，默认为 Hugging Face Hub。",
 	"configuration.transformers.remoteHost.markdownDescription": "加载模型的主机 URL，默认为  [Hugging Face Hub](https://huggingface.co)，国内推荐走 https://hf-mirror.com 代理站点。",
 	"configuration.transformers.remotePathTemplate.description": "加载模型时填写并合并到 remoteHost 的路径模板。",
@@ -72,22 +59,20 @@
 	"configuration.transformers.model.markdownDescription": "设置嵌入模型名称。默认为 `all-MiniLM-L6-v2`。",
 	"configuration.transformers.onnxWasmNumThreads.description": "设置 ONNX WebAssembly 运行时的线程数。默认为你的 CPU 数量。",
 	"configuration.transformers.onnxLoglevel.description": "设置 ONNX 运行时的日志级别。默认为错误。",
-
 	"command.showChatPanel.title": "开始对话",
 	"command.explainCode.title": "解释代码",
 	"command.optimizeCode.title": "优化代码",
 	"command.quickFix.title": "快速修复",
 	"command.autoComment.title": "生成注释",
-	"command.AutoMethod.title":"填充当前方法",
+	"command.AutoMethod.title": "填充当前方法",
 	"command.autoTest.title": "生成测试",
-
+	"command.addFrameworkCodeFragment.title": "添加自定义代码块",
+	"command.addCodeSample.title": "添加自定义样例",
 	"command.openSettings.title": "打开设置",
 	"command.feedback.title": "意见反馈",
-
 	"command.genApiData.title": "生成 API 数据",
-
 	"command.codebase.createIndexes.title": "索引生成",
 	"command.codebase.retrievalCode.title": "代码检索",
-	"autodev.WorkSpeace.customFrameworkCodeFiles.title":"自定义项目框架上下文代码文件组",
-	"autodev.WorkSpeace.customFrameworkCodeFiles.description":"提示：自定义项目框架上下文代码文件组"
+	"autodev.WorkSpeace.customFrameworkCodeFiles.title": "自定义项目框架上下文代码文件组",
+	"autodev.WorkSpeace.customFrameworkCodeFiles.description": "提示：自定义项目框架上下文代码文件组"
 }
