@@ -535,8 +535,10 @@
 							"codegeex-4",
 							"glm-4-0520",
 							"glm-4",
+							"glm-4-Plus",
 							"glm-4-air",
 							"glm-4-airx",
+							"glm-4-Long",
 							"glm-4-flash"
 						],
 						"default": "codegeex-4",
@@ -635,15 +637,15 @@
 				"order": 9
 			},
 			{
-				"title": "%autodev.WorkSpeace.customFrameworkCodeFiles.title%",
+				"title": "%autodev.Workspace.customFrameworkCodeFiles.title%",
 				"properties": {
-					"autodev.WorkSpeace.customFrameworkCodeFiles": {
+					"autodev.Workspace.customFrameworkCodeFiles": {
 						"type": "array",
 						"items": {
 							"type": "string"
 						},
 						"default": [],
-						"description": "%autodev.WorkSpeace.customFrameworkCodeFiles.description%"
+						"description": "%autodev.Workspace.customFrameworkCodeFiles.description%"
 					}
 				}
 			}
@@ -668,8 +670,8 @@
 				"title": "%command.autoComment.title%"
 			},
 			{
-				"command": "autodev.codelens.CodeCompletions",
-				"title": "%command.CodeCompletions.title%"
+				"command": "autodev.codelens.methodCompletions",
+				"title": "%command.AutoMethod.title%"
 			},
 			{
 				"command": "autodev.codelens.autoTest",

@@ -118,6 +118,6 @@
 	"configuration.codelensDisplayMode.item.collapse": "Collapse",
 	"configuration.codelensDisplayMode.description": "Controls the display of CodeLens",
 	"configuration.codelensDisplayItems.description": "Custom the display and sorting CodeLens Items",
-	"autodev.WorkSpeace.customFrameworkCodeFiles.title":"Custom project framework context code files",
-	"autodev.WorkSpeace.customFrameworkCodeFiles.description":"Custom project framework context code files"
+	"autodev.Workspace.customFrameworkCodeFiles.title":"Custom project framework context code files",
+	"autodev.Workspace.customFrameworkCodeFiles.description":"Custom project framework context code files"
 }
