@@ -7,11 +7,13 @@ import { ContextStateService } from 'base/common/configuration/contextState';
 import { WorkspaceFileSystem } from 'base/common/fs';
 import { ILanguageServiceProvider } from 'base/common/languages/languageService';
 import { logger } from 'base/common/log/log';
+import { WorkspaceService } from 'base/common/workspace/WorkspaceService';
 
+import { AddFrameworkCodeFragmentExecutor } from './action/addCodeFragment/AddFrameworkCodeFragmentExecutor';
+import { AddCodeSampleExecutor } from './action/addCodeSample/AddCodeSampleExecutor';
 import { AutoDocActionExecutor } from './action/autodoc/AutoDocActionExecutor';
-import { AutoTestActionExecutor } from './action/autotest/AutoTestActionExecutor';
 import { AutoMethodActionExecutor } from './action/autoMethod/AutoMethodActionExecutor';
-
+import { AutoTestActionExecutor } from './action/autotest/AutoTestActionExecutor';
 import {
 	registerAutoDevProviders,
 	registerCodeLensProvider,
@@ -19,6 +21,7 @@ import {
 	registerQuickFixProvider,
 	registerRenameAction,
 } from './action/ProviderRegister';
+import { RemoveCodeSampleExecutor } from './action/removeCodeSample/RemoveCodeSampleExecutor';
 import { SystemActionService } from './action/setting/SystemActionService';
 import { Catalyser } from './agent/catalyser/Catalyser';
 import { LanguageModelsService } from './base/common/language-models/languageModelsService';
@@ -43,12 +46,6 @@ import { TemplateContext } from './prompt-manage/template/TemplateContext';
 import { TemplateRender } from './prompt-manage/template/TemplateRender';
 import { IProjectService } from './ProviderTypes';
 import { ToolchainContextManager } from './toolchain-context/ToolchainContextManager';
-import { AddFrameworkCodeFragmentExecutor } from './action/addCodeFragment/AddFrameworkCodeFragmentExecutor';
-import { AddCodeSampleExecutor } from './action/AddCodeSample/AddCodeSampleExecutor';
-import { WorkspaceService } from 'base/common/workspace/WorkspaceService';
-
-
-
 
 @injectable()
 export class AutoDevExtension {
@@ -100,7 +97,6 @@ export class AutoDevExtension {
 		public teamTerm: TeamTermService,
 		@inject(WorkspaceService)
 		public workSpace: WorkspaceService,
-
 	) {
 		this.ideAction = new VSCodeAction();
 		this.statusBarManager = new AutoDevStatusManager();
@@ -240,8 +236,16 @@ export class AutoDevExtension {
 	executeAddCodeSampleExecutorAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
 		return new AddCodeSampleExecutor(this, document, nameElement, edit).execute();
 	}
+	executeRemoveCodeSampleExecutorAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		return new RemoveCodeSampleExecutor(this, document, nameElement, edit).execute();
+	}
+
 	executeAddFrameworkCodeFragmentAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
 		return new AddFrameworkCodeFragmentExecutor(this, document, nameElement, edit).execute();
+	}
+
+	executeRemoveFrameworkCodeFragmentAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		return new RemoveCodeSampleExecutor(this, document, nameElement, edit).execute();
 	}
 
 	executeAutoTestAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {

@@ -21,8 +21,9 @@ import { ActionType } from '../../prompt-manage/ActionType';
 import { PromptManager } from '../../prompt-manage/PromptManager';
 import { CreateToolchainContext } from '../../toolchain-context/ToolchainContextProvider';
 import { ActionExecutor } from '../_base/ActionExecutor';
+import { CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
 
-export class AddCodeSampleExecutor implements ActionExecutor {
+export class RemoveCodeSampleExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
 
 	private lm: LanguageModelsService;
@@ -57,48 +58,6 @@ export class AddCodeSampleExecutor implements ActionExecutor {
 		if (range.commentRange) {
 			selectCodeInRange(range.commentRange.start, range.commentRange.end);
 		}
-		this.autodev.workSpace.AddDataStorage(language,new CodeSample(range.node, document.uri.fsPath));
-	}
-
-	// 在vscode插件开发下，写一个类，将对象转json字符串并保存的代码要求如下
-	// 1.当工作区关闭时，json字符串保存在workspace的.vscode文件夹下,名称为当前代码文件的编程语言名外接.json后缀
-	// 2.当工作区打开时，读取保存在workspace的.vscode文件夹下的名称为当前代码文件的编程语言名的json文件，并将其反序列化为特定对象
-}
-export class CodeSample extends BaseCsharpElement implements IDataStorage {
-	public readonly code: string;
-	public readonly doc: string;
-	public readonly context: string;
-	public readonly filePath: string;
-	constructor(node: SyntaxNode, filePath: string) {
-		super();
-		this.code = node.text;
-		this.doc = '';
-		if (node.previousSibling) {
-			this.doc = this.Getcommits(node.previousSibling, []).reverse().toString();
-		}
-
-		this.context = 'context';
-	this.filePath = filePath;
-	}
-	equals(other: CodeSample): boolean {
-		if (
-			other.code === this.code &&
-			other.doc === this.doc &&
-			other.context === this.context &&
-			other.filePath === this.filePath
-		) {
-			return true;
-		}
-
-		return false;
-	}
-	GetType(): string {
-		return CodeSample.name;
-	}
-	Save(): void {
-		throw new Error('Method not implemented.');
-	}
-	Load(): void {
-		throw new Error('Method not implemented.');
+		this.autodev.workSpace.RemoveDataStorage(language,new CodeSample(range.node, document.uri.fsPath));
 	}
 }

@@ -16,11 +16,11 @@ export class FrameworkCodeFragmentExtractor {
 		let context: string = '';
 		let code: string = this.frameworkCodeFragmentNode.text;
 		if (this.frameworkCodeFragmentNode.type === 'class_declaration') {
-		} else if (this.frameworkCodeFragmentNode.type === 'method_declaration') {
+			return new FrameworkCodeFragment(this.frameworkCodeFragmentNode, context, code, this.filePath);
 		}
 		return new FrameworkCodeFragment(this.frameworkCodeFragmentNode, context, code, this.filePath, (doc: string) => {
 			let match = /<summary>(.*?)<\/summary>/g;
-			let matchResult=  match.exec(doc)
+			let matchResult = match.exec(doc);
 			if (matchResult) {
 				return matchResult[0];
 			}
@@ -39,11 +39,15 @@ export class FrameworkCodeFragment extends BaseCsharpElement implements IDataSto
 		context: string,
 		code: string,
 		filePath: string,
-		docDealCallback: DocDealCallback,
+		docDealCallback?: DocDealCallback,
 	) {
 		super();
 		if (frameworkCodeFragmentNode.previousSibling) {
-			this.doc = docDealCallback(this.Getcommits(frameworkCodeFragmentNode.previousSibling, []).reverse().toString());
+			if (docDealCallback == undefined) {
+				this.doc = this.Getcommits(frameworkCodeFragmentNode.previousSibling, []).toString();
+			} else {
+				this.doc = docDealCallback(this.Getcommits(frameworkCodeFragmentNode.previousSibling, []).reverse().toString());
+			}
 		} else {
 			this.doc = '';
 		}

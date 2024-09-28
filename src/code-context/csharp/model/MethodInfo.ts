@@ -9,6 +9,7 @@ export class MethodInfo extends BaseCsharpElement {
 	name: string;
 	parameters?: IParameterInfo[];
 	methodXmlDoc: string;
+	code:string;
 
 	public constructor(methodNode: Parser.SyntaxNode) {
 		super();
@@ -21,6 +22,7 @@ export class MethodInfo extends BaseCsharpElement {
 		this.name = methodNameAndReturnType[0];
 		this.returnType = methodNameAndReturnType[1];
 		this.methodXmlDoc = methodXmlDocTeam.reverse().toString();
+		this.code=methodNode.text;
 	}
 	// 获取方法的 XML 注释
 	getMethodXmlDocTeam(methodNode: Parser.SyntaxNode): string[] {

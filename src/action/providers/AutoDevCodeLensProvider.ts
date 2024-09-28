@@ -2,9 +2,11 @@
 import { setTimeout } from 'node:timers/promises';
 
 import { convertToErrorMessage, TreeSitterFile } from 'src/code-context/ast/TreeSitterFile';
+import { FrameworkCodeFragment } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
 import { NamedElement } from 'src/editor/ast/NamedElement';
 import { NamedElementBuilder } from 'src/editor/ast/NamedElementBuilder';
 import { TreeSitterFileManager } from 'src/editor/cache/TreeSitterFileManager';
+import { CodeElementType } from 'src/editor/codemodel/CodeElementType';
 import { ChatViewService } from 'src/editor/views/chat/chatViewService';
 import {
 	CancellationToken,
@@ -14,6 +16,7 @@ import {
 	commands,
 	Disposable,
 	l10n,
+	ProviderResult,
 	TextDocument,
 	window,
 	WorkspaceEdit,
@@ -25,11 +28,13 @@ import {
 	CMD_CODELENS_GEN_DOCSTRING,
 	CMD_CODELENS_OPTIMIZE_CODE,
 	CMD_CODELENS_QUICK_CHAT,
+	CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE,
+	CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT,
+	CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS,
+	CMD_CODELENS_SHOW_CODE_REMOVE_CODE_SAMPLE,
+	CMD_CODELENS_SHOW_CODE_REMOVE_FRAMEWORK_CODE_FRAGMENT,
 	CMD_CODELENS_SHOW_CUSTOM_ACTION,
 	CMD_SHOW_CODELENS_DETAIL_QUICKPICK,
-	CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS,
-	CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT,
-	CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE
 } from 'base/common/configuration/configuration';
 import { ConfigurationService } from 'base/common/configuration/configurationService';
 import { isFileTooLarge } from 'base/common/files/files';
@@ -38,16 +43,26 @@ import { ILanguageServiceProvider } from 'base/common/languages/languageService'
 import { logger } from 'base/common/log/log';
 
 import { type AutoDevExtension } from '../../AutoDevExtension';
-import { CodeElementType } from 'src/editor/codemodel/CodeElementType';
+import { CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
 
-type CodeLensItemType = 'quickChat' | 'explainCode' | 'optimizeCode' | 'autoComment' |'addCodeSample'|
-                        'autoTest' | 'customAction'|'AutoMethod'|'addFrameworkCodeFragment';
+type CodeLensItemType =
+	| 'quickChat'
+	| 'explainCode'
+	| 'optimizeCode'
+	| 'autoComment'
+	| 'addCodeSample'
+	| 'autoTest'
+	| 'customAction'
+	| 'AutoMethod'
+	| 'addFrameworkCodeFragment'
+	| 'removeCodeSample'
+	| 'removeFrameworkCodeFragment';
 
 export class AutoDevCodeLensProvider implements CodeLensProvider {
 	private config: ConfigurationService;
 	private lsp: ILanguageServiceProvider;
 	private fileManager: TreeSitterFileManager;
-
+	private autoDev: AutoDevExtension;
 	private disposables: Disposable[];
 
 	constructor(private autodev: AutoDevExtension) {
@@ -56,7 +71,7 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 		this.fileManager = autodev.treeSitterFileManager;
 
 		const chat = autodev.chat;
-
+		this.autoDev = autodev;
 		this.disposables = [
 			commands.registerCommand(CMD_SHOW_CODELENS_DETAIL_QUICKPICK, (items: Command[]) => {
 				const quickPick = window.createQuickPick<{
@@ -128,17 +143,36 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 			commands.registerCommand(CMD_CODELENS_SHOW_CUSTOM_ACTION, (document: TextDocument, nameElement: NamedElement) => {
 				autodev.executeCustomAction(document, nameElement);
 			}),
-			commands.registerCommand(CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS, (document: TextDocument, nameElement: NamedElement) => {
-				autodev.executeAutoMethodAction(document, nameElement);
-			}),
-			commands.registerCommand(CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT, (document: TextDocument, nameElement: NamedElement) => {
-				autodev.executeAddFrameworkCodeFragmentAction(document, nameElement);
-			}),
-			commands.registerCommand(CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE, (document: TextDocument, nameElement: NamedElement) => {
-				autodev.executeAddCodeSampleExecutorAction(document, nameElement);
-			}),
-
-
+			commands.registerCommand(
+				CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS,
+				(document: TextDocument, nameElement: NamedElement) => {
+					autodev.executeAutoMethodAction(document, nameElement);
+				},
+			),
+			commands.registerCommand(
+				CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT,
+				(document: TextDocument, nameElement: NamedElement) => {
+					autodev.executeAddFrameworkCodeFragmentAction(document, nameElement);
+				},
+			),
+			commands.registerCommand(
+				CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE,
+				(document: TextDocument, nameElement: NamedElement) => {
+					autodev.executeAddCodeSampleExecutorAction(document, nameElement);
+				},
+			),
+			commands.registerCommand(
+				CMD_CODELENS_SHOW_CODE_REMOVE_FRAMEWORK_CODE_FRAGMENT,
+				(document: TextDocument, nameElement: NamedElement) => {
+					autodev.executeRemoveFrameworkCodeFragmentAction(document, nameElement);
+				},
+			),
+			commands.registerCommand(
+				CMD_CODELENS_SHOW_CODE_REMOVE_CODE_SAMPLE,
+				(document: TextDocument, nameElement: NamedElement) => {
+					autodev.executeRemoveCodeSampleExecutorAction(document, nameElement);
+				},
+			),
 		];
 	}
 
@@ -169,13 +203,13 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 		}
 
 		const elements = await this.parseToNamedElements(document);
-// elements为空导致codelens组没有数据，无法生成codelens
+		// elements为空导致codelens组没有数据，无法生成codelens
 
 		if (token.isCancellationRequested || elements.length === 0) {
 			return [];
 		}
 
-		const groups = this.buildCodeLensGroups(displayItems, elements, document, token);
+		let groups = this.buildCodeLensGroups(displayItems, elements, document, token);
 		if (groups.length === 0) {
 			return [];
 		}
@@ -185,6 +219,11 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 		}
 
 		return groups.flat();
+	}
+	resolveCodeLens(codeLens: CodeLens): ProviderResult<CodeLens> {
+		// 解析 CodeLens 的详细信息
+
+		return codeLens;
 	}
 
 	private buildQuickPickCodeLens(codelenses: CodeLens[]): CodeLens {
@@ -205,13 +244,13 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 		document: TextDocument,
 		token: CancellationToken,
 	) {
-		const result: CodeLens[][] = [];
-		const hasCustomPromps = this.hasCustomPromps();
+		let result: CodeLens[][] = [];
+		let hasCustomPromps = this.hasCustomPromps();
 
-		for (const element of elements) {
-			const codelenses: CodeLens[] = [];
+		for (let element of elements) {
+			let codelenses: CodeLens[] = [];
 
-			for (const type of displaySet) {
+			for (let type of displaySet) {
 				if (type === 'quickChat') {
 					codelenses.push(
 						new CodeLens(element.identifierRange, {
@@ -280,7 +319,7 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 					continue;
 				}
 				if (type === 'AutoMethod') {
-					if (element.codeElementType==CodeElementType.Method) {
+					if (element.codeElementType == CodeElementType.Method) {
 						codelenses.push(
 							new CodeLens(element.identifierRange, {
 								title: l10n.t('AutoMethod'),
@@ -293,7 +332,18 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 				}
 
 				if (type === 'addCodeSample') {
-					if (element.codeElementType==CodeElementType.Method||element.codeElementType==CodeElementType.Structure) {
+					let hasDataStorage = this.autoDev.workSpace.HasDataStorage(
+						document.languageId,
+						new CodeSample(element.node, document.uri.fsPath),
+					);
+					if (element.codeElementType == CodeElementType.Method) {
+						console.log('------');
+					}
+					if (
+						(element.codeElementType == CodeElementType.Method ||
+							element.codeElementType == CodeElementType.Structure) &&
+						hasDataStorage == false
+					) {
 						codelenses.push(
 							new CodeLens(element.identifierRange, {
 								title: l10n.t('addCodeSample'),
@@ -305,11 +355,123 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 					continue;
 				}
 				if (type === 'addFrameworkCodeFragment') {
-					if (element.codeElementType==CodeElementType.Method||element.codeElementType==CodeElementType.Structure) {
+					let frameworkCodeFragment: FrameworkCodeFragment | undefined;
+					switch (element.codeElementType) {
+						case CodeElementType.Method:
+							frameworkCodeFragment = new FrameworkCodeFragment(
+								element.node,
+								'',
+								element.node.text,
+								document.uri.fsPath,
+								(doc: string) => {
+									let match = /<summary>(.*?)<\/summary>/g;
+									let matchResult = match.exec(doc);
+									if (matchResult) {
+										return matchResult[0];
+									}
+									return '';
+								},
+							);
+							break;
+						case CodeElementType.Structure:
+							frameworkCodeFragment = new FrameworkCodeFragment(
+								element.node,
+								'',
+								element.node.text,
+								document.uri.fsPath,
+							);
+							break;
+					}
+					if (frameworkCodeFragment == undefined) {
+						continue;
+					}
+					let hasDataStorage = this.autoDev.workSpace.HasDataStorage(document.languageId, frameworkCodeFragment);
+					if (element.codeElementType == CodeElementType.Method) {
+						console.log('------');
+					}
+					if (
+						(element.codeElementType == CodeElementType.Method ||
+							element.codeElementType == CodeElementType.Structure) &&
+						hasDataStorage == false
+					) {
 						codelenses.push(
 							new CodeLens(element.identifierRange, {
 								title: l10n.t('addFrameworkCodeFragment'),
 								command: CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT,
+								arguments: [document, element],
+							}),
+						);
+					}
+					continue;
+				}
+				if (type === 'removeCodeSample') {
+					let hasDataStorage = this.autoDev.workSpace.HasDataStorage(
+						document.languageId,
+						new CodeSample(element.node, document.uri.fsPath),
+					);
+					if (element.codeElementType == CodeElementType.Method) {
+						console.log('------');
+					}
+					if (
+						(element.codeElementType == CodeElementType.Method ||
+							element.codeElementType == CodeElementType.Structure) &&
+						hasDataStorage == true
+					) {
+						codelenses.push(
+							new CodeLens(element.identifierRange, {
+								title: l10n.t('removeCodeSample'),
+								command: CMD_CODELENS_SHOW_CODE_REMOVE_CODE_SAMPLE,
+								arguments: [document, element],
+							}),
+						);
+					}
+					continue;
+				}
+				if (type === 'removeFrameworkCodeFragment') {
+					let frameworkCodeFragment: FrameworkCodeFragment | undefined;
+					switch (element.codeElementType) {
+						case CodeElementType.Method:
+							frameworkCodeFragment = new FrameworkCodeFragment(
+								element.node,
+								'',
+								element.node.text,
+								document.uri.fsPath,
+								(doc: string) => {
+									let match = /<summary>(.*?)<\/summary>/g;
+									let matchResult = match.exec(doc);
+									if (matchResult) {
+										return matchResult[0];
+									}
+									return '';
+								},
+							);
+							break;
+						case CodeElementType.Structure:
+							frameworkCodeFragment = new FrameworkCodeFragment(
+								element.node,
+								'',
+								element.node.text,
+								document.uri.fsPath,
+							);
+							break;
+					}
+					if (frameworkCodeFragment == undefined) {
+						continue;
+					}
+					let hasDataStorage = this.autoDev.workSpace.HasDataStorage(document.languageId, frameworkCodeFragment);
+					if (element.codeElementType == CodeElementType.Method) {
+						console.log('------');
+					}
+
+					if (
+						(element.codeElementType == CodeElementType.Method ||
+							element.codeElementType == CodeElementType.Structure) &&
+						hasDataStorage == true
+					) {
+						codelenses.push(
+							new CodeLens(element.identifierRange, {
+								title: l10n.t('removeFrameworkCodeFragment'),
+								command: CMD_CODELENS_SHOW_CODE_REMOVE_FRAMEWORK_CODE_FRAGMENT,
 								arguments: [document, element],
 							}),
 						);

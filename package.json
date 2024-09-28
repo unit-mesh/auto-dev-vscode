@@ -91,7 +91,9 @@
 								"customAction",
 								"AutoMethod",
 								"addCodeSample",
-								"addFrameworkCodeFragment"
+								"addFrameworkCodeFragment",
+								"removeCodeSample",
+								"removeFrameworkCodeFragment"
 							]
 						},
 						"uniqueItems": true,
@@ -101,7 +103,9 @@
 							"autoComment",
 							"AutoMethod",
 							"addCodeSample",
-							"addFrameworkCodeFragment"
+							"addFrameworkCodeFragment",
+							"removeCodeSample",
+							"removeFrameworkCodeFragment"
 						],
 						"description": "%configuration.codelensDisplayItems.description%",
 						"order": 4

@@ -2,10 +2,11 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { inject, injectable } from 'inversify';
-import _, { forEach } from 'lodash';
+import _, { difference, forEach } from 'lodash';
 import { data } from 'node_modules/cheerio/dist/commonjs/api/attributes';
-import { CodeSample } from 'src/action/AddCodeSample/AddCodeSampleExecutor';
+import { CodeSample } from 'src/action/addCodeSample/AddCodeSampleExecutor';
 import { FrameworkCodeFragment } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
+import vscode from 'vscode';
 import { Disposable, type Event, EventEmitter, TextDocument, Uri, workspace } from 'vscode';
 
 import { IExtensionContext } from '../configuration/context';
@@ -26,7 +27,7 @@ export class WorkspaceService {
 		this._disposables = [];
 		this._disposables.push();
 		this._listenerMap = new Map();
-
+		console.log('WorkspaceService :constructor');
 		workspace.onDidCloseTextDocument(document => {
 			let language = document.languageId;
 			let workspaceSerializer = new WorkspaceSerializer(document);
@@ -35,7 +36,6 @@ export class WorkspaceService {
 				if (languageDataStorageMap != undefined) {
 					let dataStorages = languageDataStorageMap.get('CodeSample');
 					if (dataStorages != undefined) workspaceSerializer.saveObject(dataStorages, 'CodeSample', language);
-					console.log('test');
 				}
 			}
 			if (this._saveDataMap.has(language)) {
@@ -44,11 +44,85 @@ export class WorkspaceService {
 					let dataStorages = languageDataStorageMap.get('FrameworkCodeFragment');
 					if (dataStorages != undefined)
 						workspaceSerializer.saveObject(dataStorages, 'FrameworkCodeFragment', language);
-					console.log('test');
 				}
 			}
 		});
-		workspace.onDidOpenTextDocument(document => {
+		vscode.window.onDidChangeActiveTextEditor(editor => {
+			if (editor) {
+				let document = editor.document;
+				let language = document.languageId;
+				let workspaceSerializer = new WorkspaceSerializer(document);
+				if (this._saveDataMap.has(language)) {
+					let languageDataStorageMap = this._saveDataMap.get(language);
+					if (languageDataStorageMap != undefined) {
+						let dataStorages = languageDataStorageMap.get('CodeSample');
+						if (dataStorages != undefined) workspaceSerializer.saveObject(dataStorages, 'CodeSample', language);
+					}
+				}
+				if (this._saveDataMap.has(language)) {
+					let languageDataStorageMap = this._saveDataMap.get(language);
+					if (languageDataStorageMap != undefined) {
+						let dataStorages = languageDataStorageMap.get('FrameworkCodeFragment');
+						if (dataStorages != undefined)
+							workspaceSerializer.saveObject(dataStorages, 'FrameworkCodeFragment', language);
+					}
+				}
+
+				this._saveDataMap.clear();
+				let codeSamples = workspaceSerializer.loadObject<CodeSample[]>(language, 'CodeSample');
+				if (codeSamples != null) {
+					if (this._saveDataMap.has(language)) {
+						let languageDataStorageMap = this._saveDataMap.get(language);
+						languageDataStorageMap?.set('CodeSample', codeSamples);
+					} else {
+						let languageDataStorageMap = new Map<string, IDataStorage[]>();
+						languageDataStorageMap.set('CodeSample', codeSamples);
+						this._saveDataMap.set(language, languageDataStorageMap);
+					}
+				}
+
+				let frameworkCodeFragments = workspaceSerializer.loadObject<FrameworkCodeFragment[]>(
+					language,
+					'FrameworkCodeFragment',
+				);
+				if (frameworkCodeFragments != null) {
+					if (this._saveDataMap.has(language)) {
+						let languageDataStorageMap = this._saveDataMap.get(language);
+						languageDataStorageMap?.set('FrameworkCodeFragment', frameworkCodeFragments);
+					} else {
+						let languageDataStorageMap = new Map<string, IDataStorage[]>();
+						languageDataStorageMap.set('FrameworkCodeFragment', frameworkCodeFragments);
+						this._saveDataMap.set(language, languageDataStorageMap);
+					}
+				}
+
+				vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
+			}
+		});
+		vscode.workspace.onDidSaveTextDocument((document) => {
+			let language = document.languageId;
+			let workspaceSerializer = new WorkspaceSerializer(document);
+			if (this._saveDataMap.has(language)) {
+				let languageDataStorageMap = this._saveDataMap.get(language);
+				if (languageDataStorageMap != undefined) {
+					let dataStorages = languageDataStorageMap.get('CodeSample');
+					if (dataStorages != undefined) workspaceSerializer.saveObject(dataStorages, 'CodeSample', language);
+				}
+			}
+			if (this._saveDataMap.has(language)) {
+				let languageDataStorageMap = this._saveDataMap.get(language);
+				if (languageDataStorageMap != undefined) {
+					let dataStorages = languageDataStorageMap.get('FrameworkCodeFragment');
+					if (dataStorages != undefined)
+						workspaceSerializer.saveObject(dataStorages, 'FrameworkCodeFragment', language);
+				}
+			}
+			vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
+	});
+		vscode.workspace.onDidOpenTextDocument(documentA => {
+			let editor = vscode.window.activeTextEditor;
+			if (editor == undefined) return;
+			let document = editor.document;
 			let language = document.languageId;
 			let workspaceSerializer = new WorkspaceSerializer(document);
 			let codeSamples = workspaceSerializer.loadObject<CodeSample[]>(language, 'CodeSample');
@@ -62,6 +136,7 @@ export class WorkspaceService {
 					this._saveDataMap.set(language, languageDataStorageMap);
 				}
 			}
+
 			let frameworkCodeFragments = workspaceSerializer.loadObject<FrameworkCodeFragment[]>(
 				language,
 				'FrameworkCodeFragment',
@@ -76,6 +151,7 @@ export class WorkspaceService {
 					this._saveDataMap.set(language, languageDataStorageMap);
 				}
 			}
+			vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
 		});
 	}
 	dispose(): void {
@@ -122,27 +198,77 @@ export class WorkspaceService {
 			let languageDataStorageMap = this._saveDataMap.get(language);
 			if (languageDataStorageMap != undefined) {
 				let dataStorages = languageDataStorageMap?.get(key);
-				let dataEqualed = dataStorages?.filter(item => {
-					return dataStorage.equals(item) == true;
-				});
-				if (dataEqualed != undefined) {
-					if (dataEqualed.length > 0) return;
+				if (dataStorages != undefined) {
+					let dataEqualed = dataStorages?.filter(item => {
+						return dataStorage.equals(item) == true;
+					});
+					if (dataEqualed != undefined) {
+						if (dataEqualed.length > 0) return;
+					}
+					dataStorages.push(dataStorage);
+					let dataDataStorageMap = new Map<string, IDataStorage[]>();
+					dataDataStorageMap.set(key, dataStorages);
+					for (const [key, value] of languageDataStorageMap) {
+						dataDataStorageMap.set(key, value);
+					}
+					this._saveDataMap.set(language, dataDataStorageMap);
+				} else {
+					dataStorages = [];
+					dataStorages.push(dataStorage);
+					languageDataStorageMap.set(key, dataStorages);
 				}
-				dataStorages?.push(dataStorage);
 			} else {
 				languageDataStorageMap = new Map<string, IDataStorage[]>();
-				let dataStorages:IDataStorage[]=[]
-				dataStorages.push(dataStorage)
-				languageDataStorageMap.set(key,dataStorages);
+				let dataStorages: IDataStorage[] = [];
+				dataStorages.push(dataStorage);
+				languageDataStorageMap.set(key, dataStorages);
 			}
 		} else {
 			const dataStorages: IDataStorage[] = [];
 			dataStorages.push(dataStorage);
 			let dataDataStorageMap = new Map<string, IDataStorage[]>();
 			dataDataStorageMap.set(key, dataStorages);
+			let temp = this._saveDataMap.get(language);
+			if (temp != undefined) {
+				for (const [key, value] of temp) {
+					dataDataStorageMap.set(key, value);
+				}
+			}
+
 			this._saveDataMap.set(language, dataDataStorageMap);
 		}
+		let editor = vscode.window.activeTextEditor;
+		if (editor) {
+			let document = editor.document;
+			vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
+		}
 	}
+	public RemoveDataStorage(language: string, dataStorage: IDataStorage) {
+		if (!this._saveDataMap.has(language)) {
+			return;
+		} else {
+			let key = dataStorage.GetType();
+			if (this._saveDataMap.has(language)) {
+				let languageDataStorageMap = this._saveDataMap.get(language);
+				if (languageDataStorageMap != undefined) {
+					let dataStorages = languageDataStorageMap?.get(key);
+					let dataEqualed = dataStorages?.filter(item => {
+						return dataStorage.equals(item) == true;
+					});
+					if (dataEqualed != undefined && dataStorages != undefined) {
+						let results = difference(dataEqualed, dataStorages);
+						languageDataStorageMap.set(key, results);
+					}
+				}
+			}
+		}
+		let editor = vscode.window.activeTextEditor;
+		if (editor) {
+			let document = editor.document;
+			vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
+		}
+	}
+
 	public GetDataStorage(language: string, key: string): IDataStorage[] | undefined {
 		let dataDataStorageMap = this._saveDataMap.get(language);
 		if (dataDataStorageMap) {
@@ -152,20 +278,23 @@ export class WorkspaceService {
 			return undefined;
 		}
 	}
-	public RemoveDataStorage(language: string, key: string, dataStorage: IDataStorage) {
-		if (!this._saveDataMap.has(language)) return;
-		let languageDataStorageMap = this._saveDataMap.get(language);
-		let dataStorages = languageDataStorageMap?.get(key);
-		let newData = dataStorages?.reduce((acc, item) => {
-			if (dataStorage.equals(item) !== false) {
-				acc.push(item);
+	public HasDataStorage(language: string, dataStorage: IDataStorage): boolean {
+		let key = dataStorage.GetType();
+		if (this._saveDataMap.has(language)) {
+			let languageDataStorageMap = this._saveDataMap.get(language);
+			if (languageDataStorageMap != undefined) {
+				let dataStorages = languageDataStorageMap?.get(key);
+				let dataEqualed = dataStorages?.filter(item => {
+					return dataStorage.equals(item) == true;
+				});
+				if (dataEqualed != undefined) {
+					if (dataEqualed.length > 0) return true;
+				}
 			}
-			return acc;
-		}, [] as IDataStorage[]);
-		if (newData) languageDataStorageMap?.set(key, newData);
+		}
+		return false;
 	}
 }
-
 export interface IDataStorage {
 	Save(): void;
 	Load(): void;

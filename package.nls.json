@@ -96,6 +96,8 @@
 	"command.AutoMethod.title": "Generate Method Codes",
 	"command.addFrameworkCodeFragment.title": "Add Framework Code Fragment",
 	"command.addCodeSample.title": "Add Code Sample",
+	"command.removeFrameworkCodeFragment.title": "Remove Framework Code Fragment",
+	"command.removeCodeSample.title": "Remove Code Sample",
 	"command.explainCode.title": "Explain Code",
 	"command.optimizeCode.title": "Optimize Code",
 	"command.quickFix.title": "Quick Fix",
