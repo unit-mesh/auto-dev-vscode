@@ -5,6 +5,7 @@ export const AUTODEV_CONFIG_PREFIX = 'autodev';
 export const CMD_OPEN_SETTINGS = 'autodev.openSettings';
 export const CMD_SHOW_TUTORIAL = 'autodev.showTutorial';
 export const CMD_FEEDBACK = 'autodev.feedback';
+export const CMD_SHOW_CODE_CONTEXT_PANEL = 'autodev.showCodeContextPanel';
 
 // AutoDev Commands
 export const CMD_SHOW_SYSTEM_ACTION = 'autodev.showSystemAction'; // statusbar icon click
@@ -29,6 +30,7 @@ export const CMD_CODELENS_GEN_DOCSTRING = 'autodev.codelens.autoComment';
 export const CMD_CODELENS_CREATE_UNIT_TEST = 'autodev.codelens.autoTest';
 export const CMD_CODELENS_SHOW_CUSTOM_ACTION = 'autodev.codelens.customAction';
 export const CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS = 'autodev.codelens.methodCompletions';
+export const CMD_CODELENS_SHOW_CODE_CLASS_COMPLETIONS = 'autodev.codelens.classCompletions';
 export const CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE = 'autodev.codelen.addCodeSample';
 export const CMD_CODELENS_SHOW_CODE_REMOVE_CODE_SAMPLE = 'autodev.codelen.removeCodeSample';
 export const CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT = 'autodev.codelen.addFrameworkCodeFragment';
@@ -42,6 +44,7 @@ export const CMD_SHOW_CHAT_HISTORY = 'autodev.showChatHistory';
 // Codebase Commands
 export const CMD_CODEBASE_INDEXING = 'autodev.codebase.createIndexes';
 export const CMD_CODEBASE_RETRIEVAL = 'autodev.codebase.retrievalCode';
+
 
 // Terminal Commands
 export const CMD_TERMINAL_SEND_TO = 'autodev.sendToTerminal';

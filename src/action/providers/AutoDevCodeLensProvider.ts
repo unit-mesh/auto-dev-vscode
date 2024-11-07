@@ -2,7 +2,6 @@
 import { setTimeout } from 'node:timers/promises';
 
 import { convertToErrorMessage, TreeSitterFile } from 'src/code-context/ast/TreeSitterFile';
-import { FrameworkCodeFragment } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
 import { NamedElement } from 'src/editor/ast/NamedElement';
 import { NamedElementBuilder } from 'src/editor/ast/NamedElementBuilder';
 import { TreeSitterFileManager } from 'src/editor/cache/TreeSitterFileManager';
@@ -30,6 +29,7 @@ import {
 	CMD_CODELENS_QUICK_CHAT,
 	CMD_CODELENS_SHOW_CODE_ADD_CODE_SAMPLE,
 	CMD_CODELENS_SHOW_CODE_ADD_FRAMEWORK_CODE_FRAGMENT,
+	CMD_CODELENS_SHOW_CODE_CLASS_COMPLETIONS,
 	CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS,
 	CMD_CODELENS_SHOW_CODE_REMOVE_CODE_SAMPLE,
 	CMD_CODELENS_SHOW_CODE_REMOVE_FRAMEWORK_CODE_FRAGMENT,
@@ -43,7 +43,10 @@ import { ILanguageServiceProvider } from 'base/common/languages/languageService'
 import { logger } from 'base/common/log/log';
 
 import { type AutoDevExtension } from '../../AutoDevExtension';
-import { CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
+import { AddCodeSampleExecutor, CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
+import { AutoMethodActionExecutor } from '../autoMethod/AutoMethodActionExecutor';
+import { FrameworkCodeFragment, FrameworkCodeFragmentExtractorBase } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
+import { ClassExtractorFactory } from 'src/code-context/_base/LanguageModel/ClassELementFactory/ClassExtarctorFactory';
 
 type CodeLensItemType =
 	| 'quickChat'
@@ -54,6 +57,7 @@ type CodeLensItemType =
 	| 'autoTest'
 	| 'customAction'
 	| 'AutoMethod'
+	| 'AutoClass'
 	| 'addFrameworkCodeFragment'
 	| 'removeCodeSample'
 	| 'removeFrameworkCodeFragment';
@@ -145,6 +149,12 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 			}),
 			commands.registerCommand(
 				CMD_CODELENS_SHOW_CODE_METHOD_COMPLETIONS,
+				(document: TextDocument, nameElement: NamedElement) => {
+					autodev.executeAutoMethodAction(document, nameElement);
+				},
+			),
+			commands.registerCommand(
+				CMD_CODELENS_SHOW_CODE_CLASS_COMPLETIONS,
 				(document: TextDocument, nameElement: NamedElement) => {
 					autodev.executeAutoMethodAction(document, nameElement);
 				},
@@ -319,7 +329,7 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 					continue;
 				}
 				if (type === 'AutoMethod') {
-					if (element.codeElementType == CodeElementType.Method) {
+					if (element.codeElementType == CodeElementType.Method&&ClassExtractorFactory.IsSupportLanguage(document.languageId)) {
 						codelenses.push(
 							new CodeLens(element.identifierRange, {
 								title: l10n.t('AutoMethod'),
@@ -328,21 +338,29 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 							}),
 						);
 					}
+
 					continue;
 				}
-
+				if (type === 'AutoClass') {
+					if (element.codeElementType == CodeElementType.Structure&&ClassExtractorFactory.IsSupportLanguage(document.languageId)) {
+						codelenses.push(
+							new CodeLens(element.identifierRange, {
+								title: l10n.t('AutoClass'),
+								command: CMD_CODELENS_SHOW_CODE_CLASS_COMPLETIONS,
+								arguments: [document, element],
+							}),
+						);
+					}
+				}
 				if (type === 'addCodeSample') {
 					let hasDataStorage = this.autoDev.workSpace.HasDataStorage(
 						document.languageId,
 						new CodeSample(element.node, document.uri.fsPath),
 					);
-					if (element.codeElementType == CodeElementType.Method) {
-						console.log('------');
-					}
 					if (
 						(element.codeElementType == CodeElementType.Method ||
 							element.codeElementType == CodeElementType.Structure) &&
-						hasDataStorage == false
+						hasDataStorage == false&&AddCodeSampleExecutor.LanguageSupport.has(document.languageId)
 					) {
 						codelenses.push(
 							new CodeLens(element.identifierRange, {
@@ -386,13 +404,11 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 						continue;
 					}
 					let hasDataStorage = this.autoDev.workSpace.HasDataStorage(document.languageId, frameworkCodeFragment);
-					if (element.codeElementType == CodeElementType.Method) {
-						console.log('------');
-					}
+
 					if (
 						(element.codeElementType == CodeElementType.Method ||
 							element.codeElementType == CodeElementType.Structure) &&
-						hasDataStorage == false
+						hasDataStorage == false&&FrameworkCodeFragmentExtractorBase.LanguageSupport.has(document.languageId)
 					) {
 						codelenses.push(
 							new CodeLens(element.identifierRange, {
@@ -485,6 +501,7 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 
 		return result;
 	}
+
 
 	private async parseToNamedElements(document: TextDocument) {
 		const builder = await this.createFileElementBuilder(document);

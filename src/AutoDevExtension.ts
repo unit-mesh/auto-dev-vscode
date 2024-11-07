@@ -46,6 +46,12 @@ import { TemplateContext } from './prompt-manage/template/TemplateContext';
 import { TemplateRender } from './prompt-manage/template/TemplateRender';
 import { IProjectService } from './ProviderTypes';
 import { ToolchainContextManager } from './toolchain-context/ToolchainContextManager';
+import { ClassExtractorFactory } from './code-context/_base/LanguageModel/ClassELementFactory/ClassExtarctorFactory';
+import { CsharpClassExtractor } from './code-context/csharp/model/CsharpClassExtractor';
+import { CsharpFieldInfo } from './code-context/csharp/model/CsharpFieldInfo';
+import { FieldInfoFactory } from './code-context/_base/LanguageModel/ClassELementFactory/FieldInfoFactory';
+import { MethodInfoFactory } from './code-context/_base/LanguageModel/ClassELementFactory/MethodInfoFactory';
+import { CsharpMethodInfo } from './code-context/csharp/model/CsharpMethodInfo';
 
 @injectable()
 export class AutoDevExtension {
@@ -112,7 +118,7 @@ export class AutoDevExtension {
 			new CustomActionExecutor(this.lm, templateRender, this.statusBarManager),
 			this,
 		);
-
+   this.workSpace.BindAutoDevExtension(this);
 		this.systemAction = new SystemActionService(this);
 
 		this.toolchainContextManager = new ToolchainContextManager();
@@ -125,8 +131,16 @@ export class AutoDevExtension {
 		this.vectorStore = new LanceDbIndex(this.lm, path => this.ideAction.readFile(path), chunkerManager);
 		this.codebaseIndexer = new CodebaseIndexer(this.ideAction, this.vectorStore, this.lsp, chunkerManager);
 		this.retrieval = new DefaultRetrieval(this.vectorStore);
-	}
+		this.InitClassElementFactory();
 
+	}
+ private InitClassElementFactory() {
+	ClassExtractorFactory.registerClass('csharp',CsharpClassExtractor)
+	FieldInfoFactory.registerClass('csharp',CsharpFieldInfo)
+	MethodInfoFactory.registerClass('csharp',CsharpMethodInfo)
+
+
+ }
 	/**
 	 * @deprecated This is compatible with the object, please do not use
 	 */
@@ -232,6 +246,10 @@ export class AutoDevExtension {
 	}
 	executeAutoMethodAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
 		return new AutoMethodActionExecutor(this, document, nameElement, edit).execute();
+	}
+	executeAutoClassAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		console.error('executeAutoClassAction not completed');
+		//return new AutoMethodActionExecutor(this, document, nameElement, edit).execute();
 	}
 	executeAddCodeSampleExecutorAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
 		return new AddCodeSampleExecutor(this, document, nameElement, edit).execute();

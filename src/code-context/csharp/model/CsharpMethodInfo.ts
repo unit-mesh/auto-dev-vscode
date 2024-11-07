@@ -1,29 +1,42 @@
 import Parser from "web-tree-sitter";
-import { BaseCsharpElement } from "./BaseCsharpElement";
+import { IParameterInfo, MethodInfoBase } from "src/code-context/_base/LanguageModel/ClassElement/MethodInfoBase";
 
-export class MethodInfo extends BaseCsharpElement {
-	attributes?: string[];
-	modifiers?: string[];
-	returnType?: string;
-	returnDoc?: string;
-	name: string;
-	parameters?: IParameterInfo[];
-	methodXmlDoc: string;
-	code:string;
+export class CsharpMethodInfo extends MethodInfoBase {
+
+	modifiers: string[] = [];
+	returnType : string= "";
 
 	public constructor(methodNode: Parser.SyntaxNode) {
-		super();
+		super(methodNode);
 
 		const methodXmlDocTeam = this.getMethodXmlDocTeam(methodNode);
-		this.returnDoc=methodXmlDocTeam[0].includes('<return>')?methodXmlDocTeam[0]:''
+		if (methodXmlDocTeam.length > 0) {
+		  		this.returnDoc=methodXmlDocTeam[0].includes('<return>')?methodXmlDocTeam[0]:''
+		}else
+		{
+			this.returnDoc=''
+		}
+
 		const methodNameAndReturnType = this.getMethodNameAndReturnType(methodNode);
 		this.parameters = this.getMethodParameters(methodNode, methodXmlDocTeam);
 		this.modifiers = this.getMethodAccessModifier(methodNode);
 		this.name = methodNameAndReturnType[0];
 		this.returnType = methodNameAndReturnType[1];
-		this.methodXmlDoc = methodXmlDocTeam.reverse().toString();
+		this.methodDoc = methodXmlDocTeam.reverse().toString();
 		this.code=methodNode.text;
 	}
+	protected override getMethodDoc(): string {
+		return this.getMethodXmlDocTeam(this.node).reverse().toString();
+
+	}
+	protected override getParameters(): IParameterInfo[] {
+		return this.getMethodParameters(this.node, this.getMethodXmlDocTeam(this.node));
+
+	}
+	protected override getName(): string {
+		return this.getMethodNameAndReturnType(this.node)[0];
+	}
+
 	// 获取方法的 XML 注释
 	getMethodXmlDocTeam(methodNode: Parser.SyntaxNode): string[] {
 		const xmlDocNode = methodNode.previousSibling;
@@ -95,13 +108,19 @@ export class MethodInfo extends BaseCsharpElement {
 		}
 		return parameterInfos;
 	}
-
+	protected Getcommits(node: Parser.SyntaxNode, commits: string[]): string[] {
+		if (node.type === 'comment') {
+			commits.push(node.text);
+			if (node.previousSibling) {
+				return this.Getcommits(node.previousSibling, commits);
+			} else {
+				return commits;
+			}
+		} else {
+			return commits;
+		}
+	}
 
 
 }
 
-export interface IParameterInfo {
-	type: string;
-	name: string;
-	doc?: string;
-}

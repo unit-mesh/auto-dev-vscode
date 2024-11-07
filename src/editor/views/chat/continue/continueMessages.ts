@@ -1,4 +1,5 @@
 import type { ChatMessageRole } from 'base/common/language-models/languageModels';
+import { IDataStorage } from 'base/common/workspace/WorkspaceService';
 
 interface BaseToWebviewMessage<Type = string, Data = void> {
 	readonly messageId: string;
@@ -154,7 +155,26 @@ export type ContinueMessageMap = {
 			content: string;
 		}
 	>;
-
+	'WorkspaceService.AddDataStorage': WebviewMessageBuilder<
+		'WorkspaceService.AddDataStorage',
+		{key:string;originalItem:string},
+		string
+	>;
+	'WorkspaceService.RemoveDataStorage': WebviewMessageBuilder<
+	'WorkspaceService.RemoveDataStorage',
+	{key:string;originalItem:string},
+	string
+>;
+'WorkspaceService.ChangeDataStorage': WebviewMessageBuilder<
+'WorkspaceService.ChangeDataStorage',
+{key:string;originalItem:string;newItem:string},
+string
+>;
+'WorkspaceService.GetDataStorage': WebviewMessageBuilder<
+'WorkspaceService.GetDataStorage',
+string,
+string
+>;
 	// Actions
 	applyToCurrentFile: WebviewMessageBuilder<
 		'applyToCurrentFile',
@@ -211,7 +231,7 @@ export class ContinueEvent<
 }
 
 export interface Message<T = any> {
-    messageType: string;
-    messageId: string;
-    data: T;
+	messageType: string;
+	messageId: string;
+	data: T;
 }

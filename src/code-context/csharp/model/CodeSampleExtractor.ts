@@ -1,6 +1,6 @@
 import { SyntaxNode } from 'web-tree-sitter';
 
-import { BaseCsharpElement } from './BaseCsharpElement';
+import { ElementBase } from '../../_base/LanguageModel/ClassElement/ElementBase';
 
 type DocDealCallback = (result: string) => string;
 export class CodeSampleExtractor {
@@ -29,7 +29,7 @@ export class CodeSampleExtractor {
 	}
 }
 
-export class CodeSample extends BaseCsharpElement {
+export class CodeSample extends ElementBase {
 	doc: string;
 	context: string;
 	code: string;
@@ -41,10 +41,22 @@ export class CodeSample extends BaseCsharpElement {
 		filePath: string,
 		docDealCallback: DocDealCallback,
 	) {
-		super();
+		super(frameworkCodeFragmentNode);
 		this.doc = docDealCallback(this.Getcommits(frameworkCodeFragmentNode, []).toString());
 		this.context = context;
 		this.code = code;
 		this.filePath = filePath;
+	}
+	protected Getcommits(node: SyntaxNode, commits: string[]): string[] {
+		if (node.type === 'comment') {
+			commits.push(node.text);
+			if (node.previousSibling) {
+				return this.Getcommits(node.previousSibling, commits);
+			} else {
+				return commits;
+			}
+		} else {
+			return commits;
+		}
 	}
 }

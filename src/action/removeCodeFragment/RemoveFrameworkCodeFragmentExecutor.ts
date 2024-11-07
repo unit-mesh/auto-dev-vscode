@@ -18,7 +18,7 @@ import { PromptManager } from '../../prompt-manage/PromptManager';
 import { CreateToolchainContext } from '../../toolchain-context/ToolchainContextProvider';
 import { ActionExecutor } from '../_base/ActionExecutor';
 import { CsharpClassExtractor } from 'src/code-context/csharp/model/CsharpClassExtractor';
-import { FrameworkCodeFragmentExtractor } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
+import { CsharpFrameworkCodeFragmentExtractor } from 'src/code-context/csharp/model/CsharpFrameworkCodeFragmentExtractor';
 
 export class RemoveFrameworkCodeFragmentExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
@@ -50,7 +50,7 @@ export class RemoveFrameworkCodeFragmentExecutor implements ActionExecutor {
 		const document = this.document;
 		const range = this.range;
 		const language = document.languageId;
-    const frameworkCodeFragmentInfo=new FrameworkCodeFragmentExtractor(range.node,document.uri.fsPath)
+    const frameworkCodeFragmentInfo=new CsharpFrameworkCodeFragmentExtractor(range.node,document.uri.fsPath)
 		                                    .ExtractFrameworkCodeFragment();
 		this.autodev.workSpace.RemoveDataStorage(language,frameworkCodeFragmentInfo)
 		this.statusBarManager.setStatus(AutoDevStatus.InProgress);

@@ -1,15 +1,26 @@
 
 
+import { FieldInfoBase } from "src/code-context/_base/LanguageModel/ClassElement/FieldInfoBase";
 import Parser from "web-tree-sitter";
-import { BaseCsharpElement } from "./BaseCsharpElement";
-export class FieldInfo extends BaseCsharpElement {
-	type: string;
-	name: string;
-	accessModifier?: string[];
-	doc?: string;
+
+export class CsharpFieldInfo extends FieldInfoBase {
+	accessModifier: string[];
+	protected Getcommits(node: Parser.SyntaxNode, commits: string[]): string[] {
+		if (node.type === 'comment') {
+			commits.push(node.text);
+			if (node.previousSibling) {
+				return this.Getcommits(node.previousSibling, commits);
+			} else {
+				return commits;
+			}
+		} else {
+			return commits;
+		}
+	}
+
 	public constructor(fieldNode: Parser.SyntaxNode) {
-		super();
-		this.doc = this.getFieldXmlDoc(fieldNode);
+		super(fieldNode);
+		this.doc = this.getFieldDoc(fieldNode);
 		this.accessModifier = this.getFieldAccessModifier(fieldNode);
 		this.type = this.getFieldType(fieldNode);
 		this.name = this.getFieldName(fieldNode);
@@ -17,7 +28,7 @@ export class FieldInfo extends BaseCsharpElement {
 
 	// 获取字段的 XML 注释
 
-	private getFieldXmlDoc(fieldNode: Parser.SyntaxNode): string {
+   protected override getFieldDoc(fieldNode: Parser.SyntaxNode): string {
 		const xmlDocNode = fieldNode.previousSibling;
 		if (xmlDocNode && xmlDocNode.type === 'comment') {
 			const commits: string[] = [];
@@ -28,7 +39,7 @@ export class FieldInfo extends BaseCsharpElement {
 	}
 
 	// 获取字段名称
-	getFieldName(fieldNode: Parser.SyntaxNode): string {
+	protected override getFieldName(fieldNode: Parser.SyntaxNode): string {
 		const variableNode = fieldNode.children.find(item => {
 			return item.type == 'variable_declaration';
 		});
@@ -47,7 +58,7 @@ export class FieldInfo extends BaseCsharpElement {
 	}
 
 	// 获取字段类型
-	getFieldType(fieldNode: Parser.SyntaxNode): string {
+	protected override getFieldType(fieldNode: Parser.SyntaxNode): string {
 		const variableNode = fieldNode.children.find(item => {
 			return item.type == 'variable_declaration';
 		});
@@ -60,7 +71,7 @@ export class FieldInfo extends BaseCsharpElement {
 		}else
 		{
 			fieldTypeNode=variableNode.children.find(item => {
-				return item.type == 'predefined_type';
+				return item.type == 'qualified_name';
 			});
 		}
 		if (fieldTypeNode) {
@@ -70,7 +81,7 @@ export class FieldInfo extends BaseCsharpElement {
 	}
 
 	// 获取字段访问修饰符
-	getFieldAccessModifier(fieldNode: Parser.SyntaxNode): string[] {
+	protected override getFieldAccessModifier(fieldNode: Parser.SyntaxNode): string[] {
 		const accessModifier: string[] = [];
 		const modifierNods = fieldNode.children.filter(item => {
 			return item.type == 'modifier';

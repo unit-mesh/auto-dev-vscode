@@ -1,19 +1,42 @@
 import { Interface } from 'readline';
+import { ClassInfoBase } from 'src/code-context/_base/LanguageModel/ClassElement/ClassInfoBase';
+import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
 
 import { TemplateContext } from '../../prompt-manage/template/TemplateContext';
-import { ClassInfo } from 'src/code-context/csharp/model/CsharpClassExtractor';
-import { FrameworkCodeFragment } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
 import { CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
-import { MethodInfo } from 'src/code-context/csharp/model/MethodInfo';
 
-
-export interface AutoMethodTemplateContext extends TemplateContext {
-	startSymbol: string;
-	endSymbol: string;
+export abstract class AutoMethodTemplateContext implements TemplateContext {
+	language: string;
+	chatContext?: string;
+	startSymbol?: string;
+	endSymbol?: string;
 	code: string;
-	forbiddenRules: string[];
-	classInfo?: ClassInfo|null;
+	forbiddenRules?: string[];
+	classInfo?: ClassInfoBase | null;
 	classDescriptionInfo?: string;
-	codeSamples?:CodeSample[]
-	customFrameworkCodeFragments?: FrameworkCodeFragment[]|null;
+	codeSamples?: CodeSample[];
+	customFrameworkCodeFragments?: FrameworkCodeFragment[] | null;
+	constructor(
+		language: string,
+		code: string,
+		chatContext?: string,
+		startSymbol?: string,
+		endSymbol?: string,
+		forbiddenRules?: string[],
+		classInfo?: ClassInfoBase | null,
+		classDescriptionInfo?: string,
+		codeSamples?: CodeSample[],
+		customFrameworkCodeFragments?: FrameworkCodeFragment[] | null,
+	) {
+		this.language = language;
+		this.chatContext = chatContext; // TODO: check if this is a valid chat context
+		this.startSymbol = startSymbol;
+		this.endSymbol = endSymbol;
+		this.code = code;
+		this.forbiddenRules = forbiddenRules;
+		this.classInfo = classInfo;
+		this.classDescriptionInfo = classDescriptionInfo;
+		this.codeSamples = codeSamples;
+		this.customFrameworkCodeFragments = customFrameworkCodeFragments;
+	}
 }

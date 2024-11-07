@@ -84,12 +84,14 @@
 							"type": "string",
 							"enum": [
 								"quickChat",
+								"testChat",
 								"explainCode",
 								"optimizeCode",
 								"autoComment",
 								"autoTest",
 								"customAction",
 								"AutoMethod",
+								"AutoClass",
 								"addCodeSample",
 								"addFrameworkCodeFragment",
 								"removeCodeSample",
@@ -658,6 +660,12 @@
 				"group": "AutoDevCodelens"
 			},
 			{
+				"command": "autodev.codelens.testChat",
+				"category": "AutoDev",
+				"title": "%command.testChat.title%",
+				"group": "AutoDevCodelens"
+			},
+			{
 				"command": "autodev.codelens.explainCode",
 				"title": "%command.explainCode.title%"
 			},
@@ -672,6 +680,10 @@
 			{
 				"command": "autodev.codelens.methodCompletions",
 				"title": "%command.AutoMethod.title%"
+			},
+			{
+				"command": "autodev.codelens.classCompletions",
+				"title": "%command.AutoClass.title%"
 			},
 			{
 				"command": "autodev.codelens.autoTest",
@@ -722,6 +734,12 @@
 				"group": "AutoDevMenuItem"
 			},
 			{
+				"command": "autodev.testChat",
+				"category": "AutoDev",
+				"title": "%command.testChat.title%",
+				"group": "AutoDevMenuItem"
+			},
+			{
 				"command": "autodev.newChatSession",
 				"category": "AutoDev",
 				"title": "%command.newChatSession.title%",
@@ -754,6 +772,13 @@
 				"category": "AutoDev",
 				"title": "%command.feedback.title%",
 				"icon": "$(feedback)",
+				"group": "AutoDev"
+			},
+			{
+				"command": "autodev.showCodeContextPanel",
+				"category": "AutoDev",
+				"title": "%command.showCodeContextPanel.title%",
+				"icon": "$(add)",
 				"group": "AutoDev"
 			},
 			{
@@ -852,14 +877,19 @@
 					"group": "navigation@1"
 				},
 				{
-					"command": "autodev.newChatSession",
+					"command": "autodev.showCodeContextPanel",
 					"when": "view == autodev.views.chat",
 					"group": "navigation@2"
 				},
 				{
-					"command": "autodev.showChatHistory",
+					"command": "autodev.newChatSession",
 					"when": "view == autodev.views.chat",
 					"group": "navigation@3"
+				},
+				{
+					"command": "autodev.showChatHistory",
+					"when": "view == autodev.views.chat",
+					"group": "navigation@4"
 				},
 				{
 					"command": "autodev.codebase.retrievalCode",
@@ -994,6 +1024,9 @@
 					"command": "autodev.quickChat"
 				},
 				{
+					"command": "autodev.testChat"
+				},
+				{
 					"command": "autodev.newChatSession",
 					"when": "false"
 				},
@@ -1011,6 +1044,9 @@
 				},
 				{
 					"command": "autodev.feedback"
+				},
+				{
+					"command": "autodev.showCodeContextPanel"
 				},
 				{
 					"command": "autodev.openSettings"
@@ -1151,7 +1187,9 @@
 		"@octokit/rest": "^20.1.1",
 		"@unit-mesh/treesitter-artifacts": "^1.6.3",
 		"@xenova/transformers": "^2.17.1",
+		"better-sqlite3": "^11.5.0",
 		"cheerio": "^1.0.0-rc.12",
+		"class-transformer": "^0.5.1",
 		"csv-parse": "^5.5.5",
 		"graphology": "^0.25.4",
 		"graphology-types": "^0.24.7",
@@ -1183,6 +1221,7 @@
 	},
 	"devDependencies": {
 		"@trivago/prettier-plugin-sort-imports": "^4.3.0",
+		"@types/better-sqlite3": "^7.6.11",
 		"@types/chai": "^4.3.14",
 		"@types/js-yaml": "^4.0.9",
 		"@types/jsdom": "^21.1.6",

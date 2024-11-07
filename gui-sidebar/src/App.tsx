@@ -18,6 +18,8 @@ import useSubmenuContextProviders from "./hooks/useSubmenuContextProviders";
 import { useVscTheme } from "./hooks/useVscTheme";
 import Stats from "./pages/stats";
 
+import CodeContextPanel from "./pages/codeContextPanel";
+
 const router = createMemoryRouter([
   {
     path: "/",
@@ -35,6 +37,10 @@ const router = createMemoryRouter([
       {
         path: "/history",
         element: <History />,
+      },
+			{
+        path: "/CodeContextPanel",
+        element: <CodeContextPanel />,
       },
       {
         path: "/stats",

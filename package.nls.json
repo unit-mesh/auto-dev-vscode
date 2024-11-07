@@ -93,7 +93,10 @@
 	"command.showTutorial.title": "Show Tutorial",
 	"command.feedback.title": "Feedback",
 	"command.quickChat.title": "Quick Chat",
+	"command.testChat.title": "Test Chat",
+	"Test Chat": "Test Chat",
 	"command.AutoMethod.title": "Generate Method Codes",
+	"command.AutoClass.title": "Generate class Codes",
 	"command.addFrameworkCodeFragment.title": "Add Framework Code Fragment",
 	"command.addCodeSample.title": "Add Code Sample",
 	"command.removeFrameworkCodeFragment.title": "Remove Framework Code Fragment",
@@ -106,8 +109,10 @@
 	"command.customAction.title": "Custom Action",
 
 	"command.showChatPanel.title": "Start Chat",
+
 	"command.newChatSession.title": "New Session",
 	"command.showChatHistory.title": "History",
+	"command.showCodeContextPanel.title": "Prompt Data Management Panel",
 	"command.showSystemAction.title": "Show Autodev Actions",
 	"command.showCodelensDetailQuickPick.title": "Show Quick Actions",
 

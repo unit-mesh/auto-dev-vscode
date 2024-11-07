@@ -171,6 +171,19 @@ const Layout = () => {
     },
     [location, navigate],
   );
+  useWebviewListener(
+    "viewDataStorage",
+    async () => {
+      // Toggle the history page / main page
+      if (location.pathname === "/CodeContextPanel") {
+        navigate("/");
+      } else {
+        navigate("/CodeContextPanel");
+      }
+    },
+    [location, navigate],
+  );
+
 
   useWebviewListener("indexProgress", async (data) => {
     setIndexingProgress(data.progress);

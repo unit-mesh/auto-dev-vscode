@@ -1,12 +1,98 @@
+## C# 推理 Prompt 模板
 
-#if($context.chatContext.length > 0 )
-${context.chatContext}
-#end
-#if($context.forbiddenRules.length > 0)
-${context.forbiddenRules}
-#end
+**目标:** 根据以下信息，完成 `[$context.classInfo.name]` 类中未实现的方法 `[方法名]`，并补充完整 XML 注释、参数注释和方法体注释。
 
-${context.customFrameworkCodeFileContext}
-Refer to the relevant ${context.language} code and documentation above, as well as the comments above the method,
-Complete the following additional code:
-${context.code}
+**已知信息:**
+
+1. **类信息:**
+    * **类名:** `[$context.classInfo.name]`
+    * **成员变量:**
+    #foreach($field in $context.classInfo.fields)
+        * `[$field.accessModifier] [$field.type] [$field.name]` - `[$field.xmlDoc]`
+    #end    
+        * ...
+    * **属性访问器:**
+    #foreach($propertyInfo in $context.classInfo.propertyInfos)
+        * `[$propertyInfo.accessModifier] [$propertyInfo.type] [$propertyInfo.name]` - `[$propertyInfo.doc]`
+            * `get` - `[get 描述]`
+            * `set` - `[set 描述]`
+    #end
+        * ...
+    * **类成员数据结构:**
+    
+        * `[数据结构类型] [数据结构名]` - `[数据结构描述]`
+            * **成员:**
+                * `[成员类型] [成员名]` - `[成员描述]`
+                * ...
+        * ...
+    * **已完成成员方法:**
+        #foreach($method in $context.classInfo.completedMethods)
+        * `[method.name]` - `[method.methodXmlDoc]`
+            * **参数:**
+            #foreach($param in $method.parameters)
+                * `[param.type] [param.name]` - `[param.doc]`
+                #end
+                * ...
+            * **返回值:** `[method.returnType]` - `[method.returnDoc]`
+            #end
+        * ...
+
+2. **未完成方法信息:**
+   #foreach($method in $context.classInfo.unfinishedMethods)
+    * **方法签名:** `[$method.name]`
+    * **方法描述:** `[$method.methodXmlDoc]`
+    * **参数:**
+        #foreach($param in $method.parameters)
+                * `[$param.type] [$param.name]` - `[$param.doc]`
+                #end
+        * ...
+    * **返回值:** `[$method.returnType]` - `[method.returnDoc]`
+     #end
+3. **相关代码片段:**
+  #foreach($customFrameworkCodeFragment in $context.customFrameworkCodeFragments)
+    * **片段 :**
+        ```csharp
+      $customFrameworkCodeFragment.code
+        ```
+        * **描述:** `[customFrameworkCodeFragment.doc]`
+  #end
+
+4. **可以仿照的代码示例:**
+#foreach($codeSample in $context.codeSamples)
+    * **示例 1:**
+        ```csharp
+       $codeSample.code
+        ```
+        * **描述:** `codeSample.doc`
+    #end
+
+
+**要求:**
+
+1. **XML 注释:**
+    * 为方法、参数和返回值添加完整的 XML 注释。
+    * 注释应清晰简洁地描述方法的功能、参数的用途以及返回值的含义。
+2. **方法体:**
+    * 根据方法描述和参数信息，实现方法体。
+    * 可以使用类成员变量、属性访问器和类成员数据结构。
+    * 可以参考相关代码片段和代码示例。
+3. **代码风格:**
+    * 保持代码风格一致，遵循 C# 编码规范。
+    * 使用适当的命名、缩进和注释。
+
+**示例:**
+
+```csharp
+/// <summary>
+///  [方法描述]
+/// </summary>
+/// <param name="[参数名]">[参数描述]</param>
+/// <returns>[返回值描述]</returns>
+public [返回值类型] [方法名]([参数类型] [参数名])
+{
+    // [方法体注释]
+    [代码实现]
+}
+```
+
+**请根据以上模板，完成 `[类名]` 类中未实现的方法 `[方法名]`。**

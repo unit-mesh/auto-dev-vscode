@@ -1,55 +1,109 @@
+import { ClassExtractorBase } from 'src/code-context/_base/LanguageModel/ClassElement/ClassExtractorBase';
+import { ClassInfoBase } from 'src/code-context/_base/LanguageModel/ClassElement/ClassInfoBase';
+import { FieldInfoBase } from 'src/code-context/_base/LanguageModel/ClassElement/FieldInfoBase';
+import { MethodInfoBase } from 'src/code-context/_base/LanguageModel/ClassElement/MethodInfoBase';
+import { FieldInfoFactory } from 'src/code-context/_base/LanguageModel/ClassELementFactory/FieldInfoFactory';
+import { MethodInfoFactory } from 'src/code-context/_base/LanguageModel/ClassELementFactory/MethodInfoFactory';
 import { l10n } from 'vscode';
+import vscode from 'vscode';
 import Parser, { SyntaxNode } from 'web-tree-sitter';
 
-import { FieldInfo } from './FieldInfo';
-import { MethodInfo } from './MethodInfo';
+import { CsharpFieldInfo } from './CsharpFieldInfo';
+import { CsharpMethodInfo } from './CsharpMethodInfo';
 import { PropertyInfo } from './PropertyInfo';
 
-export class CsharpClassExtractor {
-	private classNode: SyntaxNode;
-
+export class CsharpClassExtractor extends ClassExtractorBase {
 	constructor(classNode: SyntaxNode) {
-		this.classNode = classNode;
+		super(classNode);
 	}
 
-	public ExtractClass(): ClassInfo | null {
+	public ExtractClass(): CsharpClassInfo | null {
 		return this.traverse(this.classNode);
 	}
 
-	private traverse(classNode: Parser.SyntaxNode): ClassInfo {
-		const methodInfos: MethodInfo[] = [];
+	protected traverse(classNode: Parser.SyntaxNode): CsharpClassInfo {
+		const methodInfos: CsharpMethodInfo[] = [];
 		const propertyInfos: PropertyInfo[] = [];
-		const fieldInfos: FieldInfo[] = [];
+		const fieldInfos: FieldInfoBase[] = [];
 		let className: string = '';
+		let interfaces: string[] = [];
 		let fatherClassName: string = '';
 		let classXmlDoc = '';
+		let modifiers: string = '';
+		let limitList: string[] = [];
 		if (classNode.type === 'class_declaration') {
-			classXmlDoc = this.getClassXmlDoc(classNode);
-			className = this.getClassName(classNode);
-			fatherClassName = this.getFatherClassName(classNode);
+			classXmlDoc = this.getClassDoc(classNode);
+
+			let editor = vscode.window.activeTextEditor;
 			for (const child of classNode.children) {
-				if (child.type === 'declaration_list') {
-					for (const childLevel1 of child.children) {
-						if (childLevel1.type === 'field_declaration') {
-							const fieldInfo: FieldInfo = new FieldInfo(childLevel1);
-							fieldInfos.push(fieldInfo);
-						} else if (childLevel1.type === 'method_declaration') {
-							const methodInfo: MethodInfo = new MethodInfo(childLevel1);
-							methodInfos.push(methodInfo);
-						} else if (childLevel1.type === 'property_declaration') {
-							const propertyInfo: PropertyInfo = new PropertyInfo(childLevel1);
-							propertyInfos.push(propertyInfo);
+				switch (child.type) {
+					case 'base_list':
+						let regex = /^[A-Za-z]+$/;
+						//todo: interfaces limit
+						// let limitNode = child.children.find(child => child.type === 'generic_name');
+						// if (limitNode) {
+						// 	interfaces.push(limitNode.children[0].text);
+
+
+						// }
+						for (let i = 1; i < child.children.length; i++) {
+							if (i == 1) {
+								fatherClassName = child.children[i].text;
+							} else {
+								if (regex.test(child.children[i].text)) {
+									interfaces.push(child.children[i].text);
+								}
+							}
 						}
-					}
+						break;
+					case 'identifier':
+						if (className == '') {
+							className = child.text;
+						}
+						break;
+					case 'modifier':
+						modifiers = child.text;
+						break;
+					case 'declaration_list':
+						for (const childLevel1 of child.children) {
+							if (childLevel1.type === 'field_declaration') {
+								if (editor) {
+									let language = editor.document.languageId;
+									const fieldInfo = FieldInfoFactory.createInstance(language, childLevel1) as CsharpFieldInfo;
+									fieldInfos.push(fieldInfo);
+								}
+							} else if (childLevel1.type === 'method_declaration') {
+								if (editor) {
+									const methodInfo: CsharpMethodInfo = MethodInfoFactory.createInstance(
+										editor.document.languageId,
+										childLevel1,
+									) as CsharpMethodInfo;
+									methodInfos.push(methodInfo);
+								}
+							} else if (childLevel1.type === 'property_declaration') {
+								const propertyInfo: PropertyInfo = new PropertyInfo(childLevel1);
+								propertyInfos.push(propertyInfo);
+							}
+						}
 				}
 			}
 		}
-		const classInfo = new ClassInfo(className, fatherClassName, classXmlDoc, fieldInfos, methodInfos, propertyInfos);
+		const classInfo = new CsharpClassInfo(
+			modifiers,
+			className,
+			fatherClassName,
+			interfaces,
+			limitList,
+			classXmlDoc,
+			fieldInfos,
+			methodInfos,
+			propertyInfos,
+		);
 		return classInfo;
 	}
 
 	// 获取类的 XML 注释
-	private getClassXmlDoc(classNode: Parser.SyntaxNode): string {
+	protected getClassDoc(classNode: Parser.SyntaxNode): string {
 		const xmlDocNode = classNode.previousSibling;
 		if (xmlDocNode && xmlDocNode.type === 'comment') {
 			const commits: string[] = [];
@@ -59,7 +113,7 @@ export class CsharpClassExtractor {
 		return '';
 	}
 
-	private getcommits(node: Parser.SyntaxNode, commits: string[]): string[] {
+	protected getcommits(node: Parser.SyntaxNode, commits: string[]): string[] {
 		if (node.type === 'comment') {
 			commits.push(node.text);
 			if (node.previousSibling) {
@@ -71,53 +125,39 @@ export class CsharpClassExtractor {
 			return commits;
 		}
 	}
-	private getClassName(node: Parser.SyntaxNode): string {
+	protected getClassName(node: Parser.SyntaxNode): string {
 		if (node.type === 'identifier') {
 			return node.text;
 		}
 		return '';
 	}
-	private getFatherClassName(node: Parser.SyntaxNode): string {
+	protected getFatherClassName(node: Parser.SyntaxNode): string {
 		if (node.type === 'base_list') {
 			return node.text;
 		}
 		return '';
 	}
 }
-export class ClassInfo {
-	name: string;
-	fatherName?: string;
-	xmlDoc?: string;
-	fields?: FieldInfo[];
-	unfinishedMethods?: MethodInfo[];
-	completedMethods?: MethodInfo[];
+export class CsharpClassInfo extends ClassInfoBase {
 	propertyInfos?: PropertyInfo[];
+	modifiers: string;
+	interfaces?: string[];
+	limitList?: string[];
 	constructor(
+		modifiers: string,
 		className: string,
 		fatherName?: string,
+		interfaces?: string[],
+		limitList?: string[],
 		xmlDoc?: string,
-		fields?: FieldInfo[],
-		methods?: MethodInfo[],
+		fields?: FieldInfoBase[],
+		methods?: MethodInfoBase[],
 		propertyInfos?: PropertyInfo[],
 	) {
-		this.name = className;
-		this.fatherName = fatherName;
-		this.fields = fields;
+		super(className, fatherName, xmlDoc, fields, methods);
 		this.propertyInfos = propertyInfos;
-		this.xmlDoc = xmlDoc;
-		this.unfinishedMethods = [];
-		this.completedMethods = [];
-		if (methods) {
-			for (let item of methods) {
-				if(item.methodXmlDoc.includes(l10n.t('Not Completed')))
-				{
-					this.unfinishedMethods.push(item);
-				}else
-				{
-					this.completedMethods.push(item);
-				}
-			}
-		}
-
+		this.modifiers = modifiers;
+		this.interfaces = interfaces;
+		this.limitList = limitList;
 	}
 }

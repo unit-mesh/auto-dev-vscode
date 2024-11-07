@@ -5,8 +5,12 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
+import { plainToClass, plainToInstance } from 'class-transformer';
 import { load } from 'js-yaml';
 import _ from 'lodash';
+import { CodeSample } from 'src/action/addCodeSample/AddCodeSampleExecutor';
+import { AutoDevExtension } from 'src/AutoDevExtension';
+import { json } from 'stream/consumers';
 import {
 	CancellationTokenSource,
 	commands,
@@ -26,6 +30,7 @@ import { logger } from 'base/common/log/log';
 import { showErrorMessage } from 'base/common/messages/messages';
 import { getNonce } from 'base/common/webview/webview';
 import { AbstractWebviewViewProvider } from 'base/common/webview/webviewView';
+import { WorkspaceService } from 'base/common/workspace/WorkspaceService';
 
 import { openSettings } from '../../../../commands/commands';
 import {
@@ -39,18 +44,19 @@ import {
 	SessionInfo,
 	type ShowErrorMessage,
 } from './continueMessages';
+import { data } from 'node_modules/cheerio/dist/commonjs/api/attributes';
+import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
 
 export class ContinueViewProvider extends AbstractWebviewViewProvider implements WebviewViewProvider {
 	private historySaveDir = path.join(os.homedir(), '.autodev/sessions');
 	private _readyDefer = defer<void>();
-
 	constructor(
 		private context: ExtensionContext,
 		private configService: ConfigurationService,
 		private lm: LanguageModelsService,
+		private workSpace: WorkspaceService,
 	) {
 		super(context);
-
 		logger.debug('ContinueViewProvider init');
 		// TODO disposable
 		configService.onDidChange(event => {
@@ -157,7 +163,9 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 				logger.show();
 				return;
 			}
-
+			let language = undefined;
+			let editor = window.activeTextEditor;
+			language = editor?.document.languageId;
 			switch (payload.messageType) {
 				case 'onLoad':
 					logger.debug('sidebar webview onLoad ');
@@ -211,7 +219,61 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 				case 'configUpdate':
 					// ignore
 					break;
+				case 'WorkspaceService.AddDataStorage':
+					if (!editor) break;
+					if (language) {
+						switch (payload.data.key) {
+							case 'CodeSample':
+								let dataRemoved= CodeSample.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								this.workSpace.AddDataStorage(language, dataRemoved);
+								break;
+							case 'FrameworkCodeFragment':
+								let dataRemoved1= FrameworkCodeFragment.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								this.workSpace.AddDataStorage(language, dataRemoved1);
+								break;
+					}
+				}
+					break;
+				case 'WorkspaceService.GetDataStorage':
+					if (language) {
+						let storages = this.workSpace.GetDataStorage(language, payload.data);
+						let storagesJson = JSON.stringify(storages);
+						let data = { key: payload.data, language: language, storages: storagesJson };
+						this.send('WorkspaceService_GetDataStorage', data);
+					}
+					break;
+				case 'WorkspaceService.RemoveDataStorage':
+					if (language) {
+						switch (payload.data.key) {
+							case 'CodeSample':
+								let dataRemoved= CodeSample.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								this.workSpace.RemoveDataStorage(language, dataRemoved);
+								break;
+							case 'FrameworkCodeFragment':
+								let dataRemoved1= FrameworkCodeFragment.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								this.workSpace.RemoveDataStorage(language, dataRemoved1);
+								break;
+						}
+					}
+					break;
+				case 'WorkspaceService.ChangeDataStorage':
+					if (language) {
+						switch (payload.data.key) {
+							case 'FrameworkCodeFragment':
+								let ollDataFormat =FrameworkCodeFragment.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								let newDataFormat = FrameworkCodeFragment.DeserializationFormJson(JSON.parse(payload.data.newItem));
+								this.workSpace.ChangeDataStorage(language, payload.data.key, ollDataFormat, newDataFormat);
+								break;
+							case 'CodeSample':
+								let ollDataFormat1 =CodeSample.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								let newDataFormat1 = 	CodeSample.DeserializationFormJson(JSON.parse(payload.data.newItem));
+								this.workSpace.ChangeDataStorage(language, payload.data.key, ollDataFormat1, newDataFormat1);
 
+								break;
+						}
+					}
+
+					break;
 				default:
 					logger.debug('(continue): Unknown webview protocol msg: ', payload);
 			}

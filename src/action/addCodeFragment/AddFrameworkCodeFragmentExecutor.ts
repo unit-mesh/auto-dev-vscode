@@ -17,8 +17,7 @@ import { ActionType } from '../../prompt-manage/ActionType';
 import { PromptManager } from '../../prompt-manage/PromptManager';
 import { CreateToolchainContext } from '../../toolchain-context/ToolchainContextProvider';
 import { ActionExecutor } from '../_base/ActionExecutor';
-import { CsharpClassExtractor } from 'src/code-context/csharp/model/CsharpClassExtractor';
-import { FrameworkCodeFragmentExtractor } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
+import { CsharpFrameworkCodeFragmentExtractor } from 'src/code-context/csharp/model/CsharpFrameworkCodeFragmentExtractor';
 
 export class AddFrameworkCodeFragmentExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
@@ -53,7 +52,7 @@ export class AddFrameworkCodeFragmentExecutor implements ActionExecutor {
 
 		const startSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.start;
 		const endSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.end;
-    const frameworkCodeFragmentInfo=new FrameworkCodeFragmentExtractor(range.node,document.uri.fsPath).ExtractFrameworkCodeFragment();
+    const frameworkCodeFragmentInfo=new CsharpFrameworkCodeFragmentExtractor(range.node,document.uri.fsPath).ExtractFrameworkCodeFragment();
 		this.autodev.workSpace.AddDataStorage(language,frameworkCodeFragmentInfo)
 		this.statusBarManager.setStatus(AutoDevStatus.InProgress);
 		selectCodeInRange(range.blockRange.start, range.blockRange.end);

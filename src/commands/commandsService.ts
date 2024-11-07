@@ -38,6 +38,7 @@ import {
 	CMD_QUICK_FIX,
 	CMD_SHOW_CHAT_HISTORY,
 	CMD_SHOW_CHAT_PANEL,
+	CMD_SHOW_CODE_CONTEXT_PANEL,
 	CMD_SHOW_SYSTEM_ACTION,
 	CMD_SHOW_TUTORIAL,
 	CMD_TERMINAL_DEBUG,
@@ -106,6 +107,10 @@ export class CommandsService {
 
 	showChatHistory() {
 		this.autodev.chat.send('viewHistory');
+	}
+
+	showCodeContextPanel() {
+		this.autodev.chat.send('viewDataStorage');
 	}
 
 	async explainCode() {
@@ -411,12 +416,14 @@ export class CommandsService {
 			commands.registerCommand(CMD_OPEN_SETTINGS, this.openSettins, this),
 			commands.registerCommand(CMD_SHOW_TUTORIAL, this.showTutorial, this),
 			commands.registerCommand(CMD_FEEDBACK, this.feedback, this),
+			commands.registerCommand(CMD_SHOW_CODE_CONTEXT_PANEL, this.showCodeContextPanel, this),
 			commands.registerCommand(CMD_SHOW_SYSTEM_ACTION, this.showSystemAction, this),
 			// Chat Commands
 			commands.registerCommand(CMD_SHOW_CHAT_PANEL, this.showChatPanel, this),
 			commands.registerCommand(CMD_QUICK_CHAT, this.quickChat, this),
 			commands.registerCommand(CMD_NEW_CHAT_SESSION, this.newChatSession, this),
 			commands.registerCommand(CMD_SHOW_CHAT_HISTORY, this.showChatHistory, this),
+
 			// ContextMenu Commands
 			commands.registerCommand(CMD_EXPLAIN_CODE, this.explainCode, this),
 			commands.registerCommand(CMD_OPTIMIZE_CODE, this.optimizeCode, this),

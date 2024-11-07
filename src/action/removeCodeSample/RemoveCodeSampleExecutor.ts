@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { AutoDevExtension } from 'src/AutoDevExtension';
-import { BaseCsharpElement } from 'src/code-context/csharp/model/BaseCsharpElement';
 import { CsharpClassExtractor } from 'src/code-context/csharp/model/CsharpClassExtractor';
 import { Position, TextDocument, WorkspaceEdit } from 'vscode';
 import vscode from 'vscode';

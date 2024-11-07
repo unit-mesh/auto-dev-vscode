@@ -5,29 +5,38 @@ import { inject, injectable } from 'inversify';
 import _, { difference, forEach } from 'lodash';
 import { data } from 'node_modules/cheerio/dist/commonjs/api/attributes';
 import { CodeSample } from 'src/action/addCodeSample/AddCodeSampleExecutor';
-import { FrameworkCodeFragment } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
+import { AutoDevExtension } from 'src/AutoDevExtension';
+import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
+import { Service } from 'src/service/Service';
 import vscode from 'vscode';
 import { Disposable, type Event, EventEmitter, TextDocument, Uri, workspace } from 'vscode';
+import { SyntaxNode } from 'web-tree-sitter';
 
 import { IExtensionContext } from '../configuration/context';
 import WorkspaceSerializer from './WorkspaceSerializer';
+import { WorkspaceSqlManager } from './WorkspaceSqlManager';
 
 type DocDealCallback = (document: TextDocument) => void;
 
 @injectable()
-export class WorkspaceService {
+export class WorkspaceService implements Service {
+	private _sqlManager:WorkspaceSqlManager|undefined;
 	protected readonly _disposables: Disposable[];
 	private readonly _listenerMap: Map<DocDealCallback, Disposable>;
 	private readonly _saveDataMap: Map<string, Map<string, IDataStorage[]>>;
-	constructor(
-		@inject(IExtensionContext)
-		private readonly extensionContext: IExtensionContext,
-	) {
+	private _autodev: AutoDevExtension|null = null;
+	constructor() {
 		this._saveDataMap = new Map<string, Map<string, IDataStorage[]>>();
 		this._disposables = [];
 		this._disposables.push();
 		this._listenerMap = new Map();
-		console.log('WorkspaceService :constructor');
+		const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+		if (workspaceFolder) {
+			const fileDir=path.join(workspaceFolder.uri.fsPath, '.vscode', `WorkspaceService.db`);
+			this._sqlManager=new WorkspaceSqlManager(fileDir);
+		}
+
+
 		workspace.onDidCloseTextDocument(document => {
 			let language = document.languageId;
 			let workspaceSerializer = new WorkspaceSerializer(document);
@@ -99,7 +108,7 @@ export class WorkspaceService {
 				vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
 			}
 		});
-		vscode.workspace.onDidSaveTextDocument((document) => {
+		vscode.workspace.onDidSaveTextDocument(document => {
 			let language = document.languageId;
 			let workspaceSerializer = new WorkspaceSerializer(document);
 			if (this._saveDataMap.has(language)) {
@@ -118,7 +127,7 @@ export class WorkspaceService {
 				}
 			}
 			vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
-	});
+		});
 		vscode.workspace.onDidOpenTextDocument(documentA => {
 			let editor = vscode.window.activeTextEditor;
 			if (editor == undefined) return;
@@ -153,6 +162,9 @@ export class WorkspaceService {
 			}
 			vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
 		});
+	}
+	public BindAutoDevExtension(autodev: AutoDevExtension) {
+		this._autodev = autodev;
 	}
 	dispose(): void {
 		Disposable.from(...this._disposables).dispose();
@@ -242,6 +254,7 @@ export class WorkspaceService {
 			let document = editor.document;
 			vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
 		}
+		this._autodev?.chat.send('WorkspaceService_AddDataStorage',"test");
 	}
 	public RemoveDataStorage(language: string, dataStorage: IDataStorage) {
 		if (!this._saveDataMap.has(language)) {
@@ -252,12 +265,36 @@ export class WorkspaceService {
 				let languageDataStorageMap = this._saveDataMap.get(language);
 				if (languageDataStorageMap != undefined) {
 					let dataStorages = languageDataStorageMap?.get(key);
-					let dataEqualed = dataStorages?.filter(item => {
-						return dataStorage.equals(item) == true;
+					let datasNotEqualed = dataStorages?.filter(item => {
+						return dataStorage.equals(item) == false;
 					});
-					if (dataEqualed != undefined && dataStorages != undefined) {
-						let results = difference(dataEqualed, dataStorages);
-						languageDataStorageMap.set(key, results);
+					if (datasNotEqualed != undefined && dataStorages != undefined) {
+						languageDataStorageMap.set(key, datasNotEqualed);
+					}
+				}
+			}
+		}
+		let editor = vscode.window.activeTextEditor;
+		if (editor) {
+			let document = editor.document;
+			vscode.commands.executeCommand('vscode.executeCodeLensProvider', document.uri);
+		}
+	}
+
+	public ChangeDataStorage(language: string, key: string, ollDataStorage: IDataStorage, newDataStorage: IDataStorage) {
+		if (!this._saveDataMap.has(language)) {
+			return;
+		} else {
+			if (this._saveDataMap.has(language)) {
+				let languageDataStorageMap = this._saveDataMap.get(language);
+				if (languageDataStorageMap != undefined) {
+					let dataStorages = languageDataStorageMap?.get(key);
+					let dataEqualedIndex = dataStorages?.findIndex(item => {
+						return ollDataStorage.equals(item) == true;
+					});
+					if (dataEqualedIndex != undefined && dataStorages != undefined) {
+						dataStorages[dataEqualedIndex] = newDataStorage;
+						languageDataStorageMap.set(key, dataStorages);
 					}
 				}
 			}
@@ -296,8 +333,6 @@ export class WorkspaceService {
 	}
 }
 export interface IDataStorage {
-	Save(): void;
-	Load(): void;
 	GetType(): string;
 	equals(t: IDataStorage): boolean;
 }

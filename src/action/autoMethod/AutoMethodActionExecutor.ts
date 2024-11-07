@@ -19,13 +19,13 @@ import { CreateToolchainContext } from '../../toolchain-context/ToolchainContext
 import { ActionExecutor } from '../_base/ActionExecutor';
 import { AutoMethodTemplateContext } from './AutoMethodTemplateContext';
 import { CsharpClassExtractor } from 'src/code-context/csharp/model/CsharpClassExtractor';
-import { FrameworkCodeFragment } from 'src/code-context/csharp/model/FrameworkCodeFragmentExtractor';
 import { CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
-import { MethodInfo } from 'src/code-context/csharp/model/MethodInfo';
+import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
+import { ClassExtractorFactory } from 'src/code-context/_base/LanguageModel/ClassELementFactory/ClassExtarctorFactory';
 
 export class AutoMethodActionExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;
-
+	public static readonly LanguageSupport:Set<string>=new Set<string>(["csharp"])
 	private lm: LanguageModelsService;
 	private promptManager: PromptManager;
 	private statusBarManager: AutoDevStatusManager;
@@ -56,11 +56,11 @@ export class AutoMethodActionExecutor implements ActionExecutor {
 
 		const startSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.start;
 		const endSymbol = LANGUAGE_BLOCK_COMMENT_MAP[language]!.end;
-    const classExtractor=new CsharpClassExtractor(this.range.node)
-    const classInfo=classExtractor.ExtractClass();
-		let unfinishedMethods: MethodInfo[]=[];
 
-		const templateContext: AutoMethodTemplateContext = {
+    const classExtractor=ClassExtractorFactory.createInstance(language,range.node.parent?.parent!);
+    const classInfo=classExtractor.ExtractClass();
+
+		const templateContext: AutoMethodTemplateContext ={
 			language: language,
 			startSymbol: startSymbol,
 			endSymbol: endSymbol,
@@ -95,6 +95,7 @@ export class AutoMethodActionExecutor implements ActionExecutor {
 
 		let content = await this.promptManager.generateInstruction(ActionType.AutoMethod, templateContext);
 		log(`request: ${content}`);
+		console.log(`generateInstruction: ${content}`);
 
 		let msg: IChatMessage = {
 			role: ChatMessageRole.User,
