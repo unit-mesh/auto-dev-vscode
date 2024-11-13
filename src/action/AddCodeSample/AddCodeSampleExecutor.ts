@@ -55,6 +55,7 @@ export class AddCodeSampleExecutor implements ActionExecutor {
 
 }
 export class CodeSample  implements IDataStorage {
+	public  id: number=-1;
 
 	public  code: string= '';
 	public  doc: string= '';
@@ -114,6 +115,7 @@ export class CodeSample  implements IDataStorage {
 		codeSample.doc = data.doc;
 		codeSample.filePath = data.filePath;
 		codeSample.codeContext = data.codeContext;
+		codeSample.id = data.id;
 		 return codeSample;
 	 }
 }

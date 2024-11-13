@@ -175,12 +175,18 @@ const CodeContextPanel: React.FC = () => {
 	useWebviewListener("WorkspaceService_GetDataStorage", async (data) => {
 		switch (data.key) {
 			case "CodeSample":
-				let temp = JSON.parse(data.storages) as CodeSample[];
-				setCodeSamples(temp);
+				if (data.storages) {
+					let temp = JSON.parse(data.storages) as CodeSample[];
+					setCodeSamples(temp);
+				}
+
 				break;
 			case "FrameworkCodeFragment":
-				let temp2 = JSON.parse(data.storages) as CodeContext[];
-				setCodeContexts(temp2);
+				if (data.storages) {
+					let temp2 = JSON.parse(data.storages) as CodeContext[];
+					setCodeContexts(temp2);
+				}
+
 				break;
 			default:
 				break;
@@ -257,9 +263,6 @@ const CodeContextPanel: React.FC = () => {
 				newItem: formDataJson
 			}
 			ideRequest("WorkspaceService.ChangeDataStorage", dataformat);
-			// 打印编辑前后的数据
-			console.log('编辑前的数据:', originalItem);
-			console.log('编辑后的数据:', formData);
 		}
 
 		clearForm();
@@ -333,6 +336,12 @@ const CodeContextPanel: React.FC = () => {
 			items: selectedItems,
 		};
 		setGroups([...groups, newGroup]);
+				// 发送编组后的数据到 IDE
+				const dataformat = {
+					key: "Groups",
+					group: JSON.stringify(newGroup),
+				};
+				//ideRequest("WorkspaceService.AddGroup", dataformat);
 		setShowGroupNameModal(false);
 		setSelectedItems([]);
 		setGroupName('');

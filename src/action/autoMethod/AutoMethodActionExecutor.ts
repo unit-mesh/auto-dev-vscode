@@ -67,8 +67,8 @@ export class AutoMethodActionExecutor implements ActionExecutor {
 			code: document.getText(range.blockRange),
 			forbiddenRules: [],
 			classInfo:classInfo,
-			customFrameworkCodeFragments:this.autodev.workSpace.GetDataStorage(language,FrameworkCodeFragment.name) as FrameworkCodeFragment[],
-		  codeSamples:this.autodev.workSpace.GetDataStorage(language,CodeSample.name) as CodeSample[]
+			customFrameworkCodeFragments:this.autodev.workSpace.GetDataStorages(language,FrameworkCodeFragment.name) as FrameworkCodeFragment[],
+		  codeSamples:this.autodev.workSpace.GetDataStorages(language,CodeSample.name) as CodeSample[]
 		};
 
 

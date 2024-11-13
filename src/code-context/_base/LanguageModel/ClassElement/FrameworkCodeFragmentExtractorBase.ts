@@ -16,7 +16,7 @@ export abstract class FrameworkCodeFragmentExtractorBase {
 }
 
 export class FrameworkCodeFragment  implements IDataStorage {
-
+  id:number = -1;
 	doc: string = '';
 	code: string = '';
 	codeContext: string = '';
@@ -49,7 +49,7 @@ export class FrameworkCodeFragment  implements IDataStorage {
 		// if (!(other instanceof FrameworkCodeFragment)) {
 		// 	return false;
 		// }
-		if (other.code === this.code && other.doc === this.doc && other.filePath === this.filePath) {
+		if (other.code === this.code && other.filePath === this.filePath) {
 			return true;
 		}
 
@@ -84,6 +84,7 @@ export class FrameworkCodeFragment  implements IDataStorage {
 		frameworkCodeFragment.doc = data.doc;
 		frameworkCodeFragment.filePath = data.filePath;
 		frameworkCodeFragment.codeContext = data.codeContext;
+		frameworkCodeFragment.id = data.id;
 		return frameworkCodeFragment;
 	}
 }

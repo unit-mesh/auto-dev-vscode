@@ -236,7 +236,7 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 					break;
 				case 'WorkspaceService.GetDataStorage':
 					if (language) {
-						let storages = this.workSpace.GetDataStorage(language, payload.data);
+						let storages = this.workSpace.GetDataStorages(language, payload.data);
 						let storagesJson = JSON.stringify(storages);
 						let data = { key: payload.data, language: language, storages: storagesJson };
 						this.send('WorkspaceService_GetDataStorage', data);
