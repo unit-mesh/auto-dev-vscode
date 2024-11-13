@@ -8,7 +8,7 @@ import path from 'node:path';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { load } from 'js-yaml';
 import _ from 'lodash';
-import { CodeSample } from 'src/action/addCodeSample/AddCodeSampleExecutor';
+import { CodeSample } from 'src/action/addCodeSamples/AddCodeSampleExecutor';
 import { AutoDevExtension } from 'src/AutoDevExtension';
 import { json } from 'stream/consumers';
 import {

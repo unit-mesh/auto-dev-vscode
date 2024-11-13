@@ -48,7 +48,7 @@ import { ILanguageServiceProvider } from 'base/common/languages/languageService'
 import { logger } from 'base/common/log/log';
 
 import { type AutoDevExtension } from '../../AutoDevExtension';
-import { AddCodeSampleExecutor, CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
+import { AddCodeSampleExecutor, CodeSample } from '../addCodeSamples/AddCodeSampleExecutor';
 import { AutoMethodActionExecutor } from '../autoMethod/AutoMethodActionExecutor';
 
 type CodeLensItemType =

@@ -1,5 +1,5 @@
 
-import { CodeSample } from 'src/action/addCodeSample/AddCodeSampleExecutor';
+import { CodeSample } from 'src/action/addCodeSamples/AddCodeSampleExecutor';
 import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
 
 import { IDataStorage } from './WorkspaceService';

@@ -19,7 +19,7 @@ import { CreateToolchainContext } from '../../toolchain-context/ToolchainContext
 import { ActionExecutor } from '../_base/ActionExecutor';
 import { AutoMethodTemplateContext } from './AutoMethodTemplateContext';
 import { CsharpClassExtractor } from 'src/code-context/csharp/model/CsharpClassExtractor';
-import { CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
+import { CodeSample } from '../addCodeSamples/AddCodeSampleExecutor';
 import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
 import { ClassExtractorFactory } from 'src/code-context/_base/LanguageModel/ClassELementFactory/ClassExtarctorFactory';
 

@@ -20,7 +20,7 @@ import { ActionType } from '../../prompt-manage/ActionType';
 import { PromptManager } from '../../prompt-manage/PromptManager';
 import { CreateToolchainContext } from '../../toolchain-context/ToolchainContextProvider';
 import { ActionExecutor } from '../_base/ActionExecutor';
-import { CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
+import { CodeSample } from '../addCodeSamples/AddCodeSampleExecutor';
 
 export class RemoveCodeSampleExecutor implements ActionExecutor {
 	type: ActionType = ActionType.AutoDoc;

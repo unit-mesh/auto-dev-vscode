@@ -10,7 +10,7 @@ import { logger } from 'base/common/log/log';
 import { WorkspaceService } from 'base/common/workspace/WorkspaceService';
 
 import { AddFrameworkCodeFragmentExecutor } from './action/addCodeFragment/AddFrameworkCodeFragmentExecutor';
-import { AddCodeSampleExecutor } from './action/addCodeSample/AddCodeSampleExecutor';
+import { AddCodeSampleExecutor } from './action/addCodeSamples/AddCodeSampleExecutor';
 import { AutoDocActionExecutor } from './action/autodoc/AutoDocActionExecutor';
 import { AutoMethodActionExecutor } from './action/autoMethod/AutoMethodActionExecutor';
 import { AutoTestActionExecutor } from './action/autotest/AutoTestActionExecutor';

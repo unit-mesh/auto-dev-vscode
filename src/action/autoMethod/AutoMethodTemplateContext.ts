@@ -3,7 +3,7 @@ import { ClassInfoBase } from 'src/code-context/_base/LanguageModel/ClassElement
 import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
 
 import { TemplateContext } from '../../prompt-manage/template/TemplateContext';
-import { CodeSample } from '../addCodeSample/AddCodeSampleExecutor';
+import { CodeSample } from '../addCodeSamples/AddCodeSampleExecutor';
 
 export abstract class AutoMethodTemplateContext implements TemplateContext {
 	language: string;
