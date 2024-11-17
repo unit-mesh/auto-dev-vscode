@@ -6,6 +6,7 @@ export abstract class FieldInfoBase extends ElementBase {
 	type: string=	'';
 	name: string=	'';
 	doc: string=	'';
+	modifiers: string[] = [];
 	public constructor(methodNode: Parser.SyntaxNode) {
 		super(methodNode);
 	}

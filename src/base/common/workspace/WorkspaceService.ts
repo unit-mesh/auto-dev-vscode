@@ -9,6 +9,7 @@ import vscode from 'vscode';
 import { Disposable, type Event, EventEmitter, TextDocument, Uri, workspace } from 'vscode';
 //import WorkspaceSerializer from './WorkspaceSerializer';
 import { WorkspaceSqlManager } from './WorkspaceSqlManager';
+import { DataStorageGroupManager } from './DataStorageGroupManager';
 
 type DocDealCallback = (document: TextDocument) => void;
 
@@ -17,6 +18,7 @@ export class WorkspaceService implements Service {
     private _sqlManager: WorkspaceSqlManager | undefined;
     protected readonly _disposables: Disposable[];
     private readonly _listenerMap: Map<DocDealCallback, Disposable>;
+		public readonly  DataStorageGroupManager:DataStorageGroupManager| undefined;
     /**
      * @type 用于存储项目中IDataStorage在数据库中的id
      */
@@ -38,6 +40,7 @@ export class WorkspaceService implements Service {
         if (workspaceFolder) {
             const fileDir = path.join(workspaceFolder.uri.fsPath, '.vscode', `WorkspaceService.db`);
             this._sqlManager = new WorkspaceSqlManager(fileDir);
+						this.DataStorageGroupManager=new DataStorageGroupManager(this._sqlManager);
         }
 
         workspace.onDidCloseTextDocument(document => {
@@ -323,6 +326,24 @@ return;
             return undefined;
         }
     }
+		public GetDataStoragesByIds(language: string, key: string, ids: number[]): IDataStorage[] | undefined {
+        let dataDataStorageMap = this._saveDataMap.get(language);
+        if (dataDataStorageMap) {
+            let datas = dataDataStorageMap.get(key);
+            if (datas) {
+                let dataObjects: IDataStorage[] = [];
+                for (const [id, data] of datas) {
+									if (ids.includes(id)) {
+									  dataObjects.push(data);
+									}
+								}
+								return dataObjects;
+							}else {
+                return undefined;
+							}
+        }
+        return undefined;
+		}
 
     public async GetDataStorageById(language: string, type: string, id: number): Promise<IDataStorage | undefined> {
         return this._saveDataMap.get(language)?.get(type)?.get(id);
@@ -358,6 +379,7 @@ return;
         }
         return false;
     }
+
 }
 
 export interface IDataStorage {

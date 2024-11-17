@@ -1,20 +1,18 @@
-import Parser from "web-tree-sitter";
-import { IParameterInfo, MethodInfoBase } from "src/code-context/_base/LanguageModel/ClassElement/MethodInfoBase";
+import { IParameterInfo, MethodInfoBase } from 'src/code-context/_base/LanguageModel/ClassElement/MethodInfoBase';
+import Parser from 'web-tree-sitter';
 
 export class CsharpMethodInfo extends MethodInfoBase {
-
 	modifiers: string[] = [];
-	returnType : string= "";
+	returnType: string = '';
 
 	public constructor(methodNode: Parser.SyntaxNode) {
 		super(methodNode);
 
 		const methodXmlDocTeam = this.getMethodXmlDocTeam(methodNode);
 		if (methodXmlDocTeam.length > 0) {
-		  		this.returnDoc=methodXmlDocTeam[0].includes('<return>')?methodXmlDocTeam[0]:''
-		}else
-		{
-			this.returnDoc=''
+			this.returnDoc = methodXmlDocTeam[0].includes('<return>') ? methodXmlDocTeam[0] : '';
+		} else {
+			this.returnDoc = '';
 		}
 
 		const methodNameAndReturnType = this.getMethodNameAndReturnType(methodNode);
@@ -23,15 +21,13 @@ export class CsharpMethodInfo extends MethodInfoBase {
 		this.name = methodNameAndReturnType[0];
 		this.returnType = methodNameAndReturnType[1];
 		this.methodDoc = methodXmlDocTeam.reverse().toString();
-		this.code=methodNode.text;
+		this.code = methodNode.text;
 	}
 	protected override getMethodDoc(): string {
 		return this.getMethodXmlDocTeam(this.node).reverse().toString();
-
 	}
 	protected override getParameters(): IParameterInfo[] {
 		return this.getMethodParameters(this.node, this.getMethodXmlDocTeam(this.node));
-
 	}
 	protected override getName(): string {
 		return this.getMethodNameAndReturnType(this.node)[0];
@@ -120,7 +116,11 @@ export class CsharpMethodInfo extends MethodInfoBase {
 			return commits;
 		}
 	}
-
-
+	public RemoveMethodBody() {
+		for (let i = this.node.children.length - 1; i >= 0; i--) {
+			if (this.node.children[i].type === 'block') {
+				this.code = this.code.replace(this.node.children[i].text, '');
+			}
+		}
+	}
 }
-

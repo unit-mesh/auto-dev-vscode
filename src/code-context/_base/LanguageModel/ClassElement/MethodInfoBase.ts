@@ -10,6 +10,7 @@ export abstract class MethodInfoBase extends ElementBase
 	parameters: IParameterInfo[]= [];
 	methodDoc: string= "";
 	code:string= "";
+	modifiers: string[] = [];
 
 	public constructor(methodNode: Parser.SyntaxNode) {
 			super(methodNode);

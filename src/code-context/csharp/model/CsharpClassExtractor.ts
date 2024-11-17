@@ -160,4 +160,20 @@ export class CsharpClassInfo extends ClassInfoBase {
 		this.interfaces = interfaces;
 		this.limitList = limitList;
 	}
+	public RemoveAllfieldsIsNotPublic() {
+		if (this.fields) {
+			this.fields = this.fields.filter((field) => field.modifiers.includes('public'));
+		}
+
+	}
+	public RemoveAllmethodsIsNotPublic() {
+if (this.completedMethods) {
+			this.completedMethods = this.completedMethods.filter((method) => method.modifiers.includes('public'));
+}
+	}
+	public RemoveAllpropertiesIsNotPublic() {
+if (this.propertyInfos) {
+			this.propertyInfos = this.propertyInfos.filter((property) => property.accessModifier.includes('public'));
+}
+	}
 }

@@ -46,6 +46,7 @@ import {
 } from './continueMessages';
 import { data } from 'node_modules/cheerio/dist/commonjs/api/attributes';
 import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
+import { Group, GroupMormat, MapToObject } from 'base/common/workspace/DataStorageGroupManager';
 
 export class ContinueViewProvider extends AbstractWebviewViewProvider implements WebviewViewProvider {
 	private historySaveDir = path.join(os.homedir(), '.autodev/sessions');
@@ -272,8 +273,38 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 								break;
 						}
 					}
-
 					break;
+        case 'WorkspaceService.Groups.AddGroup':
+          if (language) {
+						const parsedObject = JSON.parse(payload.data.data);
+						// 将解析后的对象转换为 Group 类型
+						const group: Group = {
+								name: parsedObject.name,
+								items: new Map<string, number[]>(Object.entries(parsedObject.items))
+						};
+						console.log(group);
+						for (let [key, value] of group.items) {
+							this.workSpace.DataStorageGroupManager?.AddGroupItems(group.name,key,value);
+						}
+          }
+					break;
+					case 'WorkspaceService.Groups.RemoveGroup':
+						if (language) {
+							let group :Group=JSON.parse(payload.data.group);
+							this.workSpace.DataStorageGroupManager?.RemoveGroup(group.name);
+						}
+						break;
+					case 'WorkspaceService.Groups.GetGroups':
+						if (language) {
+						 let data=	this.workSpace.DataStorageGroupManager?.GetGroups();
+							if (data) {
+							 let dataJson= JSON.stringify(MapToObject(data));
+							 this.send('WorkspaceService_Groups_GetGroups', {groups:dataJson});
+							}
+
+
+						}
+						break;
 				default:
 					logger.debug('(continue): Unknown webview protocol msg: ', payload);
 			}

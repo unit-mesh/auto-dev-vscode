@@ -175,6 +175,21 @@ string
 string,
 string
 >;
+'WorkspaceService.Groups.AddGroup': WebviewMessageBuilder<
+'WorkspaceService.Groups.AddGroup',
+{data:string},
+string
+>;
+'WorkspaceService.Groups.RemoveGroup': WebviewMessageBuilder<
+'WorkspaceService.Groups.RemoveGroup',
+{group:string},
+string
+>;
+'WorkspaceService.Groups.GetGroups': WebviewMessageBuilder<
+'WorkspaceService.Groups.GetGroups',
+{groups:string},
+string
+>;
 	// Actions
 	applyToCurrentFile: WebviewMessageBuilder<
 		'applyToCurrentFile',

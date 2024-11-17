@@ -59,6 +59,19 @@ export class AutoMethodActionExecutor implements ActionExecutor {
 
     const classExtractor=ClassExtractorFactory.createInstance(language,range.node.parent?.parent!);
     const classInfo=classExtractor.ExtractClass();
+    let selectGroup=this.autodev.workSpace.DataStorageGroupManager?.GetSelectedGroup();
+		let codeSampleIds=selectGroup?.get(CodeSample.name);
+		let codeSamples:CodeSample[]=[];
+		let customFrameworkCodeFragments:FrameworkCodeFragment[]=[];
+		let customFrameworkCodeFragmentIds=selectGroup?.get(FrameworkCodeFragment.name);
+		if(customFrameworkCodeFragmentIds!=undefined)
+		{
+      customFrameworkCodeFragments=this.autodev.workSpace.GetDataStoragesByIds(language,FrameworkCodeFragment.name,customFrameworkCodeFragmentIds) as FrameworkCodeFragment[]
+		}
+		if(codeSampleIds!=undefined)
+		{
+      codeSamples=this.autodev.workSpace.GetDataStoragesByIds(language,CodeSample.name,codeSampleIds) as CodeSample[]
+		}
 
 		const templateContext: AutoMethodTemplateContext ={
 			language: language,
@@ -67,8 +80,8 @@ export class AutoMethodActionExecutor implements ActionExecutor {
 			code: document.getText(range.blockRange),
 			forbiddenRules: [],
 			classInfo:classInfo,
-			customFrameworkCodeFragments:this.autodev.workSpace.GetDataStorages(language,FrameworkCodeFragment.name) as FrameworkCodeFragment[],
-		  codeSamples:this.autodev.workSpace.GetDataStorages(language,CodeSample.name) as CodeSample[]
+			customFrameworkCodeFragments:customFrameworkCodeFragments,
+		  codeSamples:codeSamples
 		};
 
 

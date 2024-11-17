@@ -5,6 +5,7 @@ import {
 	ContextSubmenuItem,
 	ContinueRcJson,
 	DiffLine,
+	Group,
 	IndexTag,
 	Problem,
 	Range,
@@ -83,6 +84,10 @@ export type WebviewProtocol = Protocol &
 		'WorkspaceService.RemoveDataStorage': [{key:string;originalItem:string}, string];
 		'WorkspaceService.ChangeDataStorage': [{key:string;originalItem:string;newItem:string}, string];
 		'WorkspaceService.GetDataStorage': [string,string];
+		'WorkspaceService.Groups.AddGroup':[{data:string}, string];
+		'WorkspaceService.Groups.RemoveGroup':[{group:string}, string];
+		'WorkspaceService.Groups.GetGroups':[string, string[]];
+
 	};
 
 export type ReverseWebviewProtocol = {
@@ -117,5 +122,6 @@ export type ReverseWebviewProtocol = {
 	WorkspaceService_RemoveDataStorage: [ string, string];
 	WorkspaceService_ChangeDataStorage: [{key:string;originalItem:string;newItem:string},string];
 	WorkspaceService_GetDataStorage: [{key:string;language:string;storages:string},void];
+	WorkspaceService_Groups_GetGroups: [{groups:string},void];
 
 };
