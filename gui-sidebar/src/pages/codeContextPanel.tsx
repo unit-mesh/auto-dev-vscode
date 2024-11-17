@@ -4,7 +4,7 @@ import { ideRequest } from '../util/ide';
 import { useWebviewListener } from '../hooks/useWebviewListener';
 
 interface CodeSample {
-	id: string; // 添加 id 成员
+	id: string;
 	filePath: string;
 	codeContext: string;
 	code: string;
@@ -12,7 +12,7 @@ interface CodeSample {
 }
 
 interface CodeContext {
-	id: string; // 添加 id 成员
+	id: string;
 	filePath: string;
 	codeContext: string;
 	code: string;
@@ -21,14 +21,14 @@ interface CodeContext {
 
 interface Group {
 	name: string;
-	itemMap: Map<string, string[]>; // 修改 items 为 itemMap
+	itemMap: Map<string, string[]>;
 }
 
 const Container = styled.div`
 	font-family: Arial, sans-serif;
 	margin: 20px;
-	background-color: #000; /* 黑色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: #000;
+	color: #fff;
 `;
 
 const Tabs = styled.div`
@@ -40,8 +40,8 @@ const Tab = styled.div<{ active: boolean }>`
 	padding: 10px 20px;
 	cursor: pointer;
 	border: 1px solid #ddd;
-	background-color: ${({ active }) => (active ? '#555' : '#333')}; /* 深灰色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: ${({ active }) => (active ? '#555' : '#333')};
+	color: #fff;
 	margin-right: 10px;
 `;
 
@@ -49,16 +49,16 @@ const TabContent = styled.div<{ active: boolean }>`
 	display: ${({ active }) => (active ? 'block' : 'none')};
 	padding: 20px;
 	border: 1px solid #555;
-	background-color: #222; /* 深灰色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: #222;
+	color: #fff;
 `;
 
 const FormContainer = styled.div`
 	margin-top: 20px;
 	padding: 20px;
 	border: 1px solid #555;
-	background-color: #333; /* 深灰色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: #333;
+	color: #fff;
 `;
 
 const Input = styled.input`
@@ -66,8 +66,8 @@ const Input = styled.input`
 	padding: 10px;
 	margin-bottom: 10px;
 	box-sizing: border-box;
-	background-color: #444; /* 浅灰色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: #444;
+	color: #fff;
 	border: 1px solid #555;
 `;
 
@@ -76,37 +76,37 @@ const TextArea = styled.textarea`
 	padding: 10px;
 	margin-bottom: 10px;
 	box-sizing: border-box;
-	background-color: #444; /* 浅灰色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: #444;
+	color: #fff;
 	border: 1px solid #555;
 `;
 
 const Button = styled.button`
 	padding: 10px 20px;
 	cursor: pointer;
-	background-color: #555; /* 浅灰色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: #555;
+	color: #fff;
 	border: 1px solid #777;
 `;
 
 const CodeContent = styled.div`
-	white-space: pre; /* 保留文本格式 */
-	font-family: monospace; /* 使用等宽字体 */
-	max-height: 200px; /* 设置最大高度 */
-	overflow-y: auto; /* 添加纵向滚动条 */
+	white-space: pre;
+	font-family: monospace;
+	max-height: 200px;
+	overflow-y: auto;
 	border: 1px solid #555;
 	padding: 10px;
 	box-sizing: border-box;
-	background-color: #444; /* 浅灰色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: #444;
+	color: #fff;
 `;
 
 const CodeSample = styled.div`
 	margin-top: 20px;
 	padding: 20px;
 	border: 1px solid #555;
-	background-color: #333; /* 深灰色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: #333;
+	color: #fff;
 `;
 
 const Actions = styled.div`
@@ -115,7 +115,7 @@ const Actions = styled.div`
 	gap: 10px;
 `;
 
-const Checkbox = styled.input.attrs({ type: 'checkbox' })`
+const Radio = styled.input.attrs({ type: 'radio' })`
 	margin-right: 10px;
 `;
 
@@ -142,8 +142,8 @@ const GroupItem = styled.div`
 	margin-top: 20px;
 	padding: 20px;
 	border: 1px solid #555;
-	background-color: #333; /* 深灰色背景 */
-	color: #fff; /* 白色文本 */
+	background-color: #333;
+	color: #fff;
 `;
 
 const CodeContextPanel: React.FC = () => {
@@ -152,7 +152,7 @@ const CodeContextPanel: React.FC = () => {
 	const [codeContexts, setCodeContexts] = useState<CodeContext[]>([]);
 	const [groups, setGroups] = useState<Group[]>([]);
 	const [formData, setFormData] = useState<CodeSample | CodeContext>({
-		id: '', // 初始化 id
+		id: '',
 		filePath: '',
 		code: '',
 		doc: '',
@@ -161,19 +161,19 @@ const CodeContextPanel: React.FC = () => {
 	const [formTitle, setFormTitle] = useState('添加代码样例');
 	const [editIndex, setEditIndex] = useState<number | null>(null);
 	const [originalItem, setOriginalItem] = useState<CodeSample | CodeContext | null>(null);
-	const [selectedItems, setSelectedItems] = useState<Map<string, string[]>>(new Map()); // 使用 Map 存储选中的项
+	const [selectedItems, setSelectedItems] = useState<Map<string, string[]>>(new Map());
 	const [showGroupNameModal, setShowGroupNameModal] = useState(false);
 	const [groupName, setGroupName] = useState('');
-	const [isDataLoaded, setIsDataLoaded] = useState(false); // 新增状态，用于检查数据是否已加载
+	const [isDataLoaded, setIsDataLoaded] = useState(false);
+	const [selectedGroup, setSelectedGroup] = useState<string | null>(null); // 添加 selectedGroup 状态
 
-	// 从IDE获取数据
+
 	useEffect(() => {
 		ideRequest("WorkspaceService.GetDataStorage", "CodeSample");
 		ideRequest("WorkspaceService.GetDataStorage", "FrameworkCodeFragment");
-		ideRequest("WorkspaceService.Groups.GetGroups",""); // 发送请求获取 Groups 信息
+		ideRequest("WorkspaceService.Groups.GetGroups", "");
 	}, []);
 
-	// 监听从IDE发送的数据
 	useWebviewListener("WorkspaceService_GetDataStorage", async (data) => {
 		switch (data.key) {
 			case "CodeSample":
@@ -191,20 +191,23 @@ const CodeContextPanel: React.FC = () => {
 			default:
 				break;
 		}
-		setIsDataLoaded(true); // 数据加载完成后设置为 true
+		setIsDataLoaded(true);
 	});
 
-	// 监听从IDE发送的 Groups 信息
 	useWebviewListener("WorkspaceService_Groups_GetGroups", async (data) => {
 		if (data.groups) {
 			const parsedGroups = jsonToGroups(data.groups);
-			console.log(parsedGroups);
+			console.log("WorkspaceService_Groups_GetGroups");
+			for (const group of parsedGroups) {
+			  console.log(group.name);
+				console.log(group);
+				console.log(group.itemMap);
 
+			}
 			setGroups(parsedGroups);
 		}
 	});
 
-	// 监听从IDE发送的数据
 	useWebviewListener("WorkspaceService_AddDataStorage", async (data) => {
 		refreshItems();
 	});
@@ -215,7 +218,6 @@ const CodeContextPanel: React.FC = () => {
 	};
 
 	const handleTabChange = (tabName: 'CodeSample' | 'FrameworkCodeFragment' | 'Groups') => {
-		// 保存当前标签的选中项
 		const currentSelectedItems = selectedItems.get(activeTab) || [];
 		setSelectedItems(new Map(selectedItems.set(activeTab, currentSelectedItems)));
 
@@ -223,7 +225,6 @@ const CodeContextPanel: React.FC = () => {
 		setFormTitle(tabName === 'CodeSample' ? '添加代码样例' : tabName === 'FrameworkCodeFragment' ? '添加代码上下文' : '管理编组');
 		clearForm();
 
-		// 如果数据未加载，则在切换到编组管理时请求数据
 		if (tabName === 'Groups' && !isDataLoaded) {
 			refreshItems();
 		}
@@ -238,9 +239,8 @@ const CodeContextPanel: React.FC = () => {
 		event.preventDefault();
 
 		if (editIndex === null) {
-			// 添加新样例或上下文
 			const newItem = {
-				id: Date.now().toString(), // 使用时间戳作为唯一 id
+				id: Date.now().toString(),
 				filePath: formData.filePath,
 				code: formData.code,
 				doc: formData.doc,
@@ -258,7 +258,6 @@ const CodeContextPanel: React.FC = () => {
 			}
 			ideRequest("WorkspaceService.AddDataStorage", dataformat);
 		} else {
-			// 更新现有样例或上下文的说明
 			const items = activeTab === 'CodeSample' ? codeSamples : codeContexts;
 			items[editIndex] = {
 				id: formData.id,
@@ -297,7 +296,7 @@ const CodeContextPanel: React.FC = () => {
 			doc: item.doc,
 			codeContext: formData.codeContext,
 		});
-		setOriginalItem({ ...item }); // 保存编辑前的数据
+		setOriginalItem({ ...item });
 		setEditIndex(index);
 		setFormTitle(activeTab === 'CodeSample' ? '编辑样例说明' : '编辑上下文说明');
 	};
@@ -328,7 +327,7 @@ const CodeContextPanel: React.FC = () => {
 			doc: '',
 			codeContext: '',
 		});
-		setOriginalItem(null); // 清空编辑前的数据
+		setOriginalItem(null);
 		setEditIndex(null);
 		setFormTitle(activeTab === 'CodeSample' ? '添加代码样例' : '添加代码上下文');
 	};
@@ -355,15 +354,12 @@ const CodeContextPanel: React.FC = () => {
 	const handleGroupNameSubmit = () => {
 		const newItemMap = new Map(selectedItems);
 		const newGroup: Group = {
-			// 使用时间戳作为唯一 id
 			name: groupName,
 			itemMap: newItemMap,
 		};
 		setGroups([...groups, newGroup]);
 
-		// 发送编组后的数据到 IDE
-
-		ideRequest("WorkspaceService.Groups.AddGroup", {data:JSON.stringify(newGroup)});
+		ideRequest("WorkspaceService.Groups.AddGroup", { data: GroupToJson(newGroup) });
 
 		setShowGroupNameModal(false);
 		setSelectedItems(new Map());
@@ -373,20 +369,31 @@ const CodeContextPanel: React.FC = () => {
 	const deleteGroup = (index: number) => {
 		const groupToDelete = groups[index];
 		setGroups(groups.filter((_, i) => i !== index));
-		ideRequest("WorkspaceService.Groups.RemoveGroup", {group:JSON.stringify(groupToDelete)});
+		ideRequest("WorkspaceService.Groups.RemoveGroup", { group: JSON.stringify(groupToDelete) });
 	};
 
 	const getItemById = (id: string) => {
-		for(let item of codeSamples){
-		console.log(item.id);
-		}
 		const sample = codeSamples.find(sample => sample.id == id);
 		if (sample) {
-			return { type: 'CodeSample', item: sample };}
+			return { type: 'CodeSample', item: sample };
+		}
 		const context = codeContexts.find(context => context.id == id);
-		if (context){
-			 return { type: 'CodeContext', item: context };}
+		if (context) {
+			return { type: 'CodeContext', item: context };
+		}
 		return null;
+	};
+
+	const handleGroupItemRadioChange = (groupIndex: number, itemId: string) => {
+		const group = groups[groupIndex];
+		const itemMap = new Map(group.itemMap);
+		itemMap.forEach((ids, type) => {
+			itemMap.set(type, ids.filter(id => id === itemId));
+		});
+		const updatedGroup = { ...group, itemMap };
+		const updatedGroups = [...groups];
+		updatedGroups[groupIndex] = updatedGroup;
+		setGroups(updatedGroups);
 	};
 
 	return (
@@ -443,7 +450,8 @@ const CodeContextPanel: React.FC = () => {
 				<div>
 					{codeSamples.map((sample, index) => (
 						<CodeSample key={sample.id}>
-							<Checkbox
+							<input
+								type="checkbox"
 								checked={(selectedItems.get('CodeSample') || []).includes(sample.id)}
 								onChange={() => handleCheckboxChange(sample.id)}
 							/>
@@ -497,7 +505,8 @@ const CodeContextPanel: React.FC = () => {
 				<div>
 					{codeContexts.map((context, index) => (
 						<CodeSample key={context.id}>
-							<Checkbox
+							<input
+								type="checkbox"
 								checked={(selectedItems.get('FrameworkCodeFragment') || []).includes(context.id)}
 								onChange={() => handleCheckboxChange(context.id)}
 							/>
@@ -513,42 +522,50 @@ const CodeContextPanel: React.FC = () => {
 				</div>
 			</TabContent>
 
-			<TabContent active={activeTab === 'Groups'}>
-				<FormContainer>
-					<h2>{formTitle}</h2>
+	<TabContent active={activeTab === 'Groups'}>
+	<FormContainer>
+		<h2>{formTitle}</h2>
+		<div>
+			{groups.map((group, groupIndex) => (
+				<GroupItem key={groupIndex}>
+					<Radio
+						name="selectedGroup"
+						checked={selectedGroup === group.name}
+						onChange={() => {
+							setSelectedGroup(group.name);
+							ideRequest("WorkspaceService.Groups.SelectGroup", { groupName: group.name });
+						}}
+					/>
+					<h3>编组名称: {group.name}</h3>
 					<div>
-						{groups.map((group, index) => (
-							<GroupItem key={index}>
-								<h3>编组名称: {group.name}</h3>
-								<div>
-									{Array.from(group.itemMap.entries()).map(([type, ids]) => (
-										<div key={type}>
-											<h4>{type === 'CodeSample' ? '代码样例' : '代码上下文'}</h4>
-											<ul>
-												{ids.map((id, itemIndex) => {
-													const itemInfo = getItemById(id);
-													if (!itemInfo) return null;
-													const { item } = itemInfo;
-													return (
-														<li key={itemIndex}>
-															<h5>文件路径: {item.filePath}</h5>
-															<CodeContent>{item.code}</CodeContent>
-															<p>说明: {item.doc}</p>
-														</li>
-													);
-												})}
-											</ul>
-										</div>
-									))}
-								</div>
-								<Actions>
-									<Button onClick={() => deleteGroup(index)}>删除编组</Button>
-								</Actions>
-							</GroupItem>
+						{Array.from(group.itemMap.entries()).map(([type, ids]) => (
+							<div key={type}>
+								<h4>{type === 'CodeSample' ? '代码样例' : '代码上下文'}</h4>
+								<ul>
+									{ids.map((id, itemIndex) => {
+										const itemInfo = getItemById(id);
+										if (!itemInfo) return null;
+										const { item } = itemInfo;
+										return (
+											<li key={itemIndex}>
+												<h5>文件路径: {item.filePath}</h5>
+												<CodeContent>{item.code}</CodeContent>
+												<p>说明: {item.doc}</p>
+											</li>
+										);
+									})}
+								</ul>
+							</div>
 						))}
 					</div>
-				</FormContainer>
-			</TabContent>
+					<Actions>
+						<Button onClick={() => deleteGroup(groupIndex)}>删除编组</Button>
+					</Actions>
+				</GroupItem>
+			))}
+		</div>
+	</FormContainer>
+</TabContent>
 
 			<Button onClick={handleGroupItems} disabled={Array.from(selectedItems.values()).flat().length === 0}>
 				编组选中的项
@@ -579,24 +596,32 @@ const CodeContextPanel: React.FC = () => {
 export default CodeContextPanel;
 
 function jsonToGroups(jsonString: string): Group[] {
-	// 解析 JSON 字符串为 JavaScript 对象
 	const jsonObject = JSON.parse(jsonString);
 
-	// 将 JavaScript 对象转换为 Group 数组
 	const groups: Group[] = Object.keys(jsonObject).map(groupName => {
-			const groupData = jsonObject[groupName];
-			const itemMap = new Map<string, string[]>();
+		const groupData = jsonObject[groupName];
+		const itemMap = new Map<string, string[]>();
 
-			Object.keys(groupData).forEach(key => {
-					// 将数值数组转换为字符串数组
-					itemMap.set(key, groupData[key].map(String));
-			});
+		Object.keys(groupData).forEach(key => {
+			itemMap.set(key, groupData[key].map(String));
+		});
 
-			return {
-					name: groupName,
-					itemMap: itemMap
-			};
+		return {
+			name: groupName,
+			itemMap: itemMap
+		};
 	});
 
 	return groups;
+}
+function GroupToJson(group: Group): string {
+	const groupData: { [key: string]: { [key: string]: string[] } } = {};
+
+	groupData[group.name] = {};
+
+	group.itemMap.forEach((ids, type) => {
+			groupData[group.name][type] = ids;
+	});
+
+	return JSON.stringify(groupData);
 }

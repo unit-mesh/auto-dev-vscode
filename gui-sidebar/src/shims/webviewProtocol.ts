@@ -87,6 +87,7 @@ export type WebviewProtocol = Protocol &
 		'WorkspaceService.Groups.AddGroup':[{data:string}, string];
 		'WorkspaceService.Groups.RemoveGroup':[{group:string}, string];
 		'WorkspaceService.Groups.GetGroups':[string, string[]];
+		'WorkspaceService.Groups.SelectGroup':[{groupName:string}, string];
 
 	};
 

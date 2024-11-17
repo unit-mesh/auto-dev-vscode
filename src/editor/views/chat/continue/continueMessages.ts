@@ -190,6 +190,11 @@ string
 {groups:string},
 string
 >;
+'WorkspaceService.Groups.SelectGroup':WebviewMessageBuilder<
+'WorkspaceService.Groups.SelectGroup',
+{groupName:string},
+string
+>;
 	// Actions
 	applyToCurrentFile: WebviewMessageBuilder<
 		'applyToCurrentFile',

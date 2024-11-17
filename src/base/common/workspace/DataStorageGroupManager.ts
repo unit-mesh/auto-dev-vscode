@@ -52,7 +52,7 @@ export class DataStorageGroupManager {
 		});
 	}
 
-	public AddGroupItem(group: string, itemType: string, value: number) {
+	public async AddGroupItem(group: string, itemType: string, value: number) {
 		if (!this._groupMap.has(group)) {
 			this._groupMap.set(group, new Map<string, number[]>());
 		}
@@ -64,10 +64,11 @@ export class DataStorageGroupManager {
 		if (!itemList.includes(value)) {
 			itemList.push(value);
 		}
-		this.saveGroupToDatabase(group, groupMap);
+		await this.saveGroupToDatabase(group, groupMap);
 	}
 
-	public AddGroupItems(group: string, itemType: string, values: number[]) {
+	public async AddGroupItems(group: string, itemType: string, values: number[]) {
+		group=group.trim();
 		if (!this._groupMap.has(group)) {
 			this._groupMap.set(group, new Map<string, number[]>());
 		}
@@ -81,7 +82,7 @@ export class DataStorageGroupManager {
 				itemList.push(value);
 			}
 		});
-		this.saveGroupToDatabase(group, groupMap);
+	 await	this.saveGroupToDatabase(group, groupMap);
 	}
 
 	public RemoveGroupItem(group: string, itemType: string, value: number) {
@@ -142,6 +143,9 @@ export class DataStorageGroupManager {
 	public GetSelectedGroup(): Map<string, number[]> | undefined {
 		return this.GetGroupInfo(this._selectedGroupName);
 	}
+	public SetSelectedGroup(groupName: string) {
+		this._selectedGroupName = groupName;
+	}
 
 
 	private async saveGroupToDatabase(group: string, groupMap: Map<string, number[]>) {
@@ -191,4 +195,21 @@ export function MapToObject(map: Map<string, any>): { [key: string]: any } {
     }
   });
   return obj;
+}
+export function JsonToGroup(jsonString: string): Group {
+	const jsonObject = JSON.parse(jsonString);
+
+	const groupName = Object.keys(jsonObject)[0];
+	const groupData = jsonObject[groupName];
+
+	const itemMap = new Map<string, number[]>();
+
+	Object.keys(groupData).forEach(key => {
+			itemMap.set(key, groupData[key].map(Number));
+	});
+
+	return {
+			name: groupName,
+			items: itemMap
+	};
 }
