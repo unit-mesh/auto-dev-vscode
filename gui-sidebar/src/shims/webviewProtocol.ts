@@ -88,6 +88,7 @@ export type WebviewProtocol = Protocol &
 		'WorkspaceService.Groups.RemoveGroup':[{group:string}, string];
 		'WorkspaceService.Groups.GetGroups':[string, string[]];
 		'WorkspaceService.Groups.SelectGroup':[{groupName:string}, string];
+		'WorkspaceService.Groups.GetSelectedGroupName':[string, string]
 
 	};
 
@@ -124,5 +125,5 @@ export type ReverseWebviewProtocol = {
 	WorkspaceService_ChangeDataStorage: [{key:string;originalItem:string;newItem:string},string];
 	WorkspaceService_GetDataStorage: [{key:string;language:string;storages:string},void];
 	WorkspaceService_Groups_GetGroups: [{groups:string},void];
-
+	WorkspaceService_Groups_GetSelectedGroupName: [{groupName:string},void];
 };

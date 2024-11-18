@@ -197,14 +197,13 @@ const CodeContextPanel: React.FC = () => {
 	useWebviewListener("WorkspaceService_Groups_GetGroups", async (data) => {
 		if (data.groups) {
 			const parsedGroups = jsonToGroups(data.groups);
-			console.log("WorkspaceService_Groups_GetGroups");
-			for (const group of parsedGroups) {
-			  console.log(group.name);
-				console.log(group);
-				console.log(group.itemMap);
-
-			}
 			setGroups(parsedGroups);
+			ideRequest("WorkspaceService.Groups.GetSelectedGroupName","");
+		}
+	});
+	useWebviewListener("WorkspaceService_Groups_GetSelectedGroupName", async (data) => {
+		if (data.groupName) {
+			setSelectedGroup(data.groupName);
 		}
 	});
 
@@ -538,26 +537,31 @@ const CodeContextPanel: React.FC = () => {
 					/>
 					<h3>编组名称: {group.name}</h3>
 					<div>
-						{Array.from(group.itemMap.entries()).map(([type, ids]) => (
-							<div key={type}>
-								<h4>{type === 'CodeSample' ? '代码样例' : '代码上下文'}</h4>
-								<ul>
-									{ids.map((id, itemIndex) => {
-										const itemInfo = getItemById(id);
-										if (!itemInfo) return null;
-										const { item } = itemInfo;
-										return (
-											<li key={itemIndex}>
-												<h5>文件路径: {item.filePath}</h5>
-												<CodeContent>{item.code}</CodeContent>
-												<p>说明: {item.doc}</p>
-											</li>
-										);
-									})}
-								</ul>
-							</div>
-						))}
-					</div>
+	{Array.from(group.itemMap.entries()).map(([type, ids]) => {
+		if (ids.length > 0) {
+			return (
+				<div key={type}>
+					<h4>{type === 'CodeSample' ? '代码样例' : '代码上下文'}</h4>
+					<ul>
+						{ids.map((id, itemIndex) => {
+							const itemInfo = getItemById(id);
+							if (!itemInfo) return null;
+							const { item } = itemInfo;
+							return (
+								<li key={itemIndex}>
+									<h5>文件路径: {item.filePath}</h5>
+									<CodeContent>{item.code}</CodeContent>
+									<p>说明: {item.doc}</p>
+								</li>
+							);
+						})}
+					</ul>
+				</div>
+			);
+		}
+		return null;
+	})}
+</div>
 					<Actions>
 						<Button onClick={() => deleteGroup(groupIndex)}>删除编组</Button>
 					</Actions>
@@ -603,7 +607,8 @@ function jsonToGroups(jsonString: string): Group[] {
 		const itemMap = new Map<string, string[]>();
 
 		Object.keys(groupData).forEach(key => {
-			itemMap.set(key, groupData[key].map(String));
+			if(groupData[key].length>0)
+			{	itemMap.set(key, groupData[key].map(String));}
 		});
 
 		return {
@@ -616,12 +621,14 @@ function jsonToGroups(jsonString: string): Group[] {
 }
 function GroupToJson(group: Group): string {
 	const groupData: { [key: string]: { [key: string]: string[] } } = {};
-
 	groupData[group.name] = {};
-
 	group.itemMap.forEach((ids, type) => {
-			groupData[group.name][type] = ids;
+		if(ids.length>0)
+		{	groupData[group.name][type] = ids;}
 	});
 
 	return JSON.stringify(groupData);
 }
+
+
+

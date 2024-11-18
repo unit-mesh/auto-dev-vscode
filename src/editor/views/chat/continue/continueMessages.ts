@@ -195,6 +195,12 @@ string
 {groupName:string},
 string
 >;
+
+'WorkspaceService.Groups.GetSelectedGroupName':WebviewMessageBuilder<
+'WorkspaceService.Groups.GetSelectedGroupName',
+{groupName:string},
+string
+>;
 	// Actions
 	applyToCurrentFile: WebviewMessageBuilder<
 		'applyToCurrentFile',

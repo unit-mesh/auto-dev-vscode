@@ -28,6 +28,7 @@ export class DataStorageGroupManager {
 
 	private async loadGroupsFromDatabase() {
 		const rows = await this.queryDatabase(`SELECT * FROM Groups`);
+		this._selectedGroupName=rows[0].name;
 		rows.forEach(row => {
 			const groupName = row.name;
 			const groupJson = JSON.parse(row.groupJson);
@@ -146,7 +147,9 @@ export class DataStorageGroupManager {
 	public SetSelectedGroup(groupName: string) {
 		this._selectedGroupName = groupName;
 	}
-
+public GetSelectedGroupName(): string {
+		return this._selectedGroupName;
+}
 
 	private async saveGroupToDatabase(group: string, groupMap: Map<string, number[]>) {
 		const groupJson = JSON.stringify(Object.fromEntries(groupMap));
@@ -176,7 +179,7 @@ export class DataStorageGroupManager {
 }
 
 
-export interface GroupMormat {
+export interface GroupFormat {
 	name: string;
 	items: string;
 }

@@ -46,7 +46,7 @@ import {
 } from './continueMessages';
 import { data } from 'node_modules/cheerio/dist/commonjs/api/attributes';
 import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
-import { Group, GroupMormat, JsonToGroup, MapToObject } from 'base/common/workspace/DataStorageGroupManager';
+import { Group, JsonToGroup, MapToObject } from 'base/common/workspace/DataStorageGroupManager';
 
 export class ContinueViewProvider extends AbstractWebviewViewProvider implements WebviewViewProvider {
 	private historySaveDir = path.join(os.homedir(), '.autodev/sessions');
@@ -278,7 +278,10 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
           if (language) {
 						const group: Group =JsonToGroup(payload.data.data);
 						for (let [key, value] of group.items) {
-							await this.workSpace.DataStorageGroupManager?.AddGroupItems(group.name,key,value);
+							if(value.length>0)
+							{
+								await this.workSpace.DataStorageGroupManager?.AddGroupItems(group.name,key,value);
+							}
 						}
           }
 					break;
@@ -302,6 +305,12 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 								this.workSpace.DataStorageGroupManager?.SetSelectedGroup(payload.data.groupName);
 							}
 							break;
+					case 'WorkspaceService.Groups.GetSelectedGroupName':
+						if (language) {
+							let data=	this.workSpace.DataStorageGroupManager?.GetSelectedGroupName();
+							this.send('WorkspaceService_Groups_GetSelectedGroupName', {groupName:data});
+						}
+						break;
 				default:
 					logger.debug('(continue): Unknown webview protocol msg: ', payload);
 			}
