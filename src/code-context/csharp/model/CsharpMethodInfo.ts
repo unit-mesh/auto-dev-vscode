@@ -18,8 +18,8 @@ export class CsharpMethodInfo extends MethodInfoBase {
 		const methodNameAndReturnType = this.getMethodNameAndReturnType(methodNode);
 		this.parameters = this.getMethodParameters(methodNode, methodXmlDocTeam);
 		this.modifiers = this.getMethodAccessModifier(methodNode);
-		this.name = methodNameAndReturnType[0];
-		this.returnType = methodNameAndReturnType[1];
+		this.name = methodNameAndReturnType[1];
+		this.returnType = methodNameAndReturnType[0];
 		this.methodDoc = methodXmlDocTeam.reverse().toString();
 		this.code = methodNode.text;
 	}

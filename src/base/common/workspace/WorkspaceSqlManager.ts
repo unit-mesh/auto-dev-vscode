@@ -168,15 +168,29 @@ export class WorkspaceSqlManager {
 				type = arg2.GetType();
 				id = (arg2 as any).id; // 类型断言为 any 以访问 id 属性
 			}
-
 			const tableName = typeMapping[type].name;
-			this.db.run(`DELETE FROM ${tableName} WHERE language = ? AND id = ?`, [language, id], function (err) {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(this.changes > 0);
-				}
-			});
+			if (id == undefined || id == -1) {
+				let dataInstance = arg2 as any; // 类型断言为 any 以访问属性
+				this.db.run(
+					`DELETE FROM ${tableName} WHERE language = ? AND code = ? AND doc = ? AND filePath = ? AND codeContext = ?`,
+					[language, dataInstance.code, dataInstance.doc, dataInstance.filePath, dataInstance.codeContext],
+					function (err) {
+						if (err) {
+							reject(err);
+						} else {
+							resolve(this.changes > 0);
+						}
+					},
+				);
+			} else {
+				this.db.run(`DELETE FROM ${tableName} WHERE language = ? AND id = ?`, [language, id], function (err) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(this.changes > 0);
+					}
+				});
+			}
 		});
 	}
 
@@ -271,27 +285,31 @@ export class WorkspaceSqlManager {
 		const type = data.GetType();
 		return new typeMapping[type]() as T;
 	}
-    // 新增的 SQL 执行方法
+	// 新增的 SQL 执行方法
 
-    /**
-     * 执行单行查询
-     * @param sql SQL 语句
-     * @param params 参数
-     * @param callback 回调函数
-     * @returns 返回单行结果
-     */
-    public Get<T>(sql: string, params: any[] = [], callback?: (err: Error | null, row?: T) => void): Promise<T | undefined> {
-			return new Promise((resolve, reject) => {
-					this.db.get(sql, params, (err, row) => {
-							if (err) {
-									if (callback) callback(err);
-									reject(err);
-							} else {
-									if (callback) callback(null, row as T);
-									resolve(row as T | undefined);
-							}
-					});
+	/**
+	 * 执行单行查询
+	 * @param sql SQL 语句
+	 * @param params 参数
+	 * @param callback 回调函数
+	 * @returns 返回单行结果
+	 */
+	public Get<T>(
+		sql: string,
+		params: any[] = [],
+		callback?: (err: Error | null, row?: T) => void,
+	): Promise<T | undefined> {
+		return new Promise((resolve, reject) => {
+			this.db.get(sql, params, (err, row) => {
+				if (err) {
+					if (callback) callback(err);
+					reject(err);
+				} else {
+					if (callback) callback(null, row as T);
+					resolve(row as T | undefined);
+				}
 			});
+		});
 	}
 
 	/**
@@ -301,18 +319,22 @@ export class WorkspaceSqlManager {
 	 * @param callback 回调函数
 	 * @returns 返回受影响的行数
 	 */
-	public Run(sql: string, params: any[] = [], callback?: (err: Error | null, changes?: number) => void): Promise<number> {
-			return new Promise((resolve, reject) => {
-					this.db.run(sql, params, function (err) {
-							if (err) {
-									if (callback) callback(err);
-									reject(err);
-							} else {
-									if (callback) callback(null, this.changes);
-									resolve(this.changes);
-							}
-					});
+	public Run(
+		sql: string,
+		params: any[] = [],
+		callback?: (err: Error | null, changes?: number) => void,
+	): Promise<number> {
+		return new Promise((resolve, reject) => {
+			this.db.run(sql, params, function (err) {
+				if (err) {
+					if (callback) callback(err);
+					reject(err);
+				} else {
+					if (callback) callback(null, this.changes);
+					resolve(this.changes);
+				}
 			});
+		});
 	}
 
 	/**
@@ -323,16 +345,16 @@ export class WorkspaceSqlManager {
 	 * @returns 返回多行结果
 	 */
 	public All<T>(sql: string, params: any[] = [], callback?: (err: Error | null, rows?: T[]) => void): Promise<T[]> {
-			return new Promise((resolve, reject) => {
-					this.db.all(sql, params, (err, rows) => {
-							if (err) {
-									if (callback) callback(err);
-									reject(err);
-							} else {
-									if (callback) callback(null, rows as T[]);
-									resolve(rows as T[]);
-							}
-					});
+		return new Promise((resolve, reject) => {
+			this.db.all(sql, params, (err, rows) => {
+				if (err) {
+					if (callback) callback(err);
+					reject(err);
+				} else {
+					if (callback) callback(null, rows as T[]);
+					resolve(rows as T[]);
+				}
 			});
+		});
 	}
 }

@@ -159,7 +159,7 @@ export class AutoDevCodeLensProvider implements CodeLensProvider {
 			commands.registerCommand(
 				CMD_CODELENS_SHOW_CODE_CLASS_COMPLETIONS,
 				(document: TextDocument, nameElement: NamedElement) => {
-					autodev.executeAutoMethodAction(document, nameElement);
+					autodev.executeAutoClassAction(document, nameElement);
 				},
 			),
 			commands.registerCommand(
