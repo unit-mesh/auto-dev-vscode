@@ -93,10 +93,11 @@ export class FrameworkCodeFragment implements IDataStorage {
 								for (let j = 0; j < declarationList.children.length; j++) {
 									if (
 										declarationList.children[j].type == 'method_declaration' ||
-										declarationList.children[j].type == 'field_declaration'||
+										declarationList.children[j].type == 'field_declaration' ||
 										declarationList.children[j].type == 'constructor_declaration'
 									) {
 										let node = declarationList.children[j];
+										let block: SyntaxNode | undefined = undefined;
 										let isPublic = false;
 										for (let k = 0; k < node.children.length; k++) {
 											let nodeChild = node.children[k];
@@ -104,28 +105,27 @@ export class FrameworkCodeFragment implements IDataStorage {
 												if (nodeChild.text != 'public') {
 													isPublic = false;
 													codeTemp = codeTemp.replace(node.text, '');
-													let previousSibling = node.previousSibling;
-													let codeTemp1: string = '';
-													needDeleteNodes.push(node);
-													while (previousSibling) {
-														if (previousSibling.type == 'comment') {
-															needDeleteNodes.push(previousSibling);
-															codeTemp1 = previousSibling.text + codeTemp1;
-															previousSibling = previousSibling.previousSibling;
-														} else {
-															break;
-														}
-													}
-
-													codeTemp = codeTemp.replace(codeTemp1, '');
 												} else {
 													isPublic = true;
 												}
 											}
 											if (nodeChild.type == 'block' && isPublic) {
-												codeTemp = codeTemp.replace(node.children[k].text, '');
-												needDeleteNodes.push(node.children[k]);
+												block = node.children[k];
 											}
+										}
+										if (!isPublic) {
+											let previousSibling = node.previousSibling;
+											while (previousSibling) {
+												if (previousSibling.type == 'comment') {
+													needDeleteNodes.push(previousSibling);
+													previousSibling = previousSibling.previousSibling;
+												} else {
+													break;
+												}
+											}
+											needDeleteNodes.push(node);
+										} else if (block) {
+											needDeleteNodes.push(block);
 										}
 									}
 								}
@@ -141,10 +141,8 @@ export class FrameworkCodeFragment implements IDataStorage {
 						console.log(result);
 						this.code = result;
 				}
-
 			}
-		}else
-		{
+		} else {
 			this.code = code;
 		}
 		this.filePath = filePath;
@@ -192,83 +190,31 @@ export class FrameworkCodeFragment implements IDataStorage {
 		return frameworkCodeFragment;
 	}
 }
-
 class TreeSitterContentModifier {
 	private root: SyntaxNode;
 
 	constructor(root: SyntaxNode) {
-			this.root = root;
+		this.root = root;
 	}
 
 	public removeChildContent(children: SyntaxNode[]): string {
-			let rootContent = this.root.text;
-			// 对子节点按 startPosition 进行排序，确保从后往前移除内容
-			children.sort((a, b) => {
-					const startA = a.startPosition;
-					const startB = b.startPosition;
-					if (startA.row === startB.row) {
-							return startB.column - startA.column;
-					}
-					return startB.row - startA.row;
-			});
+		let rootContent = this.root.text;
+		// 对子节点按 startIndex 进行排序，确保从后往前移除内容
+		children.sort((a, b) => b.startIndex - a.startIndex);
 
-			// 从后往前移除子节点的内容
-			for (const child of children) {
-					const startPos = child.startPosition;
-					const endPos = child.endPosition;
-
-					// 计算子节点内容的起始和结束位置在根节点内容中的索引
-					let startIndex = this.calculateIndex(rootContent, startPos);
-					let endIndex = this.calculateIndex(rootContent, endPos);
-
-					console.log(`Removing node: ${child.type}, start: ${JSON.stringify(startPos)}, end: ${JSON.stringify(endPos)}`);
-					console.log(`Start index: ${startIndex}, End index: ${endIndex}`);
-
-					// 确保删除节点的所有部分，包括节点前后的空白字符和换行符
-					let startRow = startPos.row;
-					let endRow = endPos.row;
-					let startColumn = startPos.column;
-					let endColumn = endPos.column;
-
-					// 删除节点前的空白字符和换行符
-					while (startRow > 0 && /\s/.test(rootContent[startIndex - 1])) {
-							startIndex--;
-							if (rootContent[startIndex] === '\n') {
-									startRow--;
-									startColumn = 0;
-							} else {
-									startColumn--;
-							}
-					}
-
-					// 删除节点后的空白字符和换行符
-					while (endRow < rootContent.split('\n').length - 1 && /\s/.test(rootContent[endIndex])) {
-							endIndex++;
-							if (rootContent[endIndex] === '\n') {
-									endRow++;
-									endColumn = 0;
-							} else {
-									endColumn++;
-							}
-					}
-
-					// 一次性删除计算出的完整范围
-					rootContent = rootContent.slice(0, startIndex) + rootContent.slice(endIndex);
-			}
-			return rootContent;
+		// 从后往前移除子节点的内容
+		for (let i = 0; i < children.length; i++) {
+			let startIndex = children[i].startIndex;
+			let endIndex =  children[i].endIndex;
+			let endNote = rootContent.charAt(endIndex - i);
+			let startNote = rootContent.charAt(startIndex - i);
+            while (endIndex < rootContent.length && /\s/.test(rootContent[endIndex])) {
+                endIndex++;
+            }
+		// 一次性删除计算出的完整范围
+			rootContent = rootContent.slice(0, startIndex) + rootContent.slice(endIndex);
+		}
+		return rootContent;
 	}
 
-	private calculateIndex(content: string, point: Point): number {
-			let index = 0;
-			for (let row = 0; row < point.row; row++) {
-					const newlineIndex = content.indexOf('\n');
-					if (newlineIndex === -1) {
-							throw new Error(`Invalid point: row ${row} not found in content`);
-					}
-					index += newlineIndex + 1;
-					content = content.slice(newlineIndex + 1);
-			}
-			index += point.column;
-			return index;
-	}
 }

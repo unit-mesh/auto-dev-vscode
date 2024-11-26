@@ -6,66 +6,72 @@
 
 1. **类信息:**
     * **类名:** `[$context.classInfo.name]`
+    #if($context.classInfo.fields.size() > 0)
     * **成员变量:**
     #foreach($field in $context.classInfo.fields)
-        * `[$field.accessModifier] [$field.type] [$field.name]` - `[$field.xmlDoc]`
-    #end    
+        * `[$field.accessModifier] [$field.type] [$field.name]` - `#if($field.doc)$field.doc#else无#end`
+    #end
         * ...
+    #end
+    #if($context.classInfo.propertyInfos.size() > 0)
     * **属性访问器:**
     #foreach($propertyInfo in $context.classInfo.propertyInfos)
-        * `[$propertyInfo.accessModifier] [$propertyInfo.type] [$propertyInfo.name]` - `[$propertyInfo.doc]`
+        * `[$propertyInfo.accessModifier] [$propertyInfo.type] [$propertyInfo.name]` - `#if($propertyInfo.doc)$propertyInfo.doc#else无#end`
             * `get` - `[get 描述]`
             * `set` - `[set 描述]`
     #end
         * ...
-    * **类成员数据结构:**
-    
-        * `[数据结构类型] [数据结构名]` - `[数据结构描述]`
-            * **成员:**
-                * `[成员类型] [成员名]` - `[成员描述]`
-                * ...
-        * ...
+    #end
+    #if($context.classInfo.completedMethods.size() > 0)
     * **已完成成员方法:**
-        #foreach($method in $context.classInfo.completedMethods)
-        * `[method.name]` - `[method.methodXmlDoc]`
-            * **参数:**
+       #foreach($method in $context.classInfo.completedMethods)
+        * **方法签名:** `[$method.name]`
+        * **方法描述:** `#if($method.methodDoc)$method.methodDoc#else无#end`
+        * **参数:**
             #foreach($param in $method.parameters)
-                * `[param.type] [param.name]` - `[param.doc]`
-                #end
-                * ...
-            * **返回值:** `[method.returnType]` - `[method.returnDoc]`
+           * `[$param.type] [$param.name]` - `#if($param.doc)$param.doc#else无#end`
             #end
-        * ...
+            * ...
+        * **返回值:** `[$method.returnType]` - `#if($method.returnDoc)$method.returnDoc#else无#end`
+         #end
+    #end
 
+
+    #if($context.classInfo.unfinishedMethods.size() > 0)
 2. **未完成方法信息:**
    #foreach($method in $context.classInfo.unfinishedMethods)
     * **方法签名:** `[$method.name]`
-    * **方法描述:** `[$method.methodXmlDoc]`
+    * **方法描述:** `#if($method.methodDoc)$method.methodDoc#else无#end`
     * **参数:**
         #foreach($param in $method.parameters)
-                * `[$param.type] [$param.name]` - `[$param.doc]`
+                * `[$param.type] [$param.name]` - `#if($param.doc)$param.doc#else无#end`
                 #end
         * ...
-    * **返回值:** `[$method.returnType]` - `[method.returnDoc]`
+    * **返回值:** `[$method.returnType]` - `#if($method.returnDoc)$method.returnDoc#else无#end`
      #end
+    #end
+
+    #if($context.customFrameworkCodeFragments.size() > 0)
 3. **相关代码片段:**
   #foreach($customFrameworkCodeFragment in $context.customFrameworkCodeFragments)
     * **片段 :**
         ```csharp
       $customFrameworkCodeFragment.code
         ```
-        * **描述:** `[customFrameworkCodeFragment.doc]`
+        * **描述:** `#if($customFrameworkCodeFragment.doc)$customFrameworkCodeFragment.doc#else无#end`
   #end
+    #end
 
+    #if($context.codeSamples.size() > 0)
 4. **可以仿照的代码示例:**
 #foreach($codeSample in $context.codeSamples)
     * **示例 1:**
         ```csharp
        $codeSample.code
         ```
-        * **描述:** `codeSample.doc`
+        * **描述:** `#if($codeSample.doc)$codeSample.doc#else无#end`
     #end
-
+    #end
 
 **要求:**
 
@@ -80,19 +86,3 @@
     * 保持代码风格一致，遵循 C# 编码规范。
     * 使用适当的命名、缩进和注释。
 
-**示例:**
-
-```csharp
-/// <summary>
-///  [方法描述]
-/// </summary>
-/// <param name="[参数名]">[参数描述]</param>
-/// <returns>[返回值描述]</returns>
-public [返回值类型] [方法名]([参数类型] [参数名])
-{
-    // [方法体注释]
-    [代码实现]
-}
-```
-
-**请根据以上模板，完成 `[类名]` 类中未实现的方法 `[方法名]`。**
