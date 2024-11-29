@@ -54,32 +54,38 @@ export class FrameworkCodeFragment implements IDataStorage {
 						let declarationList = root.children[i];
 						let commitNodes: SyntaxNode[] = [];
 						for (let j = 0; j < declarationList.children.length; j++) {
-							if (declarationList.children[j].type == 'comment') {
-								commitNodes.push(declarationList.children[j]);
-							}
 							if (declarationList.children[j].type == 'class_declaration') {
-								if (declarationList.children[j] != frameworkCodeFragmentNode) {
-									needDeleteNodes.concat(commitNodes);
-									needDeleteNodes.push(declarationList.children[j]);
-									commitNodes = [];
+								let dataTemp = declarationList.children[j];
+								while (dataTemp.previousSibling) {
+									if (dataTemp.previousSibling.type == 'comment') {
+										commitNodes.push(dataTemp.previousSibling);
+										dataTemp = dataTemp.previousSibling;
+									} else {
+										break;
+									}
 								}
+								needDeleteNodes.push(declarationList.children[j]);
+								commitNodes.length = 0;
 							}
 						}
 						break;
 					case 'namespace_declaration':
 						for (let j = 0; j < root.children[i].children.length; j++) {
 							if (root.children[i].children[j].type == 'declaration_list') {
-								let declarationList = root.children[i].children[j];
-								let commitNodes: SyntaxNode[] = [];
+								const declarationList = root.children[i].children[j];
 								for (let k = 0; k < declarationList.children.length; k++) {
-									if (declarationList.children[k].type == 'comment') {
-										commitNodes.push(declarationList.children[k]);
-									}
 									if (declarationList.children[k].type == 'class_declaration') {
-										if (declarationList.children[k].text != frameworkCodeFragmentNode.text) {
-											needDeleteNodes.concat(commitNodes);
+										let dataTemp = declarationList.children[k];
+										if (dataTemp.text != frameworkCodeFragmentNode.text) {
+											while (dataTemp.previousSibling) {
+												if (dataTemp.previousSibling.type == 'comment') {
+													needDeleteNodes.push(dataTemp.previousSibling);
+													dataTemp = dataTemp.previousSibling;
+												} else {
+													break;
+												}
+											}
 											needDeleteNodes.push(declarationList.children[k]);
-											commitNodes = [];
 										}
 									}
 								}
@@ -205,16 +211,15 @@ class TreeSitterContentModifier {
 		// 从后往前移除子节点的内容
 		for (let i = 0; i < children.length; i++) {
 			let startIndex = children[i].startIndex;
-			let endIndex =  children[i].endIndex;
+			let endIndex = children[i].endIndex;
 			let endNote = rootContent.charAt(endIndex - i);
 			let startNote = rootContent.charAt(startIndex - i);
-            while (endIndex < rootContent.length && /\s/.test(rootContent[endIndex])) {
-                endIndex++;
-            }
-		// 一次性删除计算出的完整范围
+			while (endIndex < rootContent.length && /\s/.test(rootContent[endIndex])) {
+				endIndex++;
+			}
+			// 一次性删除计算出的完整范围
 			rootContent = rootContent.slice(0, startIndex) + rootContent.slice(endIndex);
 		}
 		return rootContent;
 	}
-
 }
