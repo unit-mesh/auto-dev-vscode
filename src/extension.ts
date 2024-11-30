@@ -14,6 +14,7 @@ import { AutoDevExtension } from './AutoDevExtension';
 import { LanguageModelsService } from './base/common/language-models/languageModelsService';
 import { CommandsService } from './commands/commandsService';
 import { ChatViewService } from './editor/views/chat/chatViewService';
+import { WorkspaceService } from 'base/common/workspace/WorkspaceService';
 
 (globalThis as any).self = globalThis;
 
@@ -28,12 +29,14 @@ export async function activate(context: ExtensionContext) {
 
 	context.subscriptions.push(
 		instantiationService.registerSingleton(ConfigurationService),
+		instantiationService.registerSingleton(WorkspaceService),
 		instantiationService.registerSingleton(ContextStateService),
 		instantiationService.registerSingleton(LanguageModelsService),
 		instantiationService.registerSingleton(ILanguageServiceProvider, LanguageServiceProvider),
 		instantiationService.registerSingleton(ChatViewService).register(),
 		instantiationService.registerSingleton(AutoDevExtension).register(),
 		instantiationService.registerSingleton(CommandsService).register(),
+		//ArchiverService
 	);
 
 	instantiationService.get(AutoDevExtension).run();

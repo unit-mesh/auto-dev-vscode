@@ -7,11 +7,13 @@ import { ContextStateService } from 'base/common/configuration/contextState';
 import { WorkspaceFileSystem } from 'base/common/fs';
 import { ILanguageServiceProvider } from 'base/common/languages/languageService';
 import { logger } from 'base/common/log/log';
+import { WorkspaceService } from 'base/common/workspace/WorkspaceService';
 
+import { AddFrameworkCodeFragmentExecutor } from './action/addCodeFragment/AddFrameworkCodeFragmentExecutor';
+import { AddCodeSampleExecutor } from './action/addCodeSamples/AddCodeSampleExecutor';
 import { AutoDocActionExecutor } from './action/autodoc/AutoDocActionExecutor';
-import { AutoTestActionExecutor } from './action/autotest/AutoTestActionExecutor';
 import { AutoMethodActionExecutor } from './action/autoMethod/AutoMethodActionExecutor';
-
+import { AutoTestActionExecutor } from './action/autotest/AutoTestActionExecutor';
 import {
 	registerAutoDevProviders,
 	registerCodeLensProvider,
@@ -19,6 +21,7 @@ import {
 	registerQuickFixProvider,
 	registerRenameAction,
 } from './action/ProviderRegister';
+import { RemoveCodeSampleExecutor } from './action/removeCodeSample/RemoveCodeSampleExecutor';
 import { SystemActionService } from './action/setting/SystemActionService';
 import { Catalyser } from './agent/catalyser/Catalyser';
 import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
@@ -43,7 +46,12 @@ import { TemplateContext } from './prompt-manage/template/TemplateContext';
 import { TemplateRender } from './prompt-manage/template/TemplateRender';
 import { IProjectService } from './ProviderTypes';
 import { ToolchainContextManager } from './toolchain-context/ToolchainContextManager';
-
+import { ClassExtractorFactory } from './code-context/_base/LanguageModel/ClassELementFactory/ClassExtarctorFactory';
+import { CsharpClassExtractor } from './code-context/csharp/model/CsharpClassExtractor';
+import { CsharpFieldInfo } from './code-context/csharp/model/CsharpFieldInfo';
+import { FieldInfoFactory } from './code-context/_base/LanguageModel/ClassELementFactory/FieldInfoFactory';
+import { MethodInfoFactory } from './code-context/_base/LanguageModel/ClassELementFactory/MethodInfoFactory';
+import { CsharpMethodInfo } from './code-context/csharp/model/CsharpMethodInfo';
 
 @injectable()
 export class AutoDevExtension {
@@ -93,6 +101,8 @@ export class AutoDevExtension {
 
 		@inject(IProjectService)
 		public teamTerm: TeamTermService,
+		@inject(WorkspaceService)
+		public workSpace: WorkspaceService,
 	) {
 		this.ideAction = new VSCodeAction();
 		this.statusBarManager = new AutoDevStatusManager();
@@ -108,7 +118,7 @@ export class AutoDevExtension {
 			new CustomActionExecutor(this.lm, templateRender, this.statusBarManager),
 			this,
 		);
-
+   this.workSpace.BindAutoDevExtension(this);
 		this.systemAction = new SystemActionService(this);
 
 		this.toolchainContextManager = new ToolchainContextManager();
@@ -121,8 +131,16 @@ export class AutoDevExtension {
 		this.vectorStore = new LanceDbIndex(this.lm, path => this.ideAction.readFile(path), chunkerManager);
 		this.codebaseIndexer = new CodebaseIndexer(this.ideAction, this.vectorStore, this.lsp, chunkerManager);
 		this.retrieval = new DefaultRetrieval(this.vectorStore);
-	}
+		this.InitClassElementFactory();
 
+	}
+ private InitClassElementFactory() {
+	ClassExtractorFactory.registerClass('csharp',CsharpClassExtractor)
+	FieldInfoFactory.registerClass('csharp',CsharpFieldInfo)
+	MethodInfoFactory.registerClass('csharp',CsharpMethodInfo)
+
+
+ }
 	/**
 	 * @deprecated This is compatible with the object, please do not use
 	 */
@@ -228,6 +246,24 @@ export class AutoDevExtension {
 	}
 	executeAutoMethodAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
 		return new AutoMethodActionExecutor(this, document, nameElement, edit).execute();
+	}
+	executeAutoClassAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		console.error('executeAutoClassAction not completed');
+		//return new AutoMethodActionExecutor(this, document, nameElement, edit).execute();
+	}
+	executeAddCodeSampleExecutorAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		return new AddCodeSampleExecutor(this, document, nameElement, edit).execute();
+	}
+	executeRemoveCodeSampleExecutorAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		return new RemoveCodeSampleExecutor(this, document, nameElement, edit).execute();
+	}
+
+	executeAddFrameworkCodeFragmentAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		return new AddFrameworkCodeFragmentExecutor(this, document, nameElement, edit).execute();
+	}
+
+	executeRemoveFrameworkCodeFragmentAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {
+		return new RemoveCodeSampleExecutor(this, document, nameElement, edit).execute();
 	}
 
 	executeAutoTestAction(document: TextDocument, nameElement: NamedElement, edit?: WorkspaceEdit) {

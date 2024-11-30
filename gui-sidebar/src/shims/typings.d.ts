@@ -738,3 +738,9 @@ export type PromptTemplate =
     history: ChatMessage[],
     otherData: Record<string, string>,
 ) => string | ChatMessage[]);
+
+export interface Group {
+	id: string; // 增加 id 成员
+	name: string;
+	itemMap: Map<string, string[]>; // 修改 items 为 itemMap
+}

@@ -12,7 +12,9 @@
     "typescript.tsc.autoDetect": "off",
     "cmake.configureOnOpen": true,
     "cSpell.words": [
+        "datas",
         "hoverable",
         "treesitter"
-    ]
+    ],
+    "Codegeex.RepoIndex": true
 }

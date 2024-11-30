@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { commands, type ExtensionContext, window } from 'vscode';
+import { commands, type ExtensionContext, window, workspace } from 'vscode';
 
 import { CHAT_VIEW_ID } from 'base/common/configuration/configuration';
 import { ConfigurationService } from 'base/common/configuration/configurationService';
@@ -7,6 +7,8 @@ import { IExtensionContext } from 'base/common/configuration/context';
 import { LanguageModelsService } from 'base/common/language-models/languageModelsService';
 
 import { ContinueViewProvider } from './continue/continueViewProvider';
+import { AutoDevExtension } from 'src/AutoDevExtension';
+import { WorkspaceService } from 'base/common/workspace/WorkspaceService';
 
 @injectable()
 export class ChatViewService {
@@ -21,8 +23,10 @@ export class ChatViewService {
 
 		@inject(LanguageModelsService)
 		lm: LanguageModelsService,
+		@inject(WorkspaceService)
+		workspace: WorkspaceService
 	) {
-		this.continueViewProvider = new ContinueViewProvider(context, configService, lm);
+		this.continueViewProvider = new ContinueViewProvider(context, configService, lm,workspace);
 	}
 
 	send(type: string, message?: unknown) {

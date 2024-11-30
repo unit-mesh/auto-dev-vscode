@@ -28,6 +28,7 @@ export class AutoDocActionCreator extends CodeActionCreator {
 
 		codeAction.isPreferred = false;
 		codeAction.edit = new vscode.WorkspaceEdit();
+
 		codeAction.command = {
 			command: 'autodev.autoComment',
 			title: title,

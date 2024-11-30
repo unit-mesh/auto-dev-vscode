@@ -1,4 +1,5 @@
 import type { ChatMessageRole } from 'base/common/language-models/languageModels';
+import { IDataStorage } from 'base/common/workspace/WorkspaceService';
 
 interface BaseToWebviewMessage<Type = string, Data = void> {
 	readonly messageId: string;
@@ -154,7 +155,52 @@ export type ContinueMessageMap = {
 			content: string;
 		}
 	>;
+	'WorkspaceService.AddDataStorage': WebviewMessageBuilder<
+		'WorkspaceService.AddDataStorage',
+		{key:string;originalItem:string},
+		string
+	>;
+	'WorkspaceService.RemoveDataStorage': WebviewMessageBuilder<
+	'WorkspaceService.RemoveDataStorage',
+	{key:string;originalItem:string},
+	string
+>;
+'WorkspaceService.ChangeDataStorage': WebviewMessageBuilder<
+'WorkspaceService.ChangeDataStorage',
+{key:string;originalItem:string;newItem:string},
+string
+>;
+'WorkspaceService.GetDataStorage': WebviewMessageBuilder<
+'WorkspaceService.GetDataStorage',
+string,
+string
+>;
+'WorkspaceService.Groups.AddGroup': WebviewMessageBuilder<
+'WorkspaceService.Groups.AddGroup',
+{data:string},
+string
+>;
+'WorkspaceService.Groups.RemoveGroup': WebviewMessageBuilder<
+'WorkspaceService.Groups.RemoveGroup',
+{group:string},
+string
+>;
+'WorkspaceService.Groups.GetGroups': WebviewMessageBuilder<
+'WorkspaceService.Groups.GetGroups',
+{groups:string},
+string
+>;
+'WorkspaceService.Groups.SelectGroup':WebviewMessageBuilder<
+'WorkspaceService.Groups.SelectGroup',
+{groupName:string},
+string
+>;
 
+'WorkspaceService.Groups.GetSelectedGroupName':WebviewMessageBuilder<
+'WorkspaceService.Groups.GetSelectedGroupName',
+{groupName:string},
+string
+>;
 	// Actions
 	applyToCurrentFile: WebviewMessageBuilder<
 		'applyToCurrentFile',
@@ -211,7 +257,7 @@ export class ContinueEvent<
 }
 
 export interface Message<T = any> {
-    messageType: string;
-    messageId: string;
-    data: T;
+	messageType: string;
+	messageId: string;
+	data: T;
 }

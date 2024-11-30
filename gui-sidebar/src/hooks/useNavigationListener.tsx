@@ -47,4 +47,17 @@ export const useNavigationListener = () => {
     },
     [location, navigate]
   );
+	useWebviewListener(
+    "viewDataStorage",
+    async () => {
+      // Toggle the history page / main page
+      if (location.pathname === "/viewDataStorage") {
+        navigate("/");
+      } else {
+        navigate("/codeContextPanel");
+      }
+    },
+    [location, navigate]
+  );
+
 };

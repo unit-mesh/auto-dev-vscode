@@ -5,8 +5,12 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
+import { plainToClass, plainToInstance } from 'class-transformer';
 import { load } from 'js-yaml';
 import _ from 'lodash';
+import { CodeSample } from 'src/action/addCodeSamples/AddCodeSampleExecutor';
+import { AutoDevExtension } from 'src/AutoDevExtension';
+import { json } from 'stream/consumers';
 import {
 	CancellationTokenSource,
 	commands,
@@ -26,6 +30,7 @@ import { logger } from 'base/common/log/log';
 import { showErrorMessage } from 'base/common/messages/messages';
 import { getNonce } from 'base/common/webview/webview';
 import { AbstractWebviewViewProvider } from 'base/common/webview/webviewView';
+import { WorkspaceService } from 'base/common/workspace/WorkspaceService';
 
 import { openSettings } from '../../../../commands/commands';
 import {
@@ -39,18 +44,20 @@ import {
 	SessionInfo,
 	type ShowErrorMessage,
 } from './continueMessages';
+import { data } from 'node_modules/cheerio/dist/commonjs/api/attributes';
+import { FrameworkCodeFragment } from 'src/code-context/_base/LanguageModel/ClassElement/FrameworkCodeFragmentExtractorBase';
+import { Group, JsonToGroup, MapToObject } from 'base/common/workspace/DataStorageGroupManager';
 
 export class ContinueViewProvider extends AbstractWebviewViewProvider implements WebviewViewProvider {
 	private historySaveDir = path.join(os.homedir(), '.autodev/sessions');
 	private _readyDefer = defer<void>();
-
 	constructor(
 		private context: ExtensionContext,
 		private configService: ConfigurationService,
 		private lm: LanguageModelsService,
+		private workSpace: WorkspaceService,
 	) {
 		super(context);
-
 		logger.debug('ContinueViewProvider init');
 		// TODO disposable
 		configService.onDidChange(event => {
@@ -151,13 +158,15 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
       </body>
     </html>`;
 
-		webview.onDidReceiveMessage((payload: FromWebviewMessage) => {
+		webview.onDidReceiveMessage(async (payload: FromWebviewMessage) => {
 			if (!(payload && payload.messageType && payload.messageId)) {
 				logger.error('(continue): Invalid webview protocol msg: ', payload);
 				logger.show();
 				return;
 			}
-
+			let language = undefined;
+			let editor = window.activeTextEditor;
+			language = editor?.document.languageId;
 			switch (payload.messageType) {
 				case 'onLoad':
 					logger.debug('sidebar webview onLoad ');
@@ -211,7 +220,97 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 				case 'configUpdate':
 					// ignore
 					break;
+				case 'WorkspaceService.AddDataStorage':
+					if (!editor) break;
+					if (language) {
+						switch (payload.data.key) {
+							case 'CodeSample':
+								let dataRemoved= CodeSample.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								this.workSpace.AddDataStorage(language, dataRemoved);
+								break;
+							case 'FrameworkCodeFragment':
+								let dataRemoved1= FrameworkCodeFragment.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								this.workSpace.AddDataStorage(language, dataRemoved1);
+								break;
+					}
+				}
+					break;
+				case 'WorkspaceService.GetDataStorage':
+					if (language) {
+						let storages = this.workSpace.GetDataStorages(language, payload.data);
+						let storagesJson = JSON.stringify(storages);
+						let data = { key: payload.data, language: language, storages: storagesJson };
+						this.send('WorkspaceService_GetDataStorage', data);
+					}
+					break;
+				case 'WorkspaceService.RemoveDataStorage':
+					if (language) {
+						switch (payload.data.key) {
+							case 'CodeSample':
+								let dataRemoved= CodeSample.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								this.workSpace.RemoveDataStorage(language, dataRemoved);
+								break;
+							case 'FrameworkCodeFragment':
+								let dataRemoved1= FrameworkCodeFragment.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								this.workSpace.RemoveDataStorage(language, dataRemoved1);
+								break;
+						}
+					}
+					break;
+				case 'WorkspaceService.ChangeDataStorage':
+					if (language) {
+						switch (payload.data.key) {
+							case 'FrameworkCodeFragment':
+								let ollDataFormat =FrameworkCodeFragment.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								let newDataFormat = FrameworkCodeFragment.DeserializationFormJson(JSON.parse(payload.data.newItem));
+								this.workSpace.ChangeDataStorage(language, payload.data.key, ollDataFormat, newDataFormat);
+								break;
+							case 'CodeSample':
+								let ollDataFormat1 =CodeSample.DeserializationFormJson(JSON.parse(payload.data.originalItem));
+								let newDataFormat1 = 	CodeSample.DeserializationFormJson(JSON.parse(payload.data.newItem));
+								this.workSpace.ChangeDataStorage(language, payload.data.key, ollDataFormat1, newDataFormat1);
 
+								break;
+						}
+					}
+					break;
+        case 'WorkspaceService.Groups.AddGroup':
+          if (language) {
+						const group: Group =JsonToGroup(payload.data.data);
+						for (let [key, value] of group.items) {
+							if(value.length>0)
+							{
+								await this.workSpace.DataStorageGroupManager?.AddGroupItems(group.name,key,value);
+							}
+						}
+          }
+					break;
+					case 'WorkspaceService.Groups.RemoveGroup':
+						if (language) {
+							let group :Group=JSON.parse(payload.data.group);
+							this.workSpace.DataStorageGroupManager?.RemoveGroup(group.name);
+						}
+						break;
+					case 'WorkspaceService.Groups.GetGroups':
+						if (language) {
+						 let data=	this.workSpace.DataStorageGroupManager?.GetGroups();
+							if (data) {
+							 let dataJson= JSON.stringify(MapToObject(data));
+							 this.send('WorkspaceService_Groups_GetGroups', {groups:dataJson});
+							}
+						}
+						break;
+						case 'WorkspaceService.Groups.SelectGroup':
+							if (language) {
+								this.workSpace.DataStorageGroupManager?.SetSelectedGroup(payload.data.groupName);
+							}
+							break;
+					case 'WorkspaceService.Groups.GetSelectedGroupName':
+						if (language) {
+							let data=	this.workSpace.DataStorageGroupManager?.GetSelectedGroupName();
+							this.send('WorkspaceService_Groups_GetSelectedGroupName', {groupName:data});
+						}
+						break;
 				default:
 					logger.debug('(continue): Unknown webview protocol msg: ', payload);
 			}

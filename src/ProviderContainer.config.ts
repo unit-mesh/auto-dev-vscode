@@ -35,6 +35,9 @@ import { SpringContextProvider } from './toolchain-context/framework/jvm/SpringC
 import { ToolchainContextProvider } from './toolchain-context/ToolchainContextProvider';
 import { JavaVersionProvider } from './toolchain-context/version/JavaVersionProvider';
 import { AutoMethodActionCreator } from './action/autoMethod/AutoMethodActionCreator';
+import { CsharpProfile } from './code-context/csharp/CsharpProfile';
+import { CsharpRelevantCodeProvider } from './code-context/csharp/CsharpRelevantCodeProvider';
+import { CsharpStructurerProvider } from './code-context/csharp/CsharpStructurerProvider';
 
 // Action Register
 providerContainer.bind(IActionCreator).to(AutoDocActionCreator);
@@ -57,10 +60,15 @@ export interface LanguageProvider {
 providerContainer.bind(IToolchainContextProvider).to(SpringContextProvider);
 providerContainer.bind(IToolchainContextProvider).to(JavaVersionProvider);
 
+
+
 providerContainer.bind(IRelevantCodeProvider).to(JavaRelevantCodeProvider);
 providerContainer.bind(ITestGenProvider).to(JavaTestGenProvider);
 providerContainer.bind(IBuildToolProvider).to(GradleBuildToolProvider);
 providerContainer.bind(IStructurerProvider).to(JavaStructurerProvider);
+// Csharp
+providerContainer.bind(IRelevantCodeProvider).to(CsharpRelevantCodeProvider);
+providerContainer.bind(IStructurerProvider).to(CsharpStructurerProvider);
 
 // TypeScript
 providerContainer.bind(IToolchainContextProvider).to(JavaScriptContextProvider);

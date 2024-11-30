@@ -1,4 +1,4 @@
-import { Container, type interfaces, LazyServiceIdentifer } from 'inversify';
+import { Container, type interfaces, LazyServiceIdentifier } from 'inversify';
 
 import { isDisposable } from '../lifecycle';
 import { getSingletonServiceDescriptors, type ServiceIdentifier } from './instantiation';
@@ -13,7 +13,7 @@ export class InstantiationService {
 		for (const [identifier, descriptor] of getSingletonServiceDescriptors()) {
 			const binding = providerContainer.bind(identifier);
 
-			if (descriptor instanceof LazyServiceIdentifer) {
+			if (descriptor instanceof LazyServiceIdentifier) {
 				binding.toDynamicValue(() => descriptor.unwrap()).inSingletonScope();
 			} else {
 				binding.toConstantValue(descriptor);
