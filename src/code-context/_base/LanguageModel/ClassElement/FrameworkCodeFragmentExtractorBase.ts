@@ -133,6 +133,43 @@ export class FrameworkCodeFragment implements IDataStorage {
 										} else if (block) {
 											needDeleteNodes.push(block);
 										}
+									} else if (declarationList.children[j].type == 'property_declaration') {
+										let node = declarationList.children[j];
+										let isPublic = false;
+										for (let k = 0; k < node.children.length; k++) {
+											let nodeChild = node.children[k];
+											if (nodeChild.type == 'modifier') {
+												if (nodeChild.text != 'public') {
+													isPublic = false;
+												} else {
+													isPublic = true;
+												}
+											}
+											if (nodeChild.type == 'accessor_list' && isPublic) {
+												for (let l = 0; l < nodeChild.children.length; l++) {
+													if (nodeChild.children[l].type == 'accessor_declaration') {
+														let accessorNode = nodeChild.children[l];
+														let propertyAccessorIsPublic = true;
+														for (let m = 0; m < accessorNode.children.length; m++) {
+															let accessorNodeChild = accessorNode.children[m];
+															if (accessorNodeChild.type == 'modifier') {
+																if (accessorNodeChild.text != 'public') {
+																	propertyAccessorIsPublic = false;
+																} else {
+																	propertyAccessorIsPublic = true;
+																}
+															}
+															if (accessorNodeChild.type == 'block' && propertyAccessorIsPublic) {
+																needDeleteNodes.push(accessorNodeChild);
+															}
+														}
+														if (!propertyAccessorIsPublic) {
+															needDeleteNodes.push(accessorNode);
+														}
+													}
+												}
+											}
+										}
 									}
 								}
 							}
@@ -212,13 +249,14 @@ class TreeSitterContentModifier {
 		for (let i = 0; i < children.length; i++) {
 			let startIndex = children[i].startIndex;
 			let endIndex = children[i].endIndex;
-			let endNote = rootContent.charAt(endIndex - i);
-			let startNote = rootContent.charAt(startIndex - i);
+			let endNote = rootContent.charAt(endIndex);
+			let startNote = rootContent.charAt(startIndex);
 			while (endIndex < rootContent.length && /\s/.test(rootContent[endIndex])) {
 				endIndex++;
 			}
 			// 一次性删除计算出的完整范围
 			rootContent = rootContent.slice(0, startIndex) + rootContent.slice(endIndex);
+
 		}
 		return rootContent;
 	}
