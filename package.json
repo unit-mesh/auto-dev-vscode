@@ -137,9 +137,9 @@
 						"type": "array",
 						"default": [
 							{
-								"title": "GPT-3.5 turbo",
+								"title": "GPT-4O Mini",
 								"provider": "openai",
-								"model": "gpt-3.5-turbo",
+								"model": "gpt-4o-mini",
 								"temperature": 0.75
 							},
 							{
@@ -406,6 +406,7 @@
 					"autodev.openai.model": {
 						"type": "string",
 						"enum": [
+							"gpt-4o-mini",
 							"gpt-4o",
 							"gpt-4o-2024-05-13",
 							"gpt-4-turbo",
@@ -419,16 +420,9 @@
 							"gpt-4-0613",
 							"gpt-4-32k",
 							"gpt-4-32k-0314",
-							"gpt-4-32k-0613",
-							"gpt-3.5-turbo",
-							"gpt-3.5-turbo-16k",
-							"gpt-3.5-turbo-0301",
-							"gpt-3.5-turbo-0613",
-							"gpt-3.5-turbo-1106",
-							"gpt-3.5-turbo-0125",
-							"gpt-3.5-turbo-16k-0613"
+							"gpt-4-32k-0613"
 						],
-						"default": "gpt-3.5-turbo",
+						"default": "gpt-4o-mini",
 						"description": "%configuration.openai.model.description%",
 						"order": 8
 					},

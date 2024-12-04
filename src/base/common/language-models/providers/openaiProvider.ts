@@ -209,7 +209,7 @@ export class OpenAILanguageModelProvider implements ILanguageModelProvider {
 			return model;
 		}
 
-		return this.configService.get<string>('openai.model', 'gpt-3.5-turbo');
+		return this.configService.get<string>('openai.model', 'gpt-4o-mini');
 	}
 
 	private _resolveComletionModel(model?: string) {

@@ -37,7 +37,7 @@ const initialState: ServerState = {
   config: {
     models: [
       // new FreeTrial({ model: "gpt-4" }),
-      // new FreeTrial({ model: "gpt-3.5-turbo" }),
+      // new FreeTrial({ model: "gpt-4o-mini" }),
     ],
   } as any,
   contextProviders: [],

@@ -8,18 +8,13 @@ const DEFAULT_ARGS = {
 };
 
 const CONTEXT_LENGTH_FOR_MODEL: { [name: string]: number } = {
-    "gpt-3.5-turbo": 4096,
-    "gpt-3.5-turbo-0613": 4096,
-    "gpt-3.5-turbo-16k": 16_384,
     "gpt-4": 8192,
-    "gpt-35-turbo-16k": 16_384,
-    "gpt-35-turbo-0613": 4096,
-    "gpt-35-turbo": 4096,
     "gpt-4-32k": 32_768,
     "gpt-4-turbo-preview": 128_000,
     "gpt-4-vision": 128_000,
     "gpt-4-0125-preview": 128_000,
     "gpt-4-1106-preview": 128_000,
+    "gpt-4o-mini": 4096,
 };
 
 const TOKEN_BUFFER_FOR_SAFETY = 350;
