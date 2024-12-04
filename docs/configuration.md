@@ -64,9 +64,9 @@ examples:
 ```jsonc
 [
 	{
-		"title": "GPT-4O Mini",
+		"title": "GPT-4",
 		"provider": "openai",
-		"model": "gpt-4o-mini",
+		"model": "gpt-4",
 	},
 	{
 		"title": "QWen turbo",
