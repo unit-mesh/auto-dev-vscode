@@ -131,9 +131,9 @@ const initialState: State = {
         model: "gpt-4",
       },
       {
-        title: "GPT-3.5 turbo",
+        title: "GPT-4O Mini",
         provider: "openai",
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
       },
       {
         title: "ERNIE-Bot turbo",

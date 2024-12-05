@@ -526,14 +526,14 @@ const gpt4vision: ModelPackage = {
   icon: "openai.png",
 };
 
-const gpt35turbo: ModelPackage = {
-  title: "GPT-3.5-Turbo",
+const gpt4omini: ModelPackage = {
+  title: "GPT-4O Mini",
   description:
     "A faster, cheaper OpenAI model with slightly lower capabilities",
   params: {
-    model: "gpt-3.5-turbo",
+    model: "gpt-4o-mini",
     contextLength: 8096,
-    title: "GPT-3.5-Turbo",
+    title: "GPT-4O Mini",
   },
   providerOptions: ["openai", "freetrial"],
   icon: "openai.png",
@@ -621,7 +621,7 @@ const AUTODETECT: ModelPackage = {
 export const MODEL_INFO: ModelPackage[] = [
   gpt4turbo,
   gpt4,
-  gpt35turbo,
+  gpt4omini,
   geminiPro,
   claude3Opus,
   claude3Sonnet,
@@ -641,15 +641,14 @@ export const PROVIDER_INFO: { [key: string]: ModelInfo } = {
   openai: {
     title: "OpenAI",
     provider: "openai",
-    description: "Use gpt-4, gpt-3.5-turbo, or any other OpenAI model",
+    description: "Use gpt-4o-mini or any other OpenAI model",
     longDescription:
-      "Use gpt-4, gpt-3.5-turbo, or any other OpenAI model. See [here](https://openai.com/product#made-for-developers) to obtain an API key.",
+      "Use gpt-4o-mini or any other OpenAI model. See [here](https://openai.com/product#made-for-developers) to obtain an API key.",
     icon: "openai.png",
     tags: [ModelProviderTag["Requires API Key"]],
     packages: [
       gpt4,
-      gpt35turbo,
-      gpt4turbo,
+      gpt4omini,
       gpt4vision,
       {
         ...AUTODETECT,
@@ -935,7 +934,7 @@ After it's up and running, you can start using Continue.`,
       { ...claude3Haiku, title: "Claude 3 Haiku (trial)" },
       { ...geminiPro, title: "Gemini Pro (trial)" },
       { ...gpt4vision, title: "GPT-4 Vision (trial)" },
-      { ...gpt35turbo, title: "GPT-3.5-Turbo (trial)" },
+      { ...gpt4omini, title: "GPT-4O Mini (trial)" },
       {
         ...AUTODETECT,
         params: {

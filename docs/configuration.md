@@ -69,12 +69,6 @@ examples:
 		"model": "gpt-4",
 	},
 	{
-		"title": "GPT-3.5 turbo",
-		"provider": "openai",
-		"model": "gpt-3.5-turbo",
-		"temperature": 0.75,
-	},
-	{
 		"title": "QWen turbo",
 		"provider": "tongyi",
 		"model": "qwen-turbo",

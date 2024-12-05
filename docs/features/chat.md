@@ -32,8 +32,8 @@ For example, use openai:
   "autodev.chat.models": [
     {
       "provider": "openai", // chat provider
-      "title": "GPT-3.5 turbo", // Text displayed in selector
-      "model": "gpt-3.5-turbo" // Used chat model
+      "title": "GPT-4O Mini", // Text displayed in selector
+      "model": "gpt-4o-mini" // Used chat model
     }
   ]
 }
