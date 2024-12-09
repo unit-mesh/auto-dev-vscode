@@ -353,8 +353,9 @@ export class ContinueViewProvider extends AbstractWebviewViewProvider implements
 			await this.lm.chat(
 				mapToChatMessages(event.data.messages),
 				{
-					...resource,
+		
 					...completionOptions,
+					model:resource?.model,
 				},
 				{
 					report(fragment) {
