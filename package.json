@@ -778,7 +778,7 @@
 				"command": "autodev.showCodeContextPanel",
 				"category": "AutoDev",
 				"title": "%command.showCodeContextPanel.title%",
-				"icon": "$(add)",
+				"icon": "$(group-by-ref-type)",
 				"group": "AutoDev"
 			},
 			{
@@ -872,7 +872,7 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "autodev.feedback",
+					"command": "autodev.newChatSession",
 					"when": "view == autodev.views.chat",
 					"group": "navigation@1"
 				},
@@ -882,25 +882,24 @@
 					"group": "navigation@2"
 				},
 				{
-					"command": "autodev.newChatSession",
-					"when": "view == autodev.views.chat",
-					"group": "navigation@3"
-				},
-				{
 					"command": "autodev.showChatHistory",
 					"when": "view == autodev.views.chat",
 					"group": "navigation@4"
-				},
-				{
-					"command": "autodev.codebase.retrievalCode",
-					"when": "view == autodev.views.chat"
 				},
 				{
 					"command": "autodev.showTutorial",
 					"when": "view == autodev.views.chat"
 				},
 				{
+					"command": "autodev.codebase.retrievalCode",
+					"when": "view == autodev.views.chat"
+				},
+				{
 					"command": "autodev.openSettings",
+					"when": "view == autodev.views.chat"
+				},
+				{
+					"command": "autodev.feedback",
 					"when": "view == autodev.views.chat"
 				},
 				{
