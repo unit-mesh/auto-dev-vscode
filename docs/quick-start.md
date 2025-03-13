@@ -30,6 +30,26 @@ Config OpenAI example:
 	}
 ```
 
+### DeekSeek Example
+
+```json
+    "autodev.openaiCompatibleConfig": {
+      "apiType": "openai",
+      "model": "deepseek-chat",
+      "apiBase": "https://api.deepseek.com/v1",
+      "apiKey": "sk-ii"
+    },
+    "autodev.openai.baseURL": "https://api.deepseek.com/v1",
+    "autodev.openai.apiKey": "sk-ii",
+    "autodev.chat.models": [
+      {
+        "title": "DeepSeek Chat",
+        "provider": "openai",
+        "model": "deepseek-chat"
+      }
+    ],
+```
+
 ## Next
 
 - [Enable Code-completion](./features/code-completion.md)
